@@ -16,4 +16,7 @@ pdflatex -aux-directory=build -output-directory=build "main.tex"
 # Move the final PDF to the main directory
 mv "build/main.pdf" .
 
+# Delete symlink
+rm build/main.tex
+
 echo "Compilation complete! Output: main.pdf"
