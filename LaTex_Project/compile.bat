@@ -2,12 +2,8 @@
 :: Create build directory if it doesn't exist
 if not exist "build" mkdir build
 
-:: Create a symlink to the main .tex file in the build directory
-mklink "build\main.tex" "main.tex" >nul 2>&1
-if errorlevel 1 (
-    :: If symlink fails (e.g., already exists), just copy the file
-    copy "main.tex" "build\main.tex" >nul
-)
+:: Copy main.tex to build directory
+copy /Y "main.tex" "build\main.tex" >nul
 
 :: Compile with pdflatex → biber → pdflatex → pdflatex
 echo Compiling main.tex...
