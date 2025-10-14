@@ -1,0 +1,1805 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{nty/global//global/global/global}
+    \entry{iaea2025aris}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=a147f70c1537efb5f6838446a1035ede}{%
+           family={Agency},
+           familyi={A\bibinitperiod},
+           given={International\bibnamedelimb Atomic\bibnamedelima Energy},
+           giveni={I\bibinitperiod\bibinitdelim A\bibinitperiod\bibinitdelim E\bibinitperiod}}}%
+      }
+      \strng{namehash}{a147f70c1537efb5f6838446a1035ede}
+      \strng{fullhash}{a147f70c1537efb5f6838446a1035ede}
+      \strng{fullhashraw}{a147f70c1537efb5f6838446a1035ede}
+      \strng{bibnamehash}{a147f70c1537efb5f6838446a1035ede}
+      \strng{authorbibnamehash}{a147f70c1537efb5f6838446a1035ede}
+      \strng{authornamehash}{a147f70c1537efb5f6838446a1035ede}
+      \strng{authorfullhash}{a147f70c1537efb5f6838446a1035ede}
+      \strng{authorfullhashraw}{a147f70c1537efb5f6838446a1035ede}
+      \field{sortinit}{A}
+      \field{sortinithash}{2f401846e2029bad6b3ecc16d50031e2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2025-06-10}
+      \field{title}{Advanced Reactors Information System (ARIS)}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://aris.iaea.org/
+      \endverb
+      \verb{url}
+      \verb https://aris.iaea.org/
+      \endverb
+    \endentry
+    \entry{EDFEnergy_PSA_2024}{report}{}{}
+      \name{author}{1}{}{%
+        {{hash=f2a7c4ca45d0997f3fb6840c1c3b1270}{%
+           family={{AREVA NP, EDF Energy}},
+           familyi={A\bibinitperiod}}}%
+      }
+      \list{institution}{1}{%
+        {EDF Energy}%
+      }
+      \strng{namehash}{f2a7c4ca45d0997f3fb6840c1c3b1270}
+      \strng{fullhash}{f2a7c4ca45d0997f3fb6840c1c3b1270}
+      \strng{fullhashraw}{f2a7c4ca45d0997f3fb6840c1c3b1270}
+      \strng{bibnamehash}{f2a7c4ca45d0997f3fb6840c1c3b1270}
+      \strng{authorbibnamehash}{f2a7c4ca45d0997f3fb6840c1c3b1270}
+      \strng{authornamehash}{f2a7c4ca45d0997f3fb6840c1c3b1270}
+      \strng{authorfullhash}{f2a7c4ca45d0997f3fb6840c1c3b1270}
+      \strng{authorfullhashraw}{f2a7c4ca45d0997f3fb6840c1c3b1270}
+      \field{sortinit}{A}
+      \field{sortinithash}{2f401846e2029bad6b3ecc16d50031e2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{month}{11}
+      \field{note}{Accessed: 2025-09-30}
+      \field{title}{Sub-Chapter 15.1: Level 1 Probabilistic Safety Assessment}
+      \field{type}{Technical Report}
+      \field{year}{2012}
+      \verb{urlraw}
+      \verb https://www.edfenergy.com/sites/default/files/sub-chapter_15.1_-_level_1_psa.pdf
+      \endverb
+      \verb{url}
+      \verb https://www.edfenergy.com/sites/default/files/sub-chapter_15.1_-_level_1_psa.pdf
+      \endverb
+    \endentry
+    \entry{osti_22257897}{inproceedings}{}{}
+      \name{author}{4}{}{%
+        {{hash=d7929bb077d528cc45c0e337f4fa5a70}{%
+           family={Arslan},
+           familyi={A\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod}}}%
+        {{hash=20480de064ebb998a54e71237e3165ec}{%
+           family={Villele},
+           familyi={V\bibinitperiod},
+           given={E.\bibnamedelimi de},
+           giveni={E\bibinitperiod\bibinitdelim d\bibinitperiod}}}%
+        {{hash=262c2db5e27fb28b5a1ed0e8a4d2dd82}{%
+           family={Gauthier},
+           familyi={G\bibinitperiod},
+           given={J.\bibnamedelimi C.},
+           giveni={J\bibinitperiod\bibinitdelim C\bibinitperiod}}}%
+        {{hash=7b7ef723200b60b04b593c9fd3a6ca60}{%
+           family={Marincic},
+           familyi={M\bibinitperiod},
+           given={A.},
+           giveni={A\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {American Nuclear Society, 555 North Kensington Avenue, La Grange Park, IL 60526 (United States)}%
+      }
+      \list{publisher}{1}{%
+        {American Nuclear Society - ANS; La Grange Park (United States)}%
+      }
+      \strng{namehash}{c2b5556f19960364c2d8676c06c60429}
+      \strng{fullhash}{a773c06c7f9a086bb8671e949ed671ab}
+      \strng{fullhashraw}{a773c06c7f9a086bb8671e949ed671ab}
+      \strng{bibnamehash}{c2b5556f19960364c2d8676c06c60429}
+      \strng{authorbibnamehash}{c2b5556f19960364c2d8676c06c60429}
+      \strng{authornamehash}{c2b5556f19960364c2d8676c06c60429}
+      \strng{authorfullhash}{a773c06c7f9a086bb8671e949ed671ab}
+      \strng{authorfullhashraw}{a773c06c7f9a086bb8671e949ed671ab}
+      \field{sortinit}{A}
+      \field{sortinithash}{2f401846e2029bad6b3ecc16d50031e2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{month}{07}
+      \field{title}{MOX recycling in GEN 3 + EPR Reactor homogeneous and stable full MOX core}
+      \field{year}{2013}
+      \verb{urlraw}
+      \verb https://www.osti.gov/biblio/22257897
+      \endverb
+      \verb{url}
+      \verb https://www.osti.gov/biblio/22257897
+      \endverb
+    \endentry
+    \entry{PLACEHOLDER}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=660d76068b6389f25fe7dbe24c1e20bf}{%
+           family={Author},
+           familyi={A\bibinitperiod},
+           given={A.\bibnamedelimi N.},
+           giveni={A\bibinitperiod\bibinitdelim N\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {City}%
+      }
+      \list{publisher}{1}{%
+        {Publisher Name}%
+      }
+      \strng{namehash}{660d76068b6389f25fe7dbe24c1e20bf}
+      \strng{fullhash}{660d76068b6389f25fe7dbe24c1e20bf}
+      \strng{fullhashraw}{660d76068b6389f25fe7dbe24c1e20bf}
+      \strng{bibnamehash}{660d76068b6389f25fe7dbe24c1e20bf}
+      \strng{authorbibnamehash}{660d76068b6389f25fe7dbe24c1e20bf}
+      \strng{authornamehash}{660d76068b6389f25fe7dbe24c1e20bf}
+      \strng{authorfullhash}{660d76068b6389f25fe7dbe24c1e20bf}
+      \strng{authorfullhashraw}{660d76068b6389f25fe7dbe24c1e20bf}
+      \field{sortinit}{A}
+      \field{sortinithash}{2f401846e2029bad6b3ecc16d50031e2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2025-09-10}
+      \field{title}{Example Reference Title}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://www.example.com
+      \endverb
+      \verb{url}
+      \verb https://www.example.com
+      \endverb
+    \endentry
+    \entry{CNSC_BWRX300_Fuel_Design}{report}{}{}
+      \name{author}{1}{}{%
+        {{hash=561a251dec191978759f26fa82c876dd}{%
+           family={{Canadian Nuclear Safety Commission}},
+           familyi={C\bibinitperiod}}}%
+      }
+      \list{institution}{1}{%
+        {Canadian Nuclear Safety Commission}%
+      }
+      \strng{namehash}{561a251dec191978759f26fa82c876dd}
+      \strng{fullhash}{561a251dec191978759f26fa82c876dd}
+      \strng{fullhashraw}{561a251dec191978759f26fa82c876dd}
+      \strng{bibnamehash}{561a251dec191978759f26fa82c876dd}
+      \strng{authorbibnamehash}{561a251dec191978759f26fa82c876dd}
+      \strng{authornamehash}{561a251dec191978759f26fa82c876dd}
+      \strng{authorfullhash}{561a251dec191978759f26fa82c876dd}
+      \strng{authorfullhashraw}{561a251dec191978759f26fa82c876dd}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2025-09-30}
+      \field{title}{BWRX-300 Design: Non-Proprietary Information on Fuel Design Qualification and BWR Fuel Licensing}
+      \field{type}{Technical Report}
+      \field{year}{2024}
+      \verb{urlraw}
+      \verb https://api.cnsc-ccsn.gc.ca/dms/digital-medias/CMD24-H3-Ref-BWRX-300-DNNP-GNF2-Fuel-Design-Qualification-and-BWR-Fuel-Licensing-Non-Proprietary-Information.PDF
+      \endverb
+      \verb{url}
+      \verb https://api.cnsc-ccsn.gc.ca/dms/digital-medias/CMD24-H3-Ref-BWRX-300-DNNP-GNF2-Fuel-Design-Qualification-and-BWR-Fuel-Licensing-Non-Proprietary-Information.PDF
+      \endverb
+    \endentry
+    \entry{CARLESS201684}{article}{}{}
+      \name{author}{3}{}{%
+        {{hash=312d0af0793f342a837b7d4938af4be4}{%
+           family={Carless},
+           familyi={C\bibinitperiod},
+           given={Travis\bibnamedelima S.},
+           giveni={T\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+        {{hash=427214fdde42f352a1e203d8fa770715}{%
+           family={Griffin},
+           familyi={G\bibinitperiod},
+           given={W.\bibnamedelimi Michael},
+           giveni={W\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+        {{hash=0e515f461c665c87cb99ebf16713244f}{%
+           family={Fischbeck},
+           familyi={F\bibinitperiod},
+           given={Paul\bibnamedelima S.},
+           giveni={P\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+      }
+      \strng{namehash}{0465a88573673e334c3799dd0bc6003a}
+      \strng{fullhash}{0465a88573673e334c3799dd0bc6003a}
+      \strng{fullhashraw}{0465a88573673e334c3799dd0bc6003a}
+      \strng{bibnamehash}{0465a88573673e334c3799dd0bc6003a}
+      \strng{authorbibnamehash}{0465a88573673e334c3799dd0bc6003a}
+      \strng{authornamehash}{0465a88573673e334c3799dd0bc6003a}
+      \strng{authorfullhash}{0465a88573673e334c3799dd0bc6003a}
+      \strng{authorfullhashraw}{0465a88573673e334c3799dd0bc6003a}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0360-5442}
+      \field{journaltitle}{Energy}
+      \field{title}{The environmental competitiveness of small modular reactors: A life cycle study}
+      \field{volume}{114}
+      \field{year}{2016}
+      \field{pages}{84\bibrangedash 99}
+      \range{pages}{16}
+      \verb{doi}
+      \verb https://doi.org/10.1016/j.energy.2016.07.111
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S0360544216310350
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S0360544216310350
+      \endverb
+      \keyw{Nuclear power,Small modular reactors,Life cycle analysis,Greenhouse gas,Uncertainty}
+    \endentry
+    \entry{ElectricityMaps_CarbonIntensity_2024}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=1f9615963bedc588d52eaa492366f47f}{%
+           family={{Electricity Maps}},
+           familyi={E\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {Electricity Maps}%
+      }
+      \strng{namehash}{1f9615963bedc588d52eaa492366f47f}
+      \strng{fullhash}{1f9615963bedc588d52eaa492366f47f}
+      \strng{fullhashraw}{1f9615963bedc588d52eaa492366f47f}
+      \strng{bibnamehash}{1f9615963bedc588d52eaa492366f47f}
+      \strng{authorbibnamehash}{1f9615963bedc588d52eaa492366f47f}
+      \strng{authornamehash}{1f9615963bedc588d52eaa492366f47f}
+      \strng{authorfullhash}{1f9615963bedc588d52eaa492366f47f}
+      \strng{authorfullhashraw}{1f9615963bedc588d52eaa492366f47f}
+      \field{sortinit}{E}
+      \field{sortinithash}{8da8a182d344d5b9047633dfc0cc9131}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{month}{1}
+      \field{note}{Accessed: 2025-09-30; Data version: January 27, 2025}
+      \field{title}{2024 Carbon Intensity Data for Poland, Switzerland, France, and Northern Italy}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://www.electricitymaps.com
+      \endverb
+      \verb{url}
+      \verb https://www.electricitymaps.com
+      \endverb
+    \endentry
+    \entry{ENCO_SMR_Analysis_2022}{report}{}{}
+      \name{author}{1}{}{%
+        {{hash=568b00d20862024dbe764e50e6489317}{%
+           family={{ENCO}},
+           familyi={E\bibinitperiod}}}%
+      }
+      \list{institution}{2}{%
+        {Federal Ministry of Labour}%
+        {Economy (BMLUK), Austria}%
+      }
+      \strng{namehash}{568b00d20862024dbe764e50e6489317}
+      \strng{fullhash}{568b00d20862024dbe764e50e6489317}
+      \strng{fullhashraw}{568b00d20862024dbe764e50e6489317}
+      \strng{bibnamehash}{568b00d20862024dbe764e50e6489317}
+      \strng{authorbibnamehash}{568b00d20862024dbe764e50e6489317}
+      \strng{authornamehash}{568b00d20862024dbe764e50e6489317}
+      \strng{authorfullhash}{568b00d20862024dbe764e50e6489317}
+      \strng{authorfullhashraw}{568b00d20862024dbe764e50e6489317}
+      \field{sortinit}{E}
+      \field{sortinithash}{8da8a182d344d5b9047633dfc0cc9131}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2025-09-30}
+      \field{title}{Analysis of Small Modular Reactor (SMR) Concepts}
+      \field{type}{Technical Report}
+      \field{year}{2022}
+      \verb{urlraw}
+      \verb https://www.bmluk.gv.at/dam/jcr:26805e08-47f2-402e-8121-921e1f121144/Analysis_of_SMR_Concepts.pdf
+      \endverb
+      \verb{url}
+      \verb https://www.bmluk.gv.at/dam/jcr:26805e08-47f2-402e-8121-921e1f121144/Analysis_of_SMR_Concepts.pdf
+      \endverb
+    \endentry
+    \entry{kepcoenc2025}{misc}{}{}
+      \name{author}{2}{}{%
+        {{hash=6fc6fb5195100e642676bc36cf597206}{%
+           family={Engineering},
+           familyi={E\bibinitperiod},
+           given={KEPCO},
+           giveni={K\bibinitperiod}}}%
+        {{hash=2541dfe362ccaa5544fe5d4312da8607}{%
+           family={Construction\bibnamedelima Company},
+           familyi={C\bibinitperiod\bibinitdelim C\bibinitperiod},
+           given={Inc.},
+           giveni={I\bibinitperiod}}}%
+      }
+      \strng{namehash}{c2f343e51dbdc33b3cef189a4127098f}
+      \strng{fullhash}{c2f343e51dbdc33b3cef189a4127098f}
+      \strng{fullhashraw}{c2f343e51dbdc33b3cef189a4127098f}
+      \strng{bibnamehash}{c2f343e51dbdc33b3cef189a4127098f}
+      \strng{authorbibnamehash}{c2f343e51dbdc33b3cef189a4127098f}
+      \strng{authornamehash}{c2f343e51dbdc33b3cef189a4127098f}
+      \strng{authorfullhash}{c2f343e51dbdc33b3cef189a4127098f}
+      \strng{authorfullhashraw}{c2f343e51dbdc33b3cef189a4127098f}
+      \field{sortinit}{E}
+      \field{sortinithash}{8da8a182d344d5b9047633dfc0cc9131}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2025-06-10}
+      \field{title}{Reactor Descriptions}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://www.kepco-enc.com/menu.es?mid=a20202030100
+      \endverb
+      \verb{url}
+      \verb https://www.kepco-enc.com/menu.es?mid=a20202030100
+      \endverb
+    \endentry
+    \entry{EU2050ClimateStrategy}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=a1b813a6e85874b4c945aec2cdbea74c}{%
+           family={{European Commission}},
+           familyi={E\bibinitperiod}}}%
+      }
+      \strng{namehash}{a1b813a6e85874b4c945aec2cdbea74c}
+      \strng{fullhash}{a1b813a6e85874b4c945aec2cdbea74c}
+      \strng{fullhashraw}{a1b813a6e85874b4c945aec2cdbea74c}
+      \strng{bibnamehash}{a1b813a6e85874b4c945aec2cdbea74c}
+      \strng{authorbibnamehash}{a1b813a6e85874b4c945aec2cdbea74c}
+      \strng{authornamehash}{a1b813a6e85874b4c945aec2cdbea74c}
+      \strng{authorfullhash}{a1b813a6e85874b4c945aec2cdbea74c}
+      \strng{authorfullhashraw}{a1b813a6e85874b4c945aec2cdbea74c}
+      \field{extraname}{1}
+      \field{sortinit}{E}
+      \field{sortinithash}{8da8a182d344d5b9047633dfc0cc9131}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://climate.ec.europa.eu/eu-action/climate-strategies-targets/2050-long-term-strategy_en}}
+      \field{note}{Accessed: 2025-10-01}
+      \field{title}{2050 long-term strategy}
+      \field{year}{2024}
+      \verb{urlraw}
+      \verb https://climate.ec.europa.eu/eu-action/climate-strategies-targets/2050-long-term-strategy_en
+      \endverb
+      \verb{url}
+      \verb https://climate.ec.europa.eu/eu-action/climate-strategies-targets/2050-long-term-strategy_en
+      \endverb
+    \endentry
+    \entry{EUTaxonomy}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=a1b813a6e85874b4c945aec2cdbea74c}{%
+           family={{European Commission}},
+           familyi={E\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {European Union}%
+      }
+      \strng{namehash}{a1b813a6e85874b4c945aec2cdbea74c}
+      \strng{fullhash}{a1b813a6e85874b4c945aec2cdbea74c}
+      \strng{fullhashraw}{a1b813a6e85874b4c945aec2cdbea74c}
+      \strng{bibnamehash}{a1b813a6e85874b4c945aec2cdbea74c}
+      \strng{authorbibnamehash}{a1b813a6e85874b4c945aec2cdbea74c}
+      \strng{authornamehash}{a1b813a6e85874b4c945aec2cdbea74c}
+      \strng{authorfullhash}{a1b813a6e85874b4c945aec2cdbea74c}
+      \strng{authorfullhashraw}{a1b813a6e85874b4c945aec2cdbea74c}
+      \field{extraname}{2}
+      \field{sortinit}{E}
+      \field{sortinithash}{8da8a182d344d5b9047633dfc0cc9131}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2025-10-01}
+      \field{title}{Commission Delegated Regulation (EU) 2021/2139 of 4 June 2021 supplementing Regulation (EU) 2020/852 of the European Parliament and of the Council by establishing the technical screening criteria for determining the conditions under which an economic activity qualifies as contributing substantially to climate change mitigation or climate change adaptation and for determining whether that economic activity causes no significant harm to any of the other environmental objectives}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:02021R2139-20250108
+      \endverb
+      \verb{url}
+      \verb https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:02021R2139-20250108
+      \endverb
+    \endentry
+    \entry{ENTSOE_Transparency_2025}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=9d1b3210f077eee7f685f4a4d1c1c597}{%
+           family={{European Network of Transmission System Operators for Electricity (ENTSO-E)}},
+           familyi={E\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {ENTSO-E}%
+      }
+      \strng{namehash}{9d1b3210f077eee7f685f4a4d1c1c597}
+      \strng{fullhash}{9d1b3210f077eee7f685f4a4d1c1c597}
+      \strng{fullhashraw}{9d1b3210f077eee7f685f4a4d1c1c597}
+      \strng{bibnamehash}{9d1b3210f077eee7f685f4a4d1c1c597}
+      \strng{authorbibnamehash}{9d1b3210f077eee7f685f4a4d1c1c597}
+      \strng{authornamehash}{9d1b3210f077eee7f685f4a4d1c1c597}
+      \strng{authorfullhash}{9d1b3210f077eee7f685f4a4d1c1c597}
+      \strng{authorfullhashraw}{9d1b3210f077eee7f685f4a4d1c1c597}
+      \field{sortinit}{E}
+      \field{sortinithash}{8da8a182d344d5b9047633dfc0cc9131}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2025-09-30}
+      \field{title}{Transparency Platform}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://transparency.entsoe.eu/
+      \endverb
+      \verb{url}
+      \verb https://transparency.entsoe.eu/
+      \endverb
+    \endentry
+    \entry{Euronuclear_Swiss_Nuclear_Poll_2023}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=85d6678786c66f2d375b6b3711fc0569}{%
+           family={{European Nuclear Society (Euronuclear)}},
+           familyi={E\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {European Nuclear Society}%
+      }
+      \strng{namehash}{85d6678786c66f2d375b6b3711fc0569}
+      \strng{fullhash}{85d6678786c66f2d375b6b3711fc0569}
+      \strng{fullhashraw}{85d6678786c66f2d375b6b3711fc0569}
+      \strng{bibnamehash}{85d6678786c66f2d375b6b3711fc0569}
+      \strng{authorbibnamehash}{85d6678786c66f2d375b6b3711fc0569}
+      \strng{authornamehash}{85d6678786c66f2d375b6b3711fc0569}
+      \strng{authorfullhash}{85d6678786c66f2d375b6b3711fc0569}
+      \strng{authorfullhashraw}{85d6678786c66f2d375b6b3711fc0569}
+      \field{sortinit}{E}
+      \field{sortinithash}{8da8a182d344d5b9047633dfc0cc9131}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2025-09-30}
+      \field{title}{Opinion Poll: The Majority of the Swiss Support Nuclear Energy}
+      \field{year}{2023}
+      \verb{urlraw}
+      \verb https://www.euronuclear.org/news/opinion-poll-the-majority-of-the-swiss-support-nuclear-energy/
+      \endverb
+      \verb{url}
+      \verb https://www.euronuclear.org/news/opinion-poll-the-majority-of-the-swiss-support-nuclear-energy/
+      \endverb
+    \endentry
+    \entry{FETTERMAN2009324}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=a66a8b25585ecf7765cc86a763df8fa3}{%
+           family={Fetterman},
+           familyi={F\bibinitperiod},
+           given={Robert\bibnamedelima J.},
+           giveni={R\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+      }
+      \strng{namehash}{a66a8b25585ecf7765cc86a763df8fa3}
+      \strng{fullhash}{a66a8b25585ecf7765cc86a763df8fa3}
+      \strng{fullhashraw}{a66a8b25585ecf7765cc86a763df8fa3}
+      \strng{bibnamehash}{a66a8b25585ecf7765cc86a763df8fa3}
+      \strng{authorbibnamehash}{a66a8b25585ecf7765cc86a763df8fa3}
+      \strng{authornamehash}{a66a8b25585ecf7765cc86a763df8fa3}
+      \strng{authorfullhash}{a66a8b25585ecf7765cc86a763df8fa3}
+      \strng{authorfullhashraw}{a66a8b25585ecf7765cc86a763df8fa3}
+      \field{sortinit}{F}
+      \field{sortinithash}{2638baaa20439f1b5a8f80c6c08a13b4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0306-4549}
+      \field{journaltitle}{Annals of Nuclear Energy}
+      \field{note}{PHYSOR 2008}
+      \field{number}{3}
+      \field{title}{AP1000 core design with MOX loading}
+      \field{volume}{36}
+      \field{year}{2009}
+      \field{pages}{324\bibrangedash 330}
+      \range{pages}{7}
+      \verb{doi}
+      \verb https://doi.org/10.1016/j.anucene.2008.11.022
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S0306454908002983
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S0306454908002983
+      \endverb
+    \endentry
+    \entry{Framatome_GNF2_Fuel_2018}{manual}{}{}
+      \name{author}{1}{}{%
+        {{hash=2b8503f0945e2bc1cd132ca62033eae0}{%
+           family={{Framatome}},
+           familyi={F\bibinitperiod}}}%
+      }
+      \list{institution}{1}{%
+        {Framatome}%
+      }
+      \list{organization}{1}{%
+        {Framatome}%
+      }
+      \strng{namehash}{2b8503f0945e2bc1cd132ca62033eae0}
+      \strng{fullhash}{2b8503f0945e2bc1cd132ca62033eae0}
+      \strng{fullhashraw}{2b8503f0945e2bc1cd132ca62033eae0}
+      \strng{bibnamehash}{2b8503f0945e2bc1cd132ca62033eae0}
+      \strng{authorbibnamehash}{2b8503f0945e2bc1cd132ca62033eae0}
+      \strng{authornamehash}{2b8503f0945e2bc1cd132ca62033eae0}
+      \strng{authorfullhash}{2b8503f0945e2bc1cd132ca62033eae0}
+      \strng{authorfullhashraw}{2b8503f0945e2bc1cd132ca62033eae0}
+      \field{sortinit}{F}
+      \field{sortinithash}{2638baaa20439f1b5a8f80c6c08a13b4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{month}{5}
+      \field{note}{Accessed: 2025-09-30}
+      \field{title}{GNF2 Fuel Assembly: Product Sheet}
+      \field{year}{2018}
+      \verb{urlraw}
+      \verb https://www.framatome.com/solutions-portfolio/docs/default-source/default-document-library/product-sheets/a0529-p-us-g-en-328-05-18-htp.pdf?Status=Master&sfvrsn=60b7ce1d_2
+      \endverb
+      \verb{url}
+      \verb https://www.framatome.com/solutions-portfolio/docs/default-source/default-document-library/product-sheets/a0529-p-us-g-en-328-05-18-htp.pdf?Status=Master&sfvrsn=60b7ce1d_2
+      \endverb
+    \endentry
+    \entry{GEVernova_Nuclear_2025}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=e0ab8e962b96b5d4bfd010aeeab4df20}{%
+           family={{GE Vernova}},
+           familyi={G\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {GE Vernova}%
+      }
+      \strng{namehash}{e0ab8e962b96b5d4bfd010aeeab4df20}
+      \strng{fullhash}{e0ab8e962b96b5d4bfd010aeeab4df20}
+      \strng{fullhashraw}{e0ab8e962b96b5d4bfd010aeeab4df20}
+      \strng{bibnamehash}{e0ab8e962b96b5d4bfd010aeeab4df20}
+      \strng{authorbibnamehash}{e0ab8e962b96b5d4bfd010aeeab4df20}
+      \strng{authornamehash}{e0ab8e962b96b5d4bfd010aeeab4df20}
+      \strng{authorfullhash}{e0ab8e962b96b5d4bfd010aeeab4df20}
+      \strng{authorfullhashraw}{e0ab8e962b96b5d4bfd010aeeab4df20}
+      \field{sortinit}{G}
+      \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2025-09-30}
+      \field{title}{Nuclear Energy Solutions}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://www.gevernova.com/nuclear
+      \endverb
+      \verb{url}
+      \verb https://www.gevernova.com/nuclear
+      \endverb
+    \endentry
+    \entry{IFOP_Nuclear_Perception_2023}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=a38f5f52a3607d8f6240741981faba34}{%
+           family={{IFOP}},
+           familyi={I\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {IFOP}%
+      }
+      \strng{namehash}{a38f5f52a3607d8f6240741981faba34}
+      \strng{fullhash}{a38f5f52a3607d8f6240741981faba34}
+      \strng{fullhashraw}{a38f5f52a3607d8f6240741981faba34}
+      \strng{bibnamehash}{a38f5f52a3607d8f6240741981faba34}
+      \strng{authorbibnamehash}{a38f5f52a3607d8f6240741981faba34}
+      \strng{authornamehash}{a38f5f52a3607d8f6240741981faba34}
+      \strng{authorfullhash}{a38f5f52a3607d8f6240741981faba34}
+      \strng{authorfullhashraw}{a38f5f52a3607d8f6240741981faba34}
+      \field{sortinit}{I}
+      \field{sortinithash}{8d291c51ee89b6cd86bf5379f0b151d8}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{month}{09}
+      \field{note}{Accessed: 2025-09-30}
+      \field{title}{Les Français et le nucléaire : adhésion et traits d'image}
+      \field{year}{2022}
+      \verb{urlraw}
+      \verb https://www.ifop.com/article/les-francais-et-le-nucleaire-adhesion-et-traits-dimage/
+      \endverb
+      \verb{url}
+      \verb https://www.ifop.com/article/les-francais-et-le-nucleaire-adhesion-et-traits-dimage/
+      \endverb
+    \endentry
+    \entry{Sole24Ore_Italy_Nuclear_Strategy_2024}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=74dbf5284d275192ff897cd7de27d96b}{%
+           family={{Il Sole 24 Ore}},
+           familyi={I\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {Il Sole 24 Ore}%
+      }
+      \strng{namehash}{74dbf5284d275192ff897cd7de27d96b}
+      \strng{fullhash}{74dbf5284d275192ff897cd7de27d96b}
+      \strng{fullhashraw}{74dbf5284d275192ff897cd7de27d96b}
+      \strng{bibnamehash}{74dbf5284d275192ff897cd7de27d96b}
+      \strng{authorbibnamehash}{74dbf5284d275192ff897cd7de27d96b}
+      \strng{authornamehash}{74dbf5284d275192ff897cd7de27d96b}
+      \strng{authorfullhash}{74dbf5284d275192ff897cd7de27d96b}
+      \strng{authorfullhashraw}{74dbf5284d275192ff897cd7de27d96b}
+      \field{sortinit}{I}
+      \field{sortinithash}{8d291c51ee89b6cd86bf5379f0b151d8}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2025-09-30}
+      \field{title}{Sustainable Nuclear Comes into Law: Here Is the Government Strategy in Ten Questions and Answers}
+      \field{year}{2024}
+      \verb{urlraw}
+      \verb https://en.ilsole24ore.com/art/sustainable-nuclear-comes-law-here-is-government-strategy-ten-questions-and-answers-AGvZZsDD
+      \endverb
+      \verb{url}
+      \verb https://en.ilsole24ore.com/art/sustainable-nuclear-comes-law-here-is-government-strategy-ten-questions-and-answers-AGvZZsDD
+      \endverb
+    \endentry
+    \entry{IAEA_Climate_Change_Nuclear_Power_2022}{report}{}{}
+      \name{author}{1}{}{%
+        {{hash=7a2659e27fbb6482eb1fc4d2067057b3}{%
+           family={{International Atomic Energy Agency (IAEA)}},
+           familyi={I\bibinitperiod}}}%
+      }
+      \list{institution}{1}{%
+        {International Atomic Energy Agency}%
+      }
+      \strng{namehash}{7a2659e27fbb6482eb1fc4d2067057b3}
+      \strng{fullhash}{7a2659e27fbb6482eb1fc4d2067057b3}
+      \strng{fullhashraw}{7a2659e27fbb6482eb1fc4d2067057b3}
+      \strng{bibnamehash}{7a2659e27fbb6482eb1fc4d2067057b3}
+      \strng{authorbibnamehash}{7a2659e27fbb6482eb1fc4d2067057b3}
+      \strng{authornamehash}{7a2659e27fbb6482eb1fc4d2067057b3}
+      \strng{authorfullhash}{7a2659e27fbb6482eb1fc4d2067057b3}
+      \strng{authorfullhashraw}{7a2659e27fbb6482eb1fc4d2067057b3}
+      \field{extraname}{1}
+      \field{sortinit}{I}
+      \field{sortinithash}{8d291c51ee89b6cd86bf5379f0b151d8}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2025-09-30}
+      \field{title}{Climate Change and Nuclear Power 2022}
+      \field{type}{Report}
+      \field{year}{2022}
+      \verb{urlraw}
+      \verb https://www.iaea.org/topics/nuclear-power-and-climate-change/climate-change-and-nuclear-power-2022
+      \endverb
+      \verb{url}
+      \verb https://www.iaea.org/topics/nuclear-power-and-climate-change/climate-change-and-nuclear-power-2022
+      \endverb
+    \endentry
+    \entry{IAEA_PRIS_2025}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=7a2659e27fbb6482eb1fc4d2067057b3}{%
+           family={{International Atomic Energy Agency (IAEA)}},
+           familyi={I\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {International Atomic Energy Agency}%
+      }
+      \strng{namehash}{7a2659e27fbb6482eb1fc4d2067057b3}
+      \strng{fullhash}{7a2659e27fbb6482eb1fc4d2067057b3}
+      \strng{fullhashraw}{7a2659e27fbb6482eb1fc4d2067057b3}
+      \strng{bibnamehash}{7a2659e27fbb6482eb1fc4d2067057b3}
+      \strng{authorbibnamehash}{7a2659e27fbb6482eb1fc4d2067057b3}
+      \strng{authornamehash}{7a2659e27fbb6482eb1fc4d2067057b3}
+      \strng{authorfullhash}{7a2659e27fbb6482eb1fc4d2067057b3}
+      \strng{authorfullhashraw}{7a2659e27fbb6482eb1fc4d2067057b3}
+      \field{extraname}{2}
+      \field{sortinit}{I}
+      \field{sortinithash}{8d291c51ee89b6cd86bf5379f0b151d8}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2025-09-30}
+      \field{title}{Power Reactor Information System (PRIS) Database}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://pris.iaea.org/PRIS/home.aspx
+      \endverb
+      \verb{url}
+      \verb https://pris.iaea.org/PRIS/home.aspx
+      \endverb
+    \endentry
+    \entry{KHNP_EU_APR_Characteristics}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=a7495ecb20090fc8e8c1e11071e0018d}{%
+           family={{Korea Hydro and Nuclear Power Co., Ltd. (KHNP)}},
+           familyi={K\bibinitperiod}}}%
+      }
+      \list{institution}{2}{%
+        {Korea Hydro}%
+        {Nuclear Power Co., Ltd. (KHNP)}%
+      }
+      \strng{namehash}{a7495ecb20090fc8e8c1e11071e0018d}
+      \strng{fullhash}{a7495ecb20090fc8e8c1e11071e0018d}
+      \strng{fullhashraw}{a7495ecb20090fc8e8c1e11071e0018d}
+      \strng{bibnamehash}{a7495ecb20090fc8e8c1e11071e0018d}
+      \strng{authorbibnamehash}{a7495ecb20090fc8e8c1e11071e0018d}
+      \strng{authornamehash}{a7495ecb20090fc8e8c1e11071e0018d}
+      \strng{authorfullhash}{a7495ecb20090fc8e8c1e11071e0018d}
+      \strng{authorfullhashraw}{a7495ecb20090fc8e8c1e11071e0018d}
+      \field{sortinit}{K}
+      \field{sortinithash}{c02bf6bff1c488450c352b40f5d853ab}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{month}{04}
+      \field{note}{Accessed: 2025-09-30}
+      \field{title}{Major Characteristics of the EU-APR Reactor}
+      \field{type}{Presentation}
+      \field{year}{2018}
+      \verb{urlraw}
+      \verb https://sep.com.pl/photo/files/07b%20-%20KHNP%20-%20Major%20Characteristics%20of%20EU-APR%20Reactor.pdf
+      \endverb
+      \verb{url}
+      \verb https://sep.com.pl/photo/files/07b%20-%20KHNP%20-%20Major%20Characteristics%20of%20EU-APR%20Reactor.pdf
+      \endverb
+    \endentry
+    \entry{10.3389/fenrg.2023.1147016}{article}{}{}
+      \name{author}{12}{}{%
+        {{hash=245d8c2f9a7951483f3048a12dee8376}{%
+           family={Liu},
+           familyi={L\bibinitperiod},
+           given={Bojie},
+           giveni={B\bibinitperiod}}}%
+        {{hash=8c0ec05687143dfe54714f2e579b8fa3}{%
+           family={Peng},
+           familyi={P\bibinitperiod},
+           given={Binbin},
+           giveni={B\bibinitperiod}}}%
+        {{hash=abd9b9e3ba52134358eebe419218499d}{%
+           family={Lu},
+           familyi={L\bibinitperiod},
+           given={Fei},
+           giveni={F\bibinitperiod}}}%
+        {{hash=36aca9fad15d1193631214539eeb3d59}{%
+           family={Hu},
+           familyi={H\bibinitperiod},
+           given={Jiang},
+           giveni={J\bibinitperiod}}}%
+        {{hash=ded7f29f07a8d61a63016c8708c3efdf}{%
+           family={Zheng},
+           familyi={Z\bibinitperiod},
+           given={Li},
+           giveni={L\bibinitperiod}}}%
+        {{hash=ce081c49f9bdff6beab96ec783ea07f8}{%
+           family={Bo},
+           familyi={B\bibinitperiod},
+           given={Meifang},
+           giveni={M\bibinitperiod}}}%
+        {{hash=aa31c83792059c6c3c33cca9bc19a13c}{%
+           family={Shang},
+           familyi={S\bibinitperiod},
+           given={Xin},
+           giveni={X\bibinitperiod}}}%
+        {{hash=7c31bb22e5fbed815509a73cb068af2e}{%
+           family={Liu},
+           familyi={L\bibinitperiod},
+           given={Weiwei},
+           giveni={W\bibinitperiod}}}%
+        {{hash=a382efbfffe467ef00312cf8a967abf3}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Yichi},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=b5c538850d38b5e3ce2937fea9b41797}{%
+           family={Zhou},
+           familyi={Z\bibinitperiod},
+           given={Xiafei},
+           giveni={X\bibinitperiod}}}%
+        {{hash=e12c82aee481407f044fd8247f7b5637}{%
+           family={Jia},
+           familyi={J\bibinitperiod},
+           given={Pengfei},
+           giveni={P\bibinitperiod}}}%
+        {{hash=6308c5438e1294704861c420816af34e}{%
+           family={Liu},
+           familyi={L\bibinitperiod},
+           given={Gengyuan},
+           giveni={G\bibinitperiod}}}%
+      }
+      \strng{namehash}{79b72dcc56adf492fa9b38a998cc365c}
+      \strng{fullhash}{d5a8158758b14d9fdf405ff3ecfd6599}
+      \strng{fullhashraw}{d5a8158758b14d9fdf405ff3ecfd6599}
+      \strng{bibnamehash}{79b72dcc56adf492fa9b38a998cc365c}
+      \strng{authorbibnamehash}{79b72dcc56adf492fa9b38a998cc365c}
+      \strng{authornamehash}{79b72dcc56adf492fa9b38a998cc365c}
+      \strng{authorfullhash}{d5a8158758b14d9fdf405ff3ecfd6599}
+      \strng{authorfullhashraw}{d5a8158758b14d9fdf405ff3ecfd6599}
+      \field{sortinit}{L}
+      \field{sortinithash}{7c47d417cecb1f4bd38d1825c427a61a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{2296-598X}
+      \field{journaltitle}{Frontiers in Energy Research}
+      \field{title}{Critical review of nuclear power plant carbon emissions}
+      \field{volume}{Volume 11 - 2023}
+      \field{year}{2023}
+      \verb{doi}
+      \verb 10.3389/fenrg.2023.1147016
+      \endverb
+      \verb{urlraw}
+      \verb https://www.frontiersin.org/journals/energy-research/articles/10.3389/fenrg.2023.1147016
+      \endverb
+      \verb{url}
+      \verb https://www.frontiersin.org/journals/energy-research/articles/10.3389/fenrg.2023.1147016
+      \endverb
+    \endentry
+    \entry{nea2020unlocking}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=acb8a32a48769bbbd4aea53c29d22aed}{%
+           family={NEA},
+           familyi={N\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Paris}%
+      }
+      \list{publisher}{1}{%
+        {OECD Publishing}%
+      }
+      \strng{namehash}{acb8a32a48769bbbd4aea53c29d22aed}
+      \strng{fullhash}{acb8a32a48769bbbd4aea53c29d22aed}
+      \strng{fullhashraw}{acb8a32a48769bbbd4aea53c29d22aed}
+      \strng{bibnamehash}{acb8a32a48769bbbd4aea53c29d22aed}
+      \strng{authorbibnamehash}{acb8a32a48769bbbd4aea53c29d22aed}
+      \strng{authornamehash}{acb8a32a48769bbbd4aea53c29d22aed}
+      \strng{authorfullhash}{acb8a32a48769bbbd4aea53c29d22aed}
+      \strng{authorfullhashraw}{acb8a32a48769bbbd4aea53c29d22aed}
+      \field{extraname}{1}
+      \field{sortinit}{N}
+      \field{sortinithash}{22369a73d5f88983a108b63f07f37084}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2025-09-10}
+      \field{title}{Unlocking Reductions in the Construction Costs of Nuclear}
+      \field{year}{2020}
+      \true{nocite}
+      \verb{urlraw}
+      \verb https://www.oecd-nea.org/jcms/pl_30653/unlocking-reductions-in-the-construction-costs-of-nuclear
+      \endverb
+      \verb{url}
+      \verb https://www.oecd-nea.org/jcms/pl_30653/unlocking-reductions-in-the-construction-costs-of-nuclear
+      \endverb
+    \endentry
+    \entry{NEA2020}{book}{}{}
+      \name{author}{1}{}{%
+        {{hash=acb8a32a48769bbbd4aea53c29d22aed}{%
+           family={{NEA}},
+           familyi={N\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Paris}%
+      }
+      \list{publisher}{1}{%
+        {OECD Publishing}%
+      }
+      \strng{namehash}{acb8a32a48769bbbd4aea53c29d22aed}
+      \strng{fullhash}{acb8a32a48769bbbd4aea53c29d22aed}
+      \strng{fullhashraw}{acb8a32a48769bbbd4aea53c29d22aed}
+      \strng{bibnamehash}{acb8a32a48769bbbd4aea53c29d22aed}
+      \strng{authorbibnamehash}{acb8a32a48769bbbd4aea53c29d22aed}
+      \strng{authornamehash}{acb8a32a48769bbbd4aea53c29d22aed}
+      \strng{authorfullhash}{acb8a32a48769bbbd4aea53c29d22aed}
+      \strng{authorfullhashraw}{acb8a32a48769bbbd4aea53c29d22aed}
+      \field{extraname}{2}
+      \field{sortinit}{N}
+      \field{sortinithash}{22369a73d5f88983a108b63f07f37084}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Unlocking Reductions in the Construction Costs of Nuclear}
+      \field{year}{2020}
+    \endentry
+    \entry{wnn2025bwrx300}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=b714c6f9730bb2077bf5b3af63bec10c}{%
+           family={News},
+           familyi={N\bibinitperiod},
+           given={World\bibnamedelima Nuclear},
+           giveni={W\bibinitperiod\bibinitdelim N\bibinitperiod}}}%
+      }
+      \strng{namehash}{b714c6f9730bb2077bf5b3af63bec10c}
+      \strng{fullhash}{b714c6f9730bb2077bf5b3af63bec10c}
+      \strng{fullhashraw}{b714c6f9730bb2077bf5b3af63bec10c}
+      \strng{bibnamehash}{b714c6f9730bb2077bf5b3af63bec10c}
+      \strng{authorbibnamehash}{b714c6f9730bb2077bf5b3af63bec10c}
+      \strng{authornamehash}{b714c6f9730bb2077bf5b3af63bec10c}
+      \strng{authorfullhash}{b714c6f9730bb2077bf5b3af63bec10c}
+      \strng{authorfullhashraw}{b714c6f9730bb2077bf5b3af63bec10c}
+      \field{extraname}{1}
+      \field{sortinit}{N}
+      \field{sortinithash}{22369a73d5f88983a108b63f07f37084}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2025-06-10}
+      \field{title}{Early works agreement for BWRX-300 SMRs in Finland and Sweden}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://www.world-nuclear-news.org/articles/early-works-agreement-for-bwrx-300-smrs-in-finland-and-sweden
+      \endverb
+      \verb{url}
+      \verb https://www.world-nuclear-news.org/articles/early-works-agreement-for-bwrx-300-smrs-in-finland-and-sweden
+      \endverb
+    \endentry
+    \entry{wnn2025hungarysmr}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=b714c6f9730bb2077bf5b3af63bec10c}{%
+           family={News},
+           familyi={N\bibinitperiod},
+           given={World\bibnamedelima Nuclear},
+           giveni={W\bibinitperiod\bibinitdelim N\bibinitperiod}}}%
+      }
+      \strng{namehash}{b714c6f9730bb2077bf5b3af63bec10c}
+      \strng{fullhash}{b714c6f9730bb2077bf5b3af63bec10c}
+      \strng{fullhashraw}{b714c6f9730bb2077bf5b3af63bec10c}
+      \strng{bibnamehash}{b714c6f9730bb2077bf5b3af63bec10c}
+      \strng{authorbibnamehash}{b714c6f9730bb2077bf5b3af63bec10c}
+      \strng{authornamehash}{b714c6f9730bb2077bf5b3af63bec10c}
+      \strng{authorfullhash}{b714c6f9730bb2077bf5b3af63bec10c}
+      \strng{authorfullhashraw}{b714c6f9730bb2077bf5b3af63bec10c}
+      \field{extraname}{2}
+      \field{sortinit}{N}
+      \field{sortinithash}{22369a73d5f88983a108b63f07f37084}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2025-06-10}
+      \field{title}{Hungary looking at deployment of US small modular reactors}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://www.world-nuclear-news.org/articles/hungary-looking-at-deployment-of-us-small-modular-reactors
+      \endverb
+      \verb{url}
+      \verb https://www.world-nuclear-news.org/articles/hungary-looking-at-deployment-of-us-small-modular-reactors
+      \endverb
+    \endentry
+    \entry{wnn2025smrdesign}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=b714c6f9730bb2077bf5b3af63bec10c}{%
+           family={News},
+           familyi={N\bibinitperiod},
+           given={World\bibnamedelima Nuclear},
+           giveni={W\bibinitperiod\bibinitdelim N\bibinitperiod}}}%
+      }
+      \strng{namehash}{b714c6f9730bb2077bf5b3af63bec10c}
+      \strng{fullhash}{b714c6f9730bb2077bf5b3af63bec10c}
+      \strng{fullhashraw}{b714c6f9730bb2077bf5b3af63bec10c}
+      \strng{bibnamehash}{b714c6f9730bb2077bf5b3af63bec10c}
+      \strng{authorbibnamehash}{b714c6f9730bb2077bf5b3af63bec10c}
+      \strng{authornamehash}{b714c6f9730bb2077bf5b3af63bec10c}
+      \strng{authorfullhash}{b714c6f9730bb2077bf5b3af63bec10c}
+      \strng{authorfullhashraw}{b714c6f9730bb2077bf5b3af63bec10c}
+      \field{extraname}{3}
+      \field{sortinit}{N}
+      \field{sortinithash}{22369a73d5f88983a108b63f07f37084}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{day}{26}
+      \field{month}{9}
+      \field{note}{Accessed: 2025-06-10}
+      \field{title}{South Korean SMR design approved by regulator}
+      \field{year}{2024}
+      \field{dateera}{ce}
+      \verb{urlraw}
+      \verb https://www.world-nuclear-news.org/articles/south-korean-smr-design-approved-by-regulator
+      \endverb
+      \verb{url}
+      \verb https://www.world-nuclear-news.org/articles/south-korean-smr-design-approved-by-regulator
+      \endverb
+    \endentry
+    \entry{international2024iaea}{book}{}{}
+      \list{location}{1}{%
+        {Vienna}%
+      }
+      \list{publisher}{1}{%
+        {INTERNATIONAL ATOMIC ENERGY AGENCY}%
+      }
+      \field{sortinit}{N}
+      \field{sortinithash}{22369a73d5f88983a108b63f07f37084}
+      \field{labeltitlesource}{title}
+      \field{isbn}{978-92-0-122224-4}
+      \field{number}{2}
+      \field{series}{entity}
+      \field{title}{Nuclear Power Reactors in the World}
+      \field{year}{2024}
+      \verb{urlraw}
+      \verb /publications/15748/nuclear-power-reactors-in-the-world
+      \endverb
+      \verb{url}
+      \verb /publications/15748/nuclear-power-reactors-in-the-world
+      \endverb
+    \endentry
+    \entry{NucNet_Nuclear_Support_Survey_2023}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=6ed7115e4610151bfd716afbdb19866f}{%
+           family={{NucNet}},
+           familyi={N\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {NucNet}%
+      }
+      \strng{namehash}{6ed7115e4610151bfd716afbdb19866f}
+      \strng{fullhash}{6ed7115e4610151bfd716afbdb19866f}
+      \strng{fullhashraw}{6ed7115e4610151bfd716afbdb19866f}
+      \strng{bibnamehash}{6ed7115e4610151bfd716afbdb19866f}
+      \strng{authorbibnamehash}{6ed7115e4610151bfd716afbdb19866f}
+      \strng{authornamehash}{6ed7115e4610151bfd716afbdb19866f}
+      \strng{authorfullhash}{6ed7115e4610151bfd716afbdb19866f}
+      \strng{authorfullhashraw}{6ed7115e4610151bfd716afbdb19866f}
+      \field{extraname}{1}
+      \field{sortinit}{N}
+      \field{sortinithash}{22369a73d5f88983a108b63f07f37084}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{month}{3}
+      \field{note}{Accessed: 2025-09-30}
+      \field{title}{Majority Continues to Support Nuclear Energy, Says Survey}
+      \field{year}{2023}
+      \verb{urlraw}
+      \verb https://www.nucnet.org/news/majority-continues-to-support-nuclear-energy-says-survey-3-1-2023
+      \endverb
+      \verb{url}
+      \verb https://www.nucnet.org/news/majority-continues-to-support-nuclear-energy-says-survey-3-1-2023
+      \endverb
+    \endentry
+    \entry{NucNet_Poland_Nuclear_Support_2024}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=6ed7115e4610151bfd716afbdb19866f}{%
+           family={{NucNet}},
+           familyi={N\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {NucNet}%
+      }
+      \strng{namehash}{6ed7115e4610151bfd716afbdb19866f}
+      \strng{fullhash}{6ed7115e4610151bfd716afbdb19866f}
+      \strng{fullhashraw}{6ed7115e4610151bfd716afbdb19866f}
+      \strng{bibnamehash}{6ed7115e4610151bfd716afbdb19866f}
+      \strng{authorbibnamehash}{6ed7115e4610151bfd716afbdb19866f}
+      \strng{authornamehash}{6ed7115e4610151bfd716afbdb19866f}
+      \strng{authorfullhash}{6ed7115e4610151bfd716afbdb19866f}
+      \strng{authorfullhashraw}{6ed7115e4610151bfd716afbdb19866f}
+      \field{extraname}{2}
+      \field{sortinit}{N}
+      \field{sortinithash}{22369a73d5f88983a108b63f07f37084}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{month}{12}
+      \field{note}{Accessed: 2025-09-30}
+      \field{title}{Poland Survey}
+      \field{year}{2024}
+      \verb{urlraw}
+      \verb https://www.nucnet.org/news/more-than-92-support-plans-for-first-nuclear-power-plant-12-5-2024
+      \endverb
+      \verb{url}
+      \verb https://www.nucnet.org/news/more-than-92-support-plans-for-first-nuclear-power-plant-12-5-2024
+      \endverb
+    \endentry
+    \entry{NuScale_MOX_2016}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=dc44096206479d54c3ed277660728b47}{%
+           family={{NuScale Power}},
+           familyi={N\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {NuScale Power}%
+      }
+      \strng{namehash}{dc44096206479d54c3ed277660728b47}
+      \strng{fullhash}{dc44096206479d54c3ed277660728b47}
+      \strng{fullhashraw}{dc44096206479d54c3ed277660728b47}
+      \strng{bibnamehash}{dc44096206479d54c3ed277660728b47}
+      \strng{authorbibnamehash}{dc44096206479d54c3ed277660728b47}
+      \strng{authornamehash}{dc44096206479d54c3ed277660728b47}
+      \strng{authorfullhash}{dc44096206479d54c3ed277660728b47}
+      \strng{authorfullhashraw}{dc44096206479d54c3ed277660728b47}
+      \field{extraname}{1}
+      \field{sortinit}{N}
+      \field{sortinithash}{22369a73d5f88983a108b63f07f37084}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{month}{01}
+      \field{note}{Accessed: 2025-09-30}
+      \field{title}{NuScale Announces MOX Capability}
+      \field{year}{2016}
+      \verb{urlraw}
+      \verb https://www.nuscalepower.com/press-releases/2016/nuscale-announces-mox-capability
+      \endverb
+      \verb{url}
+      \verb https://www.nuscalepower.com/press-releases/2016/nuscale-announces-mox-capability
+      \endverb
+    \endentry
+    \entry{NuScale2020}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=dc44096206479d54c3ed277660728b47}{%
+           family={{NuScale Power}},
+           familyi={N\bibinitperiod}}}%
+      }
+      \strng{namehash}{dc44096206479d54c3ed277660728b47}
+      \strng{fullhash}{dc44096206479d54c3ed277660728b47}
+      \strng{fullhashraw}{dc44096206479d54c3ed277660728b47}
+      \strng{bibnamehash}{dc44096206479d54c3ed277660728b47}
+      \strng{authorbibnamehash}{dc44096206479d54c3ed277660728b47}
+      \strng{authornamehash}{dc44096206479d54c3ed277660728b47}
+      \strng{authorfullhash}{dc44096206479d54c3ed277660728b47}
+      \strng{authorfullhashraw}{dc44096206479d54c3ed277660728b47}
+      \field{extraname}{2}
+      \field{sortinit}{N}
+      \field{sortinithash}{22369a73d5f88983a108b63f07f37084}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{month}{11}
+      \field{note}{Accessed: 2025-10-01}
+      \field{title}{NuScale Power Announces an Additional 25 Percent Increase in NuScale Power Module Output}
+      \field{year}{2020}
+      \verb{urlraw}
+      \verb https://www.nuscalepower.com/press-releases/2020/nuscale-power-announces-an-additional-25-percent-in-nuscale-power-module-output
+      \endverb
+      \verb{url}
+      \verb https://www.nuscalepower.com/press-releases/2020/nuscale-power-announces-an-additional-25-percent-in-nuscale-power-module-output
+      \endverb
+    \endentry
+    \entry{NuScale_Power_Module_2025}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=dc44096206479d54c3ed277660728b47}{%
+           family={{NuScale Power}},
+           familyi={N\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {NuScale Power}%
+      }
+      \strng{namehash}{dc44096206479d54c3ed277660728b47}
+      \strng{fullhash}{dc44096206479d54c3ed277660728b47}
+      \strng{fullhashraw}{dc44096206479d54c3ed277660728b47}
+      \strng{bibnamehash}{dc44096206479d54c3ed277660728b47}
+      \strng{authorbibnamehash}{dc44096206479d54c3ed277660728b47}
+      \strng{authornamehash}{dc44096206479d54c3ed277660728b47}
+      \strng{authorfullhash}{dc44096206479d54c3ed277660728b47}
+      \strng{authorfullhashraw}{dc44096206479d54c3ed277660728b47}
+      \field{extraname}{3}
+      \field{sortinit}{N}
+      \field{sortinithash}{22369a73d5f88983a108b63f07f37084}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2025-09-30}
+      \field{title}{NuScale Power Module: Product Overview}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://www.nuscalepower.com/products/nuscale-power-module
+      \endverb
+      \verb{url}
+      \verb https://www.nuscalepower.com/products/nuscale-power-module
+      \endverb
+    \endentry
+    \entry{OECD_NEA_Load_Following_2011}{report}{}{}
+      \name{author}{1}{}{%
+        {{hash=5c47b2c23634e653e113ff6485f64775}{%
+           family={{OECD Nuclear Energy Agency (NEA)}},
+           familyi={O\bibinitperiod}}}%
+      }
+      \list{institution}{1}{%
+        {OECD Nuclear Energy Agency}%
+      }
+      \strng{namehash}{5c47b2c23634e653e113ff6485f64775}
+      \strng{fullhash}{5c47b2c23634e653e113ff6485f64775}
+      \strng{fullhashraw}{5c47b2c23634e653e113ff6485f64775}
+      \strng{bibnamehash}{5c47b2c23634e653e113ff6485f64775}
+      \strng{authorbibnamehash}{5c47b2c23634e653e113ff6485f64775}
+      \strng{authornamehash}{5c47b2c23634e653e113ff6485f64775}
+      \strng{authorfullhash}{5c47b2c23634e653e113ff6485f64775}
+      \strng{authorfullhashraw}{5c47b2c23634e653e113ff6485f64775}
+      \field{sortinit}{O}
+      \field{sortinithash}{2cd7140a07aea5341f9e2771efe90aae}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{month}{06}
+      \field{note}{Accessed: 2025-09-30}
+      \field{title}{Technical and Economic Aspects of Load Following with Nuclear Power Plants}
+      \field{type}{Technical Report}
+      \field{year}{2011}
+      \verb{urlraw}
+      \verb https://www.oecd-nea.org/upload/docs/application/pdf/2021-12/technical_and_economic_aspects_of_load_following_with_nuclear_power_plants.pdf
+      \endverb
+      \verb{url}
+      \verb https://www.oecd-nea.org/upload/docs/application/pdf/2021-12/technical_and_economic_aspects_of_load_following_with_nuclear_power_plants.pdf
+      \endverb
+    \endentry
+    \entry{OurWorldInData_EnergyDeathRates_2025}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=22cedbc6ccd49ddd3c4d8067a0fae65e}{%
+           family={{Our World in Data}},
+           familyi={O\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {Our World in Data}%
+      }
+      \strng{namehash}{22cedbc6ccd49ddd3c4d8067a0fae65e}
+      \strng{fullhash}{22cedbc6ccd49ddd3c4d8067a0fae65e}
+      \strng{fullhashraw}{22cedbc6ccd49ddd3c4d8067a0fae65e}
+      \strng{bibnamehash}{22cedbc6ccd49ddd3c4d8067a0fae65e}
+      \strng{authorbibnamehash}{22cedbc6ccd49ddd3c4d8067a0fae65e}
+      \strng{authornamehash}{22cedbc6ccd49ddd3c4d8067a0fae65e}
+      \strng{authorfullhash}{22cedbc6ccd49ddd3c4d8067a0fae65e}
+      \strng{authorfullhashraw}{22cedbc6ccd49ddd3c4d8067a0fae65e}
+      \field{sortinit}{O}
+      \field{sortinithash}{2cd7140a07aea5341f9e2771efe90aae}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2025-09-30; Data sources: Markandya \& Wilkinson (2007); Sovacool et al. (2016); UNSCEAR (2008 \& 2018)}
+      \field{title}{Death Rates from Energy Production per TWh}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://ourworldindata.org/grapher/death-rates-from-energy-production-per-twh
+      \endverb
+      \verb{url}
+      \verb https://ourworldindata.org/grapher/death-rates-from-energy-production-per-twh
+      \endverb
+    \endentry
+    \entry{paillere_2021}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=21a900aa37fea716deb6a9ca8e7acb39}{%
+           family={Paillere},
+           familyi={P\bibinitperiod},
+           given={H.},
+           giveni={H\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Canadian Nuclear Society}%
+      }
+      \strng{namehash}{21a900aa37fea716deb6a9ca8e7acb39}
+      \strng{fullhash}{21a900aa37fea716deb6a9ca8e7acb39}
+      \strng{fullhashraw}{21a900aa37fea716deb6a9ca8e7acb39}
+      \strng{bibnamehash}{21a900aa37fea716deb6a9ca8e7acb39}
+      \strng{authorbibnamehash}{21a900aa37fea716deb6a9ca8e7acb39}
+      \strng{authornamehash}{21a900aa37fea716deb6a9ca8e7acb39}
+      \strng{authorfullhash}{21a900aa37fea716deb6a9ca8e7acb39}
+      \strng{authorfullhashraw}{21a900aa37fea716deb6a9ca8e7acb39}
+      \field{sortinit}{P}
+      \field{sortinithash}{ff3bcf24f47321b42cb156c2cc8a8422}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Nuclear energy for a net zero world}
+      \field{year}{2021}
+      \field{pages}{[12 p.]}
+      \range{pages}{-1}
+    \endentry
+    \entry{PowerTechnology2022}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=1bcaf8baa22e7e7835fba980b94fe7e6}{%
+           family={{Power Technology}},
+           familyi={P\bibinitperiod}}}%
+      }
+      \strng{namehash}{1bcaf8baa22e7e7835fba980b94fe7e6}
+      \strng{fullhash}{1bcaf8baa22e7e7835fba980b94fe7e6}
+      \strng{fullhashraw}{1bcaf8baa22e7e7835fba980b94fe7e6}
+      \strng{bibnamehash}{1bcaf8baa22e7e7835fba980b94fe7e6}
+      \strng{authorbibnamehash}{1bcaf8baa22e7e7835fba980b94fe7e6}
+      \strng{authornamehash}{1bcaf8baa22e7e7835fba980b94fe7e6}
+      \strng{authorfullhash}{1bcaf8baa22e7e7835fba980b94fe7e6}
+      \strng{authorfullhashraw}{1bcaf8baa22e7e7835fba980b94fe7e6}
+      \field{sortinit}{P}
+      \field{sortinithash}{ff3bcf24f47321b42cb156c2cc8a8422}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Power Technology}
+      \field{month}{04}
+      \field{note}{Accessed: 2025-10-01}
+      \field{title}{Rolls Royce plans first UK modular nuclear reactor for 2029}
+      \field{year}{2022}
+      \verb{urlraw}
+      \verb https://www.power-technology.com/news/uk-first-smr-rolls-royce/
+      \endverb
+      \verb{url}
+      \verb https://www.power-technology.com/news/uk-first-smr-rolls-royce/
+      \endverb
+    \endentry
+    \entry{ReutersEvents2018}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=d217c4214a3f2a691d9994498ca09fff}{%
+           family={{Reuters Events}},
+           familyi={R\bibinitperiod}}}%
+      }
+      \strng{namehash}{d217c4214a3f2a691d9994498ca09fff}
+      \strng{fullhash}{d217c4214a3f2a691d9994498ca09fff}
+      \strng{fullhashraw}{d217c4214a3f2a691d9994498ca09fff}
+      \strng{bibnamehash}{d217c4214a3f2a691d9994498ca09fff}
+      \strng{authorbibnamehash}{d217c4214a3f2a691d9994498ca09fff}
+      \strng{authornamehash}{d217c4214a3f2a691d9994498ca09fff}
+      \strng{authorfullhash}{d217c4214a3f2a691d9994498ca09fff}
+      \strng{authorfullhashraw}{d217c4214a3f2a691d9994498ca09fff}
+      \field{sortinit}{R}
+      \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Reuters Events | Nuclear}
+      \field{month}{04}
+      \field{note}{Accessed: 2025-10-01}
+      \field{title}{GE Hitachi chases gas plant displacement with new 300 MW reactor}
+      \field{year}{2018}
+      \verb{urlraw}
+      \verb https://www.reutersevents.com/nuclear/ge-hitachi-chases-gas-plant-displacement-new-300-mw-reactor
+      \endverb
+      \verb{url}
+      \verb https://www.reutersevents.com/nuclear/ge-hitachi-chases-gas-plant-displacement-new-300-mw-reactor
+      \endverb
+    \endentry
+    \entry{RollsRoyce_SMR_GDA_Consultation}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=b858618406440cf1afb99ffa401fa859}{%
+           family={{Rolls-Royce SMR}},
+           familyi={R\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {Rolls-Royce SMR}%
+      }
+      \strng{namehash}{b858618406440cf1afb99ffa401fa859}
+      \strng{fullhash}{b858618406440cf1afb99ffa401fa859}
+      \strng{fullhashraw}{b858618406440cf1afb99ffa401fa859}
+      \strng{bibnamehash}{b858618406440cf1afb99ffa401fa859}
+      \strng{authorbibnamehash}{b858618406440cf1afb99ffa401fa859}
+      \strng{authornamehash}{b858618406440cf1afb99ffa401fa859}
+      \strng{authorfullhash}{b858618406440cf1afb99ffa401fa859}
+      \strng{authorfullhashraw}{b858618406440cf1afb99ffa401fa859}
+      \field{extraname}{1}
+      \field{sortinit}{R}
+      \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2025-09-30}
+      \field{title}{Generic Design Assessment (GDA) Public Consultation: Have Your Say}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://gda.rolls-royce-smr.com/have-your-say
+      \endverb
+      \verb{url}
+      \verb https://gda.rolls-royce-smr.com/have-your-say
+      \endverb
+    \endentry
+    \entry{RollsRoyce_SMR_Approach_2025}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=b858618406440cf1afb99ffa401fa859}{%
+           family={{Rolls-Royce SMR}},
+           familyi={R\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {Rolls-Royce SMR}%
+      }
+      \strng{namehash}{b858618406440cf1afb99ffa401fa859}
+      \strng{fullhash}{b858618406440cf1afb99ffa401fa859}
+      \strng{fullhashraw}{b858618406440cf1afb99ffa401fa859}
+      \strng{bibnamehash}{b858618406440cf1afb99ffa401fa859}
+      \strng{authorbibnamehash}{b858618406440cf1afb99ffa401fa859}
+      \strng{authornamehash}{b858618406440cf1afb99ffa401fa859}
+      \strng{authorfullhash}{b858618406440cf1afb99ffa401fa859}
+      \strng{authorfullhashraw}{b858618406440cf1afb99ffa401fa859}
+      \field{extraname}{2}
+      \field{sortinit}{R}
+      \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2025-09-30}
+      \field{title}{Our Approach to Small Modular Reactors}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://www.rolls-royce-smr.com/our-approach
+      \endverb
+      \verb{url}
+      \verb https://www.rolls-royce-smr.com/our-approach
+      \endverb
+    \endentry
+    \entry{RollsRoyce_SMR_UK_Fuel_2023}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=b858618406440cf1afb99ffa401fa859}{%
+           family={{Rolls-Royce SMR}},
+           familyi={R\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {Rolls-Royce SMR}%
+      }
+      \strng{namehash}{b858618406440cf1afb99ffa401fa859}
+      \strng{fullhash}{b858618406440cf1afb99ffa401fa859}
+      \strng{fullhashraw}{b858618406440cf1afb99ffa401fa859}
+      \strng{bibnamehash}{b858618406440cf1afb99ffa401fa859}
+      \strng{authorbibnamehash}{b858618406440cf1afb99ffa401fa859}
+      \strng{authornamehash}{b858618406440cf1afb99ffa401fa859}
+      \strng{authorfullhash}{b858618406440cf1afb99ffa401fa859}
+      \strng{authorfullhashraw}{b858618406440cf1afb99ffa401fa859}
+      \field{extraname}{3}
+      \field{sortinit}{R}
+      \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{month}{10}
+      \field{note}{Accessed: 2025-09-30}
+      \field{title}{Rolls-Royce SMR Select UK-Based Fuel Solution}
+      \field{year}{2023}
+      \verb{urlraw}
+      \verb https://www.rolls-royce-smr.com/press/rolls-royce-smr-select-uk-based-fuel-solution
+      \endverb
+      \verb{url}
+      \verb https://www.rolls-royce-smr.com/press/rolls-royce-smr-select-uk-based-fuel-solution
+      \endverb
+    \endentry
+    \entry{ROTHWELL2022112905}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=41c05b0b53546cd44d9f317f3cc5eb80}{%
+           family={Rothwell},
+           familyi={R\bibinitperiod},
+           given={Geoffrey},
+           giveni={G\bibinitperiod}}}%
+      }
+      \strng{namehash}{41c05b0b53546cd44d9f317f3cc5eb80}
+      \strng{fullhash}{41c05b0b53546cd44d9f317f3cc5eb80}
+      \strng{fullhashraw}{41c05b0b53546cd44d9f317f3cc5eb80}
+      \strng{bibnamehash}{41c05b0b53546cd44d9f317f3cc5eb80}
+      \strng{authorbibnamehash}{41c05b0b53546cd44d9f317f3cc5eb80}
+      \strng{authornamehash}{41c05b0b53546cd44d9f317f3cc5eb80}
+      \strng{authorfullhash}{41c05b0b53546cd44d9f317f3cc5eb80}
+      \strng{authorfullhashraw}{41c05b0b53546cd44d9f317f3cc5eb80}
+      \field{sortinit}{R}
+      \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0301-4215}
+      \field{journaltitle}{Energy Policy}
+      \field{title}{Projected electricity costs in international nuclear power markets}
+      \field{volume}{164}
+      \field{year}{2022}
+      \field{pages}{112905}
+      \range{pages}{1}
+      \verb{doi}
+      \verb https://doi.org/10.1016/j.enpol.2022.112905
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S0301421522001306
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S0301421522001306
+      \endverb
+      \keyw{Nuclear energy policy,Nuclear power costs,Nuclear market competition,Light water reactors}
+    \endentry
+    \entry{STEIGERWALD2023128204}{article}{}{}
+      \name{author}{4}{}{%
+        {{hash=b9ee91fde9fece7d8c02b2bd891a774e}{%
+           family={Steigerwald},
+           familyi={S\bibinitperiod},
+           given={Björn},
+           giveni={B\bibinitperiod}}}%
+        {{hash=36d27b77cc903fba7e589424a2044cc7}{%
+           family={Weibezahn},
+           familyi={W\bibinitperiod},
+           given={Jens},
+           giveni={J\bibinitperiod}}}%
+        {{hash=0fdf7325ee619f540c6977412c9a4c4e}{%
+           family={Slowik},
+           familyi={S\bibinitperiod},
+           given={Martin},
+           giveni={M\bibinitperiod}}}%
+        {{hash=73f005e038a37c27b99952aa036522ef}{%
+           family={{von Hirschhausen}},
+           familyi={v\bibinitperiod},
+           given={Christian},
+           giveni={C\bibinitperiod}}}%
+      }
+      \strng{namehash}{a6474edd5507a06cf9aead97c11cda5e}
+      \strng{fullhash}{22f086cec0118b3ef5fb24b3fe1493fa}
+      \strng{fullhashraw}{22f086cec0118b3ef5fb24b3fe1493fa}
+      \strng{bibnamehash}{a6474edd5507a06cf9aead97c11cda5e}
+      \strng{authorbibnamehash}{a6474edd5507a06cf9aead97c11cda5e}
+      \strng{authornamehash}{a6474edd5507a06cf9aead97c11cda5e}
+      \strng{authorfullhash}{22f086cec0118b3ef5fb24b3fe1493fa}
+      \strng{authorfullhashraw}{22f086cec0118b3ef5fb24b3fe1493fa}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0360-5442}
+      \field{journaltitle}{Energy}
+      \field{title}{Uncertainties in estimating production costs of future nuclear technologies: A model-based analysis of small modular reactors}
+      \field{volume}{281}
+      \field{year}{2023}
+      \field{pages}{128204}
+      \range{pages}{1}
+      \verb{doi}
+      \verb https://doi.org/10.1016/j.energy.2023.128204
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S0360544223015980
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S0360544223015980
+      \endverb
+      \keyw{Nuclear power,SMR,Production theory,Cost forecasting,Monte–Carlo simulation}
+    \endentry
+    \entry{swissinfo_Nuclear_Power_Switzerland_2025}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=999952588b202b969c4f1fce4cfc8a5f}{%
+           family={{SWI swissinfo.ch}},
+           familyi={S\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {SWI swissinfo.ch}%
+      }
+      \strng{namehash}{999952588b202b969c4f1fce4cfc8a5f}
+      \strng{fullhash}{999952588b202b969c4f1fce4cfc8a5f}
+      \strng{fullhashraw}{999952588b202b969c4f1fce4cfc8a5f}
+      \strng{bibnamehash}{999952588b202b969c4f1fce4cfc8a5f}
+      \strng{authorbibnamehash}{999952588b202b969c4f1fce4cfc8a5f}
+      \strng{authornamehash}{999952588b202b969c4f1fce4cfc8a5f}
+      \strng{authorfullhash}{999952588b202b969c4f1fce4cfc8a5f}
+      \strng{authorfullhashraw}{999952588b202b969c4f1fce4cfc8a5f}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2025-09-30}
+      \field{title}{Risks Remain as Switzerland Weighs a Return to Nuclear Power}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://www.swissinfo.ch/eng/emissions-reduction/risks-remain-as-swiss-weigh-a-return-to-nuclear-power/89549444
+      \endverb
+      \verb{url}
+      \verb https://www.swissinfo.ch/eng/emissions-reduction/risks-remain-as-swiss-weigh-a-return-to-nuclear-power/89549444
+      \endverb
+    \endentry
+    \entry{terrapower2025natrium}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=ef3b2f6a8d9e2e4380f845a36a67c787}{%
+           family={TerraPower},
+           familyi={T\bibinitperiod}}}%
+      }
+      \strng{namehash}{ef3b2f6a8d9e2e4380f845a36a67c787}
+      \strng{fullhash}{ef3b2f6a8d9e2e4380f845a36a67c787}
+      \strng{fullhashraw}{ef3b2f6a8d9e2e4380f845a36a67c787}
+      \strng{bibnamehash}{ef3b2f6a8d9e2e4380f845a36a67c787}
+      \strng{authorbibnamehash}{ef3b2f6a8d9e2e4380f845a36a67c787}
+      \strng{authornamehash}{ef3b2f6a8d9e2e4380f845a36a67c787}
+      \strng{authorfullhash}{ef3b2f6a8d9e2e4380f845a36a67c787}
+      \strng{authorfullhashraw}{ef3b2f6a8d9e2e4380f845a36a67c787}
+      \field{sortinit}{T}
+      \field{sortinithash}{9af77f0292593c26bde9a56e688eaee9}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2025-06-10}
+      \field{title}{Natrium Reactor Technology}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://www.terrapower.com/natrium/
+      \endverb
+      \verb{url}
+      \verb https://www.terrapower.com/natrium/
+      \endverb
+    \endentry
+    \entry{NRC_ML052280170}{report}{}{}
+      \name{author}{1}{}{%
+        {{hash=29c747bebb29967b1fa5125ef8b9fd8b}{%
+           family={{U.S. Nuclear Regulatory Commission}},
+           familyi={U\bibinitperiod}}}%
+      }
+      \list{institution}{1}{%
+        {U.S. Nuclear Regulatory Commission}%
+      }
+      \strng{namehash}{29c747bebb29967b1fa5125ef8b9fd8b}
+      \strng{fullhash}{29c747bebb29967b1fa5125ef8b9fd8b}
+      \strng{fullhashraw}{29c747bebb29967b1fa5125ef8b9fd8b}
+      \strng{bibnamehash}{29c747bebb29967b1fa5125ef8b9fd8b}
+      \strng{authorbibnamehash}{29c747bebb29967b1fa5125ef8b9fd8b}
+      \strng{authornamehash}{29c747bebb29967b1fa5125ef8b9fd8b}
+      \strng{authorfullhash}{29c747bebb29967b1fa5125ef8b9fd8b}
+      \strng{authorfullhashraw}{29c747bebb29967b1fa5125ef8b9fd8b}
+      \field{extraname}{1}
+      \field{sortinit}{U}
+      \field{sortinithash}{6901a00e45705986ee5e7ca9fd39adca}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2025-09-30}
+      \field{title}{Design Description}
+      \field{type}{Technical Report}
+      \field{year}{2005}
+      \verb{urlraw}
+      \verb https://www.nrc.gov/docs/ML0522/ML052280170.pdf
+      \endverb
+      \verb{url}
+      \verb https://www.nrc.gov/docs/ML0522/ML052280170.pdf
+      \endverb
+    \endentry
+    \entry{NRC_ML23161A411}{report}{}{}
+      \name{author}{1}{}{%
+        {{hash=29c747bebb29967b1fa5125ef8b9fd8b}{%
+           family={{U.S. Nuclear Regulatory Commission}},
+           familyi={U\bibinitperiod}}}%
+      }
+      \list{institution}{1}{%
+        {U.S. Nuclear Regulatory Commission}%
+      }
+      \strng{namehash}{29c747bebb29967b1fa5125ef8b9fd8b}
+      \strng{fullhash}{29c747bebb29967b1fa5125ef8b9fd8b}
+      \strng{fullhashraw}{29c747bebb29967b1fa5125ef8b9fd8b}
+      \strng{bibnamehash}{29c747bebb29967b1fa5125ef8b9fd8b}
+      \strng{authorbibnamehash}{29c747bebb29967b1fa5125ef8b9fd8b}
+      \strng{authornamehash}{29c747bebb29967b1fa5125ef8b9fd8b}
+      \strng{authorfullhash}{29c747bebb29967b1fa5125ef8b9fd8b}
+      \strng{authorfullhashraw}{29c747bebb29967b1fa5125ef8b9fd8b}
+      \field{extraname}{2}
+      \field{sortinit}{U}
+      \field{sortinithash}{6901a00e45705986ee5e7ca9fd39adca}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{month}{6}
+      \field{note}{Accessed: 2025-09-30}
+      \field{title}{Safety Evaluation by the Office of Nuclear Reactor Regulation: NuScale Power Module}
+      \field{type}{ML23161A411}
+      \field{year}{2011}
+      \verb{urlraw}
+      \verb https://www.nrc.gov/docs/ML1117/ML11171A411.pdf
+      \endverb
+      \verb{url}
+      \verb https://www.nrc.gov/docs/ML1117/ML11171A411.pdf
+      \endverb
+    \endentry
+    \entry{NRC_ML17007A001}{report}{}{}
+      \name{author}{1}{}{%
+        {{hash=29c747bebb29967b1fa5125ef8b9fd8b}{%
+           family={{U.S. Nuclear Regulatory Commission}},
+           familyi={U\bibinitperiod}}}%
+      }
+      \list{institution}{1}{%
+        {U.S. Nuclear Regulatory Commission}%
+      }
+      \strng{namehash}{29c747bebb29967b1fa5125ef8b9fd8b}
+      \strng{fullhash}{29c747bebb29967b1fa5125ef8b9fd8b}
+      \strng{fullhashraw}{29c747bebb29967b1fa5125ef8b9fd8b}
+      \strng{bibnamehash}{29c747bebb29967b1fa5125ef8b9fd8b}
+      \strng{authorbibnamehash}{29c747bebb29967b1fa5125ef8b9fd8b}
+      \strng{authornamehash}{29c747bebb29967b1fa5125ef8b9fd8b}
+      \strng{authorfullhash}{29c747bebb29967b1fa5125ef8b9fd8b}
+      \strng{authorfullhashraw}{29c747bebb29967b1fa5125ef8b9fd8b}
+      \field{extraname}{3}
+      \field{sortinit}{U}
+      \field{sortinithash}{6901a00e45705986ee5e7ca9fd39adca}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2025-09-30}
+      \field{title}{Standard Review Plan for Environmental Reviews for Nuclear Power Plants}
+      \field{type}{Technical Report}
+      \field{year}{2017}
+      \verb{urlraw}
+      \verb https://www.nrc.gov/docs/ML1700/ML17007A001.pdf
+      \endverb
+      \verb{url}
+      \verb https://www.nrc.gov/docs/ML1700/ML17007A001.pdf
+      \endverb
+    \endentry
+    \entry{Westinghouse_Poland_Nuclear_2025}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=35bca7eabc6173bfc0c1a12c6055ce2a}{%
+           family={{Westinghouse Electric Company}},
+           familyi={W\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {Westinghouse Electric Company}%
+      }
+      \strng{namehash}{35bca7eabc6173bfc0c1a12c6055ce2a}
+      \strng{fullhash}{35bca7eabc6173bfc0c1a12c6055ce2a}
+      \strng{fullhashraw}{35bca7eabc6173bfc0c1a12c6055ce2a}
+      \strng{bibnamehash}{35bca7eabc6173bfc0c1a12c6055ce2a}
+      \strng{authorbibnamehash}{35bca7eabc6173bfc0c1a12c6055ce2a}
+      \strng{authornamehash}{35bca7eabc6173bfc0c1a12c6055ce2a}
+      \strng{authorfullhash}{35bca7eabc6173bfc0c1a12c6055ce2a}
+      \strng{authorfullhashraw}{35bca7eabc6173bfc0c1a12c6055ce2a}
+      \field{sortinit}{W}
+      \field{sortinithash}{4315d78024d0cea9b57a0c6f0e35ed0d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2025-09-30}
+      \field{title}{Poland's First Nuclear Plant Moves Forward with Westinghouse-Bechtel-PEJ Agreement}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://info.westinghousenuclear.com/news/polands-first-nuclear-plant-moves-forward-with-westinghouse-bechtel-pej-agreement
+      \endverb
+      \verb{url}
+      \verb https://info.westinghousenuclear.com/news/polands-first-nuclear-plant-moves-forward-with-westinghouse-bechtel-pej-agreement
+      \endverb
+    \endentry
+    \entry{WorldNuclear_Switzerland_Profile_2025}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=e61cc687e60515b13e6432626b384651}{%
+           family={{World Nuclear Association}},
+           familyi={W\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {World Nuclear Association}%
+      }
+      \strng{namehash}{e61cc687e60515b13e6432626b384651}
+      \strng{fullhash}{e61cc687e60515b13e6432626b384651}
+      \strng{fullhashraw}{e61cc687e60515b13e6432626b384651}
+      \strng{bibnamehash}{e61cc687e60515b13e6432626b384651}
+      \strng{authorbibnamehash}{e61cc687e60515b13e6432626b384651}
+      \strng{authornamehash}{e61cc687e60515b13e6432626b384651}
+      \strng{authorfullhash}{e61cc687e60515b13e6432626b384651}
+      \strng{authorfullhashraw}{e61cc687e60515b13e6432626b384651}
+      \field{sortinit}{W}
+      \field{sortinithash}{4315d78024d0cea9b57a0c6f0e35ed0d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2025-09-30}
+      \field{title}{Switzerland's Nuclear Industry Profile}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://world-nuclear.org/information-library/country-profiles/countries-o-s/switzerland
+      \endverb
+      \verb{url}
+      \verb https://world-nuclear.org/information-library/country-profiles/countries-o-s/switzerland
+      \endverb
+    \endentry
+    \entry{WorldNuclearNews_Poland_Preliminary_Works_2025}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=c762078ea990bfa838c94075749aadb1}{%
+           family={{World Nuclear News}},
+           familyi={W\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {World Nuclear Association}%
+      }
+      \strng{namehash}{c762078ea990bfa838c94075749aadb1}
+      \strng{fullhash}{c762078ea990bfa838c94075749aadb1}
+      \strng{fullhashraw}{c762078ea990bfa838c94075749aadb1}
+      \strng{bibnamehash}{c762078ea990bfa838c94075749aadb1}
+      \strng{authorbibnamehash}{c762078ea990bfa838c94075749aadb1}
+      \strng{authornamehash}{c762078ea990bfa838c94075749aadb1}
+      \strng{authorfullhash}{c762078ea990bfa838c94075749aadb1}
+      \strng{authorfullhashraw}{c762078ea990bfa838c94075749aadb1}
+      \field{extraname}{1}
+      \field{sortinit}{W}
+      \field{sortinithash}{4315d78024d0cea9b57a0c6f0e35ed0d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{month}{09}
+      \field{note}{Accessed: 2025-09-30}
+      \field{title}{Go-Ahead for Preliminary Works at Polish Plant Site}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://www.world-nuclear-news.org/articles/go-ahead-for-preliminary-works-at-polish-plant-site
+      \endverb
+      \verb{url}
+      \verb https://www.world-nuclear-news.org/articles/go-ahead-for-preliminary-works-at-polish-plant-site
+      \endverb
+    \endentry
+    \entry{WorldNuclearNews_Swiss_Nuclear_Poll_2023}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=c762078ea990bfa838c94075749aadb1}{%
+           family={{World Nuclear News}},
+           familyi={W\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {World Nuclear News}%
+      }
+      \strng{namehash}{c762078ea990bfa838c94075749aadb1}
+      \strng{fullhash}{c762078ea990bfa838c94075749aadb1}
+      \strng{fullhashraw}{c762078ea990bfa838c94075749aadb1}
+      \strng{bibnamehash}{c762078ea990bfa838c94075749aadb1}
+      \strng{authorbibnamehash}{c762078ea990bfa838c94075749aadb1}
+      \strng{authornamehash}{c762078ea990bfa838c94075749aadb1}
+      \strng{authorfullhash}{c762078ea990bfa838c94075749aadb1}
+      \strng{authorfullhashraw}{c762078ea990bfa838c94075749aadb1}
+      \field{extraname}{2}
+      \field{sortinit}{W}
+      \field{sortinithash}{4315d78024d0cea9b57a0c6f0e35ed0d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2025-09-30}
+      \field{title}{Poll Finds Majority of Swiss Support Nuclear New Build}
+      \field{year}{2023}
+      \verb{urlraw}
+      \verb https://www.world-nuclear-news.org/articles/poll-finds-majority-of-swiss-support-nuclear-new-build
+      \endverb
+      \verb{url}
+      \verb https://www.world-nuclear-news.org/articles/poll-finds-majority-of-swiss-support-nuclear-new-build
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

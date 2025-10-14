@@ -1,0 +1,54 @@
+\documentclass{article}
+
+% Basic packages
+\usepackage[a4paper,margin=1.5cm]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{pifont}
+\usepackage{multirow}
+\usepackage{setspace}
+
+\usepackage[backend=biber, style=numeric, citestyle=numeric]{biblatex}
+\addbibresource{references.bib}
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+
+
+\title{Thesis Draft}
+\author{Simone Pagliuca}
+
+\begin{document}
+\raggedright
+\doublespacing
+
+% TEMPORARY
+\textcolor{orange}{Citation of \cite{PLACEHOLDER} are placeholders for facts or data that need citation.}
+% Introduction to the study, context and motivation to support it
+% Definition of the research problem and questions
+\section*{Introduction}
+\label{sec:introduction}
+\input{00 - Introduction.tex}
+\input{00 - Literature Review.tex}
+\input{00 - Objectives.tex}
+
+% Selecting the reactors and countries to compare
+\section{Selection}
+\label{sec:selection}
+\input{01 - Selection.tex}
+\input{01 - Attributes.tex}
+
+% Gathering data
+\section{Data}
+\label{sec:data}
+\input{02 - Data.tex}
+
+% Example citation to avoid compilation errors :D
+\nocite{*}
+
+% \printbibliography
+\end{document}

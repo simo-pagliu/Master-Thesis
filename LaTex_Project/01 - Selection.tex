@@ -1,0 +1,90 @@
+\section{Criteria for Reactor Selection in Comparative Analysis}
+This study focuses on a curated set of reactor designs at an advanced stage of development.
+The selection process begins with the the IAEA "Nuclear Reactors in the World" \cite{international2024iaea}, which catalogs operational, under-construction, and decommissioned reactors globally. \\
+
+The initial selection process applied two primary exclusion criteria. First, designs were eliminated based on supplier origin, removing all reactors associated with countries unlikely to engage in nuclear technology transfer with Europe under the current geopolitical climate. This filter specifically excluded reactors developed in or supplied by Russia, China, and other nations maintaining restricted technology-sharing agreements with Western markets.
+
+Second, reactors commissioned before 2000 were excluded from consideration, as their designs represent outdated technological standards. The complete filtering methodology is documented in the accompanying analysis notebook (PRIS Data Analysis.ipynb), which details how the initial dataset was reduced to nine distinct reactor models.
+
+From this pre-selected group, three designs - the EPR-1750, APR-1400, and AP-1000 - were prioritized for comprehensive analysis. It should be noted that while the EPR (1650 MWe) and EPR-1750 share significant design similarities, they are treated as separate models in this study. Additionally, the Advanced Boiling Water Reactor (ABWR), though listed as operational in the IAEA ARIS database, was excluded following verification through the PRIS database, which indicates all ABWR units have suspended operation since 2011 \cite{IAEA_PRIS_2025}. The selection process and its outcomes are summarized in Table \ref{tab:reactor-selection}.
+
+
+\begin{table}[!ht]
+\centering
+\begin{tabularx}{\textwidth}{llXXXX}
+\toprule
+\textbf{Reactor Name} & \textbf{Country} & \textbf{Technology-sharing} & \textbf{Commercial Operation} & \textbf{Up to Date} & \textbf{Decision} \\
+\midrule
+APR1400 & S.Korea & \cmark & \cmark & \cmark & \textbf{Selected} \\
+
+CAREM Prototyp & Argentina & \cmark & \xmark & \cmark & Rejected \\
+
+PRE KONVOI & Germany & \cmark & \cmark & \xmark & Rejected \\
+
+EPR 1750 & France & \cmark & \cmark & \cmark & \textbf{Selected} \\
+
+AP1000 & USA & \cmark & \cmark & \cmark & \textbf{Selected} \\
+
+ABWR & Japan & \cmark & \xmark & \cmark & Rejected \\
+
+APWR & Japan & \cmark & \xmark & \cmark & Rejected \\
+
+EPR & France & \cmark & \cmark & \xmark & Rejected \\
+
+OPR-1000 & S.Korea & \cmark & \cmark & \xmark & Rejected \\
+\bottomrule
+\end{tabularx}
+\caption{Selection of reactor models for analysis}
+\label{tab:reactor-selection}
+\end{table}
+
+Subsequently, the IAEA Advanced Reactors Information System (ARIS) database \cite{iaea2025aris}, was consulted to identify advanced reactor models classified as under design, under regulatory review, under construction, or operational. Demonstrations units and prototypes were excluded from this set, yielding 10 candidate designs. To avoid redundancy, models already included in the prior selection (e.g., Generation III+ designs captured in both datasets) were removed. Each remaining design was then assessed for development status, technological readiness, and applicability to European energy systems as summarized in Table \ref{tab:advanced-reactor-selection}.
+
+\begin{table}[ht]
+\centering
+\begin{tabularx}{\textwidth}{lllX}
+\toprule
+\textbf{Reactor Name} & \textbf{Country} & \textbf{Used} & \textbf{Reasoning} \\
+\midrule
+
+APR+ & S.Korea & \xmark & As reported in the manufacturer website \cite{kepcoenc2025} this design is mean to be an "indigenous reactor cleared of obstacles to export"\\
+
+ATMEA & Japan, France & \xmark & Joint venture was abandoned in 2019 \cite{PLACEHOLDER}\\
+
+BWRX300 & USA, Canada & \cmark & Design from GE-Hitachi, a lot of support from US and Canada as well as interes in the EU \cite{wnn2025bwrx300} \cite{wnn2025hungarysmr}.\\
+
+i-SMR & S.Korea & \xmark & Never expressed interest in development outside south Asia and the middle east, no updates since early 2024.\\
+
+iMSR400 & US & \xmark & No interest overseas, project seems to be at an early stage of development.\\
+
+Natrium & US & \xmark & Demo plant \cite{terrapower2025natrium}.\\
+
+Nuward & France & \xmark & After the change in direction of 2024 the project has been set back \cite{PLACEHOLDER}.\\
+
+Nuscale & US & \cmark & Even if there was some financial controversy in 2024 \cite{PLACEHOLDER}. the project seems to be still moving forward in terms of goverment founding \cite{PLACEHOLDER} and regulatory review \cite{PLACEHOLDER}.\\
+
+PRISM & US & \xmark & GE-Hitachi considers it a "concept ... currently being put into practice in two reactors: Natrium and ARC-100" \cite{PLACEHOLDER}.\\
+
+Rolls Royce SMR & UK & \cmark & It's moving forward and from the technological point of view this is the simples as it it litteraly a scaled down PWR\cite{PLACEHOLDER}.\\
+
+SMART & S.Korea, Saudi Arabia & \xmark & Plan to export only to south-east asia and middle east \cite{wnn2025smrdesign}.\\ \bottomrule
+
+\end{tabularx}
+\caption{Selection of advanced reactor models for analysis}
+\label{tab:advanced-reactor-selection}
+\end{table}
+
+So we are left with 3 Gen III+ designs and 3 advanced designs to analyze further.
+
+Maybe here add a paragraph for each design to explain their main features.
+
+\section{Country Selection for Comparative Analysis}
+This study evaluates four European countries: France, Italy, Poland and Switzerland, to assess how national energy contexts influence the ranking of nuclear reactor designs.
+
+In Italy, the energy market is divided into different zones, each with its own demand patterns. For this analysis, Northern Italy serves as the focal region being the country’s most industrialized and energy-intensive area\cite{PLACEHOLDER}. It is characterized by exceptionally high electricity demand, a strong reliance on imports, and above-average greenhouse gas emission intensity, making it a critical bottleneck in Italy’s decarbonization efforts. Additionally, the country’s historical political volatility introduces uncertainty into long-term energy planning. \\
+
+France, with $\sim 70 \%$ of its electricity generated by nuclear power\cite{PLACEHOLDER}, represents a mature nuclear market. Here, the marginal gains from additional reactors are likely minimal, offering insight into how reactor rankings shift in a saturated nuclear energy landscape. \\
+
+Poland, heavily dependent on coal and among Europe’s highest GHG emitters \cite{PLACEHOLDER}, presents an opposite case. As the country seeks to modernize its grid and reduce emissions through nuclear energy \cite{PLACEHOLDER}, it provides an opportunity to assess which reactor designs could best support its transition while meeting growing energy demand. \\
+
+Finally, Switzerland provides a unique case due to its low electricity demand, hydropower-dominated grid, and prudent nuclear policy. Its constrained grid capacity and emphasis on energy independence make it ideal for assessing small modular reactors (SMRs) and their role in complementing renewables. \\
