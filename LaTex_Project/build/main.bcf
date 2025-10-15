@@ -2406,26 +2406,27 @@
     <bcf:citekey order="27" intorder="1">10.1063/1.4866099</bcf:citekey>
     <bcf:citekey order="28" intorder="1">TOPALOGLU2025103228</bcf:citekey>
     <bcf:citekey order="29" intorder="1">GOUSHIS2025126565</bcf:citekey>
-    <bcf:citekey order="30" intorder="1">international2024iaea</bcf:citekey>
-    <bcf:citekey order="31" intorder="1">IAEA_PRIS_2025</bcf:citekey>
-    <bcf:citekey order="32" intorder="1">iaea2025aris</bcf:citekey>
-    <bcf:citekey order="57" intorder="1">kepcoenc2025</bcf:citekey>
-    <bcf:citekey order="58" intorder="1">PLACEHOLDER</bcf:citekey>
-    <bcf:citekey order="59" intorder="1">wnn2025bwrx300</bcf:citekey>
-    <bcf:citekey order="60" intorder="1">wnn2025hungarysmr</bcf:citekey>
-    <bcf:citekey order="61" intorder="1">terrapower2025natrium</bcf:citekey>
-    <bcf:citekey order="62" intorder="1">PLACEHOLDER</bcf:citekey>
+    <bcf:citekey order="30" intorder="1">KEENEY1996537</bcf:citekey>
+    <bcf:citekey order="31" intorder="1">international2024iaea</bcf:citekey>
+    <bcf:citekey order="32" intorder="1">IAEA_PRIS_2025</bcf:citekey>
+    <bcf:citekey order="33" intorder="1">iaea2025aris</bcf:citekey>
+    <bcf:citekey order="58" intorder="1">kepcoenc2025</bcf:citekey>
+    <bcf:citekey order="59" intorder="1">PLACEHOLDER</bcf:citekey>
+    <bcf:citekey order="60" intorder="1">wnn2025bwrx300</bcf:citekey>
+    <bcf:citekey order="61" intorder="1">wnn2025hungarysmr</bcf:citekey>
+    <bcf:citekey order="62" intorder="1">terrapower2025natrium</bcf:citekey>
     <bcf:citekey order="63" intorder="1">PLACEHOLDER</bcf:citekey>
     <bcf:citekey order="64" intorder="1">PLACEHOLDER</bcf:citekey>
     <bcf:citekey order="65" intorder="1">PLACEHOLDER</bcf:citekey>
     <bcf:citekey order="66" intorder="1">PLACEHOLDER</bcf:citekey>
     <bcf:citekey order="67" intorder="1">PLACEHOLDER</bcf:citekey>
-    <bcf:citekey order="68" intorder="1">wnn2025smrdesign</bcf:citekey>
-    <bcf:citekey order="69" intorder="1">PLACEHOLDER</bcf:citekey>
+    <bcf:citekey order="68" intorder="1">PLACEHOLDER</bcf:citekey>
+    <bcf:citekey order="69" intorder="1">wnn2025smrdesign</bcf:citekey>
     <bcf:citekey order="70" intorder="1">PLACEHOLDER</bcf:citekey>
     <bcf:citekey order="71" intorder="1">PLACEHOLDER</bcf:citekey>
     <bcf:citekey order="72" intorder="1">PLACEHOLDER</bcf:citekey>
-    <bcf:citekey order="73" intorder="1" nocite="1">*</bcf:citekey>
+    <bcf:citekey order="73" intorder="1">PLACEHOLDER</bcf:citekey>
+    <bcf:citekey order="74" intorder="1" nocite="1">*</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="nty">

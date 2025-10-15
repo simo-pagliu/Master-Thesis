@@ -1,18 +1,18 @@
 [0] Config.pm:308> INFO - This is Biber 2.20
 [0] Config.pm:311> INFO - Logfile is 'build/main.blg'
-[67] biber:340> INFO - === Wed Oct 15, 2025, 15:00:10
-[80] Biber.pm:420> INFO - Reading 'build/main.bcf'
-[140] Biber.pm:991> INFO - Using all citekeys in bib section 0
-[155] Biber.pm:4463> INFO - Processing section 0
-[164] Biber.pm:4654> INFO - Looking for bibtex file 'references.bib' for section 0
-[167] bibtex.pm:1713> INFO - LaTeX decoding ...
-[229] bibtex.pm:1519> INFO - Found BibTeX data source 'references.bib'
-[667] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
-[668] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
-[668] Biber.pm:4283> INFO - Sorting list 'nty/global//global/global/global' of type 'entry' with template 'nty' and locale 'en-US'
-[668] Biber.pm:4289> INFO - No sort tailoring available for locale 'en-US'
-[741] bbl.pm:676> INFO - Writing 'build/main.bbl' with encoding 'UTF-8'
-[767] bbl.pm:779> INFO - Output to build/main.bbl
-[767] Biber.pm:131> WARN - Duplicate entry key: 'NRC_ML17007A001' in file 'references.bib', skipping ...
-[767] Biber.pm:131> WARN - Duplicate entry key: 'ENCO_SMR_Analysis_2022' in file 'references.bib', skipping ...
-[767] Biber.pm:133> INFO - WARNINGS: 2
+[96] biber:340> INFO - === Wed Oct 15, 2025, 17:18:51
+[120] Biber.pm:420> INFO - Reading 'build/main.bcf'
+[195] Biber.pm:991> INFO - Using all citekeys in bib section 0
+[214] Biber.pm:4463> INFO - Processing section 0
+[228] Biber.pm:4654> INFO - Looking for bibtex file 'references.bib' for section 0
+[232] bibtex.pm:1713> INFO - LaTeX decoding ...
+[310] bibtex.pm:1519> INFO - Found BibTeX data source 'references.bib'
+[840] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[840] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[841] Biber.pm:4283> INFO - Sorting list 'nty/global//global/global/global' of type 'entry' with template 'nty' and locale 'en-US'
+[841] Biber.pm:4289> INFO - No sort tailoring available for locale 'en-US'
+[909] bbl.pm:676> INFO - Writing 'build/main.bbl' with encoding 'UTF-8'
+[932] bbl.pm:779> INFO - Output to build/main.bbl
+[933] Biber.pm:131> WARN - Duplicate entry key: 'NRC_ML17007A001' in file 'references.bib', skipping ...
+[933] Biber.pm:131> WARN - Duplicate entry key: 'ENCO_SMR_Analysis_2022' in file 'references.bib', skipping ...
+[933] Biber.pm:133> INFO - WARNINGS: 2
