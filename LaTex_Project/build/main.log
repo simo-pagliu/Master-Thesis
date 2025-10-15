@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex 2025.9.26)  14 OCT 2025 16:28
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex 2025.9.26)  15 OCT 2025 15:00
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1640,114 +1640,58 @@ Package pdftex.def Info: ./polimi_template_classic/Images/./raggiera_polimi-eps
 [2]
 
 [3]
-Underfull \hbox (badness 10000) in paragraph at lines 33--34
+Underfull \hbox (badness 10000) in paragraph at lines 34--35
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 35--36
+Underfull \hbox (badness 10000) in paragraph at lines 36--37
 
  []
 
-)
 
-[4]
+Underfull \hbox (badness 10000) in paragraph at lines 38--39
+
+ []
+
+
+
+[4])
+
+[5]
+
+Package epstopdf Info: Source file: <./polimi_template_classic/Images/./raggier
+a_polimi.eps>
+(epstopdf)                    date: 2021-10-26 08:15:40
+(epstopdf)                    size: 1813066 bytes
+(epstopdf)             Output file: <./polimi_template_classic/Images/./raggier
+a_polimi-eps-converted-to.pdf>
+(epstopdf)                    date: 2025-10-07 09:56:38
+(epstopdf)                    size: 40410 bytes
+(epstopdf)             Command: <repstopdf --outfile=./polimi_template_classic/
+Images/./raggiera_polimi-eps-converted-to.pdf ./polimi_template_classic/Images/
+./raggiera_polimi.eps>
+(epstopdf)             \includegraphics on input line 208.
+Package epstopdf Info: Output file is already uptodate.
+File: ./polimi_template_classic/Images/./raggiera_polimi-eps-converted-to.pdf G
+raphic file (type pdf)
+<use ./polimi_template_classic/Images/./raggiera_polimi-eps-converted-to.pdf>
+Package pdftex.def Info: ./polimi_template_classic/Images/./raggiera_polimi-eps
+-converted-to.pdf  used on input line 208.
+(pdftex.def)             Requested size: 507.88533pt x 507.88051pt.
+[6
+
+]
 Chapter 1.
 (./00 - Literature Review.tex
 
-LaTeX Warning: Citation 'DAMOOM2019110' on page 5 undefined on input line 4.
+[7
 
+]) (./00 - Objectives.tex
 
-LaTeX Warning: Citation 'BASEGMEZ2025105897' on page 5 undefined on input line 
-4.
+[8{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc}])
 
-
-LaTeX Warning: Citation 'ABDULLAH2025105626' on page 5 undefined on input line 
-4.
-
-
-LaTeX Warning: Citation 'DEVANAND2019339' on page 5 undefined on input line 4.
-
-
-Overfull \hbox (6.3179pt too wide) in paragraph at lines 4--5
-\T1/cmr/m/n/12 fac-tors such as pop-u-la-tion prox-im-ity [[]] [[]].
- []
-
-
-Overfull \hbox (71.3577pt too wide) in paragraph at lines 4--5
-\T1/cmr/m/n/12 cep-tance and tourism im-pacts, which present chal-lenges for qu
-an-tifi-ca-tion [[]].
- []
-
-
-LaTeX Warning: Citation 'KISER2023104647' on page 5 undefined on input line 6.
-
-
-LaTeX Warning: Citation 'Locatelli01092012' on page 5 undefined on input line 6
-.
-
-
-LaTeX Warning: Citation 'BIRIKORANG2026111837' on page 5 undefined on input lin
-e 6.
-
-
-LaTeX Warning: Citation 'IAEA_INPRO_2019' on page 5 undefined on input line 6.
-
-
-LaTeX Warning: Citation 'HERNANDEZTORRES2025122481' on page 5 undefined on inpu
-t line 8.
-
-
-LaTeX Warning: Citation 'PASAOGLU2018654' on page 5 undefined on input line 8.
-
-
-LaTeX Warning: Citation 'ATILGAN2016168' on page 5 undefined on input line 8.
-
-
-LaTeX Warning: Citation 'SANTOYOCASTELAZO2014119' on page 5 undefined on input 
-line 8.
-
-
-Overfull \hbox (37.23831pt too wide) in paragraph at lines 8--9
-\T1/cmr/m/n/12 generic, av-er-aged pa-ram-e-ters for each tech-nol-ogy class [[
-],
- []
-
-
-Overfull \hbox (11.6793pt too wide) in paragraph at lines 8--9
-\T1/cmr/m/n/12 power) rather than gen-er-al-ized tech-nol-ogy av-er-ages [[]]. 
-
- []
-
-
-
-[5
-
-
-]
-
-LaTeX Warning: Citation '10.1063/1.4866099' on page 6 undefined on input line 1
-0.
-
-
-LaTeX Warning: Citation 'TOPALOGLU2025103228' on page 6 undefined on input line
- 10.
-
-
-LaTeX Warning: Citation 'GOUSHIS2025126565' on page 6 undefined on input line 1
-0.
-
-
-Overfull \hbox (39.42233pt too wide) in paragraph at lines 10--11
-\T1/cmr/m/n/12 though so-cial con-sid-er-a-tions re-main lim-ited to site-speci
-fic fac-tors [[]].
- []
-
-) (./00 - Objectives.tex
-
-[6{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc}])
-
-[7]
+[9]
 
 Package epstopdf Info: Source file: <./polimi_template_classic/Images/./raggier
 a_polimi.eps>
@@ -1768,7 +1712,7 @@ raphic file (type pdf)
 Package pdftex.def Info: ./polimi_template_classic/Images/./raggiera_polimi-eps
 -converted-to.pdf  used on input line 212.
 (pdftex.def)             Requested size: 507.88533pt x 507.88051pt.
-[8
+[10
 
 ]
 Chapter 2.
@@ -1799,7 +1743,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 36--36
 
 
 
-[9
+[11
 
 ]
 Underfull \hbox (badness 7649) in paragraph at lines 72--72
@@ -1818,7 +1762,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 86--87
 
 
 
-[10]
+[12]
 Underfull \hbox (badness 10000) in paragraph at lines 88--89
 
  []
@@ -1830,13 +1774,13 @@ Underfull \hbox (badness 10000) in paragraph at lines 90--1
 
 )
 
-[11]
+[13]
 
-[12]
+[14]
 Chapter 3.
 (./02 - Experts.tex) (./02 - Weights.tex) (./02 - Value Functions.tex)
 
-[13
+[15
 
 
 ]
@@ -1860,13 +1804,13 @@ raphic file (type pdf)
 Package pdftex.def Info: ./polimi_template_classic/Images/./raggiera_polimi-eps
 -converted-to.pdf  used on input line 221.
 (pdftex.def)             Requested size: 507.88533pt x 507.88051pt.
-[14
+[16
 
 ]
 Chapter 4.
 (./03 - Results.tex) (./03 - Discussion.tex)
 
-[15
+[17
 
 ]
 
@@ -1889,7 +1833,7 @@ raphic file (type pdf)
 Package pdftex.def Info: ./polimi_template_classic/Images/./raggiera_polimi-eps
 -converted-to.pdf  used on input line 230.
 (pdftex.def)             Requested size: 507.88533pt x 507.88051pt.
-[16
+[18
 
 ]
 Overfull \hbox (8.5947pt too wide) in paragraph at lines 231--231
@@ -1898,10 +1842,18 @@ Overfull \hbox (8.5947pt too wide) in paragraph at lines 231--231
  []
 
 
+Overfull \hbox (5.54634pt too wide) in paragraph at lines 231--231
+[]\T1/cmr/m/n/12 S.A. Biriko-rang et al. ``Choos-ing the right re-ac-tor tech-n
+ol-ogy: A key step to strengthen
+ []
 
-[17
+
+
+[19
 
 ]
+
+[20]
 Overfull \hbox (8.78737pt too wide) in paragraph at lines 231--231
 \T1/cmtt/m/n/12 / / doi . org / 10 . 1016 / j . anucene . 2008 . 11 . 022$[][]\
 T1/cmr/m/n/12 . \T1/cmr/m/sc/12 url\T1/cmr/m/n/12 : [][]$\T1/cmtt/m/n/12 https 
@@ -1910,7 +1862,45 @@ T1/cmr/m/n/12 . \T1/cmr/m/sc/12 url\T1/cmr/m/n/12 : [][]$\T1/cmtt/m/n/12 https
 
 
 
-[18]
+[21]
+Overfull \hbox (14.96086pt too wide) in paragraph at lines 231--231
+\T1/cmtt/m/n/12 / / doi . org / 10 . 1016 / j . apenergy . 2025 . 126565$[][]\T
+1/cmr/m/n/12 . \T1/cmr/m/sc/12 url\T1/cmr/m/n/12 : [][]$\T1/cmtt/m/n/12 https :
+ / / www . sciencedirect .
+ []
+
+
+
+[22]
+Overfull \hbox (18.67825pt too wide) in paragraph at lines 231--231
+\T1/cmr/m/n/12 pp. 4753^^U4766. \T1/cmr/m/sc/12 doi\T1/cmr/m/n/12 : [][]$\T1/cm
+tt/m/n/12 10 . 1080 / 00207543 . 2012 . 657965$[][]\T1/cmr/m/n/12 . \T1/cmr/m/s
+c/12 url\T1/cmr/m/n/12 : [][]$\T1/cmtt/m/n/12 https : / / international .
+ []
+
+
+Overfull \hbox (6.92352pt too wide) in paragraph at lines 231--231
+\T1/cmtt/m/n/12 anl . gov / training / materials / BL / Literature / Giorgio % 
+20Locatelli % 20Papers /
+ []
+
+
+Overfull \hbox (37.97562pt too wide) in paragraph at lines 231--231
+\T1/cmr/m/n/12 Data. Ac-cessed: 2025-09-30. Min-is-tero dell'Interno, 2011. \T1
+/cmr/m/sc/12 url\T1/cmr/m/n/12 : [][]$\T1/cmtt/m/n/12 https : / / elezionistori
+co .
+ []
+
+
+
+[23]
+Overfull \hbox (37.97562pt too wide) in paragraph at lines 231--231
+\T1/cmr/m/n/12 Data. Ac-cessed: 2025-09-30. Min-is-tero dell'Interno, 1987. \T1
+/cmr/m/sc/12 url\T1/cmr/m/n/12 : [][]$\T1/cmtt/m/n/12 https : / / elezionistori
+co .
+ []
+
+
 Overfull \hbox (6.2915pt too wide) in paragraph at lines 231--231
 []\T1/cmr/m/it/12 Nuclear Power Re-ac-tors in the World\T1/cmr/m/n/12 . en-tity
  2. Vi-enna: IN-TER-NA-TIONAL ATOMIC
@@ -1918,9 +1908,15 @@ Overfull \hbox (6.2915pt too wide) in paragraph at lines 231--231
 
 
 
-[19]
+[24]
 
-[20]
+[25]
+Overfull \hbox (5.75003pt too wide) in paragraph at lines 231--231
+\T1/cmtt/m/n/12 2024 / 04 / Nucleare -[] italiano -[] per -[] i -[] cittadini -
+[] le -[] imprese -[] e -[] il -[] territorio -[]
+ []
+
+
 Overfull \hbox (9.78995pt too wide) in paragraph at lines 231--231
 \T1/cmr/m/n/12 In: (2025). Ac-cessed: 2025-09-30. \T1/cmr/m/sc/12 url\T1/cmr/m/
 n/12 : [][]$\T1/cmtt/m/n/12 https : / / www . swissinfo . ch / eng / emissions 
@@ -1929,13 +1925,15 @@ n/12 : [][]$\T1/cmtt/m/n/12 https : / / www . swissinfo . ch / eng / emissions
 
 
 
-[21]
+[26]
 
-[22]
+[27]
+
+[28]
 Appendix A.
 
 
-[23
+[29
 
 
 
@@ -1960,13 +1958,13 @@ raphic file (type pdf)
 Package pdftex.def Info: ./polimi_template_classic/Images/./raggiera_polimi-eps
 -converted-to.pdf  used on input line 244.
 (pdftex.def)             Requested size: 507.88533pt x 507.88051pt.
-[24
+[30
 
 ]
 Appendix B.
 
 
-[25
+[31
 
 ]
 
@@ -1989,7 +1987,7 @@ raphic file (type pdf)
 Package pdftex.def Info: ./polimi_template_classic/Images/./raggiera_polimi-eps
 -converted-to.pdf  used on input line 249.
 (pdftex.def)             Requested size: 507.88533pt x 507.88051pt.
-[26
+[32
 
 ] (build/main.lof)
 \tf@lof=\write7
@@ -1997,7 +1995,7 @@ Package pdftex.def Info: ./polimi_template_classic/Images/./raggiera_polimi-eps
 
 
 
-[27
+[33
 
 ]
 
@@ -2020,7 +2018,7 @@ raphic file (type pdf)
 Package pdftex.def Info: ./polimi_template_classic/Images/./raggiera_polimi-eps
 -converted-to.pdf  used on input line 252.
 (pdftex.def)             Requested size: 507.88533pt x 507.88051pt.
-[28
+[34
 
 ] (build/main.lot)
 \tf@lot=\write8
@@ -2028,7 +2026,7 @@ Package pdftex.def Info: ./polimi_template_classic/Images/./raggiera_polimi-eps
 
 
 
-[29
+[35
 
 ]
 
@@ -2051,11 +2049,11 @@ raphic file (type pdf)
 Package pdftex.def Info: ./polimi_template_classic/Images/./raggiera_polimi-eps
 -converted-to.pdf  used on input line 256.
 (pdftex.def)             Requested size: 507.88533pt x 507.88051pt.
-[30
+[36
 
 ]
 
-[31
+[37
 
 ]
 
@@ -2078,11 +2076,11 @@ raphic file (type pdf)
 Package pdftex.def Info: ./polimi_template_classic/Images/./raggiera_polimi-eps
 -converted-to.pdf  used on input line 267.
 (pdftex.def)             Requested size: 507.88533pt x 507.88051pt.
-[32
+[38
 
 ]
 
-[33
+[39
 
 ]
 
@@ -2105,7 +2103,7 @@ raphic file (type pdf)
 Package pdftex.def Info: ./polimi_template_classic/Images/./raggiera_polimi-eps
 -converted-to.pdf  used on input line 270.
 (pdftex.def)             Requested size: 507.88533pt x 507.88051pt.
-[34
+[40
 
 ]
 
@@ -2121,29 +2119,20 @@ See the caption package documentation for explanation.
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
-
-
-LaTeX Warning: There were undefined references.
-
 Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: 48F87D4599A605C459FB412C713004A7;2639.
-
-Package biblatex Warning: Please (re)run Biber on the file:
-(biblatex)                main
-(biblatex)                and rerun LaTeX afterwards.
-
 Package logreq Info: Writing requests to 'main.run.xml'.
 \openout1 = `main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 36072 strings out of 473197
- 686881 string characters out of 5718605
- 1587157 words of memory out of 5000000
- 58539 multiletter control sequences out of 15000+600000
+ 36267 strings out of 473197
+ 695001 string characters out of 5718605
+ 1593849 words of memory out of 5000000
+ 58696 multiletter control sequences out of 15000+600000
  577347 words of font info for 80 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 84i,12n,91p,1197b,2259s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,12n,91p,1463b,2259s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr
 /share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmib10.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texli
@@ -2154,10 +2143,10 @@ r/share/texmf/fonts/type1/public/cm-super/sfrm1728.pfb></usr/share/texmf/fonts/
 type1/public/cm-super/sfti1200.pfb></usr/share/texmf/fonts/type1/public/cm-supe
 r/sftt1200.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfxc1200.pfb></usr
 /share/texlive/texmf-dist/fonts/type1/urw/zapfding/uzdr.pfb>
-Output written on build/main.pdf (42 pages, 470864 bytes).
+Output written on build/main.pdf (48 pages, 492541 bytes).
 PDF statistics:
- 665 PDF objects out of 1000 (max. 8388607)
- 556 compressed objects within 6 object streams
- 130 named destinations out of 1000 (max. 500000)
+ 846 PDF objects out of 1000 (max. 8388607)
+ 729 compressed objects within 8 object streams
+ 168 named destinations out of 1000 (max. 500000)
  192 words of extra memory for PDF output out of 10000 (max. 10000000)
 

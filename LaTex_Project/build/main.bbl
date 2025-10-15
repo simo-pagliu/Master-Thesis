@@ -19,6 +19,69 @@
 
 \refsection{0}
   \datalist[entry]{nty/global//global/global/global}
+    \entry{ABDULLAH2025105626}{article}{}{}
+      \name{author}{6}{}{%
+        {{hash=a73cbfa6901f30ccaa7ef19a1fc2936a}{%
+           family={Abdullah},
+           familyi={A\bibinitperiod},
+           given={Ade\bibnamedelima Gafar},
+           giveni={A\bibinitperiod\bibinitdelim G\bibinitperiod}}}%
+        {{hash=2d8792dfc7e2917be2f4597cce07f7c1}{%
+           family={Khairunnisa},
+           familyi={K\bibinitperiod},
+           given={Novalda\bibnamedelima Salsabila},
+           giveni={N\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+        {{hash=ab08a2797dec4a1ec6be4da8152cb269}{%
+           family={Shafii},
+           familyi={S\bibinitperiod},
+           given={Mohammad\bibnamedelima Ali},
+           giveni={M\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=ac447cd08210af84ef35d08d94563aa9}{%
+           family={Mahmudah},
+           familyi={M\bibinitperiod},
+           given={Rida\bibnamedelima SN.},
+           giveni={R\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+        {{hash=81a424160398ed7ca6f01fe82e789b20}{%
+           family={Hakim},
+           familyi={H\bibinitperiod},
+           given={Dadang\bibnamedelima Lukman},
+           giveni={D\bibinitperiod\bibinitdelim L\bibinitperiod}}}%
+        {{hash=d74041cf95b928a599961c202a331626}{%
+           family={Setiadipura},
+           familyi={S\bibinitperiod},
+           given={Topan},
+           giveni={T\bibinitperiod}}}%
+      }
+      \strng{namehash}{4d405bcc64b5bf92860b007fbfcbef2c}
+      \strng{fullhash}{48407f746f2a21751174a5d7806896a6}
+      \strng{fullhashraw}{48407f746f2a21751174a5d7806896a6}
+      \strng{bibnamehash}{4d405bcc64b5bf92860b007fbfcbef2c}
+      \strng{authorbibnamehash}{4d405bcc64b5bf92860b007fbfcbef2c}
+      \strng{authornamehash}{4d405bcc64b5bf92860b007fbfcbef2c}
+      \strng{authorfullhash}{48407f746f2a21751174a5d7806896a6}
+      \strng{authorfullhashraw}{48407f746f2a21751174a5d7806896a6}
+      \field{sortinit}{A}
+      \field{sortinithash}{2f401846e2029bad6b3ecc16d50031e2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0149-1970}
+      \field{journaltitle}{Progress in Nuclear Energy}
+      \field{title}{The social factors considered in site selection for nuclear power plants: A case study of Borneo Island, Indonesia}
+      \field{volume}{180}
+      \field{year}{2025}
+      \field{pages}{105626}
+      \range{pages}{1}
+      \verb{doi}
+      \verb https://doi.org/10.1016/j.pnucene.2025.105626
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S0149197025000241
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S0149197025000241
+      \endverb
+      \keyw{Nuclear power plant,Multi-criteria decision making,AHP,ELECTRE,Social aspects}
+    \endentry
     \entry{iaea2025aris}{misc}{}{}
       \name{author}{1}{}{%
         {{hash=a147f70c1537efb5f6838446a1035ede}{%
@@ -49,7 +112,7 @@
       \verb https://aris.iaea.org/
       \endverb
     \endentry
-    \entry{EDFEnergy_PSA_2024}{report}{}{}
+    \entry{EDFEnergy_PSA_2012}{report}{}{}
       \name{author}{1}{}{%
         {{hash=f2a7c4ca45d0997f3fb6840c1c3b1270}{%
            family={{AREVA NP, EDF Energy}},
@@ -135,6 +198,49 @@
       \verb https://www.osti.gov/biblio/22257897
       \endverb
     \endentry
+    \entry{ATILGAN2016168}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=c3e2d8d5cb72fcc508448792a6cccd53}{%
+           family={Atilgan},
+           familyi={A\bibinitperiod},
+           given={Burcin},
+           giveni={B\bibinitperiod}}}%
+        {{hash=d6b09ec7ef6b6fdc7acef348d6100577}{%
+           family={Azapagic},
+           familyi={A\bibinitperiod},
+           given={Adisa},
+           giveni={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{8f2894111305ca3e71a16e755c1978de}
+      \strng{fullhash}{8f2894111305ca3e71a16e755c1978de}
+      \strng{fullhashraw}{8f2894111305ca3e71a16e755c1978de}
+      \strng{bibnamehash}{8f2894111305ca3e71a16e755c1978de}
+      \strng{authorbibnamehash}{8f2894111305ca3e71a16e755c1978de}
+      \strng{authornamehash}{8f2894111305ca3e71a16e755c1978de}
+      \strng{authorfullhash}{8f2894111305ca3e71a16e755c1978de}
+      \strng{authorfullhashraw}{8f2894111305ca3e71a16e755c1978de}
+      \field{sortinit}{A}
+      \field{sortinithash}{2f401846e2029bad6b3ecc16d50031e2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0301-4215}
+      \field{journaltitle}{Energy Policy}
+      \field{title}{An integrated life cycle sustainability assessment of electricity generation in Turkey}
+      \field{volume}{93}
+      \field{year}{2016}
+      \field{pages}{168\bibrangedash 186}
+      \range{pages}{19}
+      \verb{doi}
+      \verb https://doi.org/10.1016/j.enpol.2016.02.055
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S030142151630091X
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S030142151630091X
+      \endverb
+      \keyw{Electricity generation,Economic costing,Life cycle assessment,Social assessment,Sustainability assessment,Turkey}
+    \endentry
     \entry{PLACEHOLDER}{misc}{}{}
       \name{author}{1}{}{%
         {{hash=660d76068b6389f25fe7dbe24c1e20bf}{%
@@ -170,6 +276,185 @@
       \verb{url}
       \verb https://www.example.com
       \endverb
+    \endentry
+    \entry{BASEGMEZ2025105897}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=4479ae545749d87dc36fe1f64e036251}{%
+           family={Başeğmez},
+           familyi={B\bibinitperiod},
+           given={Murat},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{4479ae545749d87dc36fe1f64e036251}
+      \strng{fullhash}{4479ae545749d87dc36fe1f64e036251}
+      \strng{fullhashraw}{4479ae545749d87dc36fe1f64e036251}
+      \strng{bibnamehash}{4479ae545749d87dc36fe1f64e036251}
+      \strng{authorbibnamehash}{4479ae545749d87dc36fe1f64e036251}
+      \strng{authornamehash}{4479ae545749d87dc36fe1f64e036251}
+      \strng{authorfullhash}{4479ae545749d87dc36fe1f64e036251}
+      \strng{authorfullhashraw}{4479ae545749d87dc36fe1f64e036251}
+      \field{sortinit}{B}
+      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0149-1970}
+      \field{journaltitle}{Progress in Nuclear Energy}
+      \field{title}{Strategic multi-criteria framework for nuclear plant siting: Integrating AHP, EWM, and Game Theory with GIS}
+      \field{volume}{188}
+      \field{year}{2025}
+      \field{pages}{105897}
+      \range{pages}{1}
+      \verb{doi}
+      \verb https://doi.org/10.1016/j.pnucene.2025.105897
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S0149197025002951
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S0149197025002951
+      \endverb
+      \keyw{Nuclear power plant site selection,GIS,AHP,EWM,WLC,Game theory}
+    \endentry
+    \entry{BIRIKORANG2026111837}{article}{}{}
+      \name{author}{5}{}{%
+        {{hash=303f842a3ca4c996730f45bf62bb9f1e}{%
+           family={Birikorang},
+           familyi={B\bibinitperiod},
+           given={S.A.},
+           giveni={S\bibinitperiod}}}%
+        {{hash=308a9bf7cdc15cdeb9879af642094217}{%
+           family={Mansung},
+           familyi={M\bibinitperiod},
+           given={Y.},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=9776fb83ca3be5beb83afff7ce55aaf0}{%
+           family={Marianno},
+           familyi={M\bibinitperiod},
+           given={C.},
+           giveni={C\bibinitperiod}}}%
+        {{hash=49fafd8b2704832ee91a55d29dca3c24}{%
+           family={Fuhrmann},
+           familyi={F\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod}}}%
+        {{hash=4410da4d2729ff520133dbcad2a8af69}{%
+           family={Adu},
+           familyi={A\bibinitperiod},
+           given={S.},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{54c93dafd93326cf352309d70018f61d}
+      \strng{fullhash}{535b941b0f9d80a2ab7b1c464f892655}
+      \strng{fullhashraw}{535b941b0f9d80a2ab7b1c464f892655}
+      \strng{bibnamehash}{54c93dafd93326cf352309d70018f61d}
+      \strng{authorbibnamehash}{54c93dafd93326cf352309d70018f61d}
+      \strng{authornamehash}{54c93dafd93326cf352309d70018f61d}
+      \strng{authorfullhash}{535b941b0f9d80a2ab7b1c464f892655}
+      \strng{authorfullhashraw}{535b941b0f9d80a2ab7b1c464f892655}
+      \field{sortinit}{B}
+      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0306-4549}
+      \field{journaltitle}{Annals of Nuclear Energy}
+      \field{title}{Choosing the right reactor technology: A key step to strengthen nuclear security in West Africa’s nuclear energy plans}
+      \field{volume}{226}
+      \field{year}{2026}
+      \field{pages}{111837}
+      \range{pages}{1}
+      \verb{doi}
+      \verb https://doi.org/10.1016/j.anucene.2025.111837
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S0306454925006541
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S0306454925006541
+      \endverb
+      \keyw{Reactor technology,Security risk,Proliferation risk,Emergency,Nuclear power plant,Terrorist}
+    \endentry
+    \entry{EPRS_Energy_2023}{misc}{}{}
+      \name{author}{2}{}{%
+        {{hash=336513ce26ef61ec2e954de354b750a1}{%
+           family={Boehm},
+           familyi={B\bibinitperiod},
+           given={Lasse},
+           giveni={L\bibinitperiod}}}%
+        {{hash=9b739607c7c2d4a8a58fe18c229f605f}{%
+           family={Wilson},
+           familyi={W\bibinitperiod},
+           given={Alex},
+           giveni={A\bibinitperiod}}}%
+      }
+      \list{institution}{1}{%
+        {EPRS | European Parliamentary Research Service}%
+      }
+      \strng{namehash}{4d10ce11ea01e948eed97399c087dd10}
+      \strng{fullhash}{4d10ce11ea01e948eed97399c087dd10}
+      \strng{fullhashraw}{4d10ce11ea01e948eed97399c087dd10}
+      \strng{bibnamehash}{4d10ce11ea01e948eed97399c087dd10}
+      \strng{authorbibnamehash}{4d10ce11ea01e948eed97399c087dd10}
+      \strng{authornamehash}{4d10ce11ea01e948eed97399c087dd10}
+      \strng{authorfullhash}{4d10ce11ea01e948eed97399c087dd10}
+      \strng{authorfullhashraw}{4d10ce11ea01e948eed97399c087dd10}
+      \field{sortinit}{B}
+      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{month}{02}
+      \field{note}{Accessed: 2025-10-15}
+      \field{title}{EU energy security and the war in Ukraine: From sprint to marathon}
+      \field{type}{Briefing}
+      \field{year}{2023}
+      \verb{urlraw}
+      \verb https://www.europarl.europa.eu/RegData/etudes/BRIE/2023/739362/EPRS_BRI(2023)739362_EN.pdf
+      \endverb
+      \verb{url}
+      \verb https://www.europarl.europa.eu/RegData/etudes/BRIE/2023/739362/EPRS_BRI(2023)739362_EN.pdf
+      \endverb
+    \endentry
+    \entry{BRODNY2023121443}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=279412c504873565aa2189d4f1894dc3}{%
+           family={Brodny},
+           familyi={B\bibinitperiod},
+           given={Jarosław},
+           giveni={J\bibinitperiod}}}%
+        {{hash=6f3c18ce24f2610bdbf9e257ad6244cc}{%
+           family={Tutak},
+           familyi={T\bibinitperiod},
+           given={Magdalena},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{6c780cb569546a684686db6f29500c67}
+      \strng{fullhash}{6c780cb569546a684686db6f29500c67}
+      \strng{fullhashraw}{6c780cb569546a684686db6f29500c67}
+      \strng{bibnamehash}{6c780cb569546a684686db6f29500c67}
+      \strng{authorbibnamehash}{6c780cb569546a684686db6f29500c67}
+      \strng{authornamehash}{6c780cb569546a684686db6f29500c67}
+      \strng{authorfullhash}{6c780cb569546a684686db6f29500c67}
+      \strng{authorfullhashraw}{6c780cb569546a684686db6f29500c67}
+      \field{sortinit}{B}
+      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0306-2619}
+      \field{journaltitle}{Applied Energy}
+      \field{title}{Assessing the energy security of European Union countries from two perspectives – A new integrated approach based on MCDM methods}
+      \field{volume}{347}
+      \field{year}{2023}
+      \field{pages}{121443}
+      \range{pages}{1}
+      \verb{doi}
+      \verb https://doi.org/10.1016/j.apenergy.2023.121443
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S0306261923008073
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S0306261923008073
+      \endverb
+      \keyw{Energy security,Sustainable energy security,European Union,MCDM methods,Multi-criteria analysis}
     \endentry
     \entry{CNSC_BWRX300_Fuel_Design}{report}{}{}
       \name{author}{1}{}{%
@@ -252,6 +537,186 @@
       \verb https://www.sciencedirect.com/science/article/pii/S0360544216310350
       \endverb
       \keyw{Nuclear power,Small modular reactors,Life cycle analysis,Greenhouse gas,Uncertainty}
+    \endentry
+    \entry{Chadwick_Neutron_1932}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=92f17edd3dd2902588f29a4ec0ed82d3}{%
+           family={Chadwick},
+           familyi={C\bibinitperiod},
+           given={James},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{92f17edd3dd2902588f29a4ec0ed82d3}
+      \strng{fullhash}{92f17edd3dd2902588f29a4ec0ed82d3}
+      \strng{fullhashraw}{92f17edd3dd2902588f29a4ec0ed82d3}
+      \strng{bibnamehash}{92f17edd3dd2902588f29a4ec0ed82d3}
+      \strng{authorbibnamehash}{92f17edd3dd2902588f29a4ec0ed82d3}
+      \strng{authornamehash}{92f17edd3dd2902588f29a4ec0ed82d3}
+      \strng{authorfullhash}{92f17edd3dd2902588f29a4ec0ed82d3}
+      \strng{authorfullhashraw}{92f17edd3dd2902588f29a4ec0ed82d3}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Proceedings of the Royal Society of London Series A}
+      \field{title}{The Existence of a Neutron}
+      \field{volume}{136}
+      \field{year}{1932}
+      \field{pages}{692\bibrangedash 708}
+      \range{pages}{17}
+      \verb{doi}
+      \verb 10.1098/rspa.1932.0112
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1098/rspa.1932.0112
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1098/rspa.1932.0112
+      \endverb
+    \endentry
+    \entry{DAMOOM2019110}{article}{}{}
+      \name{author}{5}{}{%
+        {{hash=fddc75ece0e903541d698c55cfe31694}{%
+           family={Damoom},
+           familyi={D\bibinitperiod},
+           given={Mohammed\bibnamedelima M.},
+           giveni={M\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+        {{hash=7ed47da9ca543849356dd5174654ef0d}{%
+           family={Hashim},
+           familyi={H\bibinitperiod},
+           given={Suhairul},
+           giveni={S\bibinitperiod}}}%
+        {{hash=d9bf8f018bc2faec61eefd66a4dbd697}{%
+           family={Aljohani},
+           familyi={A\bibinitperiod},
+           given={Mohammed\bibnamedelima S.},
+           giveni={M\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+        {{hash=8866763ad59cf82d6ee3f9513113741f}{%
+           family={Saleh},
+           familyi={S\bibinitperiod},
+           given={Muneer\bibnamedelima Aziz},
+           giveni={M\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=b0d22337b4b9a3c693f226b43b874a3a}{%
+           family={Xoubi},
+           familyi={X\bibinitperiod},
+           given={Ned},
+           giveni={N\bibinitperiod}}}%
+      }
+      \strng{namehash}{52325fc7f92d7cccd9b498f85cb4ca22}
+      \strng{fullhash}{d7f01bdeec4d2bca9a35799f35a19ef1}
+      \strng{fullhashraw}{d7f01bdeec4d2bca9a35799f35a19ef1}
+      \strng{bibnamehash}{52325fc7f92d7cccd9b498f85cb4ca22}
+      \strng{authorbibnamehash}{52325fc7f92d7cccd9b498f85cb4ca22}
+      \strng{authornamehash}{52325fc7f92d7cccd9b498f85cb4ca22}
+      \strng{authorfullhash}{d7f01bdeec4d2bca9a35799f35a19ef1}
+      \strng{authorfullhashraw}{d7f01bdeec4d2bca9a35799f35a19ef1}
+      \field{sortinit}{D}
+      \field{sortinithash}{6f385f66841fb5e82009dc833c761848}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0149-1970}
+      \field{journaltitle}{Progress in Nuclear Energy}
+      \field{title}{Potential areas for nuclear power plants siting in Saudi Arabia: GIS-based multi-criteria decision making analysis}
+      \field{volume}{110}
+      \field{year}{2019}
+      \field{pages}{110\bibrangedash 120}
+      \range{pages}{11}
+      \verb{doi}
+      \verb https://doi.org/10.1016/j.pnucene.2018.09.018
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S0149197018302464
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S0149197018302464
+      \endverb
+      \keyw{Nuclear power plant siting,Binary map,Spatial analysis,Saudi Arabia,Geographic information system (GIS),Sea level rise}
+    \endentry
+    \entry{DEVANAND2019339}{article}{}{}
+      \name{author}{3}{}{%
+        {{hash=3130a1ceb1d05e1d41e300d3d6a0daec}{%
+           family={Devanand},
+           familyi={D\bibinitperiod},
+           given={Aravind},
+           giveni={A\bibinitperiod}}}%
+        {{hash=43f96fef254dc677a8064dd582aff746}{%
+           family={Kraft},
+           familyi={K\bibinitperiod},
+           given={Markus},
+           giveni={M\bibinitperiod}}}%
+        {{hash=805ec6510d58d1983e463514b6337ebd}{%
+           family={Karimi},
+           familyi={K\bibinitperiod},
+           given={Iftekhar\bibnamedelima A},
+           giveni={I\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+      }
+      \strng{namehash}{76f61a5305192f7a7d0620dc1b21073a}
+      \strng{fullhash}{76f61a5305192f7a7d0620dc1b21073a}
+      \strng{fullhashraw}{76f61a5305192f7a7d0620dc1b21073a}
+      \strng{bibnamehash}{76f61a5305192f7a7d0620dc1b21073a}
+      \strng{authorbibnamehash}{76f61a5305192f7a7d0620dc1b21073a}
+      \strng{authornamehash}{76f61a5305192f7a7d0620dc1b21073a}
+      \strng{authorfullhash}{76f61a5305192f7a7d0620dc1b21073a}
+      \strng{authorfullhashraw}{76f61a5305192f7a7d0620dc1b21073a}
+      \field{sortinit}{D}
+      \field{sortinithash}{6f385f66841fb5e82009dc833c761848}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0098-1354}
+      \field{journaltitle}{Computers and Chemical Engineering}
+      \field{title}{Optimal site selection for modular nuclear power plants}
+      \field{volume}{125}
+      \field{year}{2019}
+      \field{pages}{339\bibrangedash 350}
+      \range{pages}{12}
+      \verb{doi}
+      \verb https://doi.org/10.1016/j.compchemeng.2019.03.024
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S0098135419300997
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S0098135419300997
+      \endverb
+      \keyw{Site selection,Small Modular Reactors,MINLP,Risk assessment}
+    \endentry
+    \entry{Eisenhower_Atoms_for_Peace_1953}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=7784b3d19a006eaca0cbf0002e7717ea}{%
+           family={Eisenhower},
+           familyi={E\bibinitperiod},
+           given={Dwight\bibnamedelima D.},
+           giveni={D\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+      }
+      \list{institution}{1}{%
+        {United Nations}%
+      }
+      \list{location}{1}{%
+        {New York, NY}%
+      }
+      \strng{namehash}{7784b3d19a006eaca0cbf0002e7717ea}
+      \strng{fullhash}{7784b3d19a006eaca0cbf0002e7717ea}
+      \strng{fullhashraw}{7784b3d19a006eaca0cbf0002e7717ea}
+      \strng{bibnamehash}{7784b3d19a006eaca0cbf0002e7717ea}
+      \strng{authorbibnamehash}{7784b3d19a006eaca0cbf0002e7717ea}
+      \strng{authornamehash}{7784b3d19a006eaca0cbf0002e7717ea}
+      \strng{authorfullhash}{7784b3d19a006eaca0cbf0002e7717ea}
+      \strng{authorfullhashraw}{7784b3d19a006eaca0cbf0002e7717ea}
+      \field{sortinit}{E}
+      \field{sortinithash}{8da8a182d344d5b9047633dfc0cc9131}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{month}{12}
+      \field{note}{Accessed: 2025-09-30}
+      \field{title}{Atoms for Peace: Address to the General Assembly of the United Nations}
+      \field{type}{Speech}
+      \field{year}{1953}
+      \verb{urlraw}
+      \verb https://www.eisenhowerlibrary.gov/research/online-documents/atoms-peace
+      \endverb
+      \verb{url}
+      \verb https://www.eisenhowerlibrary.gov/research/online-documents/atoms-peace
+      \endverb
     \endentry
     \entry{ElectricityMaps_CarbonIntensity_2024}{misc}{}{}
       \name{author}{1}{}{%
@@ -557,6 +1022,37 @@
       \verb https://www.framatome.com/solutions-portfolio/docs/default-source/default-document-library/product-sheets/a0529-p-us-g-en-328-05-18-htp.pdf?Status=Master&sfvrsn=60b7ce1d_2
       \endverb
     \endentry
+    \entry{FundingUniverse_EDF_History_2025}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=fc1b8ed625573f015087cfc3ff88fde2}{%
+           family={{FundingUniverse}},
+           familyi={F\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {FundingUniverse}%
+      }
+      \strng{namehash}{fc1b8ed625573f015087cfc3ff88fde2}
+      \strng{fullhash}{fc1b8ed625573f015087cfc3ff88fde2}
+      \strng{fullhashraw}{fc1b8ed625573f015087cfc3ff88fde2}
+      \strng{bibnamehash}{fc1b8ed625573f015087cfc3ff88fde2}
+      \strng{authorbibnamehash}{fc1b8ed625573f015087cfc3ff88fde2}
+      \strng{authornamehash}{fc1b8ed625573f015087cfc3ff88fde2}
+      \strng{authorfullhash}{fc1b8ed625573f015087cfc3ff88fde2}
+      \strng{authorfullhashraw}{fc1b8ed625573f015087cfc3ff88fde2}
+      \field{sortinit}{F}
+      \field{sortinithash}{2638baaa20439f1b5a8f80c6c08a13b4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2025-09-30}
+      \field{title}{Électricité de France History}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://www.fundinguniverse.com/company-histories/electricit%C3%A9-de-france-history/
+      \endverb
+      \verb{url}
+      \verb https://www.fundinguniverse.com/company-histories/electricit%C3%A9-de-france-history/
+      \endverb
+    \endentry
     \entry{GEVernova_Nuclear_2025}{misc}{}{}
       \name{author}{1}{}{%
         {{hash=e0ab8e962b96b5d4bfd010aeeab4df20}{%
@@ -588,6 +1084,146 @@
       \verb{url}
       \verb https://www.gevernova.com/nuclear
       \endverb
+    \endentry
+    \entry{GOUSHIS2025126565}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=1b981040c72884dfa5e72c040525bbf6}{%
+           family={Goushis},
+           familyi={G\bibinitperiod},
+           given={Rahul},
+           giveni={R\bibinitperiod}}}%
+      }
+      \strng{namehash}{1b981040c72884dfa5e72c040525bbf6}
+      \strng{fullhash}{1b981040c72884dfa5e72c040525bbf6}
+      \strng{fullhashraw}{1b981040c72884dfa5e72c040525bbf6}
+      \strng{bibnamehash}{1b981040c72884dfa5e72c040525bbf6}
+      \strng{authorbibnamehash}{1b981040c72884dfa5e72c040525bbf6}
+      \strng{authornamehash}{1b981040c72884dfa5e72c040525bbf6}
+      \strng{authorfullhash}{1b981040c72884dfa5e72c040525bbf6}
+      \strng{authorfullhashraw}{1b981040c72884dfa5e72c040525bbf6}
+      \field{sortinit}{G}
+      \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0306-2619}
+      \field{journaltitle}{Applied Energy}
+      \field{title}{Evaluating the feasibility of modular nuclear reactors in the European Union: A GIS-based multicriteria decision analysis approach to meet Paris Agreement}
+      \field{volume}{400}
+      \field{year}{2025}
+      \field{pages}{126565}
+      \range{pages}{1}
+      \verb{doi}
+      \verb https://doi.org/10.1016/j.apenergy.2025.126565
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S0306261925012954
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S0306261925012954
+      \endverb
+      \keyw{Small modular reactors (SMRs),Paris agreement 2015,Geographic information system (GIS),TOPSIS analysis,Energy security and climate goals}
+    \endentry
+    \entry{Hahn_Strassmann_1939}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=9a1e05b989bf24ee7375f2894367ec7c}{%
+           family={Hahn},
+           familyi={H\bibinitperiod},
+           given={Otto},
+           giveni={O\bibinitperiod}}}%
+        {{hash=f2da7db711de42f2f9f09fede0e5c38b}{%
+           family={Strassmann},
+           familyi={S\bibinitperiod},
+           given={Fritz},
+           giveni={F\bibinitperiod}}}%
+      }
+      \strng{namehash}{0660001bdf0765541f90f6728980fdc4}
+      \strng{fullhash}{0660001bdf0765541f90f6728980fdc4}
+      \strng{fullhashraw}{0660001bdf0765541f90f6728980fdc4}
+      \strng{bibnamehash}{0660001bdf0765541f90f6728980fdc4}
+      \strng{authorbibnamehash}{0660001bdf0765541f90f6728980fdc4}
+      \strng{authornamehash}{0660001bdf0765541f90f6728980fdc4}
+      \strng{authorfullhash}{0660001bdf0765541f90f6728980fdc4}
+      \strng{authorfullhashraw}{0660001bdf0765541f90f6728980fdc4}
+      \field{sortinit}{H}
+      \field{sortinithash}{23a3aa7c24e56cfa16945d55545109b5}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{1432-1904}
+      \field{journaltitle}{Naturwissenschaften}
+      \field{month}{2}
+      \field{number}{6}
+      \field{title}{Nachweis der Entstehung aktiver Bariumisotope aus Uran und Thorium durch Neutronenbestrahlung; Nachweis weiterer aktiver Bruchstücke bei der Uranspaltung}
+      \field{volume}{27}
+      \field{year}{1939}
+      \field{pages}{89\bibrangedash 95}
+      \range{pages}{7}
+      \verb{doi}
+      \verb 10.1007/BF01488988
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1007/BF01488988
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1007/BF01488988
+      \endverb
+    \endentry
+    \entry{HERNANDEZTORRES2025122481}{article}{}{}
+      \name{author}{5}{}{%
+        {{hash=015d30941b439a4f06b610bffe2e4515}{%
+           family={Hernández-Torres},
+           familyi={H\bibinithyphendelim T\bibinitperiod},
+           given={José\bibnamedelima Antonio},
+           giveni={J\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=497221f85205824d731e5b53eec3ae80}{%
+           family={Sánchez-Lozano},
+           familyi={S\bibinithyphendelim L\bibinitperiod},
+           given={Daniel},
+           giveni={D\bibinitperiod}}}%
+        {{hash=bd5366adec9d57eea7ca57644d7f31dc}{%
+           family={Sánchez-Herrera},
+           familyi={S\bibinithyphendelim H\bibinitperiod},
+           given={Reyes},
+           giveni={R\bibinitperiod}}}%
+        {{hash=785d121422c9e3dd2c68a4ffe4c7f5ea}{%
+           family={Vera},
+           familyi={V\bibinitperiod},
+           given={David},
+           giveni={D\bibinitperiod}}}%
+        {{hash=caa78bf16ad5b6fc2154b618cdeb080f}{%
+           family={Torreglosa},
+           familyi={T\bibinitperiod},
+           given={Juan\bibnamedelima P.},
+           giveni={J\bibinitperiod\bibinitdelim P\bibinitperiod}}}%
+      }
+      \strng{namehash}{9184912e51cd17184cc106a64d292fdd}
+      \strng{fullhash}{b3f28dfed466848643720b4b6eb7ea50}
+      \strng{fullhashraw}{b3f28dfed466848643720b4b6eb7ea50}
+      \strng{bibnamehash}{9184912e51cd17184cc106a64d292fdd}
+      \strng{authorbibnamehash}{9184912e51cd17184cc106a64d292fdd}
+      \strng{authornamehash}{9184912e51cd17184cc106a64d292fdd}
+      \strng{authorfullhash}{b3f28dfed466848643720b4b6eb7ea50}
+      \strng{authorfullhashraw}{b3f28dfed466848643720b4b6eb7ea50}
+      \field{sortinit}{H}
+      \field{sortinithash}{23a3aa7c24e56cfa16945d55545109b5}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0960-1481}
+      \field{journaltitle}{Renewable Energy}
+      \field{title}{Integrated multi-criteria decision-making approach for power generation technology selection in sustainable energy systems}
+      \field{volume}{243}
+      \field{year}{2025}
+      \field{pages}{122481}
+      \range{pages}{1}
+      \verb{doi}
+      \verb https://doi.org/10.1016/j.renene.2025.122481
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S0960148125001430
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S0960148125001430
+      \endverb
+      \keyw{MCDM,Power generation technologies,Gasification,AHP-TOPSIS,Systematic approach}
     \endentry
     \entry{IFOP_Nuclear_Perception_2023}{misc}{}{}
       \name{author}{1}{}{%
@@ -654,7 +1290,7 @@
       \verb https://en.ilsole24ore.com/art/sustainable-nuclear-comes-law-here-is-government-strategy-ten-questions-and-answers-AGvZZsDD
       \endverb
     \endentry
-    \entry{IAEA_Climate_Change_Nuclear_Power_2022}{report}{}{}
+    \entry{IAEA_INPRO_2019}{report}{}{}
       \name{author}{1}{}{%
         {{hash=7a2659e27fbb6482eb1fc4d2067057b3}{%
            family={{International Atomic Energy Agency (IAEA)}},
@@ -672,6 +1308,39 @@
       \strng{authorfullhash}{7a2659e27fbb6482eb1fc4d2067057b3}
       \strng{authorfullhashraw}{7a2659e27fbb6482eb1fc4d2067057b3}
       \field{extraname}{1}
+      \field{sortinit}{I}
+      \field{sortinithash}{8d291c51ee89b6cd86bf5379f0b151d8}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2025-09-30}
+      \field{title}{Application of Multi-criteria Decision Analysis Methods to Comparative Evaluation of Nuclear Energy System Options: Final Report of the INPRO Collaborative Project KIND}
+      \field{type}{Technical Report}
+      \field{year}{2019}
+      \verb{urlraw}
+      \verb https://www-pub.iaea.org/MTCD/Publications/PDF/P1853_web.pdf
+      \endverb
+      \verb{url}
+      \verb https://www-pub.iaea.org/MTCD/Publications/PDF/P1853_web.pdf
+      \endverb
+    \endentry
+    \entry{IAEA_Climate_Change_Nuclear_Power_2022}{report}{}{}
+      \name{author}{1}{}{%
+        {{hash=7a2659e27fbb6482eb1fc4d2067057b3}{%
+           family={{International Atomic Energy Agency (IAEA)}},
+           familyi={I\bibinitperiod}}}%
+      }
+      \list{institution}{1}{%
+        {International Atomic Energy Agency}%
+      }
+      \strng{namehash}{7a2659e27fbb6482eb1fc4d2067057b3}
+      \strng{fullhash}{7a2659e27fbb6482eb1fc4d2067057b3}
+      \strng{fullhashraw}{7a2659e27fbb6482eb1fc4d2067057b3}
+      \strng{bibnamehash}{7a2659e27fbb6482eb1fc4d2067057b3}
+      \strng{authorbibnamehash}{7a2659e27fbb6482eb1fc4d2067057b3}
+      \strng{authornamehash}{7a2659e27fbb6482eb1fc4d2067057b3}
+      \strng{authorfullhash}{7a2659e27fbb6482eb1fc4d2067057b3}
+      \strng{authorfullhashraw}{7a2659e27fbb6482eb1fc4d2067057b3}
+      \field{extraname}{2}
       \field{sortinit}{I}
       \field{sortinithash}{8d291c51ee89b6cd86bf5379f0b151d8}
       \field{labelnamesource}{author}
@@ -705,7 +1374,7 @@
       \strng{authornamehash}{7a2659e27fbb6482eb1fc4d2067057b3}
       \strng{authorfullhash}{7a2659e27fbb6482eb1fc4d2067057b3}
       \strng{authorfullhashraw}{7a2659e27fbb6482eb1fc4d2067057b3}
-      \field{extraname}{2}
+      \field{extraname}{3}
       \field{sortinit}{I}
       \field{sortinithash}{8d291c51ee89b6cd86bf5379f0b151d8}
       \field{labelnamesource}{author}
@@ -719,6 +1388,82 @@
       \verb{url}
       \verb https://pris.iaea.org/PRIS/home.aspx
       \endverb
+    \endentry
+    \entry{IPSOS_Nuclear_Survey_2024}{report}{}{}
+      \name{author}{1}{}{%
+        {{hash=39619850a4a8d4273ed1a89b37f1dea9}{%
+           family={{IPSOS}},
+           familyi={I\bibinitperiod}}}%
+      }
+      \list{institution}{1}{%
+        {Legambiente}%
+      }
+      \strng{namehash}{39619850a4a8d4273ed1a89b37f1dea9}
+      \strng{fullhash}{39619850a4a8d4273ed1a89b37f1dea9}
+      \strng{fullhashraw}{39619850a4a8d4273ed1a89b37f1dea9}
+      \strng{bibnamehash}{39619850a4a8d4273ed1a89b37f1dea9}
+      \strng{authorbibnamehash}{39619850a4a8d4273ed1a89b37f1dea9}
+      \strng{authornamehash}{39619850a4a8d4273ed1a89b37f1dea9}
+      \strng{authorfullhash}{39619850a4a8d4273ed1a89b37f1dea9}
+      \strng{authorfullhashraw}{39619850a4a8d4273ed1a89b37f1dea9}
+      \field{sortinit}{I}
+      \field{sortinithash}{8d291c51ee89b6cd86bf5379f0b151d8}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2025-09-30}
+      \field{title}{Gli italiani e l’energia: Forum QualEnergia 2024}
+      \field{type}{Survey Report}
+      \field{year}{2024}
+      \true{nocite}
+      \verb{urlraw}
+      \verb https://www.legambiente.it/wp-content/uploads/2024/11/Forum-QualEnergia-sondaggio-ipsos-2024.pdf
+      \endverb
+      \verb{url}
+      \verb https://www.legambiente.it/wp-content/uploads/2024/11/Forum-QualEnergia-sondaggio-ipsos-2024.pdf
+      \endverb
+    \endentry
+    \entry{KISER2023104647}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=9a9e61666ceaed4149dba572d8591f99}{%
+           family={Kiser},
+           familyi={K\bibinitperiod},
+           given={Lauren},
+           giveni={L\bibinitperiod}}}%
+        {{hash=907d80d4e69eab3b6e70437d38d2c518}{%
+           family={Otero},
+           familyi={O\bibinitperiod},
+           given={Luis\bibnamedelima Daniel},
+           giveni={L\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+      }
+      \strng{namehash}{4f2ec5e88ff6629729c0ae4e9f03d77c}
+      \strng{fullhash}{4f2ec5e88ff6629729c0ae4e9f03d77c}
+      \strng{fullhashraw}{4f2ec5e88ff6629729c0ae4e9f03d77c}
+      \strng{bibnamehash}{4f2ec5e88ff6629729c0ae4e9f03d77c}
+      \strng{authorbibnamehash}{4f2ec5e88ff6629729c0ae4e9f03d77c}
+      \strng{authornamehash}{4f2ec5e88ff6629729c0ae4e9f03d77c}
+      \strng{authorfullhash}{4f2ec5e88ff6629729c0ae4e9f03d77c}
+      \strng{authorfullhashraw}{4f2ec5e88ff6629729c0ae4e9f03d77c}
+      \field{sortinit}{K}
+      \field{sortinithash}{c02bf6bff1c488450c352b40f5d853ab}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0149-1970}
+      \field{journaltitle}{Progress in Nuclear Energy}
+      \field{title}{Multi-criteria decision model for selection of nuclear power plant type}
+      \field{volume}{159}
+      \field{year}{2023}
+      \field{pages}{104647}
+      \range{pages}{1}
+      \verb{doi}
+      \verb https://doi.org/10.1016/j.pnucene.2023.104647
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S0149197023000823
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S0149197023000823
+      \endverb
+      \keyw{Analytic hierarchy process,Decision-making,Nuclear power plant design}
     \endentry
     \entry{KHNP_EU_APR_Characteristics}{misc}{}{}
       \name{author}{1}{}{%
@@ -846,6 +1591,255 @@
       \verb https://www.frontiersin.org/journals/energy-research/articles/10.3389/fenrg.2023.1147016
       \endverb
     \endentry
+    \entry{Locatelli01092012}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=b8decda52df830fcd83e8069fa3e2084}{%
+           family={Locatelli},
+           familyi={L\bibinitperiod},
+           given={Giorgio},
+           giveni={G\bibinitperiod}}}%
+        {{hash=0ca42bad6b450d8dc5bcbfd51eae868d}{%
+           family={Mancini},
+           familyi={M\bibinitperiod},
+           given={Mauro},
+           giveni={M\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Taylor \& Francis}%
+      }
+      \strng{namehash}{89dfcd7f096983752164bc822adf7085}
+      \strng{fullhash}{89dfcd7f096983752164bc822adf7085}
+      \strng{fullhashraw}{89dfcd7f096983752164bc822adf7085}
+      \strng{bibnamehash}{89dfcd7f096983752164bc822adf7085}
+      \strng{authorbibnamehash}{89dfcd7f096983752164bc822adf7085}
+      \strng{authornamehash}{89dfcd7f096983752164bc822adf7085}
+      \strng{authorfullhash}{89dfcd7f096983752164bc822adf7085}
+      \strng{authorfullhashraw}{89dfcd7f096983752164bc822adf7085}
+      \field{sortinit}{L}
+      \field{sortinithash}{7c47d417cecb1f4bd38d1825c427a61a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{International Journal of Production Research}
+      \field{number}{17}
+      \field{title}{A framework for the selection of the right nuclear power plant}
+      \field{volume}{50}
+      \field{year}{2012}
+      \field{pages}{4753\bibrangedash 4766}
+      \range{pages}{14}
+      \verb{doi}
+      \verb 10.1080/00207543.2012.657965
+      \endverb
+      \verb{urlraw}
+      \verb https://international.anl.gov/training/materials/BL/Literature/Giorgio%20Locatelli%20Papers/A%20framework%20for%20the%20selection%20of%20the%20right%20nuclear%20power%20plant.pdf
+      \endverb
+      \verb{url}
+      \verb https://international.anl.gov/training/materials/BL/Literature/Giorgio%20Locatelli%20Papers/A%20framework%20for%20the%20selection%20of%20the%20right%20nuclear%20power%20plant.pdf
+      \endverb
+    \endentry
+    \entry{Markandya_Wilkinson_2007}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=b0e2e44bc64a643bb4b286f09e78fac7}{%
+           family={Markandya},
+           familyi={M\bibinitperiod},
+           given={Anil},
+           giveni={A\bibinitperiod}}}%
+        {{hash=f749ea09b1c857922c4a032bbddfceed}{%
+           family={Wilkinson},
+           familyi={W\bibinitperiod},
+           given={Paul},
+           giveni={P\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Elsevier}%
+      }
+      \strng{namehash}{8996c5b5341312631cef888b7549853d}
+      \strng{fullhash}{8996c5b5341312631cef888b7549853d}
+      \strng{fullhashraw}{8996c5b5341312631cef888b7549853d}
+      \strng{bibnamehash}{8996c5b5341312631cef888b7549853d}
+      \strng{authorbibnamehash}{8996c5b5341312631cef888b7549853d}
+      \strng{authornamehash}{8996c5b5341312631cef888b7549853d}
+      \strng{authorfullhash}{8996c5b5341312631cef888b7549853d}
+      \strng{authorfullhashraw}{8996c5b5341312631cef888b7549853d}
+      \field{sortinit}{M}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0140-6736}
+      \field{journaltitle}{The Lancet}
+      \field{month}{9}
+      \field{number}{9591}
+      \field{title}{Electricity Generation and Health}
+      \field{volume}{370}
+      \field{year}{2007}
+      \true{nocite}
+      \field{pages}{979\bibrangedash 990}
+      \range{pages}{12}
+      \verb{doi}
+      \verb 10.1016/S0140-6736(07)61253-7
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1016/S0140-6736(07)61253-7
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1016/S0140-6736(07)61253-7
+      \endverb
+    \endentry
+    \entry{McBride_Radiological_Impact_1978}{article}{}{}
+      \name{author}{4}{}{%
+        {{hash=88c4555a1d95b407548d7d3ac11652e9}{%
+           family={McBride},
+           familyi={M\bibinitperiod},
+           given={J.\bibnamedelimi P.},
+           giveni={J\bibinitperiod\bibinitdelim P\bibinitperiod}}}%
+        {{hash=3ca2fd8c61c9f3d927741889f6bdd878}{%
+           family={Moore},
+           familyi={M\bibinitperiod},
+           given={R.\bibnamedelimi E.},
+           giveni={R\bibinitperiod\bibinitdelim E\bibinitperiod}}}%
+        {{hash=ddd33b0c4df31d0e08f6fa11ab335c66}{%
+           family={Witherspoon},
+           familyi={W\bibinitperiod},
+           given={J.\bibnamedelimi P.},
+           giveni={J\bibinitperiod\bibinitdelim P\bibinitperiod}}}%
+        {{hash=ea9f198d3309f1dfa393c072166021e2}{%
+           family={Blanco},
+           familyi={B\bibinitperiod},
+           given={R.\bibnamedelimi E.},
+           giveni={R\bibinitperiod\bibinitdelim E\bibinitperiod}}}%
+      }
+      \strng{namehash}{afa075d052ebb6637431391972e00c30}
+      \strng{fullhash}{0686bd25b3228e0fa06381f5bcf186fb}
+      \strng{fullhashraw}{0686bd25b3228e0fa06381f5bcf186fb}
+      \strng{bibnamehash}{afa075d052ebb6637431391972e00c30}
+      \strng{authorbibnamehash}{afa075d052ebb6637431391972e00c30}
+      \strng{authornamehash}{afa075d052ebb6637431391972e00c30}
+      \strng{authorfullhash}{0686bd25b3228e0fa06381f5bcf186fb}
+      \strng{authorfullhashraw}{0686bd25b3228e0fa06381f5bcf186fb}
+      \field{sortinit}{M}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0036-8075}
+      \field{journaltitle}{Science}
+      \field{month}{12}
+      \field{number}{4372}
+      \field{title}{Radiological Impact of Airborne Effluents of Coal and Nuclear Plants}
+      \field{volume}{202}
+      \field{year}{1978}
+      \true{nocite}
+      \field{pages}{1045\bibrangedash 1050}
+      \range{pages}{6}
+      \verb{doi}
+      \verb 10.1126/science.202.4372.1045
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1126/science.202.4372.1045
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1126/science.202.4372.1045
+      \endverb
+    \endentry
+    \entry{MinisteroInterno_Referendum_2011}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=9d09fa6a4f5d8eec3532eac1ca9fe2f0}{%
+           family={{Ministero dell'Interno (Italy)}},
+           familyi={M\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {Ministero dell'Interno}%
+      }
+      \strng{namehash}{9d09fa6a4f5d8eec3532eac1ca9fe2f0}
+      \strng{fullhash}{9d09fa6a4f5d8eec3532eac1ca9fe2f0}
+      \strng{fullhashraw}{9d09fa6a4f5d8eec3532eac1ca9fe2f0}
+      \strng{bibnamehash}{9d09fa6a4f5d8eec3532eac1ca9fe2f0}
+      \strng{authorbibnamehash}{9d09fa6a4f5d8eec3532eac1ca9fe2f0}
+      \strng{authornamehash}{9d09fa6a4f5d8eec3532eac1ca9fe2f0}
+      \strng{authorfullhash}{9d09fa6a4f5d8eec3532eac1ca9fe2f0}
+      \strng{authorfullhashraw}{9d09fa6a4f5d8eec3532eac1ca9fe2f0}
+      \field{extraname}{1}
+      \field{sortinit}{M}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2025-09-30}
+      \field{title}{Risultati del Referendum - 12 Giugno 2011}
+      \field{type}{Election Data}
+      \field{year}{2011}
+      \verb{urlraw}
+      \verb https://elezionistorico.interno.gov.it/index.php?tpel=F&dtel=12/06/2011&es0=S&tpa=Y&lev0=0&levsut0=0&ms=S&tpe=A
+      \endverb
+      \verb{url}
+      \verb https://elezionistorico.interno.gov.it/index.php?tpel=F&dtel=12/06/2011&es0=S&tpa=Y&lev0=0&levsut0=0&ms=S&tpe=A
+      \endverb
+    \endentry
+    \entry{MinisteroInterno_Referendum_1987}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=9d09fa6a4f5d8eec3532eac1ca9fe2f0}{%
+           family={{Ministero dell'Interno (Italy)}},
+           familyi={M\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {Ministero dell'Interno}%
+      }
+      \strng{namehash}{9d09fa6a4f5d8eec3532eac1ca9fe2f0}
+      \strng{fullhash}{9d09fa6a4f5d8eec3532eac1ca9fe2f0}
+      \strng{fullhashraw}{9d09fa6a4f5d8eec3532eac1ca9fe2f0}
+      \strng{bibnamehash}{9d09fa6a4f5d8eec3532eac1ca9fe2f0}
+      \strng{authorbibnamehash}{9d09fa6a4f5d8eec3532eac1ca9fe2f0}
+      \strng{authornamehash}{9d09fa6a4f5d8eec3532eac1ca9fe2f0}
+      \strng{authorfullhash}{9d09fa6a4f5d8eec3532eac1ca9fe2f0}
+      \strng{authorfullhashraw}{9d09fa6a4f5d8eec3532eac1ca9fe2f0}
+      \field{extraname}{2}
+      \field{sortinit}{M}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2025-09-30}
+      \field{title}{Risultati del Referendum - 8 Novembre 1987}
+      \field{type}{Election Data}
+      \field{year}{1987}
+      \verb{urlraw}
+      \verb https://elezionistorico.interno.gov.it/index.php?tpel=F&dtel=08/11/1987&tpa=I&tpe=A&lev0=0&levsut0=0&es0=S&ms=S
+      \endverb
+      \verb{url}
+      \verb https://elezionistorico.interno.gov.it/index.php?tpel=F&dtel=08/11/1987&tpa=I&tpe=A&lev0=0&levsut0=0&es0=S&ms=S
+      \endverb
+    \endentry
+    \entry{NCRP_Report_160_2009}{report}{}{}
+      \name{author}{1}{}{%
+        {{hash=7fc3fb9ba93eaf23030188a8bcbdf07a}{%
+           family={{National Council on Radiation Protection and Measurements (NCRP)}},
+           familyi={N\bibinitperiod}}}%
+      }
+      \list{institution}{2}{%
+        {National Council on Radiation Protection}%
+        {Measurements}%
+      }
+      \strng{namehash}{7fc3fb9ba93eaf23030188a8bcbdf07a}
+      \strng{fullhash}{7fc3fb9ba93eaf23030188a8bcbdf07a}
+      \strng{fullhashraw}{7fc3fb9ba93eaf23030188a8bcbdf07a}
+      \strng{bibnamehash}{7fc3fb9ba93eaf23030188a8bcbdf07a}
+      \strng{authorbibnamehash}{7fc3fb9ba93eaf23030188a8bcbdf07a}
+      \strng{authornamehash}{7fc3fb9ba93eaf23030188a8bcbdf07a}
+      \strng{authorfullhash}{7fc3fb9ba93eaf23030188a8bcbdf07a}
+      \strng{authorfullhashraw}{7fc3fb9ba93eaf23030188a8bcbdf07a}
+      \field{sortinit}{N}
+      \field{sortinithash}{22369a73d5f88983a108b63f07f37084}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Paywalled; Data accessed via U.S. EPA summary}
+      \field{number}{160}
+      \field{title}{Ionizing Radiation Exposure of the Population of the United States}
+      \field{type}{Report}
+      \field{year}{2009}
+      \true{nocite}
+      \verb{urlraw}
+      \verb https://ncrponline.org/publications/reports/ncrp-report-160-2/
+      \endverb
+      \verb{url}
+      \verb https://ncrponline.org/publications/reports/ncrp-report-160-2/
+      \endverb
+    \endentry
     \entry{nea2020unlocking}{misc}{}{}
       \name{author}{1}{}{%
         {{hash=acb8a32a48769bbbd4aea53c29d22aed}{%
@@ -874,7 +1868,6 @@
       \field{note}{Accessed: 2025-09-10}
       \field{title}{Unlocking Reductions in the Construction Costs of Nuclear}
       \field{year}{2020}
-      \true{nocite}
       \verb{urlraw}
       \verb https://www.oecd-nea.org/jcms/pl_30653/unlocking-reductions-in-the-construction-costs-of-nuclear
       \endverb
@@ -1290,6 +2283,54 @@
       \field{pages}{[12 p.]}
       \range{pages}{-1}
     \endentry
+    \entry{PASAOGLU2018654}{article}{}{}
+      \name{author}{3}{}{%
+        {{hash=e09ef9ba9547b6585e9beccd1bcc61a9}{%
+           family={Pasaoglu},
+           familyi={P\bibinitperiod},
+           given={Guzay},
+           giveni={G\bibinitperiod}}}%
+        {{hash=2e1ec939562ca58257ff4f235de942e7}{%
+           family={Garcia},
+           familyi={G\bibinitperiod},
+           given={Nicolas\bibnamedelima Pardo},
+           giveni={N\bibinitperiod\bibinitdelim P\bibinitperiod}}}%
+        {{hash=30ae2900551aa5d178b8ae947ff97842}{%
+           family={Zubi},
+           familyi={Z\bibinitperiod},
+           given={Ghassan},
+           giveni={G\bibinitperiod}}}%
+      }
+      \strng{namehash}{525bf8b74b9ee6c8137dc78e4bc94738}
+      \strng{fullhash}{525bf8b74b9ee6c8137dc78e4bc94738}
+      \strng{fullhashraw}{525bf8b74b9ee6c8137dc78e4bc94738}
+      \strng{bibnamehash}{525bf8b74b9ee6c8137dc78e4bc94738}
+      \strng{authorbibnamehash}{525bf8b74b9ee6c8137dc78e4bc94738}
+      \strng{authornamehash}{525bf8b74b9ee6c8137dc78e4bc94738}
+      \strng{authorfullhash}{525bf8b74b9ee6c8137dc78e4bc94738}
+      \strng{authorfullhashraw}{525bf8b74b9ee6c8137dc78e4bc94738}
+      \field{sortinit}{P}
+      \field{sortinithash}{ff3bcf24f47321b42cb156c2cc8a8422}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0301-4215}
+      \field{journaltitle}{Energy Policy}
+      \field{title}{A multi-criteria and multi-expert decision aid approach to evaluate the future Turkish power plant portfolio}
+      \field{volume}{119}
+      \field{year}{2018}
+      \field{pages}{654\bibrangedash 665}
+      \range{pages}{12}
+      \verb{doi}
+      \verb https://doi.org/10.1016/j.enpol.2018.04.044
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S030142151830260X
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S030142151830260X
+      \endverb
+      \keyw{Analytic hierarchy process,Multi criteria decision making,Electricity generation,Turkish electricity market,Power plants,Renewable energy}
+    \endentry
     \entry{PowerTechnology2022}{article}{}{}
       \name{author}{1}{}{%
         {{hash=1bcaf8baa22e7e7835fba980b94fe7e6}{%
@@ -1491,6 +2532,123 @@
       \endverb
       \keyw{Nuclear energy policy,Nuclear power costs,Nuclear market competition,Light water reactors}
     \endentry
+    \entry{SANTOYOCASTELAZO2014119}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=2d50e85c128ab147f37430a8cd58c013}{%
+           family={Santoyo-Castelazo},
+           familyi={S\bibinithyphendelim C\bibinitperiod},
+           given={Edgar},
+           giveni={E\bibinitperiod}}}%
+        {{hash=d6b09ec7ef6b6fdc7acef348d6100577}{%
+           family={Azapagic},
+           familyi={A\bibinitperiod},
+           given={Adisa},
+           giveni={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{658031dea0475ba4742d7f868e658d45}
+      \strng{fullhash}{658031dea0475ba4742d7f868e658d45}
+      \strng{fullhashraw}{658031dea0475ba4742d7f868e658d45}
+      \strng{bibnamehash}{658031dea0475ba4742d7f868e658d45}
+      \strng{authorbibnamehash}{658031dea0475ba4742d7f868e658d45}
+      \strng{authornamehash}{658031dea0475ba4742d7f868e658d45}
+      \strng{authorfullhash}{658031dea0475ba4742d7f868e658d45}
+      \strng{authorfullhashraw}{658031dea0475ba4742d7f868e658d45}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0959-6526}
+      \field{journaltitle}{Journal of Cleaner Production}
+      \field{title}{Sustainability assessment of energy systems: integrating environmental, economic and social aspects}
+      \field{volume}{80}
+      \field{year}{2014}
+      \field{pages}{119\bibrangedash 138}
+      \range{pages}{20}
+      \verb{doi}
+      \verb https://doi.org/10.1016/j.jclepro.2014.05.061
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S0959652614005381
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S0959652614005381
+      \endverb
+      \keyw{Energy,Multi-criteria decision analysis,Life cycle assessment,Sustainability assessment,Scenario analysis,Mexico}
+    \endentry
+    \entry{SOVACOOL20163952}{article}{}{}
+      \name{author}{8}{}{%
+        {{hash=9c365de688dd49a237324d45bb5bff7a}{%
+           family={Sovacool},
+           familyi={S\bibinitperiod},
+           given={Benjamin\bibnamedelima K.},
+           giveni={B\bibinitperiod\bibinitdelim K\bibinitperiod}}}%
+        {{hash=d18ba652e6a4447627c581e31c4628f2}{%
+           family={Andersen},
+           familyi={A\bibinitperiod},
+           given={Rasmus},
+           giveni={R\bibinitperiod}}}%
+        {{hash=457d7b81b19ce71d508749346e71c23e}{%
+           family={Sorensen},
+           familyi={S\bibinitperiod},
+           given={Steven},
+           giveni={S\bibinitperiod}}}%
+        {{hash=424f73bafb228544818408e19beaf3a5}{%
+           family={Sorensen},
+           familyi={S\bibinitperiod},
+           given={Kenneth},
+           giveni={K\bibinitperiod}}}%
+        {{hash=9ef10ee454a2066d2529063fe7c57fd5}{%
+           family={Tienda},
+           familyi={T\bibinitperiod},
+           given={Victor},
+           giveni={V\bibinitperiod}}}%
+        {{hash=6972dc246eff6aeae82eff0cec44e655}{%
+           family={Vainorius},
+           familyi={V\bibinitperiod},
+           given={Arturas},
+           giveni={A\bibinitperiod}}}%
+        {{hash=56686cf7049bd25cd597db9c8e3cbf09}{%
+           family={Schirach},
+           familyi={S\bibinitperiod},
+           given={Oliver\bibnamedelima Marc},
+           giveni={O\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+        {{hash=a52c38933bfd0ee85e9fa7118166d87e}{%
+           family={Bjørn-Thygesen},
+           familyi={B\bibinithyphendelim T\bibinitperiod},
+           given={Frans},
+           giveni={F\bibinitperiod}}}%
+      }
+      \strng{namehash}{0decd497eaccb5d870d8a40ee5b4b939}
+      \strng{fullhash}{53092b2dca98c7d63d9a8d87c05e14fe}
+      \strng{fullhashraw}{53092b2dca98c7d63d9a8d87c05e14fe}
+      \strng{bibnamehash}{0decd497eaccb5d870d8a40ee5b4b939}
+      \strng{authorbibnamehash}{0decd497eaccb5d870d8a40ee5b4b939}
+      \strng{authornamehash}{0decd497eaccb5d870d8a40ee5b4b939}
+      \strng{authorfullhash}{53092b2dca98c7d63d9a8d87c05e14fe}
+      \strng{authorfullhashraw}{53092b2dca98c7d63d9a8d87c05e14fe}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0959-6526}
+      \field{journaltitle}{Journal of Cleaner Production}
+      \field{title}{Balancing safety with sustainability: assessing the risk of accidents for modern low-carbon energy systems}
+      \field{volume}{112}
+      \field{year}{2016}
+      \true{nocite}
+      \field{pages}{3952\bibrangedash 3965}
+      \range{pages}{14}
+      \verb{doi}
+      \verb https://doi.org/10.1016/j.jclepro.2015.07.059
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S0959652615009877
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S0959652615009877
+      \endverb
+      \keyw{Energy accidents,Energy security,Energy systems and risk}
+    \endentry
     \entry{STEIGERWALD2023128204}{article}{}{}
       \name{author}{4}{}{%
         {{hash=b9ee91fde9fece7d8c02b2bd891a774e}{%
@@ -1544,6 +2702,89 @@
       \verb https://www.sciencedirect.com/science/article/pii/S0360544223015980
       \endverb
       \keyw{Nuclear power,SMR,Production theory,Cost forecasting,Monte–Carlo simulation}
+    \endentry
+    \entry{Sterling_European_Energy_Import_2025}{article}{}{}
+      \name{author}{3}{}{%
+        {{hash=a5cf1f2624f13712ed1124a6e1605e28}{%
+           family={Sterling},
+           familyi={S\bibinitperiod},
+           given={Julianna},
+           giveni={J\bibinitperiod}}}%
+        {{hash=2fdb51497aefaf943eefcfe432ca80d8}{%
+           family={Warusawitharana},
+           familyi={W\bibinitperiod},
+           given={Missaka},
+           giveni={M\bibinitperiod}}}%
+        {{hash=5e72bc22dbcf0984c6d113d280e36990}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Xiangyu},
+           giveni={X\bibinitperiod}}}%
+      }
+      \list{institution}{1}{%
+        {Board of Governors of the Federal Reserve System}%
+      }
+      \list{location}{1}{%
+        {Washington}%
+      }
+      \strng{namehash}{79c83ff71cbdc887e88b3d1ceb747518}
+      \strng{fullhash}{79c83ff71cbdc887e88b3d1ceb747518}
+      \strng{fullhashraw}{79c83ff71cbdc887e88b3d1ceb747518}
+      \strng{bibnamehash}{79c83ff71cbdc887e88b3d1ceb747518}
+      \strng{authorbibnamehash}{79c83ff71cbdc887e88b3d1ceb747518}
+      \strng{authornamehash}{79c83ff71cbdc887e88b3d1ceb747518}
+      \strng{authorfullhash}{79c83ff71cbdc887e88b3d1ceb747518}
+      \strng{authorfullhashraw}{79c83ff71cbdc887e88b3d1ceb747518}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{FEDS Notes}
+      \field{month}{4}
+      \field{title}{European Energy Import Dependency}
+      \field{year}{2025}
+      \verb{doi}
+      \verb 10.17016/2380-7172.3768
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.17016/2380-7172.3768
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.17016/2380-7172.3768
+      \endverb
+    \endentry
+    \entry{SWG_Nuclear_Survey_2024}{report}{}{}
+      \name{author}{1}{}{%
+        {{hash=db499ab6ffb54fb5a1be8a7efeaff749}{%
+           family={{SWG S.p.A.}},
+           familyi={S\bibinitperiod}}}%
+      }
+      \list{institution}{1}{%
+        {iWeek}%
+      }
+      \strng{namehash}{db499ab6ffb54fb5a1be8a7efeaff749}
+      \strng{fullhash}{db499ab6ffb54fb5a1be8a7efeaff749}
+      \strng{fullhashraw}{db499ab6ffb54fb5a1be8a7efeaff749}
+      \strng{bibnamehash}{db499ab6ffb54fb5a1be8a7efeaff749}
+      \strng{authorbibnamehash}{db499ab6ffb54fb5a1be8a7efeaff749}
+      \strng{authornamehash}{db499ab6ffb54fb5a1be8a7efeaff749}
+      \strng{authorfullhash}{db499ab6ffb54fb5a1be8a7efeaff749}
+      \strng{authorfullhashraw}{db499ab6ffb54fb5a1be8a7efeaff749}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2025-09-30}
+      \field{title}{Nucleare italiano per i cittadini, le imprese e il territorio}
+      \field{type}{Survey Report}
+      \field{year}{2024}
+      \true{nocite}
+      \verb{urlraw}
+      \verb https://primapavia.it/media/2024/04/Nucleare-italiano-per-i-cittadini-le-imprese-e-il-territorio-2024-04-15.pdf
+      \endverb
+      \verb{url}
+      \verb https://primapavia.it/media/2024/04/Nucleare-italiano-per-i-cittadini-le-imprese-e-il-territorio-2024-04-15.pdf
+      \endverb
     \endentry
     \entry{swissinfo_Nuclear_Power_Switzerland_2025}{article}{}{}
       \name{author}{1}{}{%
@@ -1603,6 +2844,108 @@
       \endverb
       \verb{url}
       \verb https://www.terrapower.com/natrium/
+      \endverb
+    \endentry
+    \entry{TOPALOGLU2025103228}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=bc5fd2741406be36217a0b89f563ebaf}{%
+           family={Topaloğlu},
+           familyi={T\bibinitperiod},
+           given={Fatih},
+           giveni={F\bibinitperiod}}}%
+      }
+      \strng{namehash}{bc5fd2741406be36217a0b89f563ebaf}
+      \strng{fullhash}{bc5fd2741406be36217a0b89f563ebaf}
+      \strng{fullhashraw}{bc5fd2741406be36217a0b89f563ebaf}
+      \strng{bibnamehash}{bc5fd2741406be36217a0b89f563ebaf}
+      \strng{authorbibnamehash}{bc5fd2741406be36217a0b89f563ebaf}
+      \strng{authornamehash}{bc5fd2741406be36217a0b89f563ebaf}
+      \strng{authorfullhash}{bc5fd2741406be36217a0b89f563ebaf}
+      \strng{authorfullhashraw}{bc5fd2741406be36217a0b89f563ebaf}
+      \field{sortinit}{T}
+      \field{sortinithash}{9af77f0292593c26bde9a56e688eaee9}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{1738-5733}
+      \field{journaltitle}{Nuclear Engineering and Technology}
+      \field{number}{3}
+      \field{title}{Analytic network process (ANP) based decision support tool for nuclear power plant location and reactor type selection}
+      \field{volume}{57}
+      \field{year}{2025}
+      \field{pages}{103228}
+      \range{pages}{1}
+      \verb{doi}
+      \verb https://doi.org/10.1016/j.net.2024.09.031
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S1738573324004777
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S1738573324004777
+      \endverb
+      \keyw{Analytical network process,Nuclear power plant,Site selection,Reactor selection,Decision support tool}
+    \endentry
+    \entry{DOE_Advanced_Reactor_Demonstration_2020}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=fe7581cd1708bf7661aab47dfaf5ccb4}{%
+           family={{U.S. Department of Energy (DOE)}},
+           familyi={U\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {U.S. Department of Energy, Office of Nuclear Energy}%
+      }
+      \strng{namehash}{fe7581cd1708bf7661aab47dfaf5ccb4}
+      \strng{fullhash}{fe7581cd1708bf7661aab47dfaf5ccb4}
+      \strng{fullhashraw}{fe7581cd1708bf7661aab47dfaf5ccb4}
+      \strng{bibnamehash}{fe7581cd1708bf7661aab47dfaf5ccb4}
+      \strng{authorbibnamehash}{fe7581cd1708bf7661aab47dfaf5ccb4}
+      \strng{authornamehash}{fe7581cd1708bf7661aab47dfaf5ccb4}
+      \strng{authorfullhash}{fe7581cd1708bf7661aab47dfaf5ccb4}
+      \strng{authorfullhashraw}{fe7581cd1708bf7661aab47dfaf5ccb4}
+      \field{sortinit}{U}
+      \field{sortinithash}{6901a00e45705986ee5e7ca9fd39adca}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2025-10-15}
+      \field{title}{Advanced Reactor Demonstration Program}
+      \field{year}{2020}
+      \verb{urlraw}
+      \verb https://www.energy.gov/ne/advanced-reactor-demonstration-program
+      \endverb
+      \verb{url}
+      \verb https://www.energy.gov/ne/advanced-reactor-demonstration-program
+      \endverb
+    \endentry
+    \entry{EPA_Radiation_Sources_2025}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=f0654e65cc38e37270a13ebc4263b527}{%
+           family={{U.S. Environmental Protection Agency (EPA)}},
+           familyi={U\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {U.S. Environmental Protection Agency}%
+      }
+      \strng{namehash}{f0654e65cc38e37270a13ebc4263b527}
+      \strng{fullhash}{f0654e65cc38e37270a13ebc4263b527}
+      \strng{fullhashraw}{f0654e65cc38e37270a13ebc4263b527}
+      \strng{bibnamehash}{f0654e65cc38e37270a13ebc4263b527}
+      \strng{authorbibnamehash}{f0654e65cc38e37270a13ebc4263b527}
+      \strng{authornamehash}{f0654e65cc38e37270a13ebc4263b527}
+      \strng{authorfullhash}{f0654e65cc38e37270a13ebc4263b527}
+      \strng{authorfullhashraw}{f0654e65cc38e37270a13ebc4263b527}
+      \field{sortinit}{U}
+      \field{sortinithash}{6901a00e45705986ee5e7ca9fd39adca}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2025-10-15; Data sourced from NCRP Report No. 160 (2009)}
+      \field{title}{Radiation Sources and Doses}
+      \field{year}{2025}
+      \true{nocite}
+      \verb{urlraw}
+      \verb https://www.epa.gov/radiation/radiation-sources-and-doses
+      \endverb
+      \verb{url}
+      \verb https://www.epa.gov/radiation/radiation-sources-and-doses
       \endverb
     \endentry
     \entry{NRC_ML052280170}{report}{}{}
@@ -1837,6 +3180,53 @@
       \endverb
       \verb{url}
       \verb https://www.world-nuclear-news.org/articles/poll-finds-majority-of-swiss-support-nuclear-new-build
+      \endverb
+    \endentry
+    \entry{10.1063/1.4866099}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=68de03327b9c1e02a5f6197561002606}{%
+           family={Zolkaffly},
+           familyi={Z\bibinitperiod},
+           given={Muhammed\bibnamedelima Zulfakar},
+           giveni={M\bibinitperiod\bibinitdelim Z\bibinitperiod}}}%
+        {{hash=edaff9dfe74599af2c52ef06f9b3238e}{%
+           family={Han},
+           familyi={H\bibinitperiod},
+           given={Ki-In},
+           giveni={K\bibinithyphendelim I\bibinitperiod}}}%
+      }
+      \strng{namehash}{b5f8e2118df730faf0765497b3c5eff1}
+      \strng{fullhash}{b5f8e2118df730faf0765497b3c5eff1}
+      \strng{fullhashraw}{b5f8e2118df730faf0765497b3c5eff1}
+      \strng{bibnamehash}{b5f8e2118df730faf0765497b3c5eff1}
+      \strng{authorbibnamehash}{b5f8e2118df730faf0765497b3c5eff1}
+      \strng{authornamehash}{b5f8e2118df730faf0765497b3c5eff1}
+      \strng{authorfullhash}{b5f8e2118df730faf0765497b3c5eff1}
+      \strng{authorfullhashraw}{b5f8e2118df730faf0765497b3c5eff1}
+      \field{sortinit}{Z}
+      \field{sortinithash}{96892c0b0a36bb8557c40c49813d48b3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0094-243X}
+      \field{journaltitle}{AIP Conference Proceedings}
+      \field{month}{02}
+      \field{number}{1}
+      \field{title}{Reactor technology assessment and selection utilizing systems engineering approach}
+      \field{volume}{1584}
+      \field{year}{2014}
+      \field{pages}{22\bibrangedash 31}
+      \range{pages}{10}
+      \verb{doi}
+      \verb 10.1063/1.4866099
+      \endverb
+      \verb{eprint}
+      \verb https://pubs.aip.org/aip/acp/article-pdf/1584/1/22/11739325/22_1_online.pdf
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1063/1.4866099
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1063/1.4866099
       \endverb
     \endentry
   \enddatalist
