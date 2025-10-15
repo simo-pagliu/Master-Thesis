@@ -2,7 +2,7 @@
 
 **Master’s Thesis Project**
 *Simone Pagliuca, Politecnico di Milano*
-*Internship at Paul Scherrer Institute (PSI), Sep 2025 – Feb 2026*
+*At Paul Scherrer Institute (PSI), Sep 2025 – Feb 2026*
 
 [![Overleaf Project - Read Only](https://img.shields.io/badge/Overleaf-Project-blue)](https://www.overleaf.com/read/nvnzzqkztwfd#c543f9)
 
