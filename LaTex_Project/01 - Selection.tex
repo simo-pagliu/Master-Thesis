@@ -9,7 +9,7 @@ Second, reactors commissioned before 2000 were excluded from consideration, as t
 From this pre-selected group, three designs - the EPR-1750, APR-1400, and AP-1000 - were prioritized for comprehensive analysis. It should be noted that while the EPR (1650 MWe) and EPR-1750 share significant design similarities, they are treated as separate models in this study. Additionally, the Advanced Boiling Water Reactor (ABWR), though listed as operational in the IAEA ARIS database, was excluded following verification through the PRIS database, which indicates all ABWR units have suspended operation since 2011 \cite{IAEA_PRIS_2025}. The selection process and its outcomes are summarized in Table \ref{tab:reactor-selection}.
 
 
-\begin{table}[!ht]
+\begin{table}[!hb]
 \centering
 \begin{tabularx}{\textwidth}{llXXXX}
 \toprule
@@ -40,7 +40,7 @@ OPR-1000 & S.Korea & \cmark & \cmark & \xmark & Rejected \\
 
 Subsequently, the IAEA Advanced Reactors Information System (ARIS) database \cite{iaea2025aris}, was consulted to identify advanced reactor models classified as under design, under regulatory review, under construction, or operational. Demonstrations units and prototypes were excluded from this set, yielding 10 candidate designs. To avoid redundancy, models already included in the prior selection (e.g., Generation III+ designs captured in both datasets) were removed. Each remaining design was then assessed for development status, technological readiness, and applicability to European energy systems as summarized in Table \ref{tab:advanced-reactor-selection}.
 
-\begin{table}[ht]
+\begin{table}[!hb]
 \centering
 \begin{tabularx}{\textwidth}{lllX}
 \toprule
@@ -74,9 +74,25 @@ SMART & S.Korea, Saudi Arabia & \xmark & Plan to export only to south-east asia 
 \label{tab:advanced-reactor-selection}
 \end{table}
 
-So we are left with 3 Gen III+ designs and 3 advanced designs to analyze further.
-
-Maybe here add a paragraph for each design to explain their main features.
+The overall selection produced a set of six reactors, three Generation III+ and three SMRs. Their main characteristics are summarized in Table \ref{tab:final-reactor-selection}. The most notable differences are the integrated designs of the BWRX-300 and Nuscale SMR which eliminate the external primary loop in favour of steam generator inside the reactor pressure vessel. This allows for compact construction and allows to exploit natural circulation for cooling. Then the Nuscale SMR is the only model designed to be deployed in a multi unit configuration, with up to 12 modules in the same containment building.
+\textcolor{red}{Maybe here add a paragraph for each design to explain their main features.}
+\begin{table}[!hb]
+\centering
+\begin{tabularx}{\textwidth}{lclcX}
+\toprule
+\textbf{Reactor Name} & \textbf{Type} & \textbf{Construction} & \textbf{P$_e$ (MWe)} & \textbf{Supplier} \\
+\midrule
+APR1400 & PWR  & 1 Unit & 1340 & KEPCO (S.Korea) \\
+EPR 1750 & PWR  & 1 Unit & 1630 & Framatome (France) \\
+AP1000 & PWR  & 1 Unit & 1120 & Westinghouse (USA) \\
+BWRX300 & i-BWR & 1 Unit & 300 & GE-Hitachi (USA-Canada)\\
+Rolls Royce SMR & PWR  & 4 to 12 Units & 470 & Rolls Royce (UK) \\
+Nuscale & i-PWR & 1 Unit & 77 & Nuscale Power (USA) \\
+\bottomrule
+\end{tabularx}
+\caption{Final selection of reactor models for analysis}
+\label{tab:final-reactor-selection}
+\end{table}
 
 \section{Country Selection for Comparative Analysis}
 This study evaluates four European countries: France, Italy, Poland and Switzerland, to assess how national energy contexts influence the ranking of nuclear reactor designs.
