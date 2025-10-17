@@ -1,6 +1,9 @@
 \section{Attribute Definition}
 \textcolor{red}{Throughout this section we will define the indicators.}
 
+\subsection{Technical parameters}
+...
+
 \subsection{MOX Fuel Compatibility}
 Mixed Oxide (MOX) fuel is produced through spent nuclear fuel reprocessing and offers a solution for partially closing the nuclear fuel cycle in thermal reactors. While this process generates some secondary waste, it provides several strategic advantages: reducing final nuclear waste volumes, minimizing mining waste, and decreasing dependence on uranium imports. The latter is particularly relevant for Europe, which lacks significant domestic uranium deposits. However, reprocessing also presents proliferation risks since the extracted plutonium could potentially be diverted for weapons production. Due to these competing factors, nuclear fuel reprocessing is a fundamental strategic decision; the United States has foregone this practice, while France and UK have implemented the process in their nuclear programs \cite{CRS_Reprocessing_Spent_Fuel_2025}.
 
@@ -29,41 +32,13 @@ Given the European context of this study, MOX compatibility is considered a rele
     \label{tab:mox-compatibility}
 \end{table}
 
-\subsection{Operational Costs}
-Steigerwald et al. (2023) \cite{STEIGERWALD2023128204} provides comprehensive cost analyses for future nuclear installations, including capital and operational expenditures for both SMRs and large reactors. The study reports operational costs in $USD_{2020}/MWh_e$ for EPR and APR1400 designs, as well as a "Long-Term US" category which this analysis uses as AP1000 costs. For SMRs, operational costs were originally presented in power-based units ($USD_{2020}/MW_e$), requiring conversion to energy-based measurements ($USD_{2020}/MWh_e$) using a Gaussian distribution of capacity factors ($\mu$ = 90\%, $\sigma$ = 5\%) according to:
+\subsection{Technological Readiness}
+\textcolor{red}{Expert consultation}
 
-$$
-\frac{USD_{2020}}{MWh_e} = \frac{USD_{2020}}{MW_e} \cdot \frac{1}{CF \cdot 8760 \frac{h}{year}}
-$$
-
-The same study reports fuel costs of $6.23 USD_{2020}/MWh_e$ for PWR-based technologies with the exceptions of NuScale at $7.15 USD_{2020}/MWh_e$ and the only BWR reactor at $29.55 USD_{2020}/MWh_e$. For comparative context, operational cost estimates for utility-scale onshore wind, hydroelectric, and solar PV (with single axis tracking and DC battery storage) were obtained from the U.S. Energy Information Administration \cite{EIA_Capital_Costs_AEO2024}. All cost data have been standardized to 2020 USD to maintain consistency with the primary data sources \cite{STEIGERWALD2023128204, NEA2020}, values are presented in Table \ref{tab:operational-costs}.
-
-
-\begin{table}[!hb]
-    \centering
-    \begin{tabularx}{\textwidth}{l X X}
-        \toprule
-        \textbf{Reactor Model} & \textbf{Operative Cost [\$/MWh]} & Data Source\\
-        \midrule
-        APR-1400          & 18.44 & \cite{STEIGERWALD2023128204} \\
-        EPR-1750        & 14.26 & \cite{STEIGERWALD2023128204} \\
-        AP-1000          & 18.69 & \cite{STEIGERWALD2023128204} \\
-        BWRX-300        & $18.30 \pm 0.82$ & \cite{STEIGERWALD2023128204} \\
-        Rolls Royce SMR & $65.68 \pm 2.94$ & \cite{STEIGERWALD2023128204} \\
-        NuScale         & $22.76 \pm 1.02$ & \cite{STEIGERWALD2023128204} \\
-        \textbf{Other Power Plants} & & \\
-        Onshore Wind   & 28.08 & \cite{EIA_Capital_Costs_AEO2024} \\
-        Solar PV + Battery & 33.33 & \cite{EIA_Capital_Costs_AEO2024} \\
-        Hydroelectric  & 28.49 & \cite{EIA_Capital_Costs_AEO2024} \\
-        \bottomrule
-    \end{tabularx}
-    \caption{Economic costs for selected reactor models}
-    \label{tab:operational-costs}
-\end{table}
-
+\subsection{Safety}
+\textcolor{red}{To be discussed}
 
 \subsection{Capital Costs}
-
 \textcolor{red}{DRAFT}
 
 \begin{table}[!hb]
@@ -116,7 +91,6 @@ We want to clarify that the data has all been converted to 2020 USD since the ma
 \end{table}
 
 \subsection{Commissioning Time}
-
 \textcolor{red}{DRAFT}
 
 See observations in the previous section 
@@ -141,6 +115,53 @@ I would apply a +0.5 years to planned commissioning time on the APR and AP based
     \label{tab:tech-readiness}
 \end{table}
 
+
+\subsection{Operational Costs}
+\textcolor{red}{Lascks presentation of the attribute}
+
+Steigerwald et al. (2023) \cite{STEIGERWALD2023128204} provides comprehensive cost analyses for future nuclear installations, including capital and operational expenditures for both SMRs and large reactors. The study reports operational costs in $USD_{2020}/MWh_e$ for EPR and APR1400 designs, as well as a "Long-Term US" category which this analysis uses as AP1000 costs. For SMRs, operational costs were originally presented in power-based units ($USD_{2020}/MW_e$), requiring conversion to energy-based measurements ($USD_{2020}/MWh_e$) using a Gaussian distribution of capacity factors ($\mu$ = 90\%, $\sigma$ = 5\%) according to:
+
+$$
+\frac{USD_{2020}}{MWh_e} = \frac{USD_{2020}}{MW_e} \cdot \frac{1}{CF \cdot 8760 \frac{h}{year}}
+$$
+
+The same study reports fuel costs of $6.23 USD_{2020}/MWh_e$ for PWR-based technologies with the exceptions of NuScale at $7.15 USD_{2020}/MWh_e$ and the only BWR reactor at $29.55 USD_{2020}/MWh_e$. For comparative context, operational cost estimates for utility-scale onshore wind, hydroelectric, and solar PV (with single axis tracking and DC battery storage) were obtained from the U.S. Energy Information Administration \cite{EIA_Capital_Costs_AEO2024}. All cost data have been standardized to 2020 USD to maintain consistency with the primary data sources \cite{STEIGERWALD2023128204, NEA2020}, values are presented in Table \ref{tab:operational-costs}.
+
+
+\begin{table}[!hb]
+    \centering
+    \begin{tabularx}{\textwidth}{l X X}
+        \toprule
+        \textbf{Reactor Model} & \textbf{Operative Cost [\$/MWh]} & Data Source\\
+        \midrule
+        APR-1400          & 18.44 & \cite{STEIGERWALD2023128204} \\
+        EPR-1750        & 14.26 & \cite{STEIGERWALD2023128204} \\
+        AP-1000          & 18.69 & \cite{STEIGERWALD2023128204} \\
+        BWRX-300        & $18.30 \pm 0.82$ & \cite{STEIGERWALD2023128204} \\
+        Rolls Royce SMR & $65.68 \pm 2.94$ & \cite{STEIGERWALD2023128204} \\
+        NuScale         & $22.76 \pm 1.02$ & \cite{STEIGERWALD2023128204} \\
+        \textbf{Other Power Plants} & & \\
+        Onshore Wind   & 28.08 & \cite{EIA_Capital_Costs_AEO2024} \\
+        Solar PV + Battery & 33.33 & \cite{EIA_Capital_Costs_AEO2024} \\
+        Hydroelectric  & 28.49 & \cite{EIA_Capital_Costs_AEO2024} \\
+        \bottomrule
+    \end{tabularx}
+    \caption{Economic costs for selected reactor models}
+    \label{tab:operational-costs}
+\end{table}
+
+
+\subsection{Potential Impact on the energy market}
+\textcolor{red}{To write}
+
+\subsection{Potential Impact on greenhouse gas emissions}
+\textcolor{red}{To write}
+
+\subsection{Waste}
+\textcolor{red}{To write}
+
+\subsection{Size - Nominal output power}
+\textcolor{red}{To write}
 
 \subsection{Load Following Capabilities}
 Load-following capability can be quantitatively assessed using characteristic curves that represent ramp-up and ramp-down rates as a function of load (expressed as percentage of nominal power $\%P_{nom}$), as illustrated in Figure \ref{fig:load-following-curve}. To facilitate comparative analysis, these performance curves are reduced to scalar values through integration of the area under said curve.
@@ -172,7 +193,7 @@ The results of these analyses are presented in Table \ref{tab:load-following-cap
         NuScale         & 2.00   & \cite{ENCO_SMR_Analysis_2022} \\
         GE 9HA.02 2xCC & 7.02 & \cite{GE_9HA_Gas_Turbine_2015} \\
         GE LM2500XPRESS+G5 2xCC & 40.54 & \cite{GEVernova_LM2500XPRESS_2025} \\
-        Hydroelectric   & >100 & \cite{OTA_Electric_Power_Wheeling_1989, osti_219975, WH_Pumped_Storage_Wind_2009} \\
+        Hydroelectric   & >100 & \cite{OTA_Electric_Power_Wheeling_1989, osti_219975, MWH_Pumped_Storage_Wind_2009} \\
         \bottomrule
     \end{tabularx}
     \caption{Load following capabilities and power output}
