@@ -105,13 +105,16 @@
 %	ADD YOUR PACKAGES (be careful of package interaction)
 %----------------------------------------------------------------------------
 \usepackage{placeins}
+\usepackage{letltxmacro} % To redefine section command with optional arguments
 %----------------------------------------------------------------------------
 %	ADD YOUR DEFINITIONS AND COMMANDS (be careful of existing commands)
 %----------------------------------------------------------------------------
-\let\oldsection\section
-\renewcommand{\section}[1]{%
-	\FloatBarrier
-	\oldsection{#1}%
+\LetLtxMacro\oldsection\section
+\RenewDocumentCommand\section{som}{%
+    \FloatBarrier%
+    \IfBooleanTF{#1}
+        {\oldsection*{#3}}% Starred version
+        {\IfValueTF{#2}{\oldsection[#2]{#3}}{\oldsection{#3}}}% Unstarred version
 }
 %----------------------------------------------------------------------------
 %	BEGIN OF YOUR DOCUMENT
@@ -138,7 +141,7 @@
 	course=Nuclear Engineering - Ingegneria Nucleare, % Study Programme (in Italian)
 	ID  = 247812,  % Student ID number (numero di matricola)
 	advisor= Prof. Stefano Lorenzi, % Supervisor name
-	coadvisor={Prof. Dr. Russell McKenna, Dr. Peter Burgherr, Dr. River Huang}, % Co-Supervisor name, remove this line if there is none
+	coadvisor={Prof. Russell McKenna, Dr. Peter Burgherr, Dr. River Huang}, % Co-Supervisor name, remove this line if there is none
 	academicyear={2024-25},  % Academic Year
 } % These info will be put into your Title page 
 
