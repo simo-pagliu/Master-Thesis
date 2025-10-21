@@ -78,7 +78,7 @@
 % \usepackage{cleveref}
 % \usepackage[square, numbers, sort&compress]{natbib} % Square brackets, citing references with numbers, citations sorted by appearance in the text and compressed
 % \bibliographystyle{abbrvnat} % You may use a different style adapted to your field
-\usepackage[backend=biber, style=numeric, citestyle=numeric]{biblatex}
+\usepackage[backend=biber, style=numeric, citestyle=numeric, sorting=none]{biblatex}
 \addbibresource{references.bib}
 
 
@@ -212,9 +212,8 @@ Qui va l'Abstract in lingua italiana della tesi seguito dalla lista di parole ch
 \chapter*{Introduction} 
 \input{00 - Introduction.tex}
 
-\chapter{Literature Review and Objectives} % Presentation of the study
+\chapter{Literature Review} % Presentation of the study
 \input{00 - Literature Review.tex}
-\input{00 - Objectives.tex}
 
 \chapter{Preparation} % Pre processing
 \input{01 - Selection.tex}
