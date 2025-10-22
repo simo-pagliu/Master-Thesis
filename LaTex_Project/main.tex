@@ -106,6 +106,18 @@
 %----------------------------------------------------------------------------
 \usepackage{placeins}
 \usepackage{letltxmacro} % To redefine section command with optional arguments
+\usepackage[acronym]{glossaries}
+
+%----------------------------------------------------------------------------
+%	ACRONYMS
+%----------------------------------------------------------------------------
+% \makeglossaries
+\makenoidxglossaries
+\newacronym{mcda}{MCDA}{Multi-Criteria Decision Analysis}
+\newacronym{smr}{SMR}{Small Modular Reactor}
+\newacronym{dm}{DM}{Decision Maker}
+\newacronym{dss}{DSS}{Decision Support System}
+
 %----------------------------------------------------------------------------
 %	ADD YOUR DEFINITIONS AND COMMANDS (be careful of existing commands)
 %----------------------------------------------------------------------------
@@ -250,7 +262,9 @@ which supplement the main results contained in the previous chapters.
 \chapter{Appendix B}
 It may be necessary to include another appendix to better organize the presentation of supplementary material.
 
-
+% LIST OF ACRONYMS
+% \printglossary % List of Acronyms
+\printnoidxglossaries
 % LIST OF FIGURES
 \listoffigures
 
@@ -259,15 +273,15 @@ It may be necessary to include another appendix to better organize the presentat
 
 % LIST OF SYMBOLS
 % Write out the List of Symbols in this page
-\chapter*{List of Symbols} % You have to include a chapter for your list of symbols (
-\begin{table}[H]
-    \centering
-    \begin{tabular}{lll}
-        \textbf{Variable} & \textbf{Description} & \textbf{SI unit} \\\hline\\[-9px]
-        $\bm{u}$ & solid displacement & m \\[2px]
-        $\bm{u}_f$ & fluid displacement & m \\[2px]
-    \end{tabular}
-\end{table}
+% \chapter*{List of Symbols} % You have to include a chapter for your list of symbols (
+% \begin{table}[H]
+%     \centering
+%     \begin{tabular}{lll}
+%         \textbf{Variable} & \textbf{Description} & \textbf{SI unit} \\\hline\\[-9px]
+%         $\bm{u}$ & solid displacement & m \\[2px]
+%         $\bm{u}_f$ & fluid displacement & m \\[2px]
+%     \end{tabular}
+% \end{table}
 
 % ACKNOWLEDGEMENTS
 \chapter*{Acknowledgements}

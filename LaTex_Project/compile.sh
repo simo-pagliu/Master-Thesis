@@ -10,6 +10,7 @@ ln -sf "../main.tex" build/
 echo "Compiling main.tex..."
 pdflatex -aux-directory=build -output-directory=build "main.tex"
 biber --input-directory=build --output-directory=build "main"
+makeglossaries --input-directory=build --output-directory=build "main"
 pdflatex -aux-directory=build -output-directory=build "main.tex"
 pdflatex -aux-directory=build -output-directory=build "main.tex"
 
