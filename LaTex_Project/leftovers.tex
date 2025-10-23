@@ -88,8 +88,137 @@ Reichert et al. (2015) \cite{REICHERT2015316} recommend a differentiated approac
 
 Given these considerations and the technical nature of this analysis, this study employs expert judgment through swing elicitation \cite{Goodwin_Wright_2004}. This indirect weighting method evaluates the relative importance of improvements between worst- and best-case scenarios for different criteria. For example: "On a scale from 1 to 10, how much more important is increasing your salary from €1,200 (minimum wage) to €1,800 (market maximum) compared to increasing annual paid leave from 4 weeks (legal minimum) to 10 weeks (market maximum)?"
 
+---
+\textcolor{orange}{This is a placeholder section, I'm writing down a description for each attribute and each data set that i used. I will then need to structure it properly to make it readable.}
+
+\subsubsection{Technological Readiness and Planned Commissioning Time}
+The technological Readiness Level is a purely qualitative score that is given on a scale from 1 to 13 as discrete values from the Fibonacci sequence (1,2,3,5,8,13), where 1 is the furtherst away from commercial deplyment and 13 is the closest to Nth-of-a-kind. The score considers the state of development, current number of units operational or under construction and licensing status as well as other considerations. The data was gathered from the ARIS database \cite{iaea2025aris} and from the respective company websites. \\
+
+The APR1400 and the AP1000 are considered the most advanced reactors, with several units operational (9 and 7 respectively) and other under construction (3 and 2). The only catch with these designs is that none of these deployments has been made within Europe. On the other hand the EPR 1750 has only 2 operational units, both in China, 2 similar operational units (EPR 1650 in Olkiluoto and Flamanville) and 3 units Under construction in the UK (Hinkley Point and Sizewell). So these three reactors all get a 8/13 score, the first and the second don't get full points because of the lack of European experience, while the EPR 1750 doesn't get full points because of the limited number of operational units and the delays and overcosts that have plagued the first two EPRs. \\
+
+Among the three SMRs the Rolls Royce SMR is the most similar to a conventional power plant being based on a multi-loop design with forced circulation, the know-how trasnferability for commissioing is considered high, as well as the managment of the construction site. For this it scores a 5/13. \\
+
+The BWRX-300 is a more innovative design being an integrated reactor housing all the components of the NSSS within the reactor vessel, this means that the construction itself will be the first of his kind but this type of desing has been studied since 2010s \cite{PLACEHOLDER}. Moreover since the plan is to deploy just one unit the construction site will most likely be managed as a common nuclear power plant. For tthis it scores a 3/13. \\
+
+At last, the Nuscale SMR has a compleltly novel design, not only is a natural circulation based, integrated PWR, but it is also ment to be deployed in a multi-unit configuration in a novel way. This means that the managment of the construction site itself will be new, for this it scores the lowest, a 2/13. \\
 
 
+
+
+
+\subsection{Country-Specific and Contextual Factors}
+This subsection evaluates factors dependent on the deployment country, including fuel availability, regulatory environment, and supply chain adaptability.
+
+\subsubsection{Fuel Manufacturing Feasibility by Country}
+For this we have to consider two aspects, the first one is technolgy-wise and considers if the fuel exists or not. The second cosnideration is dependent on the coutry and considers if the that fuel is used in that country or how easy would it be to get to that country.
+
+For the country aspect we can apply a correction factor as follows: 
+$1$ is the fuel is already used in that country such as EPR fuel in France. $0.9$ if the fuel is used in other european countries since some paperwork will be needed but the open market will facilitate the import. $0.8$ for the same situation but for CH since the market has some barriers. $0.5$ is that fuel is not at all used in Europe and has to be imported from overseas.
+
+Then regarding the tecnology, the 3 existing reactors get a 10/10 score, as well as the BWRX-300 since it will use an existing fuel assembly GNF-2 \cite{CNSC_BWRX300_Fuel_Design}. Rolls-Royce SMR and NuScale get a 5/10 since they will have to develop their own fuel but it will be a derivative of existing PWR fuel \cite{RollsRoyce_SMR_UK_Fuel_2023} and \cite{NRC_ML17007A001}. Rolls-Royce is working with Westinghouse for the fuel development \cite{PLACEHOLDER} while NuScale wants to modify the HTP\texttrademark{} fuel that is also produced by Framatome \cite{Framatome_GNF2_Fuel_2018}.
+
+% So here there is a cross table with the reactors and the countries with the respective scores.
+
+% \begin{table}[!ht]
+%     \centering
+%     \begin{tabularx}{0.9\textwidth}{l c c c c c}
+%         \toprule
+%         \textbf{Reactor Model} & \textbf{France (FR)} & \textbf{Switzerland (CH)} & \textbf{Poland (PO)} & \textbf{Northern Italy (NI)} & \textbf{Base Score} \\
+%         \midrule
+%         EPR1750         & 1.0 & 1.0 & 1.0 & 1.0 & 10 \\
+%         APR1400         & 1.0 & 1.0 & 1.0 & 1.0 & 10 \\
+%         AP1000          & 1.0 & 1.0 & 1.0 & 1.0 & 10 \\
+%         BWRX-300        & 1.0 & 1.0 & 1.0 & 1.0 & 10 \\
+%         Rolls Royce SMR & 1.0 & 1.0 & 1.0 & 1.0 & 5 \\
+%         NuScale         & 1.0 & 1.0 & 1.0 & 1.0 & 5 \\
+%         \bottomrule
+%     \end{tabularx}
+%     \caption{Fuel manufacturing feasibility scores by country}
+%     \label{tab:fuel-feasibility}
+% \end{table}
+
+
+
+\subsubsection{Know-how Transferability and Supply Chain Adaptability}
+Scores reflect the ease of transferring operational knowledge and adapting local supply chains. Know-how transferability considers the presence of similar designs in the country whereas supply chain adaptability considers the presence of the NSSS supplier in the country. For instance France has a lot of experience with PWR and has an EPR (of previous iteration at Flamanville) therefore will have a high know-how transferability for the EPR, on the other hand Italy has shut down all its reactors since 1986 therefore the know-how related score will be low for all reactors. Nonetheless Italy still has an active Nuclear Industry, with Ansaldo Nucleare operating in Genova and Framatome having offices in Milan. This means that even if the know-how is low, the supply chain can be esablished more easily. \\
+
+The reason to separate these two aspects is to be able to give different importance (weights) to the human aspect (know-how) and the industrial/Economic aspect of the supply chain. \\
+
+% The results are shown in Table \ref{tab:know-how-country} and Table \ref{tab:supply-chain-country}.
+
+% \begin{table}[!ht]
+%     \centering
+%     \begin{minipage}{0.48\textwidth}
+%         \centering
+%         \begin{tabularx}{\textwidth}{l c c c c}
+%             \toprule
+%             \textbf{Reactor Model} & \textbf{IT} & \textbf{FR} & \textbf{CH} & \textbf{PO} \\
+%             \midrule
+%             APR1400         & 4 & 8 & 7 & 6 \\
+%             EPR 1750        & 5 & 10 & 8 & 7 \\
+%             AP1000          & 4 & 7 & 7 & 6 \\
+%             BWRX-300        & 3 & 6 & 6 & 5 \\
+%             Rolls Royce SMR & 3 & 6 & 5 & 5 \\
+%             NuScale         & 2 & 5 & 4 & 4 \\
+%             \bottomrule
+%         \end{tabularx}
+%         \caption{Know-how transferability scores by country}
+%         \label{tab:know-how-country}
+%     \end{minipage}
+%     \hfill
+%     \begin{minipage}{0.48\textwidth}
+%         \centering
+%         \begin{tabularx}{\textwidth}{l c c c c}
+%             \toprule
+%             \textbf{Reactor Model} & \textbf{IT} & \textbf{FR} & \textbf{CH} & \textbf{PO} \\
+%             \midrule
+%             APR1400         & 7 & 8 & 7 & 7 \\
+%             EPR 1750        & 8 & 9 & 8 & 8 \\
+%             AP1000          & 7 & 7 & 7 & 7 \\
+%             BWRX-300        & 6 & 6 & 6 & 6 \\
+%             Rolls Royce SMR & 6 & 7 & 6 & 6 \\
+%             NuScale         & 5 & 6 & 5 & 5 \\
+%             \bottomrule
+%         \end{tabularx}
+%         \caption{Supply chain adaptability scores by country}
+%         \label{tab:supply-chain-country}
+%     \end{minipage}
+% \end{table}
+
+
+\subsubsection{Country Economics and Politics}
+These indicators are meant to represent a country's economic and political state. 
+Real GDP from 2015 to 2030 (projected) and Expense as a percentage of GDP from 2015 to 2023 have been obtained from the International Monetary Fund \cite{PLACEHOLDER}. \\
+
+Researchers in Research and Developments per million inhabitants from 2015 to 2023, as well as the GDP expenditure for Research have been obtained from the UNESCO Institute for Statistics \cite{PLACEHOLDER}. \\
+Political Stability, a qualitative indicator ranging from $-2.5$ to $2.5$, has been obtained from the Worldwide Governance Indicators project by the World Bank \cite{PLACEHOLDER}. \\
+Then from the V-Dem dataset \cite{PLACEHOLDER} we extracted:
+\begin{itemize}
+    \item v2x polyarchy: TO what extent is the people's opinion taken into account in the political process?
+    \item v2regdur: Regime duration, how long has the last regime (goverment) lasted?
+    \item v2cltrnslw: Are the laws and the political actions transparent, well publicized, coherent and stable thoughout the years?
+    \item v2dlengage: To what extent are the citizens engaged in the political process?
+\end{itemize}
+
+Then we considered public support for nuclear energy, data was gathered from various sources \cite{PLACEHOLDER} \cite{PLACEHOLDER} \cite{PLACEHOLDER} \cite{PLACEHOLDER}.
+
+The objective of these data is to create 2 contry-specific modifiers. One for their economic state, if a country is growing and tends to spend a lot in R\&D it will be more likely to be able to afford a nuclear project. The second indicator is to represent the support for nuclear energy, not only considering the current stance, but also trying to understand how stable this stance will be in the coming years.
+
+% \begin{table}[!ht]
+%     \centering
+%     \begin{tabularx}{0.8\textwidth}{l c c c}
+%         \toprule
+%         \textbf{Country/Region} & \textbf{Real GDP Growth [\%]} & \textbf{Political Stability Score} & \textbf{Public Support for Nuclear [\%]} \\
+%         \midrule
+%         France          & 1.8 & 0.9 & 65 \\
+%         Switzerland     & 1.2 & 0.8 & 45 \\
+%         Poland          & 3.5 & 0.7 & 70 \\
+%         Northern Italy  & 0.9 & 0.6 & 35 \\
+%         \bottomrule
+%     \end{tabularx}
+%     \caption{Country economics and politics indicators}
+%     \label{tab:country-indicators}
+% \end{table}
 ---
 
 The present landscape presents policymakers with significant decision-making challenges. Renewed interest in nuclear power, geopolitical uncertainties and technological innovations, complicates the selection of an optimal reactor design. While nuclear commitments involve decade-long development timelines, 60-year operational lifespans, and substantial financial investments, modern energy policies must also consider evaluation of electricity demand, public dynamics, and supply chain vulnerabilities.
@@ -105,3 +234,28 @@ France, with $\sim 70 \%$ of its electricity generated by nuclear power\cite{PLA
 Poland, heavily dependent on coal and among Europe’s highest GHG emitters \cite{PLACEHOLDER}, presents an opposite case. As the country seeks to modernize its grid and reduce emissions through nuclear energy \cite{PLACEHOLDER}, it provides an opportunity to assess which reactor designs could best support its transition while meeting growing energy demand. \\
 
 Finally, Switzerland provides a unique case due to its low electricity demand, hydropower-dominated grid, and prudent nuclear policy. Its constrained grid capacity and emphasis on energy independence make it ideal for assessing small modular reactors (SMRs) and their role in complementing renewables. \\
+
+------
+
+Italy's nuclear landscape remains constrained by the 1987 post-Chernobyl referendum and its 2011 reaffirmation following Fukushima, which mandated complete phase-out and new construction ban respectively. However, since the referendum in Italy are abrogative and do not need to another popular vote to change direction, a government decree is enough to reintroduce nuclear, which is what the current government has plans for \cite{Sole24Ore_Italy_Nuclear_Strategy_2024}. Italy's history of political volatility and the long-term nature of nuclear projects create significant implementation challenges regardless of public opinion trends. For this study we have taken into consideration only the northen part of Italy, that is beacuse the italian electricity market is fractioned into six zones and the north one is the most energy demanding with an average load of 17.66 $\pm$ 4.35 GW and a very strong dependence on imports, with a net import into the region of 5.23 $\pm$ 1.67 GW, North Italy imports almost 30\% of its electric demand and, most worringly, it is importing electricity 99\% hours of the year. 
+
+Italy's nuclear energy policy remains constrained by two key referendums: the 1987 post-Chernobyl vote mandating complete phase-out of existing nuclear capacity, and the 2011 post-Fukushima referendum prohibiting new construction \cite{Sole24Ore_Italy_Nuclear_Strategy_2024}. However, given that Italian referendums are abrogative rather than prescriptive, policy reversal requires only government action rather than additional popular votes. The current administration has indicated plans to reintroduce nuclear power through this legislative pathway.
+
+The analysis focuses exclusively on Northern Italy due to the country's fragmented electricity market structure. This region represents the most energy-intensive zone, with an average load of 17.66 ± 4.35 GW and significant import dependence. Northern Italy imports approximately 30% of its electricity requirements (5.23 ± 1.67 GW net imports), with cross-border electricity flows occurring during 99% of annual hours. This persistent import reliance - combined with Italy's history of political volatility and the long-term nature of nuclear projects - presents substantial implementation challenges regardless of evolving public opinion.
+
+
+\paragraph{Poland} shows strong public backing for nuclear development, with surveys reporting up to $92\%$ support \cite{NucNet_Poland_Nuclear_Support_2024}. This aligns with concrete progress in the country's nuclear program, including preliminary site works and vendor agreements \cite{Westinghouse_Poland_Nuclear_2025,WorldNuclearNews_Poland_Preliminary_Works_2025}, suggesting firm governmental commitment to nuclear deployment. The Polish grid produced 55\% of its electricity with coal \cite{IEA_Electricity_2024}, making it the country with the highest green house gas emission intenisty in europe which enphatasis the need to decarbonzize. \cite{ElectricityMaps_CarbonIntensity_2024}.
+
+Poland demonstrates strong public support for nuclear energy development, with recent surveys indicating up to 92% approval \cite{NucNet_Poland_Nuclear_Support_2024}. This public sentiment aligns with tangible progress in the national nuclear program, including preliminary site preparation and vendor agreements \cite{Westinghouse_Poland_Nuclear_2025,WorldNuclearNews_Poland_Preliminary_Works_2025}, signaling robust governmental commitment to nuclear deployment. The Polish electricity sector remains heavily coal-dependent, with coal generating 55% of national electricity in 2024 \cite{IEA_Electricity_2024}. This reliance on coal positions Poland as having the highest greenhouse gas emission intensity in Europe (measured in gCO₂/kWh), underscoring the urgent need for decarbonization \cite{ElectricityMaps_CarbonIntensity_2024}.
+
+
+\paragraph{Switzerland} presents a more complex picture. Following the 2011 Fukushima accident, the government adopted a phase-out policy later confirmed by a 2017 referendum ($42\%$ approval) \cite{WorldNuclear_Switzerland_Profile_2025}. However, recent surveys indicate shifting public opinion, with $53\%$ support \cite{Euronuclear_Swiss_Nuclear_Poll_2023,NucNet_Nuclear_Support_Survey_2023,WorldNuclearNews_Swiss_Nuclear_Poll_2023}. The federal government has subsequently signaled potential reconsideration of nuclear's role in meeting climate targets \cite{swissinfo_Nuclear_Power_Switzerland_2025}, though the narrow margin of support and Switzerland's direct democracy system create policy uncertainty. The swiss grid is charaterized by a small load, average 6.79 $\pm$ 1.12 GW in 2024, and generation is dominated by renewables, 65\% average share, particularly hydroelectric which provided 59\% of the electricity in 2024 \cite{IEA_Electricity_2024}. This high dependence on renewables is reflected on the uneven cross border flows (Import-Exports) which average 2.71 $\pm$ 3.14 GW, we can see the very large variation which is a consequence of the fact that sometimes the grid is massivly overproducing but sometimes need to import from abroad.\\
+
+Switzerland presents a more nuanced nuclear energy landscape. Following the 2011 Fukushima accident, the federal government implemented a nuclear phase-out policy, subsequently confirmed by a 2017 referendum with 42% approval \cite{WorldNuclear_Switzerland_Profile_2025}. However, recent public opinion surveys reveal shifting attitudes, with 53% now supporting nuclear power \cite{Euronuclear_Swiss_Nuclear_Poll_2023,NucNet_Nuclear_Support_Survey_2023,WorldNuclearNews_Swiss_Nuclear_Poll_2023}. This change has prompted the federal government to reconsider nuclear energy's potential role in achieving climate targets \cite{swissinfo_Nuclear_Power_Switzerland_2025}, though the narrow support margin and Switzerland's direct democracy system introduce significant policy uncertainty.
+
+The Swiss electricity system is characterized by relatively low demand (6.79 ± 1.12 GW average load in 2024) and renewable dominance, particularly hydroelectric power which accounted for 59% of generation in 2024 (65% renewable share overall) \cite{IEA_Electricity_2024}. This renewable-intensive generation mix results in substantial cross-border electricity flow variability, averaging 2.71 ± 3.14 GW. The large standard deviation reflects periodic overproduction requiring exports, alternating with import requirements during low renewable output periods.
+
+
+\paragraph{France} demonstrates consistent public support for nuclear energy, with 75\% favoring continued operation of existing plants and $65\%$ supporting new construction according to a 2022 IFOP survey \cite{IFOP_Nuclear_Perception_2023}. Given the long-standing consensus on nuclear power as a strategic energy pillar and the country's established industrial base, significant policy reversals appear unlikely in the near term. The country electric grid relies heavily on nuclear power, which accounted for 67\% of its electricity generation in 2024 \cite{IEA_Electricity_2024} regardless of the heavy demand, that averaged $49.05 \pm 9.83$ GW in 2024, France is a net exporter of electricity, having exported 21\% of the produced electricity in 2024.
+
+France maintains consistent public support for nuclear energy, with 75% favoring continued operation of existing plants and 65% supporting new construction according to a 2022 IFOP survey \cite{IFOP_Nuclear_Perception_2023}. The country's long-standing consensus on nuclear power as a strategic energy pillar, combined with its established industrial capabilities, suggests policy stability in the near term. The French electricity system demonstrates heavy nuclear dependence, with nuclear power accounting for 67% of generation in 2024 despite substantial demand (49.05 ± 9.83 GW average load) \cite{IEA_Electricity_2024}. This nuclear-intensive generation mix enables France to maintain its position as a net electricity exporter, with 21% of domestic production exported in 2024.
