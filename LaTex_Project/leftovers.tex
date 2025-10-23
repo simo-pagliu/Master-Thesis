@@ -222,3 +222,79 @@ The objective of these data is to create 2 contry-specific modifiers. One for th
 ---
 
 The present landscape presents policymakers with significant decision-making challenges. Renewed interest in nuclear power, geopolitical uncertainties and technological innovations, complicates the selection of an optimal reactor design. While nuclear commitments involve decade-long development timelines, 60-year operational lifespans, and substantial financial investments, modern energy policies must also consider evaluation of electricity demand, public dynamics, and supply chain vulnerabilities.
+
+
+----
+
+Time for full construction of Voygr 6 is 4 years \cite{IEEFA_UAMPS_Talking_Points_2023}
+
+---
+Hydroelectric plants are also included as a reference for the highest flexibility, a 1989 publication by the US Office of Technology Assessment \cite{OTA_Electric_Power_Wheeling_1989} reports that the response rate of large (>60MW) hydroelectric plants ranges from 4 to 6 \%P$_{nom}$/s, which translates to 240 to 360 \%P$_{nom}$/min. A graph from a 1994 conference reported in a technical analysis from 2009 shows that some hydro plant can achieve 0 to 100\% in much less then a minute and from black startup to full power in around 5 minutes For the comparison we indicate greater then 100\%. \cite{osti_219975, MWH_Pumped_Storage_Wind_2009}
+
+To establish an upper benchmark hydroelectric plants were included in the comparative analysis. A 1989 U.S. Office of Technology Assessment report \cite{OTA_Electric_Power_Wheeling_1989} documents that large (>60 MW) hydroelectric facilities demonstrate remarkable load-following capabilities, with response rates ranging from 4 to 6 \%P$_{nom}$/s (equivalent to 240-360 \%P$_{nom}$/min). Additional performance data from a 1994 conference presentation, cited in a 2009 technical analysis \cite{osti_219975, MWH_Pumped_Storage_Wind_2009}, indicates that certain hydroelectric installations can achieve 0-100\% load changes in under one minute and black start to full power operation in approximately five minutes. For the purposes of this comparison, hydroelectric flexibility is conservatively represented as >100 \%P$_{nom}$/min.
+
+----
+
+
+\begin{table}[!hb]
+    \centering
+    \begin{tabularx}{\textwidth}{l X X X}
+        \toprule
+        \textbf{Reactor Model} & \textbf{Capital Cost of NOAK [\$/kWe]} & \textbf{Capital Cost of FOAK [\$/kWe]} & Data Source \\
+        \midrule
+        APR-1400         & 1828 & 2410 & \cite{STEIGERWALD2023128204, NEA2020} \\
+        EPR-1750        & 2150 & 8600 & \cite{STEIGERWALD2023128204, NEA2020} \\
+        AP-1000          & 2000 & 8600 & \cite{STEIGERWALD2023128204, NEA2020} \\
+        BWRX-300        & 2318 & 3467 & \cite{ReutersEvents2018} \\
+        Rolls Royce SMR & 6050 & 7408 & \cite{PowerTechnology2022} \\
+        NuScale         & 3466 & 8600 & \cite{STEIGERWALD2023128204, NEA2020} \\
+        \textbf{Other Power Plants} & & & \\
+        Onshore Wind   & - & 1265 & \cite{EIA_Capital_Costs_AEO2024} \\
+        Solar PV + Battery & - & 2175 & \cite{EIA_Capital_Costs_AEO2024} \\
+        Hydroelectric  & - & 6007 & \cite{EIA_Capital_Costs_AEO2024} \\
+        \bottomrule
+    \end{tabularx}
+    \caption{Capital costs for selected reactor models}
+    \label{tab:capital-costs}
+\end{table}
+
+\begin{table}[!hb]
+    \centering
+    \begin{tabularx}{\textwidth}{l X X c}
+        \toprule
+        \textbf{Reactor Model} & \textbf{Planned Commissioning Time} & \textbf{Last unit Commissioning Time} & Data Source\\
+        \midrule
+        APR1400         & 5.0 in Korea & 10 and 8 in Korea & \cite{nea2020unlocking} \\
+        EPR 1750        & 5.0 in Europe, 4.5 in China & 9 in Taishan, 17 in Flamanville and Olkiluoto & \cite{nea2020unlocking} \\
+        AP1000          & 5.0 in USA & 9 in Sanmen, 10 and 11 at Vogtle & \cite{nea2020unlocking} \\
+        BWRX-300        & 2 $\sim$ 3 & NA & \cite{GEVernova_Nuclear_2025} \\
+        Rolls Royce SMR & 4.0 & NA & \cite{RollsRoyce_SMR_Approach_2025} \\
+        NuScale         & 3.0 & NA & \cite{IEEFA_UAMPS_Talking_Points_2023} \\
+        \bottomrule
+    \end{tabularx}
+    \caption{Technological readiness and planned commissioning time}
+    \label{tab:tech-readiness}
+\end{table}
+
+
+\begin{table}[!hb]
+    \centering
+    \begin{tabularx}{\textwidth}{l X X}
+        \toprule
+        \textbf{Reactor Model} & \textbf{Operative Cost [\$/MWh]} & Data Source\\
+        \midrule
+        APR-1400          & 18.44 & \cite{STEIGERWALD2023128204} \\
+        EPR-1750        & 14.26 & \cite{STEIGERWALD2023128204} \\
+        AP-1000          & 18.69 & \cite{STEIGERWALD2023128204} \\
+        BWRX-300        & $18.30 \pm 0.82$ & \cite{STEIGERWALD2023128204} \\
+        Rolls Royce SMR & $65.68 \pm 2.94$ & \cite{STEIGERWALD2023128204} \\
+        NuScale         & $22.76 \pm 1.02$ & \cite{STEIGERWALD2023128204} \\
+        \textbf{Other Power Plants} & & \\
+        Onshore Wind   & 28.08 & \cite{EIA_Capital_Costs_AEO2024} \\
+        Solar PV + Battery & 33.33 & \cite{EIA_Capital_Costs_AEO2024} \\
+        Hydroelectric  & 28.49 & \cite{EIA_Capital_Costs_AEO2024} \\
+        \bottomrule
+    \end{tabularx}
+    \caption{Economic costs for selected reactor models}
+    \label{tab:operational-costs}
+\end{table}
