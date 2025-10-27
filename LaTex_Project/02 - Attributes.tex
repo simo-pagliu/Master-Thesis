@@ -115,7 +115,7 @@ Sources for load following data for APR1400, AP1000, BWRX-300 and Rolls Royce SM
 \end{table}
 
 \subsection{Economic Indicators}
-Economic indicators are crucial in evaluating the feasibility and attractiveness of nuclear reactor designs. They provide insights into the financial implications of deploying and operating these technologies. The selected economic indicators are summarized in Table \ref{tab:indicators-economic}. To provide a reference the same indicators were also sourced for three renewable energy technologies: onshore wind, solar pv with battery storage and hydroelectric power \cite{EIA_Capital_Costs_AEO2024,PLACEHOLDER}.
+Economic indicators are crucial in evaluating the feasibility and attractiveness of nuclear reactor designs. They provide insights into the financial implications of deploying and operating these technologies. The selected economic indicators are summarized in Table \ref{tab:indicators-economic}. To provide a reference the same indicators were also sourced for three renewable energy technologies: onshore wind, solar pv with battery storage and hydroelectric power \cite{EIA_Capital_Costs_AEO2024}. The commissioning time estimates fro solar and wind were taken from \cite{GUMBER2024122563} which also notes that the average (reported in our table) is significantly higher then the median, we choose to report the average since we deem it more representative of large installations.
 
 \paragraph{Capital Costs} represent the initial investment required to construct a nuclear power plant. For this indicator we are going to present both the \glspl{noak} estimates as well as forecases or data for \gls{foak} installation. It is important to note that, as detailed by Rothwell 2022 \cite{ROTHWELL2022112905} the costs of recent nuclear installations in Europe and the US have been significantly higher than those announced at the start of the project. For this reason we will apply a FOAK-to-NOAK factor to better represent the real costs. For example the EPR-1600 announced costs for Flamanville-3 was 1886 $USD_{2020}/kW_e$ but have risen to 8600 $USD_{2020}/kW_e$ \cite{NEA2020}. All Values are summarized in Table \ref{tab:capital-costs}. \\
 
@@ -140,13 +140,13 @@ The same study reports fuel costs of $6.23 USD_{2020}/MWh_e$ for PWR-based techn
         APR-1400         & 2410 & 1828 & 18.44 & 5.0 (KOR) & 10 and 8 in (KOR) \\
         EPR-1750        & 8600 & 2150 & 14.26 & 5.0 (EU) 4.5 (CN) & 9 (CN), 17 (EU) \\
         AP-1000          & 8600 & 2000 & 18.69 & 5.0 (US) & 9 (CN), 10, 11 (US) \\
-        BWRX-300        & 3467 & 2318 & $18.30 \pm 0.82$ & 2--3 & NA \\
+        BWRX-300        & 3467 & 2318 & $18.30 \pm 0.82$ & $2.5 \pm 0.5$ & NA \\
         Rolls Royce SMR & 7408 & 6050 & $65.68 \pm 2.94$ & 4.0 & NA \\
         NuScale         & 8600 & 3466 & $22.76 \pm 1.02$ & 4.0 & NA \\
         \textbf{Other Power Plants} & & & & & \\
-        Onshore Wind   & 1265 & - & 28.08 & DRAFT & DRAFT \\
-        Solar PV + Battery & 2175 & - & 33.33 & DRAFT & DRAFT \\
-        Hydroelectric  & 6007 & - & 28.49 & DRAFT & DRAFT \\
+        Onshore Wind   & NA & 1265 & 28.08 & NA & 2.7 \\
+        Solar PV + Battery & NA & 2175 & 33.33 & NA & 2.3 \\
+        Hydroelectric  & NA & 6007 & 28.49 & NA & PLACEHOLDER \\
         \bottomrule
     \end{tabularx}
     \caption{Economic Indicators E1-E5: E1: Capital costs for FOAK installations [\$/kWe], E2: Capital costs for NOAK installations [\$/kWe], E3: Operational costs [\$/MWh], E4: Planned commissioning time [years], E5: Real building times [years]}
