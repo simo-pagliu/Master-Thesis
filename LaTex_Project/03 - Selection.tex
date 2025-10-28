@@ -31,9 +31,9 @@ The \gls{epr}2 and \gls{epr}1200 designs, while reviewed positively by the Frenc
 
 \begin{table}[!hb]
 \centering
-\begin{tabularx}{\textwidth}{llXXXX}
+\begin{tabularx}{0.8\textwidth}{Xccccc}
 \toprule
-\textbf{Reactor Name} & \textbf{Country} & \textbf{Technology-sharing} & \textbf{Commercial Operation} & \textbf{Up to Date} & \textbf{Decision} \\
+\textbf{Reactor Name} & \textbf{Country} & \textbf{F1} & \textbf{F2} & \textbf{F3} & \textbf{Decision} \\
 \midrule
 \gls{apr} & S.Korea & \cmark & \cmark & \cmark & \textbf{Selected} \\
 
@@ -54,7 +54,7 @@ PRE KONVOI & Germany & \cmark & \cmark & \xmark & Rejected \\
 OPR-1000 & S.Korea & \cmark & \cmark & \xmark & Rejected \\
 \bottomrule
 \end{tabularx}
-\caption{Selection of reactor models for analysis}
+\caption{Selection of reactor models for analysis. F1: Supplier country compatible with European deployment, F2: Currently under commercial operation, F3: Design is up to date and still available for commissioning.}
 \label{tab:reactor-selection}
 \end{table}
 
@@ -63,32 +63,34 @@ Subsequently, the \gls{iaea} \gls{aris} database \cite{iaea2025aris}, was consul
 
 \begin{table}[!hb]
 \centering
-\begin{tabularx}{\textwidth}{lllX}
+\begin{tabularx}{\textwidth}{cccX}
 \toprule
-\textbf{Reactor Name} & \textbf{Country} & \textbf{Used} & \textbf{Reasoning} \\
+\textbf{Reactor} & \textbf{Country} & \textbf{Used} & \textbf{Reasoning} \\
 \midrule
 
-APR+ & S.Korea & \xmark & As reported in the manufacturer website \cite{kepcoenc2025} this design is mean to be an "indigenous reactor cleared of obstacles to export"\\
-
-ATMEA & Japan, France & \xmark & Joint venture was abandoned in 2019 \cite{PLACEHOLDER}\\
-
-BWRX300 & USA, Canada & \cmark & Design from GE-Hitachi, a lot of support from US and Canada as well as interes in the EU \cite{wnn2025bwrx300} \cite{wnn2025hungarysmr}.\\
-
-i-SMR & S.Korea & \xmark & Never expressed interest in development outside south Asia and the middle east, no updates since early 2024.\\
-
-iMSR400 & US & \xmark & No interest overseas, project seems to be at an early stage of development.\\
-
+APR+ & S.Korea & \xmark & Manufacturer reports the design is an "indigenous reactor cleared of obstacles to export" \cite{kepcoenc2025}\\
+\cmidrule(lr){1-4}
+ATMEA & Japan, France & \xmark & It seems that the joint venture between Mithubishi and \gls{edf}/Framatome was abandoned \footnote{Unfortunately, no direct, authoritative sources could be identified to support this claim. The conclusion is deduced from the absence of recent project updates.}\\
+\cmidrule(lr){1-4}
+BWRX300 & USA, Canada & \cmark & A design from \gls{ge}, shows support from US and Canada as well as interest in the European countries \cite{wnn2025bwrx300, wnn2025hungarysmr}.\\
+\cmidrule(lr){1-4}
+i-SMR & S.Korea & \xmark & No interest for European deployment has been shown.\\
+\cmidrule(lr){1-4}
+iMSR400 & US & \xmark & The design appears to be at an early developmental stage, as indicated by its current regulatory status.
+ \cite{NRC_IMSR_PreApplication_2025}   \\
+\cmidrule(lr){1-4}
 Natrium & US & \xmark & Demo plant \cite{terrapower2025natrium}.\\
-
-Nuward & France & \xmark & After the change in direction of 2024 the project has been set back \cite{PLACEHOLDER}.\\
-
-Nuscale & US & \cmark & Even if there was some financial controversy in 2024 \cite{PLACEHOLDER}. the project seems to be still moving forward in terms of goverment founding \cite{PLACEHOLDER} and regulatory review \cite{PLACEHOLDER}.\\
-
-PRISM & US & \xmark & GE-Hitachi considers it a "concept ... currently being put into practice in two reactors: Natrium and ARC-100" \cite{PLACEHOLDER}.\\
-
-Rolls Royce SMR & UK & \cmark & It's moving forward and from the technological point of view this is the simples as it it litteraly a scaled down PWR\cite{PLACEHOLDER}.\\
-
-SMART & S.Korea, Saudi Arabia & \xmark & Plan to export only to south-east asia and middle east \cite{wnn2025smrdesign}.\\ \bottomrule
+\cmidrule(lr){1-4}
+Nuward & France & \xmark & Lack of detailed information, most likely consequence of the significant strategic shift in 2024 \cite{WNN_Nuward_2024}.\\
+\cmidrule(lr){1-4}
+Nuscale & US & \cmark & Most progressed in the regulatory process \cite{NRC_ML17007A001, NRC_ML23161A411, NRC_2025_033}.\\
+\cmidrule(lr){1-4}
+PRISM & US & \xmark & \gls{ge} states it is a "concept ... currently being put into practice in two reactors: Natrium and ARC-100" \cite{GEV_SFR_2025}.\\
+\cmidrule(lr){1-4}
+Rolls Royce SMR & UK & \cmark & Ongoing regulatory activity and interest for deployment \cite{RollsRoyce_SMR_GDA_Consultation, PowerTechnology2022}.\\
+\cmidrule(lr){1-4}
+SMART & S.Korea, Saudi Arabia & \xmark & Plan to export only to South-East Asia and Middle East \cite{wnn2025smrdesign}.\\ 
+\bottomrule
 
 \end{tabularx}
 \caption{Selection of advanced reactor models for analysis}
@@ -100,14 +102,14 @@ The overall selection produced a set of six reactors, three Generation III+ and 
 
 \begin{table}[!hb]
 \centering
-\begin{tabularx}{\textwidth}{lclcX}
+\begin{tabularx}{\textwidth}{lcccl}
 \toprule
 \textbf{Reactor Name} & \textbf{Type} & \textbf{Construction} & \textbf{P$_e$ (MWe)} & \textbf{Supplier} \\
 \midrule
 \gls{apr} & \gls{pwr}  & 1 Unit & 1340 & KEPCO (S.Korea) \\
 \gls{epr} 1750 & \gls{pwr}  & 1 Unit & 1630 & Framatome (France) \\
 \gls{ap} & \gls{pwr}  & 1 Unit & 1120 & Westinghouse (USA) \\
-\gls{bwrx} & \gls{ibwr} & 1 Unit & 300 & GE-Hitachi (USA)\\
+\gls{bwrx} & \gls{ibwr} & 1 Unit & 300 & \gls{ge} (USA)\\
 Rolls Royce SMR & \gls{pwr}  & 4 to 12 Units & 470 & Rolls Royce (UK) \\
 Nuscale & \gls{ipwr} & 1 Unit & 77 & Nuscale Power (USA) \\
 \bottomrule
