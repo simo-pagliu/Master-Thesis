@@ -1,9 +1,11 @@
 
 \section{Applying MAVT to choose a Reactor}
 Multi Attribute Value Theory (MAVT), first presented by Keeney in 1996 \cite{KEENEY1996537}, is a ranking method that computes a score for each alternative based on a set of criteria. To each criteria correspond and indicator that is translated into a value by means of value functions. Values can then be aggregated following a hierarchical structure and applying weights to signify relative importance of a given criteria.
-
+----
+We do not use outranking methods because our analysis doesnt have any clear non compensatory dynamic and among teh compensatroy methods, we chose to use mavt to use value functions to capture the possible non linearity of the value of indicators across their data range
+---
 \paragraph{Value Functions}
-are the charateristic feature of this method that allow to, first of all, reduce any metric, based on qualitative or quantitative data, to a scalar comparable with other different metrics. And second, it allows to convey the more implicit information that a metric might carry. For example to evaluate a job offer, an obvius metric is its salary, in monetary terms. The percived value, that is how the personal judgment of the salary, will never simply scale lineary with the amount of money recived, anything below a certain threshold dictated by monthly costs (e.g. rent, food, transportation etc) will have a significantly lower value then any offer above it. At the same time a hundred euro difference between two low salary offers might be considered much more significant then the same difference between two high offers. 
+are the characteristic feature of this method that allow to, first of all, reduce any metric, based on qualitative or quantitative data, to a scalar comparable with other different metrics. And second, it allows to convey the more implicit information that a metric might carry. For example to evaluate a job offer, an obvius metric is its salary, in monetary terms. The perceived value, that is how the personal judgment of the salary, will never simply scale lineary with the amount of money recived, anything below a certain threshold dictated by monthly costs (e.g. rent, food, transportation etc) will have a significantly lower value then any offer above it. At the same time a hundred euro difference between two low salary offers might be considered much more significant then the same difference between two high offers. 
 
 \paragraph{The Aggregation process}
 can be approched in different ways...
