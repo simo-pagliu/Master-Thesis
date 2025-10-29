@@ -64,9 +64,17 @@ Contrastingly, Russia and China pursued an opposite trajectory. Following the po
 \end{figure}
 
 \subsection{Generation III}
-As a result of the regulatory safety improvements, a stabilized choice of technology with \glspl{lwr} settling as the to go choice all over the world and even larger capacities, Generation III reactor started to be developed in the 90s.
+As a result of the regulatory safety improvements, a stabilized choice of technology with \glspl{lwr} settling as the to go choice all over the world and even larger capacities, Generation III reactor started to be deployed by the end 90s. The new generation introduced several improvements, comprehensively documented by the World Nuclear Association \cite{WNA_Advanced_Reactors_2021}. Notable advancements include:
+\begin{itemize}
+    \item  Higher availability factors and extended 60-year operating lifetimes
+    \item  Substantially reduced core melt accident probabilities
+    \item  More effective fuel utilization
+    \item  Strengthened protection against external events
+\end{itemize}
 
-The improvement of these designs was fuelled in the early 2000s by concerns over climate change, energy security, and rising fossil fuel prices, leading to Generation III+ reactors, such as the \gls{epr} or the American \gls{ap} which improve safety and reliability in a consolidated plant layout. However after the 2011 Fukushima Daiichi accident, Western nations experienced a second setback: Germany accelerated its nuclear phase-out policy, while Italy reaffirmed its anti-nuclear position through another popular referendum \cite{MinisteroInterno_Referendum_2011}. In the following years, projects faced substantial delays, cost overruns, and public opposition, with France's Flamanville-3 \gls{epr} serving as a particularly illustrative case experiencing budget increases to more than four times original estimates and construction timelines tripled from initial projections \cite{nea2020unlocking}.
+With the new millennium, incremental improvements to these designs resulted in Generation III+ reactors, including the\gls{epr} and the American \gls{ap}. This designation represents a evolutionary step rather than a significant generational jump, serving primarily to distinguish between contemporary reactors that incorporate the most recent safety standards and earlier, but similar, designs.
+
+However after the 2011 Fukushima Daiichi accident, Western nations experienced a second setback: Germany accelerated its nuclear phase-out policy, while Italy reaffirmed its anti-nuclear position through another popular referendum \cite{MinisteroInterno_Referendum_2011}. In the following years, projects faced substantial delays, cost overruns, and public opposition, with France's Flamanville-3 \gls{epr} serving as a particularly illustrative case experiencing budget increases to more than four times original estimates and construction timelines tripled from initial projections \cite{nea2020unlocking}.
 
 \subsection{Generation IV}
 From the late 2000s to nowadays, new nuclear commissioning projects such as the \gls{epr} at Flamanville-3 can be classified as "Mega Projects", such term is used to refer to very large commitments where economies of scale tend to fail due to the complexity of the task at hand, resulting in massive delays and cost overruns, well known examples of Mega Projects are Suez and Panama Canals, the Sydney Opera House or the development of the Concorde Supersonic Aeroplane \cite{Flyvbjerg2014, BROOKES201557}. 
@@ -105,22 +113,20 @@ Other generation IV reactors are being designed to tackle other aspects of nucle
 \subsection{Current European Landscape}
 In 2020, the COVID-19 pandemic exposed vulnerabilities in global economic systems and Russia's invasion of Ukraine in 2022 further revealed Europe's energy dependencies \cite{BRODNY2023121443, Sterling_European_Energy_Import_2025, EPRS_Energy_2023}. At the same time, decarbonization goals to combat climate change have prompted Western nations to reconsider nuclear energy as a valid power source able to provide low-carbon, reliable power while enhancing energy independence and system resilience \cite{EU2050ClimateStrategy}.
 
-This strategic reassessment of nuclear is evident in recent policy initiatives. The European Union's classification of nuclear power as a sustainable investment under its taxonomy for climate mitigation \cite{EUTaxonomy}, alongside programs like the European Industrial Alliance on \glspl{smr} are a clear indicator of the renewed interest in nuclear technologies.
+This strategic reassessment of nuclear is evident in recent policy initiatives. The European Union's classification of nuclear power as a sustainable investment under its taxonomy for climate mitigation \cite{EUTaxonomy}, alongside programs like the European Industrial Alliance on \glspl{smr} are a clear indicator of the renewed interest in nuclear technologies \cite{EC_SMR_Declaration_2023}.
 
-\textcolor{red}{I might add more...}
+However, nuclear-related commitments present challenges that cannot be addressed by intuitive judgment. The \glspl{dm}, in this context government agencies, energy policymakers and utility executives, face high-stakes choices, as \gls{npp} commissioning involves decades long commitments and billions in public and private investment. Moreover, the far-reaching economic, social and political consequences of nuclear infrastructure decisions necessitate systematic approaches to ensure responsible outcomes.
 
-\section{Decision Support}
-The historical overview demonstrates that nuclear energy decisions extend far beyond technical and economic considerations, inevitably encompassing social and political dimensions. This inherent complexity requires \glspl{dm} to evaluate numerous trade-offs across competing objectives in pursuit of balanced, optimal solutions. The systematic process of navigating trade-offs to arrive at informed choices constitutes the fundamental challenge of decision-making.
-
+\section{Decision support}
 The decision-making process begins by identifying the decision problem and the possible solutions to such a problem. From this point, there are several ways to make a decision. The most common approach to decision making, which is encountered by anyone in our day-to-day life, is to look at the possible solutions or "alternatives", compare positive and negative outcomes based on own preferences and find the best, or less worst, between them.
 
-For more complex situations such as those regarding energy systems, analytical frameworks, usually referred to as \gls{dss}, have been developed to support \glspl{dm}. In the realm of business and management \glspl{dss} are widely employed as software that collect and organize data, communications, or knowledge to provide support by data analyses or visualization or by applying models. \cite{Power2023}.
+For complex situations such as those regarding energy systems, analytical frameworks, usually referred to as \gls{dss}, have been developed to support \glspl{dm}. In the realm of business and management \glspl{dss} are widely employed as software that collect and organize data, communications, or knowledge to provide support by data analyses or visualization or by applying models. \cite{Power2023}.
 
-The present study is focused on nuclear energy related decisions. The literature review will reveal that \gls{mcda} methods predominate in energy decision support research. This observation aligns with findings from Seran et al. (2025), whose comprehensive analysis of renewable energy studies demonstrated that the vast majority employed \gls{mcda} methodologies \cite{SERAN2025100044}.
+The present study is focused on nuclear energy related decisions, which, as the previous historical overview demonstrated, extend far beyond technical and economic considerations, inevitably encompassing social and political dimensions. The literature review will reveal that, to address such complexity, \gls{mcda} methods predominate in energy decision support research. This observation aligns with findings from Seran et al. (2025), whose comprehensive analysis of renewable energy studies demonstrated that the vast majority employed \gls{mcda} methodologies \cite{SERAN2025100044}.
 
 \gls{mcda} systematically evaluates alternative solutions by decomposing decision problems into distinct criteria representing either the consequences of each alternative or their distinguishing characteristics \cite{ROY1990324}. This criterion-based approach offers two primary advantages: first, it enables the structured analysis of complex problems involving many criteria; second, it reveals preference patterns from different perspectives, which becomes particularly valuable when multiple stakeholders are involved. The method's transparency allows decision-makers to identify the most critical aspects of each alternative in relation to specific stakeholder preferences.
 
-While there exist many \gls{mcda} methodologies (see Greco et Al. 2016 \cite{Köksalan2016} and Cinelli et al. 2020 \cite{CINELLI2020102261}) their common ground is to model the decision problem considering available information on it, considering trade-offs, and then allowing to choose between alternatives \cite{HAAG2022105361}. \gls{mcda} can be used for solving different decision problems:
+While there exist many \gls{mcda} methodologies (see Greco et Al. 2016 \cite{Köksalan2016} and Cinelli et al. 2020 \cite{CINELLI2020102261}) their common ground is to model the decision problem considering available information on it, considering trade-offs, and then allowing to choose between alternatives \cite{HAAG2022105361}. \gls{mcda} can be used for solving different decision problems or \textit{problematics} as they are presented in the book "Multiple Criteria Decision Analysis" by Greco et al. (2016) \cite{Greco_Ehrgott_Figueira_2016}:
 \begin{itemize}
 \item Choice: Selecting the most preferred alternative(s) from a large pool of options.
 \item Sorting: Classifying alternatives into predefined categories.
@@ -128,25 +134,96 @@ While there exist many \gls{mcda} methodologies (see Greco et Al. 2016 \cite{Kö
 \item Scoring: Ranking alternatives while also quantifying the differences between them.
 \end{itemize}
 
-A fundamental distinction exists between American and European \gls{mcda} methodologies. American-developed approaches, including the \gls{ahp} and \gls{mavt}, were born on the basis of the compensatory principle, emphasizing trade-off dynamics where a loss in one criterion can be offset by a gain in another.
----refs to the first papers on ahp and mavt methods---
+A fundamental distinction exists between American and European \gls{mcda} methodologies. American-developed approaches, including the \gls{ahp} \cite{SAATY1987161} and \gls{mavt} \cite{KEENEY1996537, keeney1993decisions}, were born on the basis of the compensatory principle, emphasizing trade-off dynamics where a loss in one criterion can be offset by a gain in another. Value functions are used to model importance structures across performance ranges, considering the whole dataset (e.g., the value of criterion C1 increases linearly from 0 to 1 between its minimum and maximum data points).
 
-In contrast, European researchers developed non-compensatory methods based on the outranking principle, such as \acrshort{electre} and \acrshort{promethee}. These methods establish preferences through binary outranking relationships between alternatives (e.g., "alternative A1 is preferred to A2 on regard to criterion C1") and may incorporate veto conditions between criteria. Unlike compensatory approaches, outranking methods were focused on meeting requirements rather than optimizing trade-offs \cite{HUANG2026103438, Köksalan2016}.
----focus on the difference rather then values...----
----american all converted to score more cfousecd on score, european outranks, even partial ranking---
+In contrast, European researchers developed non-compensatory methods based on the outranking principle, such as \acrshort{electre} \cite{Roy199149} and \acrshort{promethee} \cite{Brans_Vincke_1985}. These methods establish preferences through pairwise comparisons of differences between alternatives (e.g., if alternative A1 exceeds A2 by 5\% on criterion C1, then A1 is preferred to A2) and may incorporate veto conditions between criteria. The outcome is that while the European school catches nuanced differences between options, the American one conveys context by explicit modelling of value functions \cite{Greco_Ehrgott_Figueira_2016, HUANG2026103438, Köksalan2016}.
 
 \section{Relevant Studies}
 A literature review, targeted at studies applying \gls{mcda} to nuclear power decision-making, reveals several methodological approaches:
 
-Site selection studies represent the most common application, typically employing \acrshort{gis}-based software to evaluate potential locations for new nuclear installations within limited geographical regions. These analyses frequently incorporate quantitative non-technical factors such as population proximity \cite{DAMOOM2019110} \cite{BASEGMEZ2025105897}. Abdullah et al. (2025) extend this approach by including social dimensions like public acceptance and tourism impacts, which present challenges for quantification \cite{ABDULLAH2025105626}. Notably, Devanand et al. (2019) develop an algebraic optimization model to identify optimal \gls{smr} locations in Singapore, though like most site-focused studies, they favour a design without systematic comparison \cite{DEVANAND2019339}.
+Site selection studies represent the most common application, typically employing \gls{gis}-based software to evaluate potential locations for new nuclear installations within limited geographical regions. These analyses frequently incorporate quantitative non-technical factors such as population proximity \cite{DAMOOM2019110, BASEGMEZ2025105897}. Abdullah et al. (2025) extend this approach by including social dimensions like public acceptance and tourism impacts, which present challenges for quantification \cite{ABDULLAH2025105626}. Notably, Devanand et al. (2019) develop an algebraic optimization model to identify optimal \gls{smr} locations in Singapore, though like most site-focused studies, they favour a design without systematic comparison \cite{DEVANAND2019339}.
+
+
+\begin{table}[htbp]
+    \centering
+    \begin{tabularx}{\textwidth}{XXX}
+        \toprule
+        \textbf{Study} & \textbf{\gls{mcda} Methods} & \textbf{Objectives} \\
+        \midrule
+        Damoom et al. (2019) \cite{DAMOOM2019110} & \gls{mcda} method not mentioned & \gls{gis}-based analysis, Evaluate potential locations for new nuclear installations, focusing on geographical criteria. \\
+        \cmidrule(lr){1-3}
+        Basegmez et al. (2025) \cite{BASEGMEZ2025105897} & \gls{ahp} & Another \gls{gis}-based analysis, assess site suitability for nuclear installations, mostly focused on geographical features. More comprehensive then the previous one \\
+        \cmidrule(lr){1-3}
+        Abdullah et al. (2025) \cite{ABDULLAH2025105626} & \gls{ahp}, \acrshort{electre} & Extend site selection by including public acceptance and tourism impacts. \\
+        \bottomrule
+    \end{tabularx}
+    \caption{Site selection studies for nuclear installations.}
+    \label{tab:site_selection_studies}
+\end{table}
 
 A second category compares different nuclear technologies. Kiser and Otero (2023) evaluates \glspl{pwr}, \glspl{smr}, and \gls{msr} \cite{KISER2023104647}, while Locatelli and Mancini (2011) compares large and small reactor designs \cite{Locatelli01092012}. Birikorang's study stands out for its regional focus on South Africa and comparison of three specific reactor models (\gls{npm}, EM2-\acrshort{htgr}, FTR-\acrshort{msr}), though its technological comparisons mix designs at different maturity levels \cite{BIRIKORANG2026111837}. Notably, all three studies utilize the \gls{ahp} or its Fuzzy variant. The last one (Birikorang) draws on the \gls{iaea}'s \acrshort{inpro} methodology for advanced nuclear technology comparison \cite{IAEA_INPRO_2019}.
 
+\begin{table}[htbp]
+    \centering
+    \begin{tabularx}{\textwidth}{XXX}
+        \toprule
+        \textbf{Study (Authors, Date)} & \textbf{\gls{mcda} Methods} & \textbf{Objectives} \\
+        \midrule
+        Kiser and Otero (2023) \cite{KISER2023104647} & \gls{ahp} & Compare \glspl{pwr}, \glspl{smr}, and \glspl{msr}, includes a rough, qualitative evaluation of public opinion as a risk factor. \\
+        \cmidrule(lr){1-3}
+        Locatelli and Mancini (2011) \cite{Locatelli01092012} & \gls{ahp} & Compare large and small reactor designs. \\
+        \cmidrule(lr){1-3}
+        Birikorang (2026) \cite{BIRIKORANG2026111837} & Fuzzy \gls{ahp} & Application of \gls{iaea} INPRO method to compare \gls{smr}, \gls{htgr} and \gls{msr} technologies in South Africa. \\
+        \bottomrule
+    \end{tabularx}
+    \caption{Studies comparing different nuclear technologies.}
+    \label{tab:nuclear_technology_comparison}
+\end{table}
+
+
 Broader energy comparison studies by Hernández-Torres (2025), Pasaoglu (2018), and Atilgan (2016) evaluate multiple generation options (typically eight alternatives) employing hybrid \gls{ahp}-\gls{topsis}, \gls{ahp}, and \gls{mavt} methodologies respectively. These studies use generic, averaged parameters for each technology class \cite{HERNANDEZTORRES2025122481,PASAOGLU2018654,ATILGAN2016168}. In contrast, Castelazo (2014) adopts a more precise approach using \gls{mavt} to compare thirteen energy technologies, employing specific reference plants (e.g. \gls{epr} reactor for nuclear power) rather than generalized technology averages \cite{SANTOYOCASTELAZO2014119}.
--- add table to summarize these previous studies --
 
-Three studies are particularly relevant to the current research. Zolkaffly et al. (2014) evaluate nuclear plant models in Malaysia but suffer from outdated data and neglect non-technical aspects \cite{10.1063/1.4866099}. Topaloğlu (2025) applies the \gls{anp} to compare reactor types (\gls{pwr}, \gls{bwr}, \gls{phwr}) and locations, though social considerations remain limited to site-specific factors \cite{TOPALOGLU2025103228}. Goushis (2025) employs \gls{topsis} to assess \gls{smr} deployment in the EU for coal replacement, but focuses on a single reactor model rather than comparative technology evaluation \cite{GOUSHIS2025126565}.
+\begin{table}[htbp]
+    \centering
+    \begin{tabularx}{\textwidth}{XXX}
+        \toprule
+        \textbf{Study (Authors, Date)} & \textbf{\gls{mcda} Methods} & \textbf{Objectives} \\
+        \midrule
+        Hernández-Torres (2025) \cite{HERNANDEZTORRES2025122481} & Hybrid \gls{ahp}-\gls{topsis} & Evaluate multiple energy generation options (8 alternatives) using generic technology parameters. \\
+        \cmidrule(lr){1-3}
+        Pasaoglu (2018) \cite{PASAOGLU2018654} & \gls{ahp} & Compare multiple energy generation options (8 alternatives) using generic technology parameters for Turkish deployment. Considers a large number of indicators (22) mostly on economics and political related factors\\
+        \cmidrule(lr){1-3}
+        Atilgan (2016) \cite{ATILGAN2016168} & \gls{mavt} & Compare multiple energy generation options (8 alternatives) using generic technology parameters for Turkish deployment. Smaller set of indicators, considers more social indicators. \\
+        \cmidrule(lr){1-3}
+        Castelazo (2014) \cite{SANTOYOCASTELAZO2014119} & \gls{mavt} & Compare the \gls{lca} of thirteen energy technologies, using specific reference plants (e.g., \gls{epr} reactor). \\
+        \bottomrule
+    \end{tabularx}
+    \caption{Broader energy comparison studies including nuclear technologies.}
+    \label{tab:broader_energy_comparison}
+\end{table}
 
---add more details: what do they did, methods and results, something I learned from they studies---
+Three studies are particularly relevant to the current research. Zolkaffly et al. (2014) evaluate nuclear plant models for Malaysian deployment, focusing on a governmental perspective by using national requirements as indicators. However, the study's age renders most reactor data outdated. Moreover, they employ a strictly technical assessment, excluding economic, social and environmental \cite{10.1063/1.4866099}.
+
+Topaloğlu (2025) applies the \gls{anp} to compare the deployment of four reactor types (\gls{pwr}, \gls{bwr}, \gls{phwr}, \gls{gcr}) across four Turkish regions. The analysis employs 20 criteria, including technical factors (cooling water availability, electrical system compatibility), environmental considerations, and site-specific social criteria (proximity to forests/historical sites, transportation access, vicinity to population centres) \cite{TOPALOGLU2025103228}. 
+
+Goushis (2025) employs \gls{topsis} to assess \gls{smr} deployment in the EU to replace 193 coal-fired power plants. Though focused on a single reactor model rather than comparative technology evaluation, the premise of their study aligns with the current research in recognizing the current European energy landscape and nuclear crucial role and finally, by employing \gls{mcda} to address these challenges \cite{GOUSHIS2025126565}.
+
+\begin{table}[htbp]
+    \centering
+    \begin{tabularx}{\textwidth}{lX}
+        \toprule
+        \textbf{Study (Authors, Year)} & \textbf{Key Contributions to Current Research} \\
+        \midrule
+        Zolkaffly et al. (2014) \cite{10.1063/1.4866099} & Governmental perspective analysis; reactor model comparison framework \\
+        \cmidrule(lr){1-2}
+        Topaloğlu (2025) \cite{TOPALOGLU2025103228} & Comprehensive multi-criteria evaluation considering social aspects  \\
+        \cmidrule(lr){1-2}
+        Goushis (2025) \cite{GOUSHIS2025126565} & European context analysis; premise regarding nuclear role in the European energy transition \\
+        \bottomrule
+    \end{tabularx}
+    \caption{Selected studies informing the methodological approach for nuclear technology evaluation}
+    \label{tab:nuclear_study_comparison}
+\end{table}
+
 
 The literature review reveals four gaps in nuclear energy decision-making research. First, most studies focus solely on site selection rather than comparing different nuclear technologies. Second, comparisons between nuclear designs lack consideration of a specific decision-making context. Third, studies that do consider specific decision-making context, examine various energy generation options as broad technology categories (e.g., nuclear, solar, wind) rather than conducting detailed analyses of specific power plant designs. Fourth, social dimensions are frequently overlooked or applied only to site selection criteria.
