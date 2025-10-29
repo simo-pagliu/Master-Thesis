@@ -121,3 +121,42 @@ def rss(func: Callable, *measurements: List['Measurement']) -> 'Measurement':
 
     total_uncertainty = math.sqrt(squared_uncertainty)
     return Measurement(value, total_uncertainty)
+
+
+def rss_rel(func: Callable, *measurements: List['Measurement']) -> 'Measurement':
+    """
+    Compute the result and uncertainty of a multivariable function 'func' using finite differences.
+    Parameters:
+        func: Callable
+            Function whose uncertainty is to be propagated.
+        measurements: List[Measurement]
+            Measurement objects (values and uncertainties).
+    Returns:
+        Measurement: Resulting value and propagated uncertainty.
+    Raises:
+        ValueError: If measurements is empty or func is not callable.
+    """
+    if not measurements:
+        raise ValueError("At least one measurement must be provided.")
+    if not callable(func):
+        raise TypeError("func must be callable.")
+
+    nominal_values = [m.value for m in measurements]
+    value = func(*nominal_values)
+
+    squared_uncertainty = 0
+    for i, m in enumerate(measurements):
+        epsilon = max(1e-6 * abs(m.value), 1e-8)
+        perturbed_values_plus = nominal_values.copy()
+        perturbed_values_minus = nominal_values.copy()
+        perturbed_values_plus[i] += epsilon
+        perturbed_values_minus[i] -= epsilon
+        try:
+            df_dxi = (func(*perturbed_values_plus) - func(*perturbed_values_minus)) / (2 * epsilon)
+        except Exception as e:
+            raise ValueError(f"Failed to compute partial derivative for input {i}: {e}")
+        squared_uncertainty += (df_dxi * m.uncertainty/m.value) ** 2
+
+    total_uncertainty = math.sqrt(squared_uncertainty*value)
+    return Measurement(value, total_uncertainty)
+
