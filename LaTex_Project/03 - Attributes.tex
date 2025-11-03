@@ -1,9 +1,70 @@
+\newpage
+\subsubsection{Supplier Availability - DRAFT}
+Market entry ease and local industry involvement significantly influence both commissioning timelines and national economic benefits, which are both factors particularly valued by governmental agencies. While a comprehensive assessment would require detailed market analysis considering each country's nuclear industry status and expansion potential, this preliminary study adopts a much simplified approach.
+
+The analysis constructs a country-reactor matrix (each reactor corresponding to a different vendor) to evaluate supplier presence and possible additional industry capacity in each country.
+
+For ththe first step, points are assigned as follows:
+- +0.25 for supplier legal presence (registered office)
+- +0.50 for existing fabrication capabilities
+Which produces the baseline scores presented in Table \ref{tab:supplier-availability-step1}.
+
+\begin{table}[!ht]
+    \centering
+    \begin{tabularx}{\textwidth}{l c c c c c c}
+        \toprule
+        \textbf{Country} & \textbf{APR} & \textbf{EPR} & \textbf{AP} & \textbf{BWRX} & \textbf{RR SMR} & \textbf{NuScale} \\
+        \midrule
+        France (FR)       & 0.00 & 0.50 & 0.50 & 0.25 & 0.25 & 0.00 \\
+        Italy (IT)       & 0.00 & 0.25 & 0.25 & 0.25 & 0.00 & 0.00 \\
+        Switzerland (CH)  & 0.00 & 0.25 & 0.25 & 0.25 & 0.00 & 0.00 \\
+        Poland (PL)       & 0.00 & 0.00 & 0.25 & 0.25 & 0.00 & 0.00 \\
+        \bottomrule
+    \end{tabularx}
+    \caption{Supplier availability scores for each reactor model in the selected countries.}
+    \label{tab:supplier-availability-step1}
+\end{table}
+
+The second evaluation step assesses national nuclear industry capabilities. This process examines domestic companies capable of producing nuclear-certified materials and components - particularly those required for the "nuclear island" where standard industrial materials cannot be used as nuclear certification extends beyond basic materials, for instance structural steel for pressure vessels must meet specific nuclear standards, primary coolant pumps require specialized certification, and certain components demand highly specialized manufacturing skills\footnote{For example, the EPR reactor pressure vessel requires precision fabrication of 4.8m diameter, 13m height components with 25cm thick steel walls.}.
+
+Based on this analysis:
+- Italy receives +0.5 for its nuclear component manufacturing capability (e.g., Ansaldo Nucleare)
+- Switzerland receives +0.25 for operating nuclear plants but lacking large-component production
+- Poland receives no bonus due to its absent nuclear industry
+
+The cumulative scores from both evaluation stages are presented in Table \ref{tab:supplier-availability-step2}.
+
+\begin{table}[!ht]
+    \centering
+    \begin{tabularx}{\textwidth}{l c c c c c c}
+        \toprule
+        \textbf{Country} & \textbf{APR} & \textbf{EPR} & \textbf{AP} & \textbf{BWRX} & \textbf{RR SMR} & \textbf{NuScale} \\
+        \midrule
+        France (FR)       & 0.50 & 1.00 & 1.00 & 0.75 & 0.75 & 0.50 \\
+        Italy (IT)       & 0.50 & 0.75 & 0.75 & 0.75 & 0.50 & 0.50 \\
+        Switzerland (CH)  & 0.25 & 0.50 & 0.50 & 0.50 & 0.25 & 0.25 \\
+        Poland (PL)       & 0.00 & 0.00 & 0.25 & 0.25 & 0.00 & 0.00 \\
+        \bottomrule
+    \end{tabularx}
+    \caption{Supplier availability scores for each reactor model in the selected countries.}
+    \label{tab:supplier-availability-step2}
+\end{table}
+
+Two important considerations:
+1. While Poland demonstrates strong industrial development, the potential acceleration of its nuclear industry - a sector characterized by inherently long development cycles - remains uncertain and difficult to quantify.
+
+2. Established supply chains were not factored into France's evaluation, as the country has completed only one nuclear power plant (Flamanville-3) in the past 25 years, suggesting potential supply chain degradation despite historical capabilities.
+
+
 \section{Preprocessing}
-\subsection{Brainstorming Indicators}
-Here are presented all the indicators that could be considered in a similar study.
+The first step in this MCDA study is to determine the idicators and their hierarchy, thouout the followin paragraphs we will illustrate the process with which we arrived at the final set of indicators. It is important to remember that this study is limited to the fasibility of the approach itself rather then obtaining a conclusive result. For this reason we will not dwell deep into detailing every single indicator. Moreover this analysis can serve to understand which indicators might need detailing and which not: if an indicator or a category gets very low weights then it is pointless to invest time in detailing indicators in those categories, if an indicator has a very high weight then it could be worth. A couple of examples on how it could be possible to deeply detail indicators are provided in \textcolor{red}{Section PLACEHOLDER}. Given this premis, in the following 
+
+\subsection{Brainstorming and Confrontation with experts}
+Given the bottom up approach we presented in \textcolor{red}{Section PLACEHOLDER}, the first step of this analysis is to try and identify all possible ways to differentiate between the six alternatives under study. The process started with brainstorming from the author who then applied a first selection. This was then presented to X experts asking for missing, repetitive, useless, too aggregate or too specific indicators, this lead to a much longer list of posisble indicators which is presented in \textcolor{red}{Table PLACEHOLDER}.
+
 
 \subsection{Screening the Indicators}
-The second phase consists in finding problems with indicators, while they work on their own, they might expose problems with others or be irrelevant to the bigger picture. Several criteria are used and will be here presented one by one
+As previously anticipated the large list of indicators has to be screened, not only it would be too time consuming to obtain all that data but it would also be pointless, as we are going to discuss in the following paragraphs many inidcators might be redunant as they are highly correlated. ANother factor to consider is the relevance to the present study, we are focusing on a govermental prospective in europe, therefore something like the return on investment by operating the reactor would not be an interesting parameter given that the reactor will be operated by private equity. At last some indicators where discarted due to the unavability of publicly availble data or whenever the effort needed to obtain information was deemed out of the scope of this thesis. Everything is therefore documented hereafter as possible improvements for future studies, on this reagard please also read \textcolor{red}{Section conclusions - future improvments PLACEHOLDER}.
 
 \subsubsection{Availability of data}
 
@@ -12,10 +73,11 @@ The second phase consists in finding problems with indicators, while they work o
 \subsubsection{Irrelevant to the Decision Problem}
 
 \subsection{Finalization of the Indicators}
-Here is the final list and the aggregation
+In the end we are left with X indicators, which had to be aggregated into higher level objectives...
 
 ---
 \textcolor{red}{EVERYTHING BELOW HAS TO BE REORGANIZED}
+
 
 
 \section{Observation on the validity of public surveys}
