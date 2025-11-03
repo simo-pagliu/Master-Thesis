@@ -1,11 +1,23 @@
 
 As presented in the literature review (Section \ref{sec:decision_support}), multiple \gls{mcda} methodologies exist, requiring an initial choice between outranking and value-based approaches. Outranking methods were discarded for this analysis, as no clear non-compensatory dynamics were evident in the decision context. Among American school methods, \gls{mavt} emerged as particularly suitable thanks to its value functions which offer significant advantages for capturing potential non-linearity in indicator values across their data ranges, a characteristic expected for economic and social criteria. While this method was previously introduced in the literature review (Section \ref{sec:decision_support}), the following paragraphs provide a detailed explaination.
 
+\begin{table}[H]
+    \centering
+    \begin{tabular}{lll}
+        \textbf{Variable} & \textbf{Description} \\\hline\\[-9px]
+        $A_i$ & Alternative \\[2px]
+        $C_j$ & Criteria \\[2px]
+        $v_j(x)$ & Value Function \\[2px]
+        $w_j$ & Weight \\[2px]
+        $\vec{h}$ & Vector of Hypothetical Result \\[2px]
+    \end{tabular}
+\end{table}
+
 \section{Applying MAVT to choose a Reactor}
 
-\acrlong{mavt}, first presented by Keeney in 1996, is value-focused approach to decision-making that centers its analytical process on the core values and objectives of the \gls{dm}  rather than on the available alternatives. At the core of \gls{mavt} is the identification and quantification of what matters the most in a given decision context. This allows \glspl{dm} to explicitly define their \textit{fundamental objectives} (what they seek to achieve) rather then \textit{means objectives} (how those objectives will be achived). Preferences are modeled across performance ranges by means of value functions which are able to capture both linear and non-linear importance relationships between criterion values. Once the values of each criterion is established, criteriaare aggregated based on weights that convey the relative importance among criteria. The explicit nature of both value functions and weighting process make \gls{mavt} a particularly transparent decision analysis method, which is expecially valuable for research applications \cite{KEENEY1996537}.
+\acrlong{mavt}, first presented by Keeney in 1996, is value-focused approach to decision-making that centers its analytical process on the core values and objectives of the \gls{dm}  rather than on the available alternatives $A_i$. At the core of \gls{mavt} is the identification and quantification of what matters the most in a given decision context. This allows \glspl{dm} to explicitly define their \textit{fundamental objectives} (what they seek to achieve) rather then \textit{means objectives} (how those objectives will be achived). Preferences are modeled across performance ranges by means of value functions $v_j(x)$ which are able to capture both linear and non-linear importance relationships between criterion values. Once the values of each criterion $C_j$ is established, criteria are aggregated based on weights $w_j$ that convey the relative importance among criteria. The explicit nature of both value functions and weighting process make \gls{mavt} a particularly transparent decision analysis method, which is expecially valuable for research applications \cite{KEENEY1996537}.
 
-The first methodological step requires \textbf{establishing indicators and their hierarchical structure}. Morton and Fasolo (2009) identify two traditional approaches: top-down and bottom-up \cite{Morton01022009}. The top-down approach begins with macro-level objectives that are subsequently decomposed into lower-level objectives through the guiding question "How can we achieve this?". On the other hand, the bottom-up approach, which is employed in the present study, starts with low-level objectives derived by comparing alternatives, asking: "What differentiates these alternatives?". Higher-level objectives are then constructed by aggregating similar indicators.
+The first methodological step requires \textbf{establishing indicators and their hierarchical structure}. Morton and Fasolo (2009) identify two traditional approaches: top-down and bottom-up \cite{Morton01022009}. The top-down approach begins with macro-level objectives that are subsequently decomposed into lower-level objectives through the guiding question "How can we achieve this?". On the other hand, the bottom-up approach, which is employed in the present study, starts with low-level objectives derived by comparing alternatives $A_i$, asking: "What differentiates these alternatives?". Higher-level objectives are then constructed by aggregating similar indicators.
 
 Morton and Fasolo note that top-down structuring tends to produce general value trees, difficult to apply to a specific study. Bottom-up approaches instead, create context-specific trees that are difficult to generalize. Additionally, this study found the bottom-up approach particularly useful in ensuring even indicator distribution across high-level objectives. This practice mitigates splitting bias, in which an objective divided into multiple sub-objectives will typically receive an higher cumulative weight than the equivalent single objective \cite{MARTTUNEN2018178}, accordingly, even distribution should prevent artificial favoring of objectives with greater indicator counts.
 
@@ -67,7 +79,59 @@ More sophisticated methods like swing elicitation \cite{Goodwin_Wright_2004}, pr
 
 Rezaei (2015) proposed the \gls{bwm} which first identifies the most and least important criteria and then performs pairwise comparisons between these two reference criteria and all others \cite{REZAEI201549}. This method reduces the number of evaluation required: given $n$ criteria to evaluate, only $2n-3$ pairwise comparisons are needed, against the $\frac{n(n-1)}{2}$ available unique pairs. Another significant advantage is that this method allows for consistency checks to verify the results of the elicitation process.
 
-Liang et al. (2022) proposed the \gls{bwt} which combines the range sensitivity of methods like swing elicitation with the possibility to perform consistency checks offered by \gls{bwm} \cite{LIANG2022957}.
+\section{Best Worst Tradeoff Method}
+Liang et al. (2022) proposed the \gls{bwt} which combines the range sensitivity of methods like swing elicitation with the possibility to perform consistency checks offered by \gls{bwm} \cite{LIANG2022957}. \textcolor{red}{River's study ref} 2025 worked on this method to expand it to hierarchical structures.
 
-\textcolor{red}{[Detailed BWM explanation to be added]}
+To start things off these method require to have obtained the criteria structure and their value functions.
+As a second step we need to identify the best and worst criteria. To do so we start by defining the hypotetical consequence vector $\vec{h}$, were each component is the value of one criterion in an hypotetical scenario. For our example we will follow though with four criteria $C_1$, $C_2$, $C_3$ and $C_4$, if the vector $\vec{h}$ is $(1,0,0,0)$ this means that the $C_1$ criteria has its maximum value (1) while the others are at their lowest possible (0). To identify the best and worst criteria we request to order four hypotetical consequences: $(1,0,0,0)$, $(0,1,0,0)$, $(0,0,1,0)$ and $(0,0,0,1)$. This will identify the best $C_b$ and worst $C_w$ criteria, these two will be used as a reference point in the weighting process to avoid the anchoring bias (the importance weighing is biased by the reference for comparison used, using two of them we can employ analytical methods, such as this one, to counter act this effect).
+
+Best criteria comparison: we now do pairwise comparison using $C_b$ as our reference, in our four criteria example let's say that $C_1$ is $C_b$. We will ask experts to tell us the value $x$ that $C_b$ should have so that a pair of hypotetical consequences is indifferent: Determine $x$ such that $(x,0,0,0)$ is indifferent to $(0,1,0,0)$, the result will be noted as $x_{(b,2)}$, then the same will be done for $(0,0,1,0)$ to determine $x_{(b,3)}$ and finally $x_{(b,4)}$ from $(0,0,0,1)$.
+
+We can now substitute the quantities of each indicator into their value functions and assume the following relationship:
+
+\begin{equation}
+   \label{eq:best_comparison}
+   w_1 = \frac{w_2}{v_2(x_{(b,2)})} = \frac{w_3}{v_3(x_{(b,3)})} = \frac{w_4}{v_4(x_{(b,4)})}
+\end{equation}
+
+Then the procedure is repeated for $C_w$, which we assume is $C_4$, so that we ask to determine $x$ so that:
+$x$ so that $(0,0,0,1)$ is equivalent to 
+\begin{itemize}
+\item $(x,0,0,0)$ will determine $x_{(w,1)}$
+\item $(0,x,0,0)$ will determine $x_{(w,2)}$
+\item $(0,0,x,0)$ will determine $x_{(w,3)}$
+\end{itemize}
+
+The following relation is then considered:
+\begin{equation}
+   \label{eq:worst_comparison}
+   w_1 \cdot v_1(x_{(w,1)}) = w_2 \cdot v_2(x_{(w,2)}) = w_3 \cdot v_3(x_{(w,3)}) = w_4 \cdot 1 = w_w
+\end{equation}
+
+By breaking up the relationship in \ref{eq:worst_comparison} and \ref{eq:best_comparison} and by adding the normalization condition $\sum_{i=1}^{n} w_i = 1$ we can obtain a linear system of equations.
+
+\begin{equation}
+   \begin{cases}
+      w_i \cdot v_i(x_{(w,i)}) = w_w \forall i \in \{1,2,3\} \\
+      w_b = \frac{w_i}{v_i(x_{(b,i)})} \forall i \in \{2,3,4\} \\
+      \sum_{i=1}^{4} w_i = 1
+   \end{cases}
+\end{equation}
+
+Given the human nature of these judgments the system will not have an exact solution. For this reason we will solve for the vector of $w_i$ that minimizes the "greatest absolute violation of the equations":
+\begin{equation}
+   minimize \max \left\{
+   \begin{array}{l}
+      |w_i \cdot v_i(x_{(w,i)}) - w_w| \quad \forall i \in \{1,2,3\} \\
+      |w_b - \frac{w_i}{v_i(x_{(b,i)})}| \quad \forall i \in \{2,3,4\}
+   \end{array}
+   \right\}
+   subject \; to \quad \sum_{i=1}^{4} w_i = 1
+   and \quad w_i \geq 0 \quad \forall i
+\end{equation}
+
+\textcolor{red}{Here it then starts section 4 about consistency}
+
+\section{Consensus Reaching Process}
+
 
