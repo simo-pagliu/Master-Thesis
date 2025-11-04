@@ -3,6 +3,9 @@
 # Create build directory if it doesn't exist
 mkdir -p build
 
+# Clean all previous build files
+rm -f build/*
+
 # Create a symlink to the main .tex file in the build directory
 ln -sf "../main.tex" build/
 
