@@ -1,3 +1,4 @@
 /LaTex_Project/build
 LaTex_Project/compile.sh
 /03 - Weighting/__pycache__
+03 - Weighting/criterion_weights_*.csv

@@ -1,0 +1,4 @@
+name,min,max,unit,value_function
+Salary,1200,2000,€,0 if x<1500 else (x-1500)/500
+Paid Leave,2,10,days,(x-2)/8
+Bonus,0,5000,€,x/5000
