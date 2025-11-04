@@ -85,21 +85,25 @@ Liang et al. (2022) proposed the \gls{bwt} which combines the range sensitivity 
 To start things off these method require to have obtained the criteria structure and their value functions.
 As a second step we need to identify the best and worst criteria. To do so we start by defining the hypotetical consequence vector $\vec{h}$, were each component is the value of one criterion in an hypotetical scenario. For our example we will follow though with four criteria $C_1$, $C_2$, $C_3$ and $C_4$, if the vector $\vec{h}$ is $(1,0,0,0)$ this means that the $C_1$ criteria has its maximum value (1) while the others are at their lowest possible (0). To identify the best and worst criteria we request to order four hypotetical consequences: $(1,0,0,0)$, $(0,1,0,0)$, $(0,0,1,0)$ and $(0,0,0,1)$. This will identify the best $C_b$ and worst $C_w$ criteria, these two will be used as a reference point in the weighting process to avoid the anchoring bias (the importance weighing is biased by the reference for comparison used, using two of them we can employ analytical methods, such as this one, to counter act this effect).
 
-Best criteria comparison: we now do pairwise comparison using $C_b$ as our reference, in our four criteria example let's say that $C_1$ is $C_b$. We will ask experts to tell us the value $x$ that $C_b$ should have so that a pair of hypotetical consequences is indifferent: Determine $x$ such that $(x,0,0,0)$ is indifferent to $(0,1,0,0)$, the result will be noted as $x_{(b,2)}$, then the same will be done for $(0,0,1,0)$ to determine $x_{(b,3)}$ and finally $x_{(b,4)}$ from $(0,0,0,1)$.
+Best criteria comparison: we now do pairwise comparison using $C_b$ as our reference, in our four criteria example let's say that $C_1$ is $C_b$. We will ask experts to tell us the value $x$ that $C_b$ should have so that a pair of hypotetical consequences is indifferent: 
+\begin{itemize}
+\item $(0,1,0,0)$ vs $(x,0,0,0)$ will determine $x_{(b,2)}$
+\item $(0,0,1,0)$ vs $(x,0,0,0)$ will determine $x_{(b,3)}$
+\item $(0,0,0,1)$ vs $(x,0,0,0)$ will determine $x_{(b,4)}$
+\end{itemize}
 
 We can now substitute the quantities of each indicator into their value functions and assume the following relationship:
-
 \begin{equation}
    \label{eq:best_comparison}
-   w_1 = \frac{w_2}{v_2(x_{(b,2)})} = \frac{w_3}{v_3(x_{(b,3)})} = \frac{w_4}{v_4(x_{(b,4)})}
+   w_1 = \frac{w_2}{v_b(x_{(b,2)})} = \frac{w_3}{v_b(x_{(b,3)})} = \frac{w_4}{v_b(x_{(b,4)})}
 \end{equation}
 
-Then the procedure is repeated for $C_w$, which we assume is $C_4$, so that we ask to determine $x$ so that:
-$x$ so that $(0,0,0,1)$ is equivalent to 
+For the comparisons with the worst performing criteria $C_w$, which we assume is $C_4$, we have to ask which value $x$ of another criterion is equivalent to $(0,0,0,1)$. Mind you the result here is not therefore a value of the worst indicator as previously done but a value for the other one, this is reflected in the notation since we are determining $x_{(i,w)}$ instead of $x_{(w,i)}$.
+
 \begin{itemize}
-\item $(x,0,0,0)$ will determine $x_{(w,1)}$
-\item $(0,x,0,0)$ will determine $x_{(w,2)}$
-\item $(0,0,x,0)$ will determine $x_{(w,3)}$
+\item $(0,0,0,1)$ vs $(x,0,0,0)$ will determine $x_{(1,w)}$
+\item $(0,0,0,1)$ vs $(0,x,0,0)$ will determine $x_{(2,w)}$
+\item $(0,0,0,1)$ vs $(0,0,x,0)$ will determine $x_{(3,w)}$
 \end{itemize}
 
 The following relation is then considered:
@@ -108,27 +112,48 @@ The following relation is then considered:
    w_1 \cdot v_1(x_{(w,1)}) = w_2 \cdot v_2(x_{(w,2)}) = w_3 \cdot v_3(x_{(w,3)}) = w_4 \cdot 1 = w_w
 \end{equation}
 
-By breaking up the relationship in \ref{eq:worst_comparison} and \ref{eq:best_comparison} and by adding the normalization condition $\sum_{i=1}^{n} w_i = 1$ we can obtain a linear system of equations.
+By breaking up the relationships in \ref{eq:worst_comparison} and \ref{eq:best_comparison} and by adding the normalization condition $\sum_{i=1}^{n} w_i = 1$ we can obtain a linear system of equations.
 
 \begin{equation}
    \begin{cases}
-      w_i \cdot v_i(x_{(w,i)}) = w_w \forall i \in \{1,2,3\} \\
-      w_b = \frac{w_i}{v_i(x_{(b,i)})} \forall i \in \{2,3,4\} \\
+      w_i \cdot v_i(x_{(i,w)}) = w_w \forall i \in \{1,2,3\} \\
+      w_b = \frac{w_i}{v_b(x_{(b,i)})} \forall i \in \{2,3,4\} \\
       \sum_{i=1}^{4} w_i = 1
    \end{cases}
 \end{equation}
 
 Given the human nature of these judgments the system will not have an exact solution. For this reason we will solve for the vector of $w_i$ that minimizes the "greatest absolute violation of the equations":
 \begin{equation}
-   minimize \max \left\{
-   \begin{array}{l}
-      |w_i \cdot v_i(x_{(w,i)}) - w_w| \quad \forall i \in \{1,2,3\} \\
-      |w_b - \frac{w_i}{v_i(x_{(b,i)})}| \quad \forall i \in \{2,3,4\}
-   \end{array}
-   \right\}
-   subject \; to \quad \sum_{i=1}^{4} w_i = 1
-   and \quad w_i \geq 0 \quad \forall i
+   \begin{aligned}
+   &\text{minimize: } \quad \textbf{MAX}
+   & \begin{cases}
+         |w_i \cdot v_i(x_{(w,i)}) - w_w| & \forall i \in \{1,2,3\} \\
+         |w_b - \frac{w_i}{v_b(x_{(b,i)})}| & \forall i \in \{2,3,4\}
+   \end{cases}\\
+   &\text{subject to:}
+   & \begin{cases}
+      \sum_{i=1}^{4} w_i = 1 \quad \forall i \\
+      w_i \geq 0 \quad \forall i.
+   \end{cases}
+   \end{aligned}
 \end{equation}
+
+
+The code implementation requires the definition of a single auxiliary variable to minimize, therefore the problem is expressed as follows:
+
+\begin{equation}
+\begin{aligned}
+&\text{minimize: } \quad \textbf{MAX} (z) \\
+&\text{subject to:}  
+& \begin{cases}
+ z \geq |w_i \cdot v_i(x_{(w,i)}) - w_w| \quad \forall i \in \{1,2,3\}, \\
+ z \geq \left|w_b - \frac{w_i}{v_b(x_{(b,i)})}\right| \quad \forall i \in \{2,3,4\}, \\
+ \sum_{i=1}^{4} w_i = 1 \quad \forall i, \\
+ w_i \geq 0 \quad \forall i.
+\end{cases}
+\end{aligned}
+\end{equation}
+
 
 \textcolor{red}{Here it then starts section 4 about consistency}
 
