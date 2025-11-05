@@ -1,0 +1,36 @@
+"High-Level Group";Low-Level Indicator;Description;Type;Units
+Nuclear Design, Engineering;Thermal Efficiency;Indicator of the thermal hydraulics efficiency;Data;%
+Nuclear Design, Engineering;Discharge Burnup;Indicator of the fuel utilization efficiency and neutron economy;Data;MWD/kgHM
+Engineering;Design Maturity;Technological readiness of the design;Expert Judgment;-
+Engineering;Licensing Status;How close to have a license is the reactor?;Expert Judgment;-
+Economic;Capital Investment Budgeted;Overnight, budgeted construction costs (estimates include decomissioning etc);Estimates;EUR/kW_e
+Economic;Planned Commissioning Time;Scheduled commissioning time;Estimates;Years
+Economic;Operative + Fuel Costs;Ongoing costs;Estimates, Data;EUR/MW_h
+System-wide Considerations;Supplier Availbility;Is the supplier esblished in the country? Even partially, for instance has offices;Information-based;-
+System-wide Considerations;Net Power Output;How much does the output of one unit fits the grid demand;Data;MW_e
+System-wide Considerations;Load following Capabilities;How much do the load following capabilities able to satisfy the grid demand;Quantitative Composed;(%Pnom)/min
+Waste, Nuclear Design;%m MOX allowed;Indicator of the potential to partially close the fuel cycle by MOX fuel recycling;Data + Qualitative adjustment;-
+Waste, Enviromental;Nuclear Waste;Estimation of amount of spent fuel produced;Quantitative Composed;tons/GW_a
+Waste, Enviromental;Mining Waste;Estimation of the amount of waste produced by mining activities;Quantitative Composed;Score
+Public Concerns, Economic, System-wide Consideration;Electricity Market Benefit;Potential reduction of cost in the Electricity Market by marginal price logic, by constructing one unit;Quantitative Composed;EUR/MW_h
+Public Concerns, Enviromental;GHGe Benefit;Potential Yearly Reduction on GHG Emissions by installing one unit;Quantitative Composed;MtonCO2-eq/yr
+Public Concerns;Percived Safety;Based on public opinion, how much each reactor sounds safe?;Survey;Score
+Nuclear Design, Engineering;Passive Safety Features;Evaluation of the passive safety features availble in the reactor design;Expert Judgment;Score
+Engineering;Modularization;How modular is the design?;Information-based;Score
+Economic;Construction Risk;Likelyhood of problems in the commissioning due to the vendor;Expert Judgment, Risk Assessment;Score, %
+Economic;Cost Uncertanty;Variation in the cost estimates;Expert Judgment, Risk Assessment;Score, %
+Economic;Financing model Compatibility;Suitability for country specific financing models;Information-based;Score
+Economic, System-wide Consideration;LCOE;Estimation of the cost of electricity to have paybacktime at end of life, indicator of the production cost and margins for the utility;Estimates, Data;EUR/MW_h
+System-wide Considerations;Grid Hosting Capacity;Considers requirments for grid expansion or adaptation;Information-based, Expert Judgment;Score
+Enviromental;Cooling Water Adequay;Heat to be dissipated vs Availability of Water “sinks” vs National Enviromental Limits;Information-based;Score
+Engineering, System-wide Consideration, Enviromental;Land Usage;Area needed for the plant;Data;m2
+Engineering;Site Flexibility;Considers the area needed for the plant and how many places with that free area are available in the country;Data;km2
+Nuclear Design, Engineering;Core Damage Frequency (CDF);Indicator from probabilitic risk assessments, indicates probability of events that result in core damage;Estimates;1/Reactor_Year
+Nuclear Design, Engineering;LOCA Frequency;Indicator from probabilitic risk assessments, indicates probability of events that result in significan loss of coolant;Estimates;1/Reactor_Year
+Public Concerns, Economic;Local Benefit – Economic;Measures the economic return of the investiment to the national economy, based on how much of the capital cost can be invested in national buiseness;Information-based;%
+Public Concerns, Economic;Local Benefit – Human;Measures the benefit for the local community in terms of jobs created;Information-based;Number of Jobs
+Public Concerns;Visual Impact;Measures the impact on the landscape;Survey;Score
+Engineering, Economic;Design Complexity;Measures how complex the design is from a supply and manufacturing point of view;Data-based;Score
+Engineering, Economic;Building Complexity;Measures how complex is the design from a commissioning and building point of vire;Data-based;Score
+Engineering;Overall Reactor Safety;Summarizes the most important safety parameters of a reactor design;Data-based;Score
+Economic;Industry Availbility;Determined from market analysis of the capabilities of the current industry to satisfy the requirments of a nuclear commsisioning;Data-based;Score
