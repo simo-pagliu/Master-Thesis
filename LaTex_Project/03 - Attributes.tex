@@ -1,4 +1,96 @@
+\section{Preprocessing}
+The first step in this MCDA study is to determine the idicators and their hierarchy, thouout the followin paragraphs we will illustrate the process with which we arrived at the final set of indicators. It is important to remember that this study is limited to the fasibility of the approach itself rather then obtaining a conclusive result. For this reason we will not dwell deep into detailing every single indicator. Moreover this analysis can serve to understand which indicators might need detailing and which not: if an indicator or a category gets very low weights then it is pointless to invest time in detailing indicators in those categories, if an indicator has a very high weight then it could be worth. A couple of examples on how it could be possible to deeply detail indicators are provided in \textcolor{red}{Section PLACEHOLDER}. Given this premis, in the following 
+
+\subsection{Brainstorming and Confrontation with experts}
+\label{sec:brainstorming_indicators}
+Given the bottom up approach we presented in section \ref{sec:mavt_presentation}, the first step of this analysis is to try and identify all possible ways to differentiate between the six alternatives under study. The process started with brainstorming from the author who then applied a first selection. The result was then presented to 3 experts asking for missing, repetitive, useless, too aggregate or too specific indicators, thoughout this process a long and comprehensive list of 35 possible indicators \footnote{the complete list is availble as csv file in the repository and an example python script is provided to navigate it, for more info see \ref{sec:appendix_code}} has been compiled, for this a selection process is applied to ensure no repetition or correlated indicators are used, and to only cosnider those that are highly relevant to our case study.
+
+
+\subsection{Screening the Indicators}
+As previously anticipated the large list of indicators has to be screened, not only it would be too time consuming to obtain all that data but it would also be pointless, as we are going to discuss in the following paragraphs many inidcators might be redunant as they are highly correlated. ANother factor to consider is the relevance to the present study, we are focusing on a govermental prospective in europe, therefore something like the return on investment by operating the reactor would not be an interesting parameter given that the reactor will be operated by private equity. At last some indicators where discarted due to the unavability of publicly availble data or whenever the effort needed to obtain information was deemed out of the scope of this thesis, some examples are provided in Table \ref{tab:screening-indicators}. Everything is therefore documented hereafter as possible improvements for future studies, on this reagard please also read \textcolor{red}{Section conclusions - future improvments PLACEHOLDER}.
+
+
+\begin{table}[!hb]
+\centering
+\begin{tabularx}{0.8\textwidth}{Xccccc}
+\toprule
+\textbf{Indicator} & \textbf{F1} & \textbf{F2} & \textbf{F3} & \textbf{Decision} \\
+\midrule
+Load Following Capabilities & \cmark & \cmark & \cmark & \textbf{Selected} \\
+
+Mining waste & \cmark & \cmark & \xmark & Rejected \\
+
+Land Usage & \xmark & \xmark & \cmark & Rejected \\
+
+Core Damage Frequency & \xmark & \cmark & \cmark & Rejected \\
+
+Spent Nuclear Fuel & \cmark & \cmark & \cmark & \textbf{Selected} \\
+
+Local Economy Turnaround & \xmark & \xmark & \cmark & Rejected \\
+
+Capital Investment Budgeted & \cmark & \cmark & \cmark & \textbf{Selected} \\
+
+Supplier Availability  & \cmark & \cmark & \cmark & \textbf{Selected} \\
+\bottomrule
+\end{tabularx}
+\caption{Example of the selection process of indicators. F1: High relevance to the case study, F2: Data is available, F3: Not redundant nor highly correlated with other indicators}
+\label{tab:screening-indicators}
+\end{table}
+
+\subsection{Finalization of the Indicators}
+In the end we are left with X indicators, which had to be aggregated into higher level objectives as presented in Table \ref{tab:final-indicators}.
+
+\begin{table}[!hb]
+    \centering
+    \begin{tabularx}{\textwidth}{llX}
+        \toprule
+        \multicolumn{3}{c}{\textbf{Technical Indicators}} \\
+        \midrule
+        T1 & Thermal Efficiency & Indicator of the thermal hydraulics efficiency \\
+        \cmidrule(lr){1-3}
+        T2 & Discharge Burnup & Indicator of the fuel utilization efficiency and neutron economy \\
+        \cmidrule(lr){1-3}
+        T3 & Net Power Output & How much does the output of one unit fits the grid demand \\
+        \cmidrule(lr){1-3}
+        T4 & Load Following Capabilities & How much do the load following capabilities able to satisfy the grid demand \\
+        \midrule
+        \multicolumn{3}{c}{\textbf{Feasibility Indicators}} \\
+        \midrule
+        F1 & Design Maturity & Technological readiness of the design \\
+        \cmidrule(lr){1-3}
+        F2 & Licensing Status & How close to have a license is the reactor? \\
+        \cmidrule(lr){1-3}
+        F3 & Supplier Availability & Is the supplier established in the country? Even partially, for instance has offices \\
+        \midrule
+        \multicolumn{3}{c}{\textbf{Economic Indicators}} \\
+        \midrule
+        E1 & Capital Investment Budgeted & Overnight, budgeted construction costs (estimates include decomissioning etc) \\
+        \cmidrule(lr){1-3}
+        E2 & Risk of Construction Delays & Based on the complexity of the design and the construction process (see Intermediate Computations) \\
+        \cmidrule(lr){1-3}
+        E3 & Operative and Fuel Costs & Ongoing costs \\
+        \midrule
+        \multicolumn{3}{c}{\textbf{Public Concerns Indicators}} \\
+        \midrule
+        P1 & Electricity Market Benefit & Potential reduction of cost in the Electricity Market by marginal price logic, by constructing one unit \\
+        \cmidrule(lr){1-3}
+        P2 & GHGe Benefit & Potential Yearly Reduction on GHG Emissions by installing one unit \\
+        \cmidrule(lr){1-3}
+        P3 & Perceived Safety & Based on public opinion, how much each reactor sounds safe? \\
+        \cmidrule(lr){1-3}
+        P4 & Nuclear Waste & Estimation of amount of spent fuel produced \\
+        \bottomrule
+    \end{tabularx}
+    \caption{Final selection of indicators, categorized and coded for evaluation.}
+    \label{tab:final_indicators}
+\end{table}
+
+
+
 \newpage
+\textcolor{red}{EVERYTHING BELOW HAS TO BE REORGANIZED}
+
+
 \subsubsection{Supplier Availability - DRAFT}
 Market entry ease and local industry involvement significantly influence both commissioning timelines and national economic benefits, which are both factors particularly valued by governmental agencies. While a comprehensive assessment would require detailed market analysis considering each country's nuclear industry status and expansion potential, this preliminary study adopts a much simplified approach.
 
@@ -54,30 +146,6 @@ Two important considerations:
 1. While Poland demonstrates strong industrial development, the potential acceleration of its nuclear industry - a sector characterized by inherently long development cycles - remains uncertain and difficult to quantify.
 
 2. Established supply chains were not factored into France's evaluation, as the country has completed only one nuclear power plant (Flamanville-3) in the past 25 years, suggesting potential supply chain degradation despite historical capabilities.
-
-
-\section{Preprocessing}
-The first step in this MCDA study is to determine the idicators and their hierarchy, thouout the followin paragraphs we will illustrate the process with which we arrived at the final set of indicators. It is important to remember that this study is limited to the fasibility of the approach itself rather then obtaining a conclusive result. For this reason we will not dwell deep into detailing every single indicator. Moreover this analysis can serve to understand which indicators might need detailing and which not: if an indicator or a category gets very low weights then it is pointless to invest time in detailing indicators in those categories, if an indicator has a very high weight then it could be worth. A couple of examples on how it could be possible to deeply detail indicators are provided in \textcolor{red}{Section PLACEHOLDER}. Given this premis, in the following 
-
-\subsection{Brainstorming and Confrontation with experts}
-\label{sec:brainstorming_indicators}
-Given the bottom up approach we presented in section \ref{sec:mavt_presentation}, the first step of this analysis is to try and identify all possible ways to differentiate between the six alternatives under study. The process started with brainstorming from the author who then applied a first selection. The result was then presented to 3 experts asking for missing, repetitive, useless, too aggregate or too specific indicators, thoughout this process a long and comprehensive list of 35 possible indicators \footnote{the complete list is availble as csv file in the repository and an example python script is provided to navigate it, for more info see \ref{sec:appendix_code}} has been compiled, for this a selection process is applied to ensure no repetition or correlated indicators are used, and to only cosnider those that are highly relevant to our case study.
-
-
-\subsection{Screening the Indicators}
-As previously anticipated the large list of indicators has to be screened, not only it would be too time consuming to obtain all that data but it would also be pointless, as we are going to discuss in the following paragraphs many inidcators might be redunant as they are highly correlated. ANother factor to consider is the relevance to the present study, we are focusing on a govermental prospective in europe, therefore something like the return on investment by operating the reactor would not be an interesting parameter given that the reactor will be operated by private equity. At last some indicators where discarted due to the unavability of publicly availble data or whenever the effort needed to obtain information was deemed out of the scope of this thesis. Everything is therefore documented hereafter as possible improvements for future studies, on this reagard please also read \textcolor{red}{Section conclusions - future improvments PLACEHOLDER}.
-
-\subsubsection{Availability of data}
-
-\subsubsection{Double Counting}
-
-\subsubsection{Irrelevant to the Decision Problem}
-
-\subsection{Finalization of the Indicators}
-In the end we are left with X indicators, which had to be aggregated into higher level objectives...
-
----
-\textcolor{red}{EVERYTHING BELOW HAS TO BE REORGANIZED}
 
 
 
