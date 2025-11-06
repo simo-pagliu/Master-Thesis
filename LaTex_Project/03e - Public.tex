@@ -1,0 +1,62 @@
+\subsection{Indicators on Social Matters}
+\paragraph{Potential Reduction of \glspl{ghg}} were quantified by comparing each country's 2024 emissions against projected emissions following deployment of one reactor unit. Country-specific GHG emission intensities were derived from Electricity Maps aggregated data \cite{ElectricityMaps_CarbonIntensity_2024}. Total load were obtained from the ENTSO-E Transparency Platform \cite{ENTSOE_Transparency_2025}. Due to non-normal data distributions, median values with interquartile ranges were employed to characterize uncertainty (Table~\ref{tab:ghg-intensity-country}). \\
+
+For nuclear generation's lifecycle emissions, Liu et al.'s (2023) comprehensive meta-analysis of 42 studies \cite{10.3389/fenrg.2023.1147016} served as the primary reference, reporting a global average of $15.815 \pm 3.59 \; gCO_{2,\text{eq}}/kWh_e$ for light water reactors. This conservative estimate was selected despite lower values observed in specific contexts: French nuclear operations typically range between $ 2 \sim 6 \; gCO_{2,\text{eq}}/kWh_e$ according to both operational data \cite{paillere_2021} and IAEA assessments \cite{IAEA_Climate_Change_Nuclear_Power_2022}, while individual studies on french reactors have reported values as high as $12 \; gCO_{2,\text{eq}}/kWh_e$ \cite{paillere_2021}. The global average was preferred to account for potential regional variations in fuel cycle practices and construction impacts. \\
+
+Small modular reactors (SMRs) were assigned an emission intensity of $17.24 \pm 3.91$ $gCO_{2,\text{eq}}/kWh_e$, incorporating Carless et al.'s (2016) finding that SMRs exhibit approximately $9\%$ higher lifecycle emissions than conventional large LWRs due to reduced economies of scale in construction and fuel production \cite{CARLESS201684}. \\
+
+\begin{table}[!ht]
+    \centering
+    \begin{tabularx}{0.6\textwidth}{X c c c}
+        \toprule
+        Country / Region & a & b & c \\
+        \midrule
+        Italy (IT)        & draft & 240 & 72.0 \\
+        Switzerland (CH)  & 60  & draft  & 1.8 \\
+        Poland (PL)       & 160 & 700 & draft \\
+        France (FR)       & 460 & draft  & 23.0 \\
+        \bottomrule
+    \end{tabularx}
+    \caption{\gls{ghg} evaluation: a: Annual electricity load [TWh], b: GHG emission intensity [gCO$_2$-eq/kWh], c: Total annual GHG emissions from electricity generation [MtCO$_2$-eq/yr]}
+    \label{tab:ghg-intensity-country}
+\end{table}
+
+
+
+\paragraph{Spent Nuclear Fuel Production} was estimated based on...
+
+\paragraph{Mining Waste} are estimated ....
+
+\paragraph{Percived Safety}
+The observant reader may have noted the omission of explicit safety indicators among technical parameters in our analysis. Table~\ref{tab:safety-performance} presents a critical regulatory metric. How is the Core Damage Frequency (CDF) calculated and validated by nuclear regulators: the Core Damage Frequency (CDF), representing the probabilistic assessment of severe accident likelihood, expressed as events leading to core damage per reactor-year.
+
+\begin{table}[!ht]
+    \centering
+    \begin{tabularx}{\textwidth}{X c c}
+        \toprule
+        \textbf{Reactor Model} & \textbf{CDF [1/reactor-year]} & Source\\
+        \midrule
+        APR-1400         & $2.25 \times 10^{-6}$ & \cite{KHNP_EU_APR_Characteristics} \\
+        EPR-1750         & $1.18 \times 10^{-7}$ & \cite{EDFEnergy_PSA_2012} \\
+        AP1000           & $2.41 \times 10^{-7}$ & \cite{NRC_ML23161A411} \\
+        BWRX-300         & $<1.0 \times 10^{-8}$ & \cite{ENCO_SMR_Analysis_2022} \\
+        Rolls-Royce SMR  & $<1.0 \times 10^{-7}$ & \cite{ENCO_SMR_Analysis_2022} \\
+        NuScale          & $<2.0 \times 10^{-7}$ & \cite{ENCO_SMR_Analysis_2022} \\
+        \bottomrule
+    \end{tabularx}
+    \caption{Core Damage Frequency (CDF) for Selected Reactor Models}
+    \label{tab:safety-performance}
+\end{table}
+
+While CDF values demonstrate marginal differences between designs, all modern reactors exhibit exceptionally high safety performance in absolute terms. Comparative energy safety data underscores this point: nuclear energy's fatality rate of 0.03 deaths per TWh places it among the safest energy sources, comparable to wind (0.04) and solar (0.02), and 2-3 orders of magnitude safer than fossil fuels (2.82 for gas, 32.72 for brown coal) \cite{Markandya_Wilkinson_2007, SOVACOOL20163952, OurWorldInData_EnergyDeathRates_2025}. Radiation exposure data from the U.S. EPA \cite{EPA_Radiation_Sources_2025}, based on NCRP measurements \cite{NCRP_Report_160_2009}, reveals that 48\% of average annual radiation dose comes from medical procedures, 37\% originates from natural background radiation and less than 0.2\% is attributable to occupational/industrial sources, including nuclear power plants.
+
+\text{orange}{MAYBE OMIT: Notably, as first documented by McBride et al. (1978) \cite{McBride_Radiological_Impact_1978}, coal plants typically emit radioactive materials at levels two orders of magnitude higher than nuclear plants when normalized for equivalent energy production.}
+
+Therefore, considering the following:
+\begin{itemize}
+    \item All evaluated reactors meet comparable, high safety standards
+    \item Nuclear energy demonstrates superior safety performance relative to conventional energy sources
+    \item Technical safety metrics have limited influence on public perception and reactor preference, where risk perception often diverges from actual risk assessment
+\end{itemize}
+
+The safety indicator will not be based on risk assessment data but will be derived from expert judgment based on the percived risk that each reactor model may present to the general public.

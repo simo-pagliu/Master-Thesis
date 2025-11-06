@@ -1,3 +1,82 @@
+
+\subsubsection{Supplier Availability - DRAFT}
+Market entry ease and local industry involvement significantly influence both commissioning timelines and national economic benefits, which are both factors particularly valued by governmental agencies. While a comprehensive assessment would require detailed market analysis considering each country's nuclear industry status and expansion potential, this preliminary study adopts a much simplified approach.
+
+The analysis constructs a country-reactor matrix (each reactor corresponding to a different vendor) to evaluate supplier presence and possible additional industry capacity in each country.
+
+For ththe first step, points are assigned as follows:
+- +0.25 for supplier legal presence (registered office)
+- +0.50 for existing fabrication capabilities
+Which produces the baseline scores presented in Table \ref{tab:supplier-availability-step1}.
+
+\begin{table}[!ht]
+    \centering
+    \begin{tabularx}{\textwidth}{l c c c c c c}
+        \toprule
+        \textbf{Country} & \textbf{APR} & \textbf{EPR} & \textbf{AP} & \textbf{BWRX} & \textbf{RR SMR} & \textbf{NuScale} \\
+        \midrule
+        France (FR)       & 0.00 & 0.50 & 0.50 & 0.25 & 0.25 & 0.00 \\
+        Italy (IT)       & 0.00 & 0.25 & 0.25 & 0.25 & 0.00 & 0.00 \\
+        Switzerland (CH)  & 0.00 & 0.25 & 0.25 & 0.25 & 0.00 & 0.00 \\
+        Poland (PL)       & 0.00 & 0.00 & 0.25 & 0.25 & 0.00 & 0.00 \\
+        \bottomrule
+    \end{tabularx}
+    \caption{Supplier availability scores for each reactor model in the selected countries.}
+    \label{tab:supplier-availability-step1}
+\end{table}
+
+The second evaluation step assesses national nuclear industry capabilities. This process examines domestic companies capable of producing nuclear-certified materials and components - particularly those required for the "nuclear island" where standard industrial materials cannot be used as nuclear certification extends beyond basic materials, for instance structural steel for pressure vessels must meet specific nuclear standards, primary coolant pumps require specialized certification, and certain components demand highly specialized manufacturing skills\footnote{For example, the EPR reactor pressure vessel requires precision fabrication of 4.8m diameter, 13m height components with 25cm thick steel walls.}.
+
+Based on this analysis:
+- Italy receives +0.5 for its nuclear component manufacturing capability (e.g., Ansaldo Nucleare)
+- Switzerland receives +0.25 for operating nuclear plants but lacking large-component production
+- Poland receives no bonus due to its absent nuclear industry
+
+The cumulative scores from both evaluation stages are presented in Table \ref{tab:supplier-availability-step2}.
+
+\begin{table}[!ht]
+    \centering
+    \begin{tabularx}{\textwidth}{l c c c c c c}
+        \toprule
+        \textbf{Country} & \textbf{APR} & \textbf{EPR} & \textbf{AP} & \textbf{BWRX} & \textbf{RR SMR} & \textbf{NuScale} \\
+        \midrule
+        France (FR)       & 0.50 & 1.00 & 1.00 & 0.75 & 0.75 & 0.50 \\
+        Italy (IT)       & 0.50 & 0.75 & 0.75 & 0.75 & 0.50 & 0.50 \\
+        Switzerland (CH)  & 0.25 & 0.50 & 0.50 & 0.50 & 0.25 & 0.25 \\
+        Poland (PL)       & 0.00 & 0.00 & 0.25 & 0.25 & 0.00 & 0.00 \\
+        \bottomrule
+    \end{tabularx}
+    \caption{Supplier availability scores for each reactor model in the selected countries.}
+    \label{tab:supplier-availability-step2}
+\end{table}
+
+Two important considerations:
+1. While Poland demonstrates strong industrial development, the potential acceleration of its nuclear industry - a sector characterized by inherently long development cycles - remains uncertain and difficult to quantify.
+
+2. Established supply chains were not factored into France's evaluation, as the country has completed only one nuclear power plant (Flamanville-3) in the past 25 years, suggesting potential supply chain degradation despite historical capabilities.
+
+
+
+\section{Observation on the validity of public surveys}
+During this study's execution, multiple public surveys were reviewed based on the initial assumption that such instruments could provide quantitative measurements of qualitative factors such as public support for nuclear installations. However, the analysis exposed frequent methodological limitations introducing bias into the results. In Italy, a 2024 survey reported 81\% opposition to nuclear power \cite{IPSOS_Nuclear_Survey_2024}. However, analysis of the survey report reveals problematic question design. The primary question was phrased as: \textit{"The debate on nuclear energy has returned to the forefront. What is your opinion on the matter?"} with response options structured as:
+\begin{itemize}
+    \item A1: "The current situation is complex; a return to nuclear should be evaluated"
+    \item A2: "Nuclear has more risks than benefits and is not the right path"
+    \item A3: "Nuclear energy entails excessive hidden costs and is not advantageous"
+    \item A4: "Only safer technologies than current ones should be considered"
+\end{itemize}
+
+This framing demonstrates clear bias: two options (A2 and A3) explicitly oppose nuclear, A1 offers only conditional support, and A4 introduces safety concerns before suggesting potential support. Notably, the 81\% opposition figure includes A4 responses, which represent conditional rather than absolute opposition. When considering only explicit opposition (A2+A3), the figure decreases to 43\%.\\
+
+Another study from 2024 presents a more methodologically sound approach, though its conference presentation emphasized positive findings. The actual data reveals a more nuanced picture: over 80\% of respondents consider themselves insufficiently informed about nuclear topics, and further investigation found that approximately 90\% were unaware of \glspl{smr} or Generation IV reactors \cite{SWG_Nuclear_Survey_2024}. These findings suggest that public opinion on nuclear energy may be more influenced by lack of information than by firmly held positions.
+
+--justification for why we do not use surveys as indicator data...---
+
+\paragraph{\gls{mox}} fuel is produced through spent nuclear fuel reprocessing and offers a solution for partially closing the nuclear fuel cycle in thermal reactors. While this process generates some secondary waste, it provides several strategic advantages: reducing final nuclear waste volumes, minimizing mining waste, and decreasing dependence on uranium imports. The latter is particularly relevant for Europe, which lacks significant domestic uranium deposits. However, reprocessing also presents proliferation risks since the extracted plutonium could potentially be diverted for weapons production. Due to these competing factors, nuclear fuel reprocessing is a fundamental strategic decision; the United States has foregone this practice, while France and UK have implemented the process in their nuclear programs \cite{CRS_Reprocessing_Spent_Fuel_2025}.
+
+Given the European context of this study, MOX compatibility is considered a relevant reactor attribute. The evaluation methodology assigned each reactor design an initial score (0-10) based on its maximum MOX core fraction capability, followed by qualitative adjustments reflecting design-specific features. The complete scoring process and results are detailed in Table \ref{tab:mox-compatibility}.
+
+
 \textcolor{orange}{This is a placeholder section, I'm writing down a description for each attribute and each data set that i used. I will then need to structure it properly to make it readable.}
 
 \subsubsection{Technological Readiness and Planned Commissioning Time}
@@ -198,3 +277,59 @@ To establish an upper benchmark hydroelectric plants were included in the compar
     \caption{Economic costs for selected reactor models}
     \label{tab:operational-costs}
 \end{table}
+
+
+
+
+
+
+\begin{table}[!ht]
+    \centering
+    \begin{tabularx}{\textwidth}{X c c c c}
+        \toprule
+        \textbf{Reactor Model} & \textbf{T1} & \textbf{T2} & \textbf{T3} & \textbf{T4}\\
+        \midrule
+        APR1400         & 35.2 & 46.5 & 3 & - \\
+        EPR 1750        & 36.2 & 55 & 9 & -\\
+        AP1000          & 32.4 & 50 & 6 & - \\
+        BWRX-300        & 34.5 & $50 \pm 5$ & 0 & - \\
+        Rolls Royce SMR & 34.6 & $55 \pm 5$ & 0 & - \\
+        NuScale         & 30.8 & $52.5 \pm 2.5$ & 1 & - \\
+        \bottomrule
+    \end{tabularx}
+    \caption{Technical Indicators: T1: Net efficiency [\%], T2: Discharge burnup [$MWd/tonHM$], T3: MOX fuel compatibility score, T4: Technological Readiness Level for selected reactor models}
+    \label{tab:indicators-technical}
+\end{table}
+
+
+\begin{table}[!hb]
+    \centering
+    \begin{tabularx}{\textwidth}{l c X c c}
+        \toprule
+        \textbf{Reactor Model} & \textbf{MOX[\%]} & \textbf{Considerations} & \textbf{Score} & Sources \\
+        \midrule
+        APR1400         & 33 & - & 3/10 & \cite{iaea2025aris} \\
+        \cmidrule(lr){1-5}
+        EPR 1750        & 100 & 50\% without modifications, to reach 100\% "design adaptations which are not significantly costly" are required.  & 9/10 & \cite{iaea2025aris, osti_22257897} \\
+        \cmidrule(lr){1-5}
+        AP1000          & 50 & 50\% without modification, to reach 100\% major modifications are required & 6/10 & \cite{iaea2025aris, FETTERMAN2009324} \\
+        \cmidrule(lr){1-5}
+        BWRX-300        & 0 & GNF-2 Not manufactured with MOX & 0/10 & \cite{CNSC_BWRX300_Fuel_Design} \\
+        \cmidrule(lr){1-5}
+        Rolls Royce SMR & 0 & Rolls Royce states that they are not planning to use MOX & 0/10 & \cite{RollsRoyce_SMR_GDA_Consultation} \\
+        \cmidrule(lr){1-5}
+        NuScale         & 0 & Not licensing for MOX but a study reveals support is possible without design modifications & 1/10 & \cite{NRC_ML17007A001, NuScale_MOX_2016} \\
+        \bottomrule
+    \end{tabularx}
+    \caption{MOX fuel compatibility scores and maximum MOX fraction}
+    \label{tab:mox-compatibility}
+\end{table}
+
+\subsection{System parameters}
+Two parameters were identified to characterize how the deployment of a reactor could fit into the existing grid of a country. The focus was on the ability to satisfy the peculiar demand of each country. The indicators are summarized in Table \ref{tab:indicators-system}.
+
+
+\paragraph{Commissioning Time} follows similar considerations to the previous paragraph, recent nuclear installations have suffered significant delays during construction. To esemplify this we will report both the planned commissioning time as well as the last unit commissioning time for each design. Information on three large reactors comes from \cite{nea2020unlocking} while estimates for the three \glspl{smr} come from manufacturer claims or related documents \cite{GEVernova_Nuclear_2025, RollsRoyce_SMR_Approach_2025, IEEFA_UAMPS_Talking_Points_2023}.
+
+
+\paragraph{Potential Impact on the energy market} can be estiated by...
