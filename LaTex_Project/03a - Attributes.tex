@@ -1,13 +1,28 @@
 \section{Preprocessing}
-The first step in this MCDA study is to determine the idicators and their hierarchy, thouout the followin paragraphs we will illustrate the process with which we arrived at the final set of indicators. It is important to remember that this study is limited to the fasibility of the approach itself rather then obtaining a conclusive result. For this reason we will not dwell deep into detailing every single indicator. Moreover this analysis can serve to understand which indicators might need detailing and which not: if an indicator or a category gets very low weights then it is pointless to invest time in detailing indicators in those categories, if an indicator has a very high weight then it could be worth. A couple of examples on how it could be possible to deeply detail indicators are provided in \textcolor{red}{Section PLACEHOLDER}. Given this premis, in the following 
+The initial phase of this \gls{mcda} study focuses on indicator selection and hierarchical structuring. The following sections outline the methodological process employed to develop the final indicator set. It should be noted that this study primarily evaluates the feasibility of the proposed approach rather than generating definitive results. Consequently, study serves more to identify which indicators may require more detailed development in future iterations. The weighting process naturally reveals priority areas: indicators or categories receiving minimal weights may not justify further refinement, while those with substantial weights could benefit from more granular analysis. For reference, Section \textcolor{red}{PLACEHOLDER} provides an example on how an indicator might be detailed comprehensivly. With this context established, the subsequent sections present the process that resulted in the final indicator set used in this study.
+
 
 \subsection{Brainstorming and Confrontation with experts}
 \label{sec:brainstorming_indicators}
-Given the bottom up approach we presented in section \ref{sec:mavt_presentation}, the first step of this analysis is to try and identify all possible ways to differentiate between the six alternatives under study. The process started with brainstorming from the author who then applied a first selection. The result was then presented to 3 experts asking for missing, repetitive, useless, too aggregate or too specific indicators, thoughout this process a long and comprehensive list of 35 possible indicators \footnote{the complete list is availble as csv file in the repository and an example python script is provided to navigate it, for more info see \ref{sec:appendix_code}} has been compiled, for this a selection process is applied to ensure no repetition or correlated indicators are used, and to only cosnider those that are highly relevant to our case study.
+Following the bottom-up approach outlined in Section \ref{sec:mavt_presentation}, the initial analytical step involved identifying all potential differentiating factors among the six reactor alternatives. The process began with a series of personal brainstorming sessions by the author, followed by a preliminary selection phase. The resulting comprehensive list of 35 potential indicators\footnote{The complete list is available as a CSV file in the repository, with an example Python script provided for navigation (see Section \ref{sec:appendix_code} for details)} was then reviewed by three domain experts to evaluate:
+\begin{itemize}
+    \item Completeness (identifying missing aspects)
+    \item Redundancy (eliminating repetitive measures)
+    \item Relevance (removing irrelevant indicators)
+    \item Granularity (balancing overly specific or aggregate measures)
+\end{itemize}
 
 
 \subsection{Screening the Indicators}
 As previously anticipated the large list of indicators has to be screened, not only it would be too time consuming to obtain all that data but it would also be pointless, as we are going to discuss in the following paragraphs many inidcators might be redunant as they are highly correlated. ANother factor to consider is the relevance to the present study, we are focusing on a govermental prospective in europe, therefore something like the return on investment by operating the reactor would not be an interesting parameter given that the reactor will be operated by private equity. At last some indicators where discarted due to the unavability of publicly availble data or whenever the effort needed to obtain information was deemed out of the scope of this thesis, some examples are provided in Table \ref{tab:screening-indicators}. Everything is therefore documented hereafter as possible improvements for future studies, on this reagard please also read \textcolor{red}{Section conclusions - future improvments PLACEHOLDER}.
+
+As previously noted, the extensive indicator list required systematic screening for several reasons:
+1. Practical constraints: Data collection for all indicators would be excessively time-consuming
+2. Analytical efficiency: Many indicators exhibit high correlation, making their simultaneous inclusion redundant
+3. Study relevance: Certain metrics were excluded as they do not align with the European governmental perspective adopted in this analysis
+4. Data availability: Indicators were discarded when required data was either unavailable in public sources or obtainable only through efforts exceeding this thesis's scope
+
+Table \ref{tab:screening-indicators} provides examples of excluded indicators. The most significant exclusions are justified in Section \ref{sec:indicators_removed} and possible improvements for future studies are documented in Section \textcolor{red}{PLACEHOLDER}.
 
 
 \begin{table}[!hb]
@@ -37,7 +52,7 @@ Supplier Availability  & \cmark & \cmark & \cmark & \textbf{Selected} \\
 \label{tab:screening-indicators}
 \end{table}
 
-Notable examples of discarded indicators will be justified in Section \ref{sec:indicators_removed}. After the screening process was over, we are left with X indicators, which had to be aggregated into higher level objectives as presented in Table \ref{tab:final-indicators}. In the following paragraphs each of these indicators will be described with data sources, explanation and methodology justifications.
+Following this systematic screening process, \textcolor{red}{X} indicators remained and were subsequently aggregated into higher-level objectives as presented in Table \ref{tab:final-indicators}. The subsequent sections describe each retained indicator, covering their respective data sources, conceptual explanations, and the methodological rationale behind their inclusion.
 
 \begin{table}[!hb]
     \centering

@@ -1,62 +1,4 @@
 
-\subsubsection{Supplier Availability - DRAFT}
-Market entry ease and local industry involvement significantly influence both commissioning timelines and national economic benefits, which are both factors particularly valued by governmental agencies. While a comprehensive assessment would require detailed market analysis considering each country's nuclear industry status and expansion potential, this preliminary study adopts a much simplified approach.
-
-The analysis constructs a country-reactor matrix (each reactor corresponding to a different vendor) to evaluate supplier presence and possible additional industry capacity in each country.
-
-For ththe first step, points are assigned as follows:
-- +0.25 for supplier legal presence (registered office)
-- +0.50 for existing fabrication capabilities
-Which produces the baseline scores presented in Table \ref{tab:supplier-availability-step1}.
-
-\begin{table}[!ht]
-    \centering
-    \begin{tabularx}{\textwidth}{l c c c c c c}
-        \toprule
-        \textbf{Country} & \textbf{APR} & \textbf{EPR} & \textbf{AP} & \textbf{BWRX} & \textbf{RR SMR} & \textbf{NuScale} \\
-        \midrule
-        France (FR)       & 0.00 & 0.50 & 0.50 & 0.25 & 0.25 & 0.00 \\
-        Italy (IT)       & 0.00 & 0.25 & 0.25 & 0.25 & 0.00 & 0.00 \\
-        Switzerland (CH)  & 0.00 & 0.25 & 0.25 & 0.25 & 0.00 & 0.00 \\
-        Poland (PL)       & 0.00 & 0.00 & 0.25 & 0.25 & 0.00 & 0.00 \\
-        \bottomrule
-    \end{tabularx}
-    \caption{Supplier availability scores for each reactor model in the selected countries.}
-    \label{tab:supplier-availability-step1}
-\end{table}
-
-The second evaluation step assesses national nuclear industry capabilities. This process examines domestic companies capable of producing nuclear-certified materials and components - particularly those required for the "nuclear island" where standard industrial materials cannot be used as nuclear certification extends beyond basic materials, for instance structural steel for pressure vessels must meet specific nuclear standards, primary coolant pumps require specialized certification, and certain components demand highly specialized manufacturing skills\footnote{For example, the EPR reactor pressure vessel requires precision fabrication of 4.8m diameter, 13m height components with 25cm thick steel walls.}.
-
-Based on this analysis:
-- Italy receives +0.5 for its nuclear component manufacturing capability (e.g., Ansaldo Nucleare)
-- Switzerland receives +0.25 for operating nuclear plants but lacking large-component production
-- Poland receives no bonus due to its absent nuclear industry
-
-The cumulative scores from both evaluation stages are presented in Table \ref{tab:supplier-availability-step2}.
-
-\begin{table}[!ht]
-    \centering
-    \begin{tabularx}{\textwidth}{l c c c c c c}
-        \toprule
-        \textbf{Country} & \textbf{APR} & \textbf{EPR} & \textbf{AP} & \textbf{BWRX} & \textbf{RR SMR} & \textbf{NuScale} \\
-        \midrule
-        France (FR)       & 0.50 & 1.00 & 1.00 & 0.75 & 0.75 & 0.50 \\
-        Italy (IT)       & 0.50 & 0.75 & 0.75 & 0.75 & 0.50 & 0.50 \\
-        Switzerland (CH)  & 0.25 & 0.50 & 0.50 & 0.50 & 0.25 & 0.25 \\
-        Poland (PL)       & 0.00 & 0.00 & 0.25 & 0.25 & 0.00 & 0.00 \\
-        \bottomrule
-    \end{tabularx}
-    \caption{Supplier availability scores for each reactor model in the selected countries.}
-    \label{tab:supplier-availability-step2}
-\end{table}
-
-Two important considerations:
-1. While Poland demonstrates strong industrial development, the potential acceleration of its nuclear industry - a sector characterized by inherently long development cycles - remains uncertain and difficult to quantify.
-
-2. Established supply chains were not factored into France's evaluation, as the country has completed only one nuclear power plant (Flamanville-3) in the past 25 years, suggesting potential supply chain degradation despite historical capabilities.
-
-
-
 \section{Observation on the validity of public surveys}
 During this study's execution, multiple public surveys were reviewed based on the initial assumption that such instruments could provide quantitative measurements of qualitative factors such as public support for nuclear installations. However, the analysis exposed frequent methodological limitations introducing bias into the results. In Italy, a 2024 survey reported 81\% opposition to nuclear power \cite{IPSOS_Nuclear_Survey_2024}. However, analysis of the survey report reveals problematic question design. The primary question was phrased as: \textit{"The debate on nuclear energy has returned to the forefront. What is your opinion on the matter?"} with response options structured as:
 \begin{itemize}
@@ -67,6 +9,8 @@ During this study's execution, multiple public surveys were reviewed based on th
 \end{itemize}
 
 This framing demonstrates clear bias: two options (A2 and A3) explicitly oppose nuclear, A1 offers only conditional support, and A4 introduces safety concerns before suggesting potential support. Notably, the 81\% opposition figure includes A4 responses, which represent conditional rather than absolute opposition. When considering only explicit opposition (A2+A3), the figure decreases to 43\%.\\
+
+Another study from 2024 presents a more methodologically sound approach, though its conference presentation emphasized positive findings. The actual data reveals a more nuanced picture: over 80\% of respondents consider themselves insufficiently informed about nuclear topics, and further investigation found that approximately 90\% were unaware of \glspl{smr} or Generation IV reactors \cite{SWG_Nuclear_Survey_2024}. These findings suggest that public opinion on nuclear energy may be more influenced by lack of information than by firmly held positions.
 
 Another study from 2024 presents a more methodologically sound approach, though its conference presentation emphasized positive findings. The actual data reveals a more nuanced picture: over 80\% of respondents consider themselves insufficiently informed about nuclear topics, and further investigation found that approximately 90\% were unaware of \glspl{smr} or Generation IV reactors \cite{SWG_Nuclear_Survey_2024}. These findings suggest that public opinion on nuclear energy may be more influenced by lack of information than by firmly held positions.
 
@@ -282,6 +226,24 @@ To establish an upper benchmark hydroelectric plants were included in the compar
 
 
 
+\begin{table}[!ht]
+    \centering
+    \begin{tabularx}{0.6\textwidth}{l X X}
+        \toprule
+        \textbf{Reactor Model} & \textbf{S1} & \textbf{S2}\\
+        \midrule
+        APR1400           & 1340 & 0.21 \\
+        EPR 1750          & 1630 & 2.88 \\
+        AP1000            & 1120 & 4.25 \\
+        BWRX-300          & 300 & 0.25 \\
+        Rolls Royce SMR   & 470 & 2.00 \\
+        NuScale (Voygr-6) & 462  & 2.00 \\
+        \gls{ge} 9HA.02 2xCC    & 1515 & 7.02 \\
+        \bottomrule
+    \end{tabularx}
+    \caption{System Indicators: S1: Net Electric Power Output [$MW_{e,net}$], S2: \gls{lfc} [$\%P_{nom}/min$]}
+    \label{tab:indicators-system}
+\end{table}
 
 \begin{table}[!ht]
     \centering
@@ -299,6 +261,28 @@ To establish an upper benchmark hydroelectric plants were included in the compar
     \end{tabularx}
     \caption{Technical Indicators: T1: Net efficiency [\%], T2: Discharge burnup [$MWd/tonHM$], T3: MOX fuel compatibility score, T4: Technological Readiness Level for selected reactor models}
     \label{tab:indicators-technical}
+\end{table}
+
+\begin{table}[!hb]
+    \centering
+    \begin{tabularx}{\textwidth}{X c c c c c}
+        \toprule
+        \textbf{Reactor Model} & \textbf{E1} & \textbf{E2} & \textbf{E3} & \textbf{E4} & \textbf{E5} \\
+        \midrule
+        APR-1400         & 2410 & 1828 & 18.44 & 5.0 (KOR) & 10 and 8 in (KOR) \\
+        EPR-1750        & 8600 & 2150 & 14.26 & 5.0 (EU) 4.5 (CN) & 9 (CN), 17 (EU) \\
+        AP-1000          & 8600 & 2000 & 18.69 & 5.0 (US) & 9 (CN), 10, 11 (US) \\
+        BWRX-300        & 3467 & 2318 & $18.30 \pm 0.82$ & $2.5 \pm 0.5$ & NA \\
+        Rolls Royce SMR & 7408 & 6050 & $65.68 \pm 2.94$ & 4.0 & NA \\
+        NuScale         & 8600 & 3466 & $22.76 \pm 1.02$ & 4.0 & NA \\
+        \textbf{Other Power Plants} & & & & & \\
+        Onshore Wind   & NA & 1265 & 28.08 & NA & 2.7 \\
+        Solar PV + Battery & NA & 2175 & 33.33 & NA & 2.3 \\
+        Hydroelectric  & NA & 6007 & 28.49 & NA & PLACEHOLDER \\
+        \bottomrule
+    \end{tabularx}
+    \caption{Economic Indicators E1-E5: E1: Capital costs for FOAK installations [\$/kWe], E2: Capital costs for NOAK installations [\$/kWe], E3: Operational costs [\$/MWh], E4: Planned commissioning time [years], E5: Real building times [years]}
+    \label{tab:consolidated-costs-building-time}
 \end{table}
 
 

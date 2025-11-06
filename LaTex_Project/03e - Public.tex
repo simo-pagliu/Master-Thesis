@@ -1,9 +1,32 @@
 \subsection{Indicators on Social Matters}
-\paragraph{Potential Reduction of \glspl{ghg}} were quantified by comparing each country's 2024 emissions against projected emissions following deployment of one reactor unit. Country-specific GHG emission intensities were derived from Electricity Maps aggregated data \cite{ElectricityMaps_CarbonIntensity_2024}. Total load were obtained from the ENTSO-E Transparency Platform \cite{ENTSOE_Transparency_2025}. Due to non-normal data distributions, median values with interquartile ranges were employed to characterize uncertainty (Table~\ref{tab:ghg-intensity-country}). \\
+The last category of indicators regards all matters that can are considered to be of most importance to the general public. The main rationale behind the choice of these indicators is to capture ascpect that can most likly end up in public debates and therefore influence the public opinion.
 
-For nuclear generation's lifecycle emissions, Liu et al.'s (2023) comprehensive meta-analysis of 42 studies \cite{10.3389/fenrg.2023.1147016} served as the primary reference, reporting a global average of $15.815 \pm 3.59 \; gCO_{2,\text{eq}}/kWh_e$ for light water reactors. This conservative estimate was selected despite lower values observed in specific contexts: French nuclear operations typically range between $ 2 \sim 6 \; gCO_{2,\text{eq}}/kWh_e$ according to both operational data \cite{paillere_2021} and IAEA assessments \cite{IAEA_Climate_Change_Nuclear_Power_2022}, while individual studies on french reactors have reported values as high as $12 \; gCO_{2,\text{eq}}/kWh_e$ \cite{paillere_2021}. The global average was preferred to account for potential regional variations in fuel cycle practices and construction impacts. \\
+\subsubsection{Potential electricity market benefit}
+\label{sec:red_elect_price}
+To assess the potential consumer impact of nuclear reactor deployment, this analysis evaluates its effect on electricity pricing. The investigation proceeds from the assumption that all examined markets operate under marginal pricing mechanisms—a system that accurately describes France, Poland, and Italy, and largely applies to Switzerland despite some additional price adjustment measures. In marginal pricing markets, electricity prices are determined through a bidding process where the final price equals the cost of the last generating source required to meet demand. For instance, if a bidding zone requires 100 MW of capacity with renewables only able to supplying 80 MW and gas generation covering the remaining 20 MW, the electricity price of the zone will reflect the cost of gas-powered generation.
 
-Small modular reactors (SMRs) were assigned an emission intensity of $17.24 \pm 3.91$ $gCO_{2,\text{eq}}/kWh_e$, incorporating Carless et al.'s (2016) finding that SMRs exhibit approximately $9\%$ higher lifecycle emissions than conventional large LWRs due to reduced economies of scale in construction and fuel production \cite{CARLESS201684}. \\
+
+The first step involves identifying the marginal generating source and quantifying its contribution to total electricity production. This assessment utilized country-specific data from the \gls{iea} Electricity Overview \cite{IEA_Electricity_2024} and the \gls{entso} Transparency Platform \cite{ENTSOE_Transparency_2025}, which also provided annual electricity cost data. All referenced data pertains to 2024, with the complete analytical methodology available in the accompanying repository (see Appendix \ref{sec:appendix_code}).
+
+Annual energy production for each reactor was then calculated by applying a capacity factor distribution to the nameplate capacity. The analysis employs Equation \ref{eq:energy_yearly} with capacity factors following a normal distribution centered at 0.9 (ranging from 0.85 to 0.95) to reflect the operational tendency to maximize nuclear reactor utilization.
+
+
+\begin{equation}
+\label{eq:energy_yearly}
+E_{reactor,yr} [GWh] = P_{e}[MW_e] \cdot 8760 [h] \cdot CF [-] \cdot \frac{1}{1000}
+\end{equation}
+
+The price impact evaluation uses France as the reference case, representing Europe's only nuclear-saturated electricity market. Consequently, all reactor designs yield a zero price reduction for France, as expected in a market where nuclear already dominates the generation mix.
+
+For other countries, the analysis calculates potential price reductions by comparing each nation's 2024 average electricity cost against France's lower nuclear-based pricing. The projected benefit is then adjusted by the number of reactor units required to fully displace the current marginal generating source. The final results express the potential annual reduction in average electricity prices in $EUR/MWh$.
+
+\subsubsection{Potential Reduction of Greenhouse Gas Emissions}
+\label{sec:ghg_red}
+Potential greenhouse gas emission reductions were quantified by comparing the average emissions from each country in 2024 with projected reductions following deployment of one reactor unit. Country-specific emission intensities were derived from Electricity Maps aggregated data \cite{ElectricityMaps_CarbonIntensity_2024}, while total load figures were obtained from the \gls{entso} Transparency Platform \cite{ENTSOE_Transparency_2025}. Given the non-normal distribution of emission data, the analysis employs median values with interquartile ranges to characterize uncertainty (Table~\ref{tab:ghg-intensity-country}).
+
+For nuclear generation's lifecycle emissions, the analysis adopts Liu et al.'s (2023) global meta-analysis of 42 studies \cite{10.3389/fenrg.2023.1147016}, which reports a worldwide average of $15.815 \pm 3.59 \; gCO_{2,\text{eq}}/kWh_e$ for light water reactors. This conservative estimate was selected despite context-specific variations: French nuclear operations typically demonstrate lower intensities ($2-6 \; gCO_{2,\text{eq}}/kWh_e$) according to both operational data \cite{paillere_2021} and IAEA assessments \cite{IAEA_Climate_Change_Nuclear_Power_2022}, with some French reactor studies reporting values up to $12 \; gCO_{2,\text{eq}}/kWh_e$ \cite{paillere_2021}. The global average was preferred as a conservative estimate.
+
+\glspl{smr} were assigned a slightly higher emission intensity of $17.24 \pm 3.91 \; gCO_{2,\text{eq}}/kWh_e$, reflecting Carless et al.'s (2016) finding that \glspl{smr} demonstrate approximately 9\% higher lifecycle emissions than conventional large \glspl{lwr} \cite{CARLESS201684}.
 
 \begin{table}[!ht]
     \centering
@@ -21,42 +44,52 @@ Small modular reactors (SMRs) were assigned an emission intensity of $17.24 \pm 
     \label{tab:ghg-intensity-country}
 \end{table}
 
+\subsubsection{Spent Nuclear Fuel Production}
+Given public sensitivity regarding nuclear waste, this analysis includes \gls{snf} production as a key indicator, quantified in tons and normalized per 1 GWannum to facilitate comparison of waste generation efficiency across reactor designs. The spent fuel estimates were calculated through material balance as outlined in equations \ref{eq:snf_production_step1} through \ref{eq:snf_production_step4}, deriving the values from each reactor's thermal efficiency and discharge burnup parameters. The variables employed are presented in Table \ref{tab:snf_variables}.
 
-
-\paragraph{Spent Nuclear Fuel Production} was estimated based on...
-
-\paragraph{Mining Waste} are estimated ....
-
-\paragraph{Percived Safety}
-The observant reader may have noted the omission of explicit safety indicators among technical parameters in our analysis. Table~\ref{tab:safety-performance} presents a critical regulatory metric. How is the Core Damage Frequency (CDF) calculated and validated by nuclear regulators: the Core Damage Frequency (CDF), representing the probabilistic assessment of severe accident likelihood, expressed as events leading to core damage per reactor-year.
-
-\begin{table}[!ht]
+\begin{table}[H]
     \centering
-    \begin{tabularx}{\textwidth}{X c c}
-        \toprule
-        \textbf{Reactor Model} & \textbf{CDF [1/reactor-year]} & Source\\
-        \midrule
-        APR-1400         & $2.25 \times 10^{-6}$ & \cite{KHNP_EU_APR_Characteristics} \\
-        EPR-1750         & $1.18 \times 10^{-7}$ & \cite{EDFEnergy_PSA_2012} \\
-        AP1000           & $2.41 \times 10^{-7}$ & \cite{NRC_ML23161A411} \\
-        BWRX-300         & $<1.0 \times 10^{-8}$ & \cite{ENCO_SMR_Analysis_2022} \\
-        Rolls-Royce SMR  & $<1.0 \times 10^{-7}$ & \cite{ENCO_SMR_Analysis_2022} \\
-        NuScale          & $<2.0 \times 10^{-7}$ & \cite{ENCO_SMR_Analysis_2022} \\
-        \bottomrule
+    \begin{tabularx}{\textwidth}{lXl}
+        \textbf{Variable} & \textbf{Description} & \textbf{Unit} \\\hline\\[-9px]
+        $Bu_d$ & Discharge burnup & $\left[\frac{GWd}{tonHM}\right]$ \\[2px]
+        $\eta$ & Thermal efficiency & $[\%]$ \\[2px]
+        $Bu_{d,e}$ & Discharge burnup in electrical terms & $\left[\frac{GWd_e}{tonHM}\right]$ \\[2px]
+        $w_j$ & Weight & \\[2px]
+        $\vec{h}$ & Vector of Hypothetical Result & \\[2px]
+        $ Bu_{d,e}^* $ & Annual discharge burnup & $\left[\frac{GWa_e}{tonHM}\right]$ \\[2px]
+        $ SNF_{prod}^* $ & Mass of metal in spent nuclear fuel discharged per GWa produced & $\left[\frac{tonHM}{GWa_e}\right]$ \\[2px]
+        $ SNF_{prod} $ & Mass of spent nuclear fuel (oxide) produced per GWa produced & $\left[\frac{tonUO_2}{GWa_e}\right]$ \\
+        $ MM_{UO_2} $ & Molar mass of uranium dioxide & $\left[\frac{g}{mol}\right]$ \\[2px]
+        $ MM_U $ & Molar mass of uranium & $\left[\frac{g}{mol}\right]$ \\[2px]
     \end{tabularx}
-    \caption{Core Damage Frequency (CDF) for Selected Reactor Models}
-    \label{tab:safety-performance}
+    \caption{Variables used in the computation of Spent Nuclear Fuel production}
+    \label{tab:snf_variables}
 \end{table}
 
-While CDF values demonstrate marginal differences between designs, all modern reactors exhibit exceptionally high safety performance in absolute terms. Comparative energy safety data underscores this point: nuclear energy's fatality rate of 0.03 deaths per TWh places it among the safest energy sources, comparable to wind (0.04) and solar (0.02), and 2-3 orders of magnitude safer than fossil fuels (2.82 for gas, 32.72 for brown coal) \cite{Markandya_Wilkinson_2007, SOVACOOL20163952, OurWorldInData_EnergyDeathRates_2025}. Radiation exposure data from the U.S. EPA \cite{EPA_Radiation_Sources_2025}, based on NCRP measurements \cite{NCRP_Report_160_2009}, reveals that 48\% of average annual radiation dose comes from medical procedures, 37\% originates from natural background radiation and less than 0.2\% is attributable to occupational/industrial sources, including nuclear power plants.
+\begin{equation}
+\label{eq:snf_production_step1}
+\text{Step 1: Convert discharge burnup to electrical terms}
+\quad Bu_{d,e} = Bu_d \cdot \eta
+\end{equation}
 
-\text{orange}{MAYBE OMIT: Notably, as first documented by McBride et al. (1978) \cite{McBride_Radiological_Impact_1978}, coal plants typically emit radioactive materials at levels two orders of magnitude higher than nuclear plants when normalized for equivalent energy production.}
+\begin{equation}
+\label{eq:snf_production_step2}
+\text{Step 2: Convert from daily to annual units}
+\quad Bu_{d,e}^* = \frac{Bu_{d,e}}{365}
+\end{equation}
 
-Therefore, considering the following:
-\begin{itemize}
-    \item All evaluated reactors meet comparable, high safety standards
-    \item Nuclear energy demonstrates superior safety performance relative to conventional energy sources
-    \item Technical safety metrics have limited influence on public perception and reactor preference, where risk perception often diverges from actual risk assessment
-\end{itemize}
+\begin{equation}
+\label{eq:snf_production_step3}
+\text{Step 3: Calculate the mass of heavy metal discharged per GWa produced}
+\quad SNF_{prod}^* = \frac{1}{Bu_{d,e}^*}
+\end{equation}
 
-The safety indicator will not be based on risk assessment data but will be derived from expert judgment based on the percived risk that each reactor model may present to the general public.
+\begin{equation}
+\label{eq:snf_production_step4}
+\text{Step 4: Convert from heavy metal mass to oxide mass}
+\quad SNF_{prod} = SNF_{prod}^* \cdot \frac{MM_{UO_2}}{MM_U}
+\end{equation}
+
+
+\subsubsection{Perceived Safety}
+At last we considered the percived safety from the general public point of view. The reason of this choice are better detailed in section \ref{sec:indicators_removed}. To quantify this aspect a survey has been designed... \textcolor{red}{TO BE COMPLETED...}

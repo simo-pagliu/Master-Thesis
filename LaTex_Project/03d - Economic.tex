@@ -1,38 +1,93 @@
-
 \subsection{Economic Indicators}
-Economic indicators are crucial in evaluating the feasibility and attractiveness of nuclear reactor designs. They provide insights into the financial implications of deploying and operating these technologies. The selected economic indicators are summarized in Table \ref{tab:indicators-economic}. To provide a reference the same indicators were also sourced for three renewable energy technologies: onshore wind, solar pv with battery storage and hydroelectric power \cite{EIA_Capital_Costs_AEO2024}. The commissioning time estimates fro solar and wind were taken from \cite{GUMBER2024122563} which also notes that the average (reported in our table) is significantly higher then the median, we choose to report the average since we deem it more representative of large installations.
+Economic indicators represent critical evaluation criteria for assessing both the feasibility and comparative attractiveness of nuclear reactor designs. These metrics provide essential insights into the financial implications associated with technology deployment and long-term operation. Table \ref{tab:economic-indicators} summarizes the selected economic indicators for nuclear technologies, with corresponding values included for three renewable energy benchmarks: onshore wind, solar photovoltaic with battery storage, and hydroelectric power \cite{EIA_Capital_Costs_AEO2024}.
 
-\paragraph{Capital Costs} represent the initial investment required to construct a nuclear power plant. For this indicator we are going to present both the \glspl{noak} estimates as well as forecases or data for \gls{foak} installation. It is important to note that, as detailed by Rothwell 2022 \cite{ROTHWELL2022112905} the costs of recent nuclear installations in Europe and the US have been significantly higher than those announced at the start of the project. For this reason we will apply a FOAK-to-NOAK factor to better represent the real costs. For example the EPR-1600 announced costs for Flamanville-3 was 1886 $USD_{2020}/kW_e$ but have risen to 8600 $USD_{2020}/kW_e$ \cite{NEA2020}. All Values are summarized in Table \ref{tab:capital-costs}. \\
+For solar and wind technologies, commissioning time estimates were sourced from Gumber et al. (2024) \cite{GUMBER2024122563}, which notes that reported average values significantly exceed median values. This analysis utilizes average figures as they more accurately represent the time requirements for large-scale installations.
 
-We want to clarify that the data has all been converted to 2020 USD since the main source of data \cite{STEIGERWALD2023128204} and \cite{NEA2020} reports all costs in this currency and year. \\
+\subsubsection{Capital Costs}
+Capital costs represent the initial investment required for nuclear power plant construction. Both \gls{foak} and \gls{noak} cost estimates are presented. As Rothwell (2022) demonstrates \cite{ROTHWELL2022112905}, recent European and U.S. nuclear installations have consistently exceeded initial cost projections. For instance, the EPR-1600's announced cost for Flamanville-3 was 1886 $USD_{2020}/kW_e$, but actual expenditures reached 8600 $USD_{2020}/kW_e$ \cite{NEA2020}. It would be, in principle, possible to model these discrepancies, however it could as well be a dedicated study on its own. For this reason this thesis will consider only the \gls{noak} estimates and then introduce another indicator to account for the risk of encountering problems in the construction process. \\
+
+All financial data has been standardized to 2020 USD to maintain consistency with the primary data sources \cite{STEIGERWALD2023128204,NEA2020}, which report costs exclusively in this currency and reference year.
 
 
-\paragraph{Operational Costs} are ongoing expenses incurred during the operation and maintenance of a nuclear power plant. These costs encompass fuel expenses, routine maintenance and etc. Steigerwald et al. (2023) \cite{STEIGERWALD2023128204} provides comprehensive cost analyses for future nuclear installations, including capital and operational expenditures for both SMRs and large reactors. The study reports operational costs in $USD_{2020}/MWh_e$ for EPR and APR1400 designs, as well as a "Long-Term US" category which this analysis uses as AP1000 costs. For SMRs, operational costs were originally presented in power-based units ($USD_{2020}/MW_e$), requiring conversion to energy-based measurements ($USD_{2020}/MWh_e$) using a Gaussian distribution of capacity factors ($\mu$ = 90\%, $\sigma$ = 5\%) according to:
+\subsubsection{Risk of construction delays}
+This analysis employs a composite construction time indicator rather than the simple construction duration metric discussed in Section \ref{sec:indicators_removed}. The composite indicator integrates two primary complexity factors: design complexity and construction complexity. The following outlines the simplified methodology used to develop this indicator for the current study, while a more comprehensive approach is proposed in \textcolor{red}{Section PLACEHOLDER}.
+
+\textbf{Design complexity} was evaluated using the number of cooling loops as a proxy variable. This parameter directly correlates with system complexity, as increased cooling loops necessitate additional piping, junctions, valves, pumps, and welds. The cooling loop count—ranging from 0 for integrated designs to 4 for the EPR—was normalized on a 0-to-1 scale for comparative analysis.
+
+\textbf{Construction complexity} was evaluated by classifying each reactor design according to its construction approach. The analysis distinguishes between onsite construction and various degrees of offsite manufacturing:
+
+Traditional reactors rely predominantly on onsite construction. The Rolls-Royce design employs extensive offsite component manufacturing but still requires onsite cooling loop assembly. The BWRX-300 adopts a similar offsite approach to Rolls-Royce but eliminates onsite assembly requirements through its integrated design. NuScale represents the most innovative approach with sequential deployment of fully manufactured modules.
+
+The author recognized difficulties trying to determine the optimal construction methodology: Onsite construction presents significant project management challenges that frequently result in delays and cost overruns, as documented in Section \textcolor{red}{PLACEHOLDER}. Conversely, modular approaches introduce complex coordination requirements for geographically dispersed suppliers, along with transportation and scheduling challenges.
+
+Numerical values, later  then normalized on a 0-to-1 scale, were assigned to reflect each design's construction approach: 
+\begin{itemize}
+    \item 0 for traditional onsite-focused construction (large NPPs)
+    \item 1 for the Rolls-Royce design with its partial onsite assembly requirements
+    \item 2 for the BWRX-300's fully offsite approach
+    \item 3 for NuScale's novel modular construction
+\end{itemize}
+
+Given the absence of definitive evidence favoring either approach—and considering that optimal construction methods may vary depending on local industrial capabilities and specific siting conditions (factors beyond this study's scope), an adjustment factor $\alpha$ was introduced. By  using the formula $|\alpha - CC|$, where CC represents the normalized construction complexity score and $\alpha$ serves as a preference modulator, it can adjusts the final construction complexity score based on industry preferences for onsite versus offsite construction. When $\alpha$ equals 0, the formula favors onsite construction and traditional designs; if $\alpha$ is 1, it privileges offsite and innovative approaches. To evaluate the appropriate value of $\alpha$ experts were consulted. \textcolor{red}{CONTINUE...}
+
+The final composite indicator combines design and construction complexity by averaging them, therefore assuming an equal weight of these two aspects. The resulting index can be interpreted as the difficulty of commissioning or better, the likelyhood of encountering problems during commissioning which will lead to delays and cost overruns. Table \ref{tab:complexity_indices} presents both the intermediate calculations and final results of this complexity assessment.
+
+Final and intermediate results aare shown in table \ref{tab:complexity_indices}.
+\textcolor{red}{SISTEMA I DATI E I RISULTATI}\\
+\begin{table}[!hb]
+    \centering
+    \begin{tabularx}{0.8\textwidth}{Xcccccc}
+        \toprule
+        & \textbf{APR} & \textbf{EPR} & \textbf{AP} & \textbf{BWRX} & \textbf{Rolls Royce} & \textbf{NuScale} \\
+        \midrule
+        \textbf{DC} & 2 & 4 & 2 & 0 & 3 & 0 \\
+        \midrule
+        \textbf{CC} & 1 & 1 & 1 & 3 & 2 & 4 \\
+        \midrule
+        \multicolumn{7}{c}{\textit{Normalize the scores}} \\
+        DC & 0.5 & 1 & 0.5 & 0 & 0.75 & 0 \\
+        CC & 0.25 & 0.25 & 0.25 & 0.75 & 0.5 & 1 \\
+        \midrule
+        \multicolumn{7}{c}{\textit{Construction Trend, if $\alpha$ is 1: benefit from off-site - 0: benefit from on-site}} \\
+        $\alpha = 0$ & 0.375 & 0.625 & 0.375 & 0.125 & 0.500 & 0\\
+        $\alpha = 1$ & 0.625 & 0.875 & 0.625 & 0.125 & 0.625 & 0 \\
+        \bottomrule
+    \end{tabularx}
+    \caption{Design complexity (DC) and construction complexity (CC) indices.}
+    \label{tab:complexity_indices}
+\end{table}
+
+\subsubsection{Operational Costs}
+Operational costs represent the recurring expenditures associated with nuclear power plant operation and maintenance, including fuel expenses and routine maintenance activities. Steigerwald et al. (2023) \cite{STEIGERWALD2023128204} provides detailed cost projections for future nuclear installations, reporting both capital and operational expenditures for \glspl{smr} and large reactors. The study presents operational costs in $USD_{2020}/MWh_e$ for \gls{epr} and \gls{apr} designs, while the "Long-Term US" category was utilized as a proxy for \gls{ap} operational costs.
+
+For \gls{smr} designs where operational costs were originally reported in power-based units ($USD_{2020}/MW_e$), conversion to energy-based measurements ($USD_{2020}/MWh_e$) was performed using a Gaussian distribution of capacity factors ($\mu = 90\%, \sigma = 5\%$) through the following relationship:
 
 $$
 \frac{USD_{2020}}{MWh_e} = \frac{USD_{2020}}{MW_e} \cdot \frac{1}{CF \cdot 8760 \frac{h}{year}}
 $$
 
-The same study reports fuel costs of $6.23 USD_{2020}/MWh_e$ for PWR-based technologies with the exceptions of NuScale at $7.15 USD_{2020}/MWh_e$ and the only BWR reactor at $29.55 USD_{2020}/MWh_e$. For comparative context, operational cost estimates for utility-scale onshore wind, hydroelectric, and solar PV (with single axis tracking and DC battery storage) were obtained from the U.S. Energy Information Administration \cite{EIA_Capital_Costs_AEO2024}. All cost data have been standardized to 2020 USD to maintain consistency with the primary data sources \cite{STEIGERWALD2023128204, NEA2020}, values are presented in Table \ref{tab:operational-costs}.
+The analysis incorporates fuel cost estimates of $6.23 USD_{2020}/MWh_e$ for \gls{pwr}-based technologies, with two exceptions: NuScale at $7.15 USD_{2020}/MWh_e$ and the \gls{bwrx} at $29.55 USD_{2020}/MWh_e$. For comparative benchmarking, operational cost data for utility-scale onshore wind, hydroelectric, and solar \gls{pv} (with single-axis tracking and DC battery storage) were sourced from the U.S. Energy Information Administration \cite{EIA_Capital_Costs_AEO2024}. All financial data has been standardized to 2020 USD to ensure consistency with the primary reference sources \cite{STEIGERWALD2023128204,NEA2020}.
 
+
+% if data to be used for E2 was with alpha=1 it would be:   0.75	1	0.75	0.25	0.75	0.125
 \begin{table}[!hb]
     \centering
-    \begin{tabularx}{\textwidth}{X c c c c c}
+    \begin{tabularx}{\textwidth}{X c c c c}
         \toprule
-        \textbf{Reactor Model} & \textbf{E1} & \textbf{E2} & \textbf{E3} & \textbf{E4} & \textbf{E5} \\
+        \textbf{Reactor Model} & \textbf{Ref} & \textbf{E1} & \textbf{E2} & \textbf{E3} \\
         \midrule
-        APR-1400         & 2410 & 1828 & 18.44 & 5.0 (KOR) & 10 and 8 in (KOR) \\
-        EPR-1750        & 8600 & 2150 & 14.26 & 5.0 (EU) 4.5 (CN) & 9 (CN), 17 (EU) \\
-        AP-1000          & 8600 & 2000 & 18.69 & 5.0 (US) & 9 (CN), 10, 11 (US) \\
-        BWRX-300        & 3467 & 2318 & $18.30 \pm 0.82$ & $2.5 \pm 0.5$ & NA \\
-        Rolls Royce SMR & 7408 & 6050 & $65.68 \pm 2.94$ & 4.0 & NA \\
-        NuScale         & 8600 & 3466 & $22.76 \pm 1.02$ & 4.0 & NA \\
-        \textbf{Other Power Plants} & & & & & \\
-        Onshore Wind   & NA & 1265 & 28.08 & NA & 2.7 \\
-        Solar PV + Battery & NA & 2175 & 33.33 & NA & 2.3 \\
-        Hydroelectric  & NA & 6007 & 28.49 & NA & PLACEHOLDER \\
+        APR-1400         & 2410 & 1828 & 0.250 & 18.44 \\
+        EPR-1750        & 8600 & 2150 & 0.500 & 14.26 \\
+        AP-1000          & 8600 & 2000 & 0.250 & 18.69 \\
+        BWRX-300        & 3467 & 2318 & 0.250 & $18.30 \pm 0.82$ \\
+        Rolls Royce SMR & 7408 & 6050 & 0.500 & $65.68 \pm 2.94$ \\
+        NuScale         & 8600 & 3466 & 0.375 & $22.76 \pm 1.02$ \\
+        \textbf{Other Power Plants} & & & & \\
+        Onshore Wind   & NA & 1265 & NA & 28.08 \\
+        Solar PV + Battery & NA & 2175 & NA & 33.33 \\
+        Hydroelectric  & NA & 6007 & NA & 28.49 \\
         \bottomrule
     \end{tabularx}
-    \caption{Economic Indicators E1-E5: E1: Capital costs for FOAK installations [\$/kWe], E2: Capital costs for NOAK installations [\$/kWe], E3: Operational costs [\$/MWh], E4: Planned commissioning time [years], E5: Real building times [years]}
-    \label{tab:consolidated-costs-building-time}
+    \caption{Ref: Capital costs for FOAK installations [\$/kWe], E1: Capital costs for NOAK installations [\$/kWe], E2: Risk of construction delay, E3: Operative and fuel costs [\$/MWh].}
+    \label{tab:economic-indicators}
 \end{table}
