@@ -36,21 +36,21 @@ Final and intermediate results aare shown in table \ref{tab:complexity_indices}.
 \textcolor{red}{SISTEMA I DATI E I RISULTATI}\\
 \begin{table}[!hb]
     \centering
-    \begin{tabularx}{0.8\textwidth}{Xcccccc}
+    \begin{tabularx}{0.9\textwidth}{Xcccccc}
         \toprule
         & \textbf{APR} & \textbf{EPR} & \textbf{AP} & \textbf{BWRX} & \textbf{Rolls Royce} & \textbf{NuScale} \\
         \midrule
         \textbf{DC} & 2 & 4 & 2 & 0 & 3 & 0 \\
         \midrule
-        \textbf{CC} & 1 & 1 & 1 & 3 & 2 & 4 \\
+        \textbf{CC} & 0 & 0 & 0 & 2 & 1 & 3 \\
         \midrule
         \multicolumn{7}{c}{\textit{Normalize the scores}} \\
-        DC & 0.5 & 1 & 0.5 & 0 & 0.75 & 0 \\
-        CC & 0.25 & 0.25 & 0.25 & 0.75 & 0.5 & 1 \\
+        DC & 0.50 & 1.00 & 0.50 & 0.00 & 0.75 & 0.00 \\
+        CC & 0.00 & 0.00 & 0.00 & 0.50 & 0.25 & 0.75 \\
         \midrule
         \multicolumn{7}{c}{\textit{Construction Trend, if $\alpha$ is 1: benefit from off-site - 0: benefit from on-site}} \\
-        $\alpha = 0$ & 0.375 & 0.625 & 0.375 & 0.125 & 0.500 & 0\\
-        $\alpha = 1$ & 0.625 & 0.875 & 0.625 & 0.125 & 0.625 & 0 \\
+        $\alpha = 0$ & 0.250 & 0.500 & 0.250 & 0.250 & 0.500 & 0.375\\
+        $\alpha = 1$ & 0.750 & 1.000 & 0.750 & 0.250 & 0.750 & 0.125 \\
         \bottomrule
     \end{tabularx}
     \caption{Design complexity (DC) and construction complexity (CC) indices.}
