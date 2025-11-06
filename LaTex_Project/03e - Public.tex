@@ -54,8 +54,6 @@ Given public sensitivity regarding nuclear waste, this analysis includes \gls{sn
         $Bu_d$ & Discharge burnup & $\left[\frac{GWd}{tonHM}\right]$ \\[2px]
         $\eta$ & Thermal efficiency & $[\%]$ \\[2px]
         $Bu_{d,e}$ & Discharge burnup in electrical terms & $\left[\frac{GWd_e}{tonHM}\right]$ \\[2px]
-        $w_j$ & Weight & \\[2px]
-        $\vec{h}$ & Vector of Hypothetical Result & \\[2px]
         $ Bu_{d,e}^* $ & Annual discharge burnup & $\left[\frac{GWa_e}{tonHM}\right]$ \\[2px]
         $ SNF_{prod}^* $ & Mass of metal in spent nuclear fuel discharged per GWa produced & $\left[\frac{tonHM}{GWa_e}\right]$ \\[2px]
         $ SNF_{prod} $ & Mass of spent nuclear fuel (oxide) produced per GWa produced & $\left[\frac{tonUO_2}{GWa_e}\right]$ \\
@@ -66,27 +64,27 @@ Given public sensitivity regarding nuclear waste, this analysis includes \gls{sn
     \label{tab:snf_variables}
 \end{table}
 
+\textbf{Step 1}: Convert discharge burnup to electrical terms
 \begin{equation}
 \label{eq:snf_production_step1}
-\text{Step 1: Convert discharge burnup to electrical terms}
 \quad Bu_{d,e} = Bu_d \cdot \eta
 \end{equation}
 
+\textbf{Step 2}: Convert from daily to annual units
 \begin{equation}
 \label{eq:snf_production_step2}
-\text{Step 2: Convert from daily to annual units}
 \quad Bu_{d,e}^* = \frac{Bu_{d,e}}{365}
 \end{equation}
 
+\textbf{Step 3}: Calculate the mass of heavy metal discharged per GWa produced
 \begin{equation}
 \label{eq:snf_production_step3}
-\text{Step 3: Calculate the mass of heavy metal discharged per GWa produced}
 \quad SNF_{prod}^* = \frac{1}{Bu_{d,e}^*}
 \end{equation}
 
+\textbf{Step 4}: Convert from heavy metal mass to oxide mass
 \begin{equation}
 \label{eq:snf_production_step4}
-\text{Step 4: Convert from heavy metal mass to oxide mass}
 \quad SNF_{prod} = SNF_{prod}^* \cdot \frac{MM_{UO_2}}{MM_U}
 \end{equation}
 
