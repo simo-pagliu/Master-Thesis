@@ -4,6 +4,7 @@ import numpy as np
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.widgets import Slider
 from tkinter import ttk, messagebox
+import csv
 
 class WBT_ui:
     def __init__(self, root, criteria):
@@ -225,6 +226,16 @@ class WBT_ui:
         self.current_comparison += 1
         self.show_next_comparison()
 
+    def save_results_to_file(self):
+        filename = "wbt_results.csv"
+        with open(filename, mode="w", newline="") as f:
+            writer = csv.writer(f)
+            writer.writerow(["Criterion", "Best Comparison", "Worst Comparison"])
+            for i, c in enumerate(self.reordered_criteria_names):
+                best_val = self.best_comparison_results[i]
+                worst_val = self.worst_comparison_results[i]
+                writer.writerow([c, best_val, worst_val])
+
     def finalize_results(self):
         # Convert numpy floats to regular floats and round to 2 decimal places
         best_results = [round(float(x), 2) if not np.isnan(x) else np.nan for x in self.best_comparison_results]
@@ -268,7 +279,13 @@ class WBT_ui:
         print("Reordered Best Results:", self.best_comparison_results)
         print("Reordered Worst Results:", self.worst_comparison_results)
 
-        
+        # Prompt to save and exit
+        messagebox.showinfo("Completed", "Elicitation completed. Results have been printed to the console.")
+
+        # Optionally, save results to a file
+        save_results = messagebox.askyesno("Save Results", "Do you want to save the results to a file?")
+        if save_results:
+            self.save_results_to_file()
 
         # Close the window
         self.root.quit()
