@@ -5,19 +5,17 @@ import scipy.optimize as opt
 def constraints(x, v_f, x_w, x_b, criteria_count):
     w = x[:criteria_count]  # w_0, w_1, w_2, w_3
     z = x[-1]               # z
-    w_worst = w[-1]
-    w_best = w[0]
 
     cons = []
     # Constraints for worst: |w[criteria_count-1] * v_f[i](x_w[i]) - w[i]| <= z
     # worst comparisons are made based on the worst criterion by adjusting another one --> v_f[i]
     for i in range(criteria_count - 1):  # Exclude worst (index criteria_count-1)
-        cons.append(z - abs(w_worst * v_f[i](x_w[i]) - w[i]))
+        cons.append(z - abs(w[-1] * v_f[i](x_w[i]) - w[i]))
 
     # Constraints for best: |w[0] - w[i] / v_f[0](x_b[i])| <= z
     # all best comparisons are made against the best criterion ---> v_f[0]
     for i in range(1, criteria_count):  # Exclude best (index 0)
-        cons.append(z - abs(w_best - w[i] / v_f[0](x_b[i])))
+        cons.append(z - abs(w[0] - w[i] / v_f[0](x_b[i])))
 
     # Sum of w_i = 1
     cons.append(np.sum(w) - 1)
