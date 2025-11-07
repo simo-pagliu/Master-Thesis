@@ -1,0 +1,4 @@
+name,group,min,max,unit
+Salary,economic,1200,2000,€
+Paid Leave,economic,2,10,days
+Bonus,economic,0,5000,€
