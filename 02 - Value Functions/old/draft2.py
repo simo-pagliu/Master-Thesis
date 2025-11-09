@@ -213,8 +213,11 @@ class ElicitationApp:
             self.sliders["scale"].set(10)
             self.sliders["scale"].pack(pady=5)
         elif self.function_type_choice == "sigmoid":
-            ttk.Label(self.left_frame, text="Midpoint:").pack(pady=5)
-            self.sliders["midpoint"] = tk.Scale(
+            # Use x0 (midpoint) and k (steepness) sliders.
+            # k is specified on a log scale by the user (slider range -3..3).
+            # effective k used in the formula is sign(raw_k) * 10**abs(raw_k) / attribute_range
+            ttk.Label(self.left_frame, text="x0 (midpoint):").pack(pady=5)
+            self.sliders["x0"] = tk.Scale(
                 self.left_frame,
                 from_=self.low_value,
                 to=self.peak_value,
@@ -222,20 +225,21 @@ class ElicitationApp:
                 command=self.update_plot,
                 resolution=0.1
             )
-            self.sliders["midpoint"].set((self.low_value + self.peak_value) / 2)
-            self.sliders["midpoint"].pack(pady=5)
+            self.sliders["x0"].set((self.low_value + self.peak_value) / 2)
+            self.sliders["x0"].pack(pady=5)
 
-            ttk.Label(self.left_frame, text="Steepness:").pack(pady=5)
-            self.sliders["steepness"] = tk.Scale(
+            ttk.Label(self.left_frame, text="k (steepness, log scale):").pack(pady=5)
+            # Slider value is raw_k in [-3,3]. Effective k = sign(raw_k)*10**abs(raw_k)/(peak-low)
+            self.sliders["k"] = tk.Scale(
                 self.left_frame,
-                from_=0.1,
-                to=(self.peak_value - self.low_value) / 2,
+                from_=-3.0,
+                to=3.0,
                 orient="horizontal",
                 command=self.update_plot,
-                resolution=0.1
+                resolution=0.01
             )
-            self.sliders["steepness"].set((self.peak_value - self.low_value) / 6)
-            self.sliders["steepness"].pack(pady=5)
+            self.sliders["k"].set(-1.0)
+            self.sliders["k"].pack(pady=5)
         elif self.function_type_choice == "gaussian":
             ttk.Label(self.left_frame, text="Amplitude:").pack(pady=5)
             self.sliders["amplitude"] = tk.Scale(
@@ -513,15 +517,20 @@ class ElicitationApp:
                 f"np.clip(1 - np.exp(-{scale} * (x - {self.low_value}) / ({self.peak_value} - {self.low_value})), 0, 1)"
             )
         elif self.function_type_choice == "sigmoid":
-            midpoint = self.sliders["midpoint"].get()
-            steepness = self.sliders["steepness"].get()
-            y_test = 1 / (1 + np.exp(-(x_test - midpoint) / steepness))
+            # read the user sliders: x0 and raw_k (log-scale)
+            x0 = self.sliders["x0"].get()
+            raw_k = self.sliders["k"].get()
+            # interpret k on a log scale relative to the attribute range
+            attr_range = max(1e-6, (self.peak_value - self.low_value))
+            k = np.sign(raw_k) * (10 ** (abs(raw_k))) / attr_range
+            y_test = 1 / (1 + np.exp(-k * (x_test - x0)))
+            # enforce piecewise constant tails and clipping
             y_test[x_test <= self.low_value] = 0.0
             y_test[x_test >= self.peak_value] = 1.0
             self.function_str = (
                 f"lambda x: 0.0 if x <= {self.low_value} else "
                 f"1.0 if x >= {self.peak_value} else "
-                f"1 / (1 + np.exp(-(x - {midpoint}) / {steepness}))"
+                f"1 / (1 + np.exp(-{k} * (x - {x0})))"
             )
         elif self.function_type_choice == "gaussian":
             amplitude = self.sliders["amplitude"].get()
