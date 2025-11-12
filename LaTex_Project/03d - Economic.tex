@@ -14,25 +14,25 @@ This analysis employs a composite construction time indicator rather than the si
 
 \textbf{Design complexity} was evaluated using the number of cooling loops as a proxy variable. This parameter directly correlates with system complexity, as increased cooling loops necessitate additional piping, junctions, valves, pumps, and welds. The cooling loop count—ranging from 0 for integrated designs to 4 for the EPR—was normalized on a 0-to-1 scale for comparative analysis.
 
-\textbf{Construction complexity} was evaluated by classifying each reactor design according to its construction approach. The analysis distinguishes between onsite construction and various degrees of offsite manufacturing:
+\textbf{Construction complexity} was evaluated by classifying each reactor design according to its construction approach. The analysis distinguishes between on-site construction and various degrees of off-site manufacturing:
 
-Traditional reactors rely predominantly on onsite construction. The Rolls-Royce design employs extensive offsite component manufacturing but still requires onsite cooling loop assembly. The BWRX-300 adopts a similar offsite approach to Rolls-Royce but eliminates onsite assembly requirements through its integrated design. NuScale represents the most innovative approach with sequential deployment of fully manufactured modules.
+Traditional reactors rely predominantly on on-site construction. The Rolls-Royce design employs extensive off-site component manufacturing but still requires on-site cooling loop assembly. The BWRX-300 adopts a similar off-site approach to Rolls-Royce but eliminates on-site assembly requirements through its integrated design. NuScale represents the most innovative approach with sequential deployment of fully manufactured modules.
 
-The author recognized difficulties trying to determine the optimal construction methodology: Onsite construction presents significant project management challenges that frequently result in delays and cost overruns, as documented in Section \textcolor{red}{PLACEHOLDER}. Conversely, modular approaches introduce complex coordination requirements for geographically dispersed suppliers, along with transportation and scheduling challenges.
+The author recognized difficulties trying to determine the optimal construction methodology: On-site construction presents significant project management challenges that frequently result in delays and cost overruns, as documented in Section \textcolor{red}{PLACEHOLDER}. Conversely, modular approaches introduce complex coordination requirements for geographically dispersed suppliers, along with transportation and scheduling challenges.
 
 Numerical values, later  then normalized on a 0-to-1 scale, were assigned to reflect each design's construction approach: 
 \begin{itemize}
-    \item 0 for traditional onsite-focused construction (large NPPs)
-    \item 1 for the Rolls-Royce design with its partial onsite assembly requirements
-    \item 2 for the BWRX-300's fully offsite approach
+    \item 0 for traditional on-site-focused construction (large NPPs)
+    \item 1 for the Rolls-Royce design with its partial on-site assembly requirements
+    \item 2 for the BWRX-300's fully off-site approach
     \item 3 for NuScale's novel modular construction
 \end{itemize}
 
-Given the absence of definitive evidence favoring either approach—and considering that optimal construction methods may vary depending on local industrial capabilities and specific siting conditions (factors beyond this study's scope), an adjustment factor $\alpha$ was introduced. By  using the formula $|\alpha - CC|$, where CC represents the normalized construction complexity score and $\alpha$ serves as a preference modulator, it can adjusts the final construction complexity score based on industry preferences for onsite versus offsite construction. When $\alpha$ equals 0, the formula favors onsite construction and traditional designs; if $\alpha$ is 1, it privileges offsite and innovative approaches. To evaluate the appropriate value of $\alpha$ experts were consulted. \textcolor{red}{CONTINUE...}
+Given the absence of definitive evidence favouring either approach—and considering that optimal construction methods may vary depending on local industrial capabilities and specific siting conditions (factors beyond this study's scope), an adjustment factor $\alpha$ was introduced. By  using the formula $|\alpha - CC|$, where CC represents the normalized construction complexity score and $\alpha$ serves as a preference modulator, it can adjusts the final construction complexity score based on industry preferences for on-site versus off-site construction. When $\alpha$ equals 0, the formula favours on-site construction and traditional designs; if $\alpha$ is 1, it privileges off-site and innovative approaches. To evaluate the appropriate value of $\alpha$ experts were consulted. \textcolor{red}{CONTINUE...}
 
-The final composite indicator combines design and construction complexity by averaging them, therefore assuming an equal weight of these two aspects. The resulting index can be interpreted as the difficulty of commissioning or better, the likelyhood of encountering problems during commissioning which will lead to delays and cost overruns. Table \ref{tab:complexity_indices} presents both the intermediate calculations and final results of this complexity assessment.
+The final composite indicator combines design and construction complexity by averaging them, therefore assuming an equal weight of these two aspects. The resulting index can be interpreted as the difficulty of commissioning or better, the likelihood of encountering problems during commissioning which will lead to delays and cost overruns. Table \ref{tab:complexity_indices} presents both the intermediate calculations and final results of this complexity assessment.
 
-Final and intermediate results aare shown in table \ref{tab:complexity_indices}.
+Final and intermediate results are shown in table \ref{tab:complexity_indices}.
 \textcolor{red}{SISTEMA I DATI E I RISULTATI}\\
 \begin{table}[!hb]
     \centering
@@ -66,7 +66,7 @@ $$
 \frac{USD_{2020}}{MWh_e} = \frac{USD_{2020}}{MW_e} \cdot \frac{1}{CF \cdot 8760 \frac{h}{year}}
 $$
 
-The analysis incorporates fuel cost estimates of $6.23 USD_{2020}/MWh_e$ for \gls{pwr}-based technologies, with two exceptions: NuScale at $7.15 USD_{2020}/MWh_e$ and the \gls{bwrx} at $29.55 USD_{2020}/MWh_e$. For comparative benchmarking, operational cost data for utility-scale onshore wind, hydroelectric, and solar \gls{pv} (with single-axis tracking and DC battery storage) were sourced from the U.S. Energy Information Administration \cite{EIA_Capital_Costs_AEO2024}. All financial data has been standardized to 2020 USD to ensure consistency with the primary reference sources \cite{STEIGERWALD2023128204,NEA2020}.
+The analysis incorporates fuel cost estimates of $6.23 USD_{2020}/MWh_e$ for \gls{pwr}-based technologies, with two exceptions: NuScale at $7.15 USD_{2020}/MWh_e$ and the \gls{bwrx} at $29.55 USD_{2020}/MWh_e$. For comparative benchmarking, operational cost data for utility-scale onshore wind, hydroelectric, and solar \gls{pv} (with single-axis tracking and DC battery storage) were sourced from the US Energy Information Administration \cite{EIA_Capital_Costs_AEO2024}. All financial data has been standardized to 2020 USD to ensure consistency with the primary reference sources \cite{STEIGERWALD2023128204,NEA2020}.
 
 
 % if data to be used for E2 was with alpha=1 it would be:   0.75	1	0.75	0.25	0.75	0.125
