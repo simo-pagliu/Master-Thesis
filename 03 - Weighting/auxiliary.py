@@ -18,18 +18,16 @@ def value_function_plot(criteria):
         plt.show()
 
 def import_criteria(file_path):
-    criteria = []
+    criteria = {}
     with open(file_path, mode='r') as file:
         reader = csv.DictReader(file)
         for row in reader:
-            criterion = {
-                "name": row["name"],
+            criteria[row["name"]] = {
                 "min": float(row["min"]),
                 "max": float(row["max"]),
                 "unit": row["unit"],
                 "value_function": eval("lambda x: " + row["value_function"])
             }
-            criteria.append(criterion)
     return criteria
 
 
