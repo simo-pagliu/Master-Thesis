@@ -1,35 +1,66 @@
 
-As presented in the literature review (Section \ref{sec:decision_support}), multiple \gls{mcda} methodologies exist, requiring an initial choice between outranking and value-based approaches. Outranking methods were discarded for this analysis, as no clear non-compensatory dynamics were evident in the decision context. Among American school methods, \gls{mavt} emerged as particularly suitable thanks to its value functions which offer significant advantages for capturing potential non-linearity in indicator values across their data ranges, a characteristic expected for economic and social criteria. While this method was previously introduced in the literature review (Section \ref{sec:decision_support}), the following paragraphs provide a detailed explaination.
+As presented in the literature review (Section \ref{sec:decision_support}), multiple \gls{mcda} methodologies exist, requiring an initial choice between outranking and value-based approaches. Outranking methods were discarded for this analysis, as no clear non-compensatory dynamics were evident in the decision context.
+
+Among American school methods, \gls{mavt} emerged as particularly suitable thanks to its value functions which offer significant advantages for capturing potential non-linearity in indicator values across their data ranges, a characteristic expected for economic and social criteria. While this method was previously introduced in Section \ref{sec:decision_support}, the following paragraphs provide a detailed explaination.
 
 \begin{table}[H]
-    \centering
-    \begin{tabular}{lll}
-        \textbf{Variable} & \textbf{Description} \\\hline\\[-9px]
-        $A_i$ & Alternative \\[2px]
-        $C_j$ & Criteria \\[2px]
-        $v_j(x)$ & Value Function \\[2px]
-        $w_j$ & Weight \\[2px]
-        $\vec{h}$ & Vector of Hypothetical Result \\[2px]
-    \end{tabular}
+   \centering
+   \begin{tabularx}{0.85\textwidth}{cX}
+      	\toprule
+      	\textbf{Variable} & \textbf{Description} \\
+      \midrule
+      $A_i$ & Alternative \\
+      $C_j$ & Criteria \\
+      $x$ & Elicited Criterion Performance \\
+      $v_j(x)$ & Value Function \\
+      $w_j$ & Weight \\
+      $\vec{h}$ & Vector of Hypothetical Result \\
+      $z$ & Auxiliary variable for minimization \\
+      $G_j$ & High-level group of criteria \\
+      \midrule
+      	\textbf{Subscripts} & \\
+      \midrule
+      $b$ & Best Criterion \\
+      $w$ & Worst Criterion \\
+      $(j,w)$ & Comparison of Criterion $j$ to Worst Criterion \\
+      $(b,j)$ & Comparison of Best Criterion to Criterion $j$ \\
+      \bottomrule
+   \end{tabularx}
+   \caption{Description of Variables and Subscripts}
+   \label{tab:variables_description}
 \end{table}
 
 \section{Applying MAVT to choose a Reactor}
 \label{sec:mavt_presentation}
-\acrlong{mavt}, first presented by Keeney in 1996, is value-focused approach to decision-making that centers its analytical process on the core values and objectives of the \gls{dm}  rather than on the available alternatives $A_i$. At the core of \gls{mavt} is the identification and quantification of what matters the most in a given decision context. This allows \glspl{dm} to explicitly define their \textit{fundamental objectives} (what they seek to achieve) rather then \textit{means objectives} (how those objectives will be achived). Preferences are modeled across performance ranges by means of value functions $v_j(x)$ which are able to capture both linear and non-linear importance relationships between criterion values. Once the values of each criterion $C_j$ is established, criteria are aggregated based on weights $w_j$ that convey the relative importance among criteria. The explicit nature of both value functions and weighting process make \gls{mavt} a particularly transparent decision analysis method, which is expecially valuable for research applications \cite{KEENEY1996537}.
+\acrlong{mavt}, first presented by Keeney in 1996, is a value-focused approach to decision-making that centers its analytical process on the core values and objectives of the \gls{dm}  rather than on the available alternatives $A_i$. At the core of \gls{mavt} is the identification and quantification of what matters the most in a given decision context. This allows \glspl{dm} to explicitly define their \textit{fundamental objectives} (what they seek to achieve) rather then \textit{means objectives} (how those objectives will be achived). Preferences are modeled across performance ranges by means of value functions $v_j(x)$ which are able to capture both linear and non-linear importance relationships between criterion values. Once the values of each criterion $C_j$ is established, criteria are aggregated based on weights $w_j$ that convey the relative importance among criteria. The explicit nature of both value functions and weighting process make \gls{mavt} a particularly transparent decision analysis method, which is expecially valuable for research applications \cite{KEENEY1996537}.
 
 The first methodological step requires \textbf{establishing indicators and their hierarchical structure}. Morton and Fasolo (2009) identify two traditional approaches: top-down and bottom-up \cite{Morton01022009}. The top-down approach begins with macro-level objectives that are subsequently decomposed into lower-level objectives through the guiding question "How can we achieve this?". On the other hand, the bottom-up approach, which is employed in the present study, starts with low-level objectives derived by comparing alternatives $A_i$, asking: "What differentiates these alternatives?". Higher-level objectives are then constructed by aggregating similar indicators.
 
 Morton and Fasolo note that top-down structuring tends to produce general value trees, difficult to apply to a specific study. Bottom-up approaches instead, create context-specific trees that are difficult to generalize. Additionally, this study found the bottom-up approach particularly useful in ensuring even indicator distribution across high-level objectives. This practice mitigates splitting bias, in which an objective divided into multiple sub-objectives will typically receive an higher cumulative weight than the equivalent single objective \cite{MARTTUNEN2018178}, accordingly, even distribution should prevent artificial favoring of objectives with greater indicator counts.
 
-
-\textbf{Value Functions} are the characteristic feature of \gls{mavt} that allow to, first of all, reduce any metric, based on qualitative or quantitative data, to a scalar comparable with other different metrics. And second, it allows to convey more implicit information that a single metric can be able to carry. For example to evaluate a job offer, an obvius metric is its salary, in monetary terms. The perceived value, that is how the personal judgment of the salary, will never simply scale lineary with the amount of money recived, anything below a certain threshold dictated by monthly costs (e.g. rent, food, transportation etc) will have a significantly lower value then any offer above it. At the same time a hundred euro difference between two low salary offers might be considered much more significant then the same difference between two high offers. All this information can be conveyed with a specificcly tailored value function like the one shown in figure \ref{fig:value_function_example}.
+\textbf{Value Functions} are the defining feature of \gls{mavt} that allow to, first of all, reduce any metric, based on qualitative or quantitative data, to a scalar comparable with other different metrics. And second, it allows to convey more implicit information that a single metric can be able to carry. Consider the evaluation of a job offer where salary appears as an obvius quantitative metric. The perceived value, that is how the personal judgment of the salary, rearely scales lineary with the compensation. Any offer below a subsistence threshold dictated by essentail monthly expenses (rent, food, transportation) have a significantly lower value then those offer exceeding it. Similarly a €100 difference between two low salary offers tipically carries greater weight then the same difference between two high salary proposals. These non-linear relationships in the percived value can be represented through carefully tailored value function like the one shown in figure \ref{fig:value_function_example} \textcolor{red}{da sostiuire con immagine definitiva}. 
 
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{./imgs/placeholder.png}
-    \caption{Example of a value function illustrating non-linear preferences.}
-    \label{fig:value_function_example}
+\centering
+\includegraphics[width=0.8\textwidth]{imgs/placeholder.png}
+\caption{Example of a Value Function}
+\label{fig:value_function_example}
 \end{figure}
+
+
+This study employs the mid-value splitting technique for value function elicitation, originally developed by Keeney and Raiffa (1975) \cite{Keeney_Raiffa_1975}. While the original study provides the fundamentals of the method, it offers limited guidance on elicitation of value function shapes. The technique is focused on identifying \textbf{indifference points} which, in general terms, are a point $P$ in the data range of the criterion $C$ such that the improvment from a lower bound $A$ to point $P$ is indifferent to the improvement from $P$ to an upper bound $B$.
+
+The elicitation process begins by determining the 0.5 indifference point between the criterion's minimum and maximum values, effectively dividing the range into two segments of equivalent perceived value. This procedure is then applied to each resulting segment to establish the 0.25 and 0.75 indifference points. To ensure systematic application, a flowchart was developed to guide the elicitation process (Figure \ref{fig:value_function_flowchart}). In principle, the methodology could allow experienced \glspl{dm} familiar with value function concepts to bypass indifference point elicitation when linearity can be confidently established. Moreover, to ease the work of \glspl{dm}, it is recommended to begin with a straightforward example criterion to familiarize participants with the technique before addressing more complex evaluations.
+
+
+\newgeometry{margin=0pt}
+\begin{figure}[p]
+\centering
+\includegraphics[width=\paperwidth,height=\paperheight,keepaspectratio]{imgs/value_function_flowchart.png}
+\caption{Value Function Elicitation Flowchart}
+\label{fig:value_function_flowchart}
+\end{figure}
+\restoregeometry 
 
 \textcolor{red}{ricordati di dire che allinizio del capitolo abbiamo detto che a primo impato non cera evidence di non compensatory dynamic ma che poi vogliamo verificare questa cosa variando il metodo di aggregazione}
 
@@ -42,36 +73,37 @@ Morton and Fasolo note that top-down structuring tends to produce general value 
 
 
 \begin{equation}
-   V_{sum} = \sum_{i=1}^{n} w_i \cdot v_i
+   V_{sum} = \sum_{j=1}^{n} w_j \cdot v_j
    \label{eq:linear_aggregation}
 \end{equation}
 
 
 \begin{equation}
-   V_{geo} = \prod_{i=1}^{n} v_i^{w_i}
+   V_{geo} = \prod_{j=1}^{n} v_j^{w_j}
    \label{eq:geo_aggregation}
 \end{equation}
 
 \begin{equation}
    V_{har} =
    \begin{cases}
-   \frac{1}{\sum_{i=1}^{n} \frac{w_i}{v_i}} & \text{if } v_i > 0 \text{ for all } i, \\
+   \frac{1}{\sum_{j=1}^{n} \frac{w_j}{v_j}} & \text{if } v_j > 0 \text{ for all } j, \\
    0 & \text{otherwise}
    \end{cases}
    \label{eq:har_aggregation}
 \end{equation}
 
 \begin{equation}
-   V_{min} = \min_{i=1,\dots,n} v_i
+   V_{min} = \min_{j=1,\dots,n} v_j
    \label{eq:min_aggregation}
 \end{equation}
 
 \begin{equation}
-   V_{max} = \max_{i=1,\dots,n} v_i
+   V_{max} = \max_{j=1,\dots,n} v_j
    \label{eq:max_aggregation}
 \end{equation}
 
-Equations \ref{eq:linear_aggregation}, \ref{eq:geo_aggregation} and \ref{eq:har_aggregation} are subject to the normalization condition $\sum_{i=1}^{n} w_i = 1$
+
+Equations \ref{eq:linear_aggregation}, \ref{eq:geo_aggregation} and \ref{eq:har_aggregation} are subject to the normalization condition $\sum_{j=1}^{n} w_j = 1$
 
 \textbf{Elicitation of weights} in \gls{mcda} varies according to methodological choices. While survey-based approaches using direct elicitation methods (e.g., ranking criteria or expressing judgments) offer simplicity and intuitiveness for general public participation, they face significant criticism from experts. Morton and Fasolo (2009) \cite{Morton01022009} highlight fundamental concerns: "People's ability to understand and respond to direct importance questions baffles us. Both of us regard such questions as meaningless and refuse to answer them. It could be that our intuitions have been destroyed by our atypically extensive exposure to DA." Reichert et al. (2015) \cite{REICHERT2015316} recommend a differentiated approach: technical criteria should be weighted through expert elicitation, while higher-level objectives reflecting major societal trade-offs may incorporate population or stakeholder opinions.
 
@@ -80,25 +112,26 @@ More sophisticated methods like swing elicitation \cite{Goodwin_Wright_2004}, pr
 Rezaei (2015) proposed the \gls{bwm} which first identifies the most and least important criteria and then performs pairwise comparisons between these two reference criteria and all others \cite{REZAEI201549}. This method reduces the number of evaluation required: given $n$ criteria to evaluate, only $2n-3$ pairwise comparisons are needed, against the $\frac{n(n-1)}{2}$ available unique pairs. Another significant advantage is that this method allows for consistency checks to verify the results of the elicitation process.
 
 \section{Best Worst Tradeoff Method}
-Liang et al. (2022) proposed the \gls{bwt} which combines the range sensitivity of methods like swing elicitation with the possibility to perform consistency checks offered by \gls{bwm} \cite{LIANG2022957}. \textcolor{red}{River's study ref} 2025 worked on this method to expand it to hierarchical structures.
+Liang et al. (2022) proposed the \gls{bwt} which combines the range sensitivity of swing elicitation with the consistency verification offered by the \gls{bwm} \cite{LIANG2022957}. \textcolor{red}{River's study ref} 2025 extended this methodology to hierarchical structures. It is important to note that to implement this methodology the knowledge of value functions for each criterion is required beforehand.
 
-To start things off these method require to have obtained the criteria structure and their value functions.
-As a second step we need to identify the best and worst criteria. To do so we start by defining the hypotetical consequence vector $\vec{h}$, were each component is the value of one criterion in an hypotetical scenario. For our example we will follow though with four criteria $C_1$, $C_2$, $C_3$ and $C_4$, if the vector $\vec{h}$ is $(1,0,0,0)$ this means that the $C_1$ criteria has its maximum value (1) while the others are at their lowest possible (0). To identify the best and worst criteria we request to order four hypotetical consequences: $(1,0,0,0)$, $(0,1,0,0)$, $(0,0,1,0)$ and $(0,0,0,1)$. This will identify the best $C_b$ and worst $C_w$ criteria, these two will be used as a reference point in the weighting process to avoid the anchoring bias (the importance weighing is biased by the reference for comparison used, using two of them we can employ analytical methods, such as this one, to counter act this effect).
+The weighting process begins by identifying the most and least important criteria through comparative evaluation of hypothetical consequence vectors $\vec{h}$. Each vector component represents a criterion's value in a hypothetical scenario. For an illustrative case with four criteria ($C_1$, $C_2$, $C_3$, and $C_4$), the vector $(1,0,0,0)$ indicates that $C_1$ achieves its maximum value while all other criteria remain at their minimum. Decision-makers are asked to rank four $\vec{h}$ vectors: $(1,0,0,0)$, $(0,1,0,0)$, $(0,0,1,0)$, and $(0,0,0,1)$. This ranking identifies the best ($C_b$) and worst ($C_w$) performing criteria, which then serve as dual reference points throughout the weighting process. Using two reference criteria rather than one helps mitigate anchoring bias which is the tendency for importance judgments to be influenced by the chosen reference point.
 
-Best criteria comparison: we now do pairwise comparison using $C_b$ as our reference, in our four criteria example let's say that $C_1$ is $C_b$. We will ask experts to tell us the value $x$ that $C_b$ should have so that a pair of hypotetical consequences is indifferent: 
+The best criteria comparison employs the best criterion $C_b$ as the reference standard. For the four-criterion example, let's assume $C_1$ represents $C_b$. Experts are requested to determine the value $x$ that makes each pair of $\vec{h}$ indifferent:
+
 \begin{itemize}
 \item $(0,1,0,0)$ vs $(x,0,0,0)$ will determine $x_{(b,2)}$
 \item $(0,0,1,0)$ vs $(x,0,0,0)$ will determine $x_{(b,3)}$
 \item $(0,0,0,1)$ vs $(x,0,0,0)$ will determine $x_{(b,4)}$
 \end{itemize}
 
-We can now substitute the quantities of each indicator into their value functions and assume the following relationship:
+Given these points it is possible to establish the following proportional relationships between value functions:
+
 \begin{equation}
-   \label{eq:best_comparison}
-   w_1 = \frac{w_2}{v_b(x_{(b,2)})} = \frac{w_3}{v_b(x_{(b,3)})} = \frac{w_4}{v_b(x_{(b,4)})}
+\label{eq:best_comparison}
+w_1 = \frac{w_2}{v_b(x_{(b,2)})} = \frac{w_3}{v_b(x_{(b,3)})} = \frac{w_4}{v_b(x_{(b,4)})}
 \end{equation}
 
-For the comparisons with the worst performing criteria $C_w$, which we assume is $C_4$, we have to ask which value $x$ of another criterion is equivalent to $(0,0,0,1)$. Mind you the result here is not therefore a value of the worst indicator as previously done but a value for the other one, this is reflected in the notation since we are determining $x_{(i,w)}$ instead of $x_{(w,i)}$.
+For comparisons against the worst-performing criterion $C_w$ (assumed to be $C_4$ in this example), experts determine what value $x$ of each remaining criterion would be equivalent to $(0,0,0,1)$. Unlike the previous comparisons, this process yields values for the non-worst criteria rather than the worst criterion itself, this distinction is reflected in the notation as $x_{(j,w)}$ rather than $x_{(w,j)}$.
 
 \begin{itemize}
 \item $(0,0,0,1)$ vs $(x,0,0,0)$ will determine $x_{(1,w)}$
@@ -106,57 +139,123 @@ For the comparisons with the worst performing criteria $C_w$, which we assume is
 \item $(0,0,0,1)$ vs $(0,0,x,0)$ will determine $x_{(3,w)}$
 \end{itemize}
 
-The following relation is then considered:
+Similarly to the best comparison it is possible to establish the following relationships between value functions:
 \begin{equation}
    \label{eq:worst_comparison}
    w_1 \cdot v_1(x_{(w,1)}) = w_2 \cdot v_2(x_{(w,2)}) = w_3 \cdot v_3(x_{(w,3)}) = w_4 \cdot 1 = w_w
 \end{equation}
 
-By breaking up the relationships in \ref{eq:worst_comparison} and \ref{eq:best_comparison} and by adding the normalization condition $\sum_{i=1}^{n} w_i = 1$ we can obtain a linear system of equations.
 
+Combining the relationships from equations \ref{eq:worst_comparison} and \ref{eq:best_comparison} with the normalization condition $\sum_{i=1}^{n} w_i = 1$ produces a linear system of equations:
 \begin{equation}
    \begin{cases}
-      w_i \cdot v_i(x_{(i,w)}) = w_w \forall i \in \{1,2,3\} \\
-      w_b = \frac{w_i}{v_b(x_{(b,i)})} \forall i \in \{2,3,4\} \\
-      \sum_{i=1}^{4} w_i = 1
+      w_j \cdot v_j(x_{(j,w)}) = w_w \forall j \in \{1,2,3\} \\
+      w_b = \frac{w_j}{v_b(x_{(b,j)})} \forall j \in \{2,3,4\} \\
+      \sum_{j=1}^{4} w_j = 1
    \end{cases}
 \end{equation}
 
-Given the human nature of these judgments the system will not have an exact solution. For this reason we will solve for the vector of $w_i$ that minimizes the "greatest absolute violation of the equations":
+Given the inherent subjectivity in expert judgments, this system typically lacks an exact solution. The optimal weight vector is therefore determined by minimizing the greatest absolute violation of these equations:
 \begin{equation}
    \begin{aligned}
    &\text{minimize: } \quad \textbf{MAX}
    & \begin{cases}
-         |w_i \cdot v_i(x_{(w,i)}) - w_w| & \forall i \in \{1,2,3\} \\
-         |w_b - \frac{w_i}{v_b(x_{(b,i)})}| & \forall i \in \{2,3,4\}
+         |w_j \cdot v_j(x_{(j,w)}) - w_w| & \forall j \in \{1,2,3\} \\
+         |w_b - \frac{w_j}{v_b(x_{(b,j)})}| & \forall j \in \{2,3,4\}
    \end{cases}\\
-   &\text{subject to:}
+   & \text{subject to:}
    & \begin{cases}
-      \sum_{i=1}^{4} w_i = 1 \quad \forall i \\
-      w_i \geq 0 \quad \forall i.
+      \sum_{j=1}^{4} w_j = 1 \quad \forall j \\
+      w_j \geq 0 \quad \forall j.
    \end{cases}
    \end{aligned}
 \end{equation}
 
+For computational, a signle objective variable is prefered, therefore the problem is reformulated as:
+\begin{equation}
+\begin{aligned}
+&\text{minimize: } \quad \textbf{MAX} (z) \\
+&\text{subject to:}  
+ \begin{cases}
+ z \geq |w_j \cdot v_j(x_{(w,j)}) - w_w| \quad \forall j \in \{1,2,3\}, \\
+ z \geq \left|w_b - \frac{w_j}{v_b(x_{(b,j)})}\right| \quad \forall j \in \{2,3,4\}, \\
+ \sum_{j=1}^{4} w_j = 1 \quad \forall j, \\
+ w_j \geq 0 \quad \forall j.
+\end{cases}
+\end{aligned}
+\end{equation}
 
-The code implementation requires the definition of a single auxiliary variable to minimize, therefore the problem is expressed as follows:
+Liang et al. (2022) also propose a nonlinear alternative formulation \cite{LIANG2022957}, which becomes particularly relevant for the hierarchical extension developed \textcolor{red}{RIVERs PAPER} and presented in equation \ref{eq:bwt_nonlinear}.
 
 \begin{equation}
 \begin{aligned}
 &\text{minimize: } \quad \textbf{MAX} (z) \\
 &\text{subject to:}  
-& \begin{cases}
- z \geq |w_i \cdot v_i(x_{(w,i)}) - w_w| \quad \forall i \in \{1,2,3\}, \\
- z \geq \left|w_b - \frac{w_i}{v_b(x_{(b,i)})}\right| \quad \forall i \in \{2,3,4\}, \\
- \sum_{i=1}^{4} w_i = 1 \quad \forall i, \\
- w_i \geq 0 \quad \forall i.
+ \begin{cases}
+ z \geq | \cdot v_j(x_{(w,j)}) - \frac{w_j}{w_w}| \quad \forall j \in \{1,2,3\}, \\
+ z \geq \left|\frac{1}{v_b(x_{(b,j)})} - \frac{w_b}{w_j} \right| \quad \forall j \in \{2,3,4\}, \\
+ \sum_{j=1}^{4} w_j = 1 \quad \forall j, \\
+ w_j \geq 0 \quad \forall j.
 \end{cases}
 \end{aligned}
+\label{eq:bwt_nonlinear}
 \end{equation}
 
+To adapt the method for hierarchical structures where criteria are organized into groups $G_j$, \textcolor{red}{RIVERs PAPER} first applies the \gls{bwt} method as presented to each individual group. Once group-specific weights have been determined, it identifies the highest-ranked criterion from each group and applies \gls{bwt} to this subset. The resulting weights are then assigned to their respective group of origin.
 
-\textcolor{red}{Here it then starts section 4 about consistency}
+For enhanced methodological robustness, the approach also incorporates a worst-of-the-worst comparison. This involves extracting the lowest-ranked criterion from each group and applying BWT to this subset.
 
-\section{Consensus Reaching Process}
+The overall process to follow to apply the BWT method is deatiled in a flowchart available ... \textcolor{red}{devo decidere se i vari flowcharts li metto come immagini nella tesi o se ha piu senso averli come risorse esterne collegate in qualche modo, o repo o pagina web}
 
 
+\section{Uncertainty Analysis}
+\label{sec:uncertainty_analysis}
+One of the main reserach objective of this thesis is to explore how to handle uncertainties within a \gls{mcda} framework. The investigation begins by identifying primary uncertainty sources in the analysis.
+
+Some uncertainties originate from the \textbf{input data} itself due to measurement error, estimation procedures, Monte Carlo simulations or probabilistic models. When quantifiable, these uncertainties can be systematically propagated through all subsequent calculations in the \gls{mcda} process. Other uncertainties may originate from necessary \textbf{assumptions} made during the construction of composite indicators. In such cases, it is responsibility of the analyst to reasonably quantify the associated uncertainty. For instance, when assuming \gls{cf} values, the author examined European operational reactor data from the \gls{iaea} \gls{pris} database \cite{IAEA_PRIS_2025}. After filtering relevant cases and removing outliers, the data yields a mean \gls{cf} value of 81.64\% with a standard deviation of 5.52\%, therefore by considering a 68\% confidence interval assuming a normal distribution the \gls{cf} is assumed as $81.6\% \pm 5.5\%$ \footnote{Computational details available in Reactor Analysis.ipynb; see Appendix \ref{sec:appendix_code}}.
+
+Particular challenges emerge as soon as  qualitative elements come into play(qualitative indicators, weights, and value functions) as they inherently contain subjective components likely to vary among \glspl{dm}. While statistical approaches using multiple experts can quantify this uncertainty, the substantial time requirements and difficulties in maintaining consistency across elicitation sessions make them impractical. Some \gls{mcda} practitioners recommend workshop formats where multiple experts work simultaneously, though these present significant organizational challenges.
+
+This study, instead of relaying on multiple opinions from the start, employs a single expert to carry the "first elicitation" of all qualitative information. Subsequent experts then review the results rather than replicate the complete elicitation process. These reviewers indicate their agreement or disagreement with the initial results and provide alternative perspectives when discrepancies exist. The resulting diversity of opinions forms the basis for quantifying uncertainty around the first elicitation.
+
+Consider a simplified example where the main expert provides a qualitative judgment on a 1-to-5 scale, selecting a value of 4. Five additional experts then review this initial assessment, either confirming the original evaluation or proposing alternatives (Table \ref{tab:example_elicitiation_qualitative}). In this hypothetical scenario, two experts agree with the initial judgment while three suggest different values. This distribution enables construction of a probability function (Table \ref{tab:example_elicitiation_qualitative_proability}) that quantifies uncertainty for propagation through subsequent analyses. 
+
+While this elementary case demonstrates the method's conceptual simplicity, its efficiency advantages become particularly evident in complex elicitation tasks such as value function development, where it significantly reduces the overall time requirements.
+
+\begin{table}[h]
+\centering
+\begin{minipage}{0.45\textwidth}
+\centering
+\caption{Example of Expert Elicitation Results for Qualitative Judgment (Scale: 1--5)}
+\label{tab:example_elicitiation_qualitative}
+\begin{tabular}{lc}
+\toprule
+\textbf{Expert}         & \textbf{Score} \\
+\midrule
+Main Expert             & 4             \\
+Expert 1                & \cmark        \\
+Expert 2                & 5             \\
+Expert 3                & 3             \\
+Expert 4                & \cmark        \\
+Expert 5                & 3             \\
+\bottomrule
+\end{tabular}
+\end{minipage}
+\hfill
+\begin{minipage}{0.45\textwidth}
+\centering
+\caption{Example of Probability Function of the Qualitative Criterion}
+\label{tab:example_elicitiation_qualitative_proability}
+\begin{tabular}{lc}
+\toprule
+\textbf{Score}         & \textbf{$\mathbb{P}$} \\
+\midrule
+5                & 1/6 = 0.17  \\
+4                & 3/6 = 0.50  \\
+3                & 2/6 = 0.33  \\
+2                & 0/6 = 0.00 \\
+1                & 0/6 = 0.00 \\
+\bottomrule
+\end{tabular}
+\end{minipage}
+\end{table}
