@@ -1,7 +1,14 @@
 \section{Definition of the Study Context}
 \subsection{Country Selection for Comparative Analysis}
 \label{sec:country_selection}
-As previously discussed in Section \ref{sec:european_landscape}, several European nations are actively re-evaluating the role of nuclear power in their energy mixes, making the continent an ideal case study to examine how different environments can influence technology selection. While it is obvious that each national context has unique characteristics, a targeted selection of four countries has been made to balance research interest with practical constraints. The chosen nations: France, Italy, Poland, and Switzerland, were deliberately selected, among European countries that are reconsidering nuclear, to capture a wide range of possible scenarios as detailed in the following analysis.\footnote{Data regarding electricity loads and cross border flows presented in the following paragraphs is sourced from the \gls{entso} Transparency Platform and refers to the year 2024 \cite{ENTSOE_Transparency_2025}. The complete data analysis can be found in the repository, see Appendix \ref{sec:appendix_code}.}
+As previously discussed in Section \ref{sec:european_landscape}, several European nations are actively re-evaluating the role of nuclear power in their energy mixes, making the continent an ideal case study to examine how different environments can influence technology selection. While it is obvious that each national context has unique characteristics, a targeted selection of four countries has been made to balance research interest with practical constraints. The chosen nations: France, Italy, Poland, and Switzerland, were deliberately selected, among all European countries that are reconsidering nuclear (see Figure \ref{european_nuclear_map}), to capture a wide range of possible scenarios as detailed in the following analysis.\footnote{Data regarding electricity loads and cross border flows presented in the following paragraphs is sourced from the \gls{entso} Transparency Platform and refers to the year 2024 \cite{ENTSOE_Transparency_2025}. The complete data analysis can be found in the repository, see Appendix \ref{sec:appendix_code}.}
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{imgs/placeholder.png}
+    \caption{Map of European countries reconsidering nuclear energy.}
+    \label{fig:european_nuclear_map}
+\end{figure}
 
 \textbf{Italy}'s nuclear landscape is constrained by the 1987 post-Chernobyl referendum which mandated complete phase-out of nuclear power and its 2011 reaffirmation following Fukushima. However, since Italian referendums are abrogative rather than prescriptive, government decrees are enough to reverse these policies \cite{Costituzione_Italiana_Art75_1947}. The current administration seems willing to reintroduce nuclear power \cite{Sole24Ore_Italy_Nuclear_Strategy_2024}, however, Italy's history of political volatility and the long-term nature of nuclear projects create significant implementation challenges regardless of public opinion trends. 
 
@@ -18,7 +25,7 @@ The Swiss grid is characterized by a low demand, averaging 6.79 $\pm$ 1.12 GW, a
 \subsection{Selection of Reactor Models}
 \label{sec:selection_reactors}
 This study focuses on a curated set of reactor designs at an advanced stage of development.
-The selection process begins with the analysis of the \gls{iaea} "Nuclear Reactors in the World" publication \cite{international2024iaea}, which catalogues operational, under-construction, and decommissioned reactors globally. \\
+The selection process begins with the analysis of the \gls{iaea} \gls{pris} database data, collected in their "Nuclear Reactors in the World" annual publication \cite{IAEA_PRIS_2025, international2024iaea}, which catalogues operational, under-construction, and decommissioned reactors globally. \\
 
 The initial selection process applied two primary exclusion criteria. First, designs were eliminated based on supplier origin, removing all reactors associated with countries unlikely to engage in nuclear technology transfer with European countries, namely, Russia, China and India. Second, reactors commissioned before 2000 were excluded from consideration, as their designs represent outdated technological standards \footnote{The complete filtering is documented in the repository, see Appendix \ref{sec:appendix_code}}.
 
@@ -26,7 +33,7 @@ From this pre-selected group, three designs were prioritized for comprehensive a
 
 The author acknowledges the controversy between Westinghouse and KEPCO regarding the APR design derivation from the System 80 design. However, as no official documentation prohibits its commercialization in Europe, and considering recent evaluations of the Korean design (including the 2023 Czech tender, though later contested by \gls{edf} and Westinghouse \cite{WNN_Czech_Nuclear_Appeal_2024}), the \gls{apr} has been included in this analysis.
 
-The \gls{epr}2 and \gls{epr}1200 designs, while reviewed positively by the French nuclear safety authority \cite{WNN_EPR1200_Safety_2023}, lack commercial commitments (the gls{epr}1200 was proposed for the Czech tender but ultimately unsuccessful \cite{WNN_Czech_Nuclear_Appeal_2024}). Moreover, considering their absence from the ARIS database and overall limited available technical documentation, these \gls{edf} designs have been excluded from the current study.
+The \gls{epr}2 and \gls{epr}1200 designs, while reviewed positively by the French nuclear safety authority \cite{WNN_EPR1200_Safety_2023}, lack commercial commitments (the \gls{epr}1200 was proposed for the Czech tender but ultimately unsuccessful \cite{WNN_Czech_Nuclear_Appeal_2024}). Moreover, considering their absence from the ARIS database and overall limited available technical documentation, these \gls{edf} designs have been excluded from the current study.
 
 
 \begin{table}[!hb]
@@ -43,9 +50,13 @@ PRE KONVOI & Germany & \cmark & \cmark & \xmark & Rejected \\
 
 \gls{epr} 1750 & France & \cmark & \cmark & \cmark & \textbf{Selected} \\
 
+CAP1000 & China & \xmark & \cmark & \cmark & Rejected \\
+
 \gls{ap} & USA & \cmark & \cmark & \cmark & \textbf{Selected} \\
 
 \gls{abwr} & Japan & \cmark & \xmark & \cmark & Rejected \\
+
+\gls{vver}-1200 & Russia & \xmark & \cmark & \cmark & Rejected \\
 
 \gls{apwr} & Japan & \cmark & \xmark & \cmark & Rejected \\
 
@@ -68,9 +79,9 @@ Subsequently, the \gls{iaea} \gls{aris} database \cite{iaea2025aris}, was consul
 \textbf{Reactor} & \textbf{Country} & \textbf{Used} & \textbf{Reasoning} \\
 \midrule
 
-APR+ & S.Korea & \xmark & Manufacturer reports the design is an "indigenous reactor cleared of obstacles to export" \cite{kepcoenc2025}\\
+APR+ & S.Korea & \xmark & Manufacturer reports the design is an \textit{"indigenous reactor cleared of obstacles to export"} \cite{kepcoenc2025}\\
 \cmidrule(lr){1-4}
-ATMEA & Japan, France & \xmark & It seems that the joint venture between Mithubishi and \gls{edf}/Framatome was abandoned \footnote{Unfortunately, no direct, authoritative sources could be identified to support this claim. The conclusion is deduced from the absence of recent project updates.}\\
+ATMEA & Japan, France & \xmark & Joint venture between Mitsubishi and \gls{edf}/Framatome was abandoned \footnote{Unfortunately, no direct, authoritative sources could be identified to support this claim. The conclusion is deduced from the absence of recent project updates.}\\
 \cmidrule(lr){1-4}
 BWRX300 & USA, Canada & \cmark & A design from \gls{ge}, shows support from US and Canada as well as interest in the European countries \cite{wnn2025bwrx300, wnn2025hungarysmr}.\\
 \cmidrule(lr){1-4}
@@ -85,7 +96,7 @@ Nuward & France & \xmark & Lack of detailed information, most likely consequence
 \cmidrule(lr){1-4}
 Nuscale & US & \cmark & Most progressed in the regulatory process \cite{NRC_ML17007A001, NRC_ML23161A411, NRC_2025_033}.\\
 \cmidrule(lr){1-4}
-PRISM & US & \xmark & \gls{ge} states it is a "concept ... currently being put into practice in two reactors: Natrium and ARC-100" \cite{GEV_SFR_2025}.\\
+PRISM & US & \xmark & \gls{ge} states it is a \textit{"concept ... currently being put into practice in two reactors: Natrium and ARC-100"} \cite{GEV_SFR_2025}.\\
 \cmidrule(lr){1-4}
 Rolls Royce SMR & UK & \cmark & Ongoing regulatory activity and interest for deployment \cite{RollsRoyce_SMR_GDA_Consultation, PowerTechnology2022}.\\
 \cmidrule(lr){1-4}
@@ -97,7 +108,7 @@ SMART & S.Korea, Saudi Arabia & \xmark & Plan to export only to South-East Asia 
 \label{tab:advanced-reactor-selection}
 \end{table}
 
-The overall selection produced a set of six reactors, three Generation III+ and three \glspl{smr}. Their main characteristics are summarized in Table \ref{tab:final-reactor-selection}. The most notable differences are the integrated designs of the \gls{bwrx} and Nuscale \gls{smr} which eliminate external primary loops in favour of steam generators positioned inside the reactor pressure vessel. This allows to reduce the overall size and to exploit natural circulation for cooling. The \gls{npm}, referred to as US460 in technical documentation, is the only model designed to be deployed in a multi unit configuration, with up to 12 modules in the same containment building, for this study the 6 module plant (VOYGR-6) has been selected as it recently revived the \gls{sda} by the US Nuclear Regulatory Commission in May 2025 \footnote{\textit{"A standard design approval indicates that a proposed reactor design meets applicable agency safety requirements. Companies that seek to use the US460 design would have to file applications seeking permission to build and operate a nuclear reactor using the approved design"} \cite{NRC_2025_033}}.
+The overall selection produced a set of six reactors, three Generation III+ and three \glspl{smr}. Their main characteristics are summarized in Table \ref{tab:final-reactor-selection}. The most notable differences are the integrated designs of the \gls{bwrx} and Nuscale \gls{smr} which eliminate external primary loops in favour of steam generators positioned inside the reactor pressure vessel. This allows to reduce the overall size and to exploit natural circulation for cooling. The \gls{npm}, referred to as US460 in technical documentation, is the only model designed to be deployed in a multi unit configuration, with up to 12 modules in the same containment building, for this study the 6 module plant (VOYGR-6) has been selected as it recently obtained the \gls{sda} by the \gls{nrc} in May 2025 \footnote{\textit{"A standard design approval indicates that a proposed reactor design meets applicable agency safety requirements. Companies that seek to use the US460 design would have to file applications seeking permission to build and operate a nuclear reactor using the approved design"} \cite{NRC_2025_033}}.
 
 \begin{table}[!hb]
 \centering
@@ -117,7 +128,7 @@ Nuscale & \gls{ipwr} & 1 Unit & 77 & Nuscale Power (USA) \\
 \label{tab:final-reactor-selection}
 \end{table}
 
-\subsection{Overview of the case Study}
+\subsection{Recap and overview of the case study}
 \textcolor{red}{Da rivedere una volta finito il capitolo sulla metodologia. Una volta finito questo capitolo sul caso studio aggiungi anche spiegazione di come si struttura il resto del case study}
 In summary, this study conducts a comparative analysis of six nuclear reactor designs: three Generation III+ reactors (\gls{apr}, \gls{epr}1750, and \gls{ap}) and three \glspl{smr} (\gls{bwrx}, Rolls Royce \gls{smr}, and Nuscale), across four European countries (Italy, France, Poland, and Switzerland). The analysis adopts the point of view of governmental energy policy and planning agencies. The primary objective is to evaluate which reactor design is most suitable for deployment by the mid-2030s within each national context.
 To take into account multiple dimensions, \gls{mavt} is employed...
