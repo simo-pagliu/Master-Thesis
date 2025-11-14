@@ -42,116 +42,12 @@ $1$ is the fuel is already used in that country such as EPR fuel in France. $0.9
 
 Then regarding the tecnology, the 3 existing reactors get a 10/10 score, as well as the BWRX-300 since it will use an existing fuel assembly GNF-2 \cite{CNSC_BWRX300_Fuel_Design}. Rolls-Royce SMR and NuScale get a 5/10 since they will have to develop their own fuel but it will be a derivative of existing PWR fuel \cite{RollsRoyce_SMR_UK_Fuel_2023} and \cite{NRC_ML17007A001}. Rolls-Royce is working with Westinghouse for the fuel development \cite{PLACEHOLDER} while NuScale wants to modify the HTP\texttrademark{} fuel that is also produced by Framatome \cite{Framatome_GNF2_Fuel_2018}.
 
-% So here there is a cross table with the reactors and the countries with the respective scores.
-
-% \begin{table}[!ht]
-%     \centering
-%     \begin{tabularx}{0.9\textwidth}{l c c c c c}
-%         \toprule
-%         \textbf{Reactor Model} & \textbf{France (FR)} & \textbf{Switzerland (CH)} & \textbf{Poland (PO)} & \textbf{Northern Italy (NI)} & \textbf{Base Score} \\
-%         \midrule
-%         EPR1750         & 1.0 & 1.0 & 1.0 & 1.0 & 10 \\
-%         APR1400         & 1.0 & 1.0 & 1.0 & 1.0 & 10 \\
-%         AP1000          & 1.0 & 1.0 & 1.0 & 1.0 & 10 \\
-%         BWRX-300        & 1.0 & 1.0 & 1.0 & 1.0 & 10 \\
-%         Rolls Royce SMR & 1.0 & 1.0 & 1.0 & 1.0 & 5 \\
-%         NuScale         & 1.0 & 1.0 & 1.0 & 1.0 & 5 \\
-%         \bottomrule
-%     \end{tabularx}
-%     \caption{Fuel manufacturing feasibility scores by country}
-%     \label{tab:fuel-feasibility}
-% \end{table}
-
 \subsubsection{Know-how Transferability and Supply Chain Adaptability}
 Scores reflect the ease of transferring operational knowledge and adapting local supply chains. Know-how transferability considers the presence of similar designs in the country whereas supply chain adaptability considers the presence of the NSSS supplier in the country. For instance France has a lot of experience with PWR and has an EPR (of previous iteration at Flamanville) therefore will have a high know-how transferability for the EPR, on the other hand Italy has shut down all its reactors since 1986 therefore the know-how related score will be low for all reactors. Nonetheless Italy still has an active Nuclear Industry, with Ansaldo Nucleare operating in Genova and Framatome having offices in Milan. This means that even if the know-how is low, the supply chain can be esablished more easily. \\
 
 The reason to separate these two aspects is to be able to give different importance (weights) to the human aspect (know-how) and the industrial/Economic aspect of the supply chain. \\
 
-% The results are shown in Table \ref{tab:know-how-country} and Table \ref{tab:supply-chain-country}.
 
-% \begin{table}[!ht]
-%     \centering
-%     \begin{minipage}{0.48\textwidth}
-%         \centering
-%         \begin{tabularx}{\textwidth}{l c c c c}
-%             \toprule
-%             \textbf{Reactor Model} & \textbf{IT} & \textbf{FR} & \textbf{CH} & \textbf{PO} \\
-%             \midrule
-%             APR1400         & 4 & 8 & 7 & 6 \\
-%             EPR 1750        & 5 & 10 & 8 & 7 \\
-%             AP1000          & 4 & 7 & 7 & 6 \\
-%             BWRX-300        & 3 & 6 & 6 & 5 \\
-%             Rolls Royce SMR & 3 & 6 & 5 & 5 \\
-%             NuScale         & 2 & 5 & 4 & 4 \\
-%             \bottomrule
-%         \end{tabularx}
-%         \caption{Know-how transferability scores by country}
-%         \label{tab:know-how-country}
-%     \end{minipage}
-%     \hfill
-%     \begin{minipage}{0.48\textwidth}
-%         \centering
-%         \begin{tabularx}{\textwidth}{l c c c c}
-%             \toprule
-%             \textbf{Reactor Model} & \textbf{IT} & \textbf{FR} & \textbf{CH} & \textbf{PO} \\
-%             \midrule
-%             APR1400         & 7 & 8 & 7 & 7 \\
-%             EPR 1750        & 8 & 9 & 8 & 8 \\
-%             AP1000          & 7 & 7 & 7 & 7 \\
-%             BWRX-300        & 6 & 6 & 6 & 6 \\
-%             Rolls Royce SMR & 6 & 7 & 6 & 6 \\
-%             NuScale         & 5 & 6 & 5 & 5 \\
-%             \bottomrule
-%         \end{tabularx}
-%         \caption{Supply chain adaptability scores by country}
-%         \label{tab:supply-chain-country}
-%     \end{minipage}
-% \end{table}
-
-
-\subsubsection{Country Economics and Politics}
-These indicators are meant to represent a country's economic and political state. 
-Real GDP from 2015 to 2030 (projected) and Expense as a percentage of GDP from 2015 to 2023 have been obtained from the International Monetary Fund \cite{PLACEHOLDER}. \\
-
-Researchers in Research and Developments per million inhabitants from 2015 to 2023, as well as the GDP expenditure for Research have been obtained from the UNESCO Institute for Statistics \cite{PLACEHOLDER}. \\
-Political Stability, a qualitative indicator ranging from $-2.5$ to $2.5$, has been obtained from the Worldwide Governance Indicators project by the World Bank \cite{PLACEHOLDER}. \\
-Then from the V-Dem dataset \cite{PLACEHOLDER} we extracted:
-\begin{itemize}
-    \item v2x polyarchy: TO what extent is the people's opinion taken into account in the political process?
-    \item v2regdur: Regime duration, how long has the last regime (goverment) lasted?
-    \item v2cltrnslw: Are the laws and the political actions transparent, well publicized, coherent and stable thoughout the years?
-    \item v2dlengage: To what extent are the citizens engaged in the political process?
-\end{itemize}
-
-Then we considered public support for nuclear energy, data was gathered from various sources \cite{PLACEHOLDER} \cite{PLACEHOLDER} \cite{PLACEHOLDER} \cite{PLACEHOLDER}.
-
-The objective of these data is to create 2 contry-specific modifiers. One for their economic state, if a country is growing and tends to spend a lot in R\&D it will be more likely to be able to afford a nuclear project. The second indicator is to represent the support for nuclear energy, not only considering the current stance, but also trying to understand how stable this stance will be in the coming years.
-
-% \begin{table}[!ht]
-%     \centering
-%     \begin{tabularx}{0.8\textwidth}{l c c c}
-%         \toprule
-%         \textbf{Country/Region} & \textbf{Real GDP Growth [\%]} & \textbf{Political Stability Score} & \textbf{Public Support for Nuclear [\%]} \\
-%         \midrule
-%         France          & 1.8 & 0.9 & 65 \\
-%         Switzerland     & 1.2 & 0.8 & 45 \\
-%         Poland          & 3.5 & 0.7 & 70 \\
-%         Northern Italy  & 0.9 & 0.6 & 35 \\
-%         \bottomrule
-%     \end{tabularx}
-%     \caption{Country economics and politics indicators}
-%     \label{tab:country-indicators}
-% \end{table}
----
-
-The present landscape presents policymakers with significant decision-making challenges. Renewed interest in nuclear power, geopolitical uncertainties and technological innovations, complicates the selection of an optimal reactor design. While nuclear commitments involve decade-long development timelines, 60-year operational lifespans, and substantial financial investments, modern energy policies must also consider evaluation of electricity demand, public dynamics, and supply chain vulnerabilities.
-
-
-----
-
-Time for full construction of Voygr 6 is 4 years \cite{IEEFA_UAMPS_Talking_Points_2023}
-
----
 Hydroelectric plants are also included as a reference for the highest flexibility, a 1989 publication by the US Office of Technology Assessment \cite{OTA_Electric_Power_Wheeling_1989} reports that the response rate of large (>60MW) hydroelectric plants ranges from 4 to 6 \%P$_{nom}$/s, which translates to 240 to 360 \%P$_{nom}$/min. A graph from a 1994 conference reported in a technical analysis from 2009 shows that some hydro plant can achieve 0 to 100\% in much less then a minute and from black startup to full power in around 5 minutes For the comparison we indicate greater then 100\%. \cite{osti_219975, MWH_Pumped_Storage_Wind_2009}
 
 To establish an upper benchmark hydroelectric plants were included in the comparative analysis. A 1989 U.S. Office of Technology Assessment report \cite{OTA_Electric_Power_Wheeling_1989} documents that large (>60 MW) hydroelectric facilities demonstrate remarkable load-following capabilities, with response rates ranging from 4 to 6 \%P$_{nom}$/s (equivalent to 240-360 \%P$_{nom}$/min). Additional performance data from a 1994 conference presentation, cited in a 2009 technical analysis \cite{osti_219975, MWH_Pumped_Storage_Wind_2009}, indicates that certain hydroelectric installations can achieve 0-100\% load changes in under one minute and black start to full power operation in approximately five minutes. For the purposes of this comparison, hydroelectric flexibility is conservatively represented as >100 \%P$_{nom}$/min.
@@ -309,11 +205,5 @@ To establish an upper benchmark hydroelectric plants were included in the compar
     \label{tab:mox-compatibility}
 \end{table}
 
-\subsection{System parameters}
-Two parameters were identified to characterize how the deployment of a reactor could fit into the existing grid of a country. The focus was on the ability to satisfy the peculiar demand of each country. The indicators are summarized in Table \ref{tab:indicators-system}.
-
 
 \paragraph{Commissioning Time} follows similar considerations to the previous paragraph, recent nuclear installations have suffered significant delays during construction. To esemplify this we will report both the planned commissioning time as well as the last unit commissioning time for each design. Information on three large reactors comes from \cite{nea2020unlocking} while estimates for the three \glspl{smr} come from manufacturer claims or related documents \cite{GEVernova_Nuclear_2025, RollsRoyce_SMR_Approach_2025, IEEFA_UAMPS_Talking_Points_2023}.
-
-
-\paragraph{Potential Impact on the energy market} can be estiated by...
