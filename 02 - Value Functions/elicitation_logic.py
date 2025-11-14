@@ -2,7 +2,8 @@
 import pandas as pd
 import numpy as np
 import json
-from scipy.optimize import curve_fit
+from scipy.optimize import curve_fit, minimize
+from scipy.interpolate import PchipInterpolator
 
 class ElicitationProcess:
     def __init__(self):
@@ -238,8 +239,66 @@ class ElicitationProcess:
 
             if ft == 'Polynomial':
                 deg = max(1, min(int(degree), len(x) - 1))
-                coeffs = np.polyfit(x, y, deg=deg)
-                y_model = np.polyval(coeffs, x_fit)
+
+                # If monotonicity requested, perform a constrained polynomial fit
+                monotonic = bool(params.get('monotonic')) if params is not None else False
+                increasing = True if params is None else bool(params.get('increasing', True))
+
+                # standard unconstrained fit as initial guess
+                try:
+                    coeffs0 = np.polyfit(x, y, deg=deg)
+                except Exception:
+                    coeffs0 = None
+
+                if monotonic and coeffs0 is not None:
+                    # perform constrained least-squares: minimize sum squares with derivative sign constraints
+                    # derivative coefficients for polynomial c: dcoeffs = c[:-1] * np.arange(n,0,-1)
+                    def obj(c):
+                        try:
+                            y_model = np.polyval(c, x)
+                            return float(np.sum((y_model - y) ** 2))
+                        except Exception:
+                            return 1e12
+
+                    def deriv_at(c, xi):
+                        c = np.asarray(c)
+                        n = len(c) - 1
+                        if n <= 0:
+                            return 0.0
+                        dcoeffs = c[:-1] * np.arange(n, 0, -1)
+                        return float(np.polyval(dcoeffs, xi))
+
+                    # choose grid points where derivative constraint applies
+                    grid_x = np.linspace(lo, hi, min(30, max(5, int(len(x) * 3))))
+                    sign = 1.0 if increasing else -1.0
+                    cons = []
+                    for xi in grid_x:
+                        cons.append({'type': 'ineq', 'fun': (lambda xi: (lambda c: sign * deriv_at(c, xi)))(xi)})
+
+                    # run minimize
+                    try:
+                        res = minimize(obj, coeffs0, method='SLSQP', constraints=cons, options={'maxiter': 1000, 'ftol': 1e-9})
+                        if res.success:
+                            coeffs = res.x
+                        else:
+                            coeffs = coeffs0
+                    except Exception:
+                        coeffs = coeffs0
+                else:
+                    # no monotonic constraint requested
+                    if coeffs0 is None:
+                        try:
+                            coeffs = np.polyfit(x, y, deg=deg)
+                        except Exception:
+                            return None, None, None
+                    else:
+                        coeffs = coeffs0
+
+                # compute polynomial values and piecewise tails
+                try:
+                    y_model = np.polyval(coeffs, x_fit)
+                except Exception:
+                    return None, None, None
                 left_tail = getattr(self, 'left_tail_value', None)
                 right_tail = getattr(self, 'right_tail_value', None)
                 if left_tail is None:
@@ -251,6 +310,102 @@ class ElicitationProcess:
                 y_fit[x_fit < lo] = left_tail
                 y_fit[x_fit > hi] = right_tail
                 mask = (x_fit >= lo) & (x_fit <= hi)
+                y_fit[mask] = y_model[mask]
+                y_fit = np.clip(y_fit, 0.0, 1.0)
+                return x_fit, y_fit, {}
+
+            # Monotone spline option using PCHIP + monotone projection (PAV)
+            if 'PCHIP' in ft or 'Monotone Spline' in ft:
+                # ensure points sorted by x
+                pts = sorted(sel, key=lambda t: t[0])
+                xs = np.array([p[0] for p in pts], dtype=float)
+                ys = np.array([p[1] for p in pts], dtype=float)
+
+                if len(xs) < 2:
+                    return None, None, None
+
+                # Pool Adjacent Violators Algorithm to enforce monotonic y (increasing)
+                def pav(y):
+                    # returns isotonic regression (non-decreasing)
+                    y = y.astype(float)
+                    n = len(y)
+                    levels = y.copy()
+                    weights = np.ones(n, dtype=float)
+                    i = 0
+                    while i < n - 1:
+                        if levels[i] <= levels[i+1]:
+                            i += 1
+                            continue
+                        # merge blocks i and i+1
+                        total_weight = weights[i] + weights[i+1]
+                        avg = (levels[i] * weights[i] + levels[i+1] * weights[i+1]) / total_weight
+                        levels[i] = avg
+                        weights[i] = total_weight
+                        # remove i+1 by shifting
+                        levels = np.delete(levels, i+1)
+                        weights = np.delete(weights, i+1)
+                        n -= 1
+                        # move back if needed
+                        if i > 0:
+                            i -= 1
+                    # expand levels back to original length according to weights
+                    # Here weights represent block sizes; reconstruct by repeating
+                    out = []
+                    for lv, w in zip(levels, weights):
+                        out.extend([lv] * int(round(w)))
+                    # if lengths mismatch, pad/truncate
+                    out = np.array(out, dtype=float)
+                    if out.shape[0] < len(y):
+                        # pad with last value
+                        pad = np.full(len(y) - out.shape[0], out[-1])
+                        out = np.concatenate([out, pad])
+                    if out.shape[0] > len(y):
+                        out = out[:len(y)]
+                    return out
+
+                increasing = True
+                try:
+                    increasing = bool(params.get('increasing', True))
+                except Exception:
+                    increasing = True
+
+                if not increasing:
+                    ys_proc = -ys
+                else:
+                    ys_proc = ys
+
+                try:
+                    ys_iso = pav(ys_proc)
+                except Exception:
+                    # fallback: simple cumulative min/max smoothing
+                    if increasing:
+                        ys_iso = np.maximum.accumulate(ys_proc)
+                    else:
+                        ys_iso = np.minimum.accumulate(ys_proc)
+
+                if not increasing:
+                    ys_iso = -ys_iso
+
+                # build PCHIP interpolator on the isotonic y
+                try:
+                    interpolator = PchipInterpolator(xs, ys_iso, extrapolate=False)
+                    y_model = interpolator(x_fit)
+                except Exception:
+                    # fallback to linear interpolation
+                    y_model = np.interp(x_fit, xs, ys_iso)
+
+                left_tail = getattr(self, 'left_tail_value', None)
+                right_tail = getattr(self, 'right_tail_value', None)
+                if left_tail is None:
+                    left_tail = float(ys_iso[0])
+                if right_tail is None:
+                    right_tail = float(ys_iso[-1])
+                y_fit = np.empty_like(y_model)
+                y_fit[x_fit < lo] = left_tail
+                y_fit[x_fit > hi] = right_tail
+                mask = (x_fit >= lo) & (x_fit <= hi)
+                # replace NaNs from PCHIP extrapolate=False using interpolation inside mask
+                y_model = np.where(np.isnan(y_model), np.interp(x_fit, xs, ys_iso), y_model)
                 y_fit[mask] = y_model[mask]
                 y_fit = np.clip(y_fit, 0.0, 1.0)
                 return x_fit, y_fit, {}

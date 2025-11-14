@@ -95,6 +95,7 @@ class MainWindow(QMainWindow):
         self.fit_type_selector.addItems([
             "Piecewise Linear",
             "Polynomial",
+            "Monotone Spline (PCHIP)",
             "Gaussian",
             "Sigmoid",
         ])
