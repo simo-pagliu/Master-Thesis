@@ -6,11 +6,11 @@ import os
 def value_function_plot(criteria):
     criteria_import = import_criteria(criteria)
     plt.figure(figsize=(10, 6))
-    for i in range(len(criteria_import)):
-        x_values = np.linspace(criteria_import[i]['min'], criteria_import[i]['max'], 100)
-        y_values = [criteria_import[i]['value_function'](x) for x in x_values]
-        plt.plot(x_values, y_values, label=criteria_import[i]['name'])
-        plt.title(f'{criteria_import[i]["name"]} Value Functions')
+    for key, values in criteria_import.items():
+        x_values = np.linspace(values['min'], values['max'], 100)
+        y_values = [values['value_function'](x) for x in x_values]
+        plt.plot(x_values, y_values, label=key)
+        plt.title(f'{key} Value Functions')
         plt.xlabel('Data Range')
         plt.ylabel('Value')
         plt.legend()
