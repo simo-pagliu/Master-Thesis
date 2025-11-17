@@ -3,12 +3,12 @@ The last category of indicators regards all aspects that are considered to be of
 
 \subsubsection{Potential electricity market benefit}
 \label{sec:red_elect_price}
-To assess the potential consumer impact of nuclear reactor deployment, this analysis evaluates its effect on electricity pricing. The investigation proceeds from the assumption that all examined markets operate under marginal pricing mechanisms—a system that accurately describes France, Poland, and Italy, and largely applies to Switzerland despite some additional price adjustment measures. In marginal pricing markets, electricity prices are determined through a bidding process where the final price equals the cost of the last generating source required to meet demand. For instance, if a bidding zone requires 100 MW of capacity with renewables only able to supplying 80 MW and gas generation covering the remaining 20 MW, the electricity price of the zone will reflect the cost of gas-powered generation.
+To assess the potential consumer impact of nuclear reactor deployment, this analysis evaluates its effect on electricity pricing. The investigation proceeds from the assumption that all examined markets operate under marginal pricing mechanisms, which accurately describes France, Poland, and Italy, and largely applies to Switzerland as well. despite some additional price adjustment measures. In marginal pricing markets, the wholesale price of electricity is determined through a bidding process where the final price equals the cost of the last generating source required to meet demand. For instance, if a bidding zone requires 100 MW of capacity with renewables only able to supplying 80 MW and gas generation covering the remaining 20 MW, the electricity price of the zone will reflect the cost of gas-powered generation.
 
 
 The first step involves identifying the marginal generating source and quantifying its contribution to total electricity production. This assessment utilized country-specific data from the \gls{iea} Electricity Overview \cite{IEA_Electricity_2024} and the \gls{entso} Transparency Platform \cite{ENTSOE_Transparency_2025}, which also provided annual electricity cost data. All referenced data pertains to 2024, with the complete analytical methodology available in the accompanying repository (see Appendix \ref{sec:appendix_code}).
 
-Annual energy production for each reactor was then calculated by applying a capacity factor distribution to the nameplate capacity. The analysis employs Equation \ref{eq:energy_yearly} with capacity factors following a normal distribution centred at 0.9 (ranging from 0.85 to 0.95) to reflect the operational tendency to maximize nuclear reactor utilization.
+Annual energy production for each reactor was then calculated by applying a capacity factor distribution to the nameplate capacity. The analysis employs Equation \ref{eq:energy_yearly} with capacity factors assumed with a distribution rapresentative of the average performance of existing nuclear reactors in Europe (See Section on uncertanty analysis \ref{sec:uncertainty_analysis}).
 
 
 \begin{equation}
@@ -22,27 +22,11 @@ For other countries, the analysis calculates potential price reductions by compa
 
 \subsubsection{Potential Reduction of Greenhouse Gas Emissions}
 \label{sec:ghg_red}
-Potential greenhouse gas emission reductions were quantified by comparing the average emissions from each country in 2024 with projected reductions following deployment of one reactor unit. Country-specific emission intensities were derived from Electricity Maps aggregated data \cite{ElectricityMaps_CarbonIntensity_2024}, while total load figures were obtained from the \gls{entso} Transparency Platform \cite{ENTSOE_Transparency_2025}. Given the non-normal distribution of emission data, the analysis employs median values with interquartile ranges to characterize uncertainty (Table~\ref{tab:ghg-intensity-country}).
+Potential greenhouse gas emission reductions were quantified by comparing the average emissions from each country in 2024 with projected reductions following deployment of one reactor unit. Country-specific emission intensities were derived from Electricity Maps aggregated data \cite{ElectricityMaps_CarbonIntensity_2024}, while total load figures were obtained from the \gls{entso} Transparency Platform \cite{ENTSOE_Transparency_2025}.
 
-For nuclear generation's lifecycle emissions, the analysis adopts Liu et al.'s (2023) global meta-analysis of 42 studies \cite{10.3389/fenrg.2023.1147016}, which reports a worldwide average of $15.815 \pm 3.59 \; gCO_{2,\text{eq}}/kWh_e$ for light water reactors. This conservative estimate was selected despite context-specific variations: French nuclear operations typically demonstrate lower intensities ($2-6 \; gCO_{2,\text{eq}}/kWh_e$) according to both operational data \cite{paillere_2021} and IAEA assessments \cite{IAEA_Climate_Change_Nuclear_Power_2022}, with some French reactor studies reporting values up to $12 \; gCO_{2,\text{eq}}/kWh_e$ \cite{paillere_2021}. The global average was preferred as a conservative estimate.
+For nuclear generation's lifecycle emissions, the analysis adopts Liu et al.'s (2023) global meta-analysis of 42 studies \cite{10.3389/fenrg.2023.1147016}, which reports a worldwide average of 15.815 $\pm$ 3.59 gCO$_2$-eq/kWh for light water reactors. This conservative estimate was selected despite context-specific variations: French nuclear operations typically demonstrate lower intensities (2 $\sim$ 6 gCO$_2$-eq/kWh) according to both operational data \cite{paillere_2021} and IAEA assessments \cite{IAEA_Climate_Change_Nuclear_Power_2022}, with some French reactor studies reporting values up to 12 gCO$_2$-eq/kWh \cite{paillere_2021}. The global average was preferred as a conservative estimate.
 
-\glspl{smr} were assigned a slightly higher emission intensity of $17.24 \pm 3.91 \; gCO_{2,\text{eq}}/kWh_e$, reflecting Carless et al.'s (2016) finding that \glspl{smr} demonstrate approximately 9\% higher lifecycle emissions than conventional large \glspl{lwr} \cite{CARLESS201684}.
-
-\begin{table}[!ht]
-    \centering
-    \begin{tabularx}{0.6\textwidth}{X c c c}
-        \toprule
-        Country / Region & a & b & c \\
-        \midrule
-        Italy (IT)        & draft & 240 & 72.0 \\
-        Switzerland (CH)  & 60  & draft  & 1.8 \\
-        Poland (PL)       & 160 & 700 & draft \\
-        France (FR)       & 460 & draft  & 23.0 \\
-        \bottomrule
-    \end{tabularx}
-    \caption{\gls{ghg} evaluation: a: Annual electricity load [TWh], b: GHG emission intensity [gCO$_2$-eq/kWh], c: Total annual GHG emissions from electricity generation [MtCO$_2$-eq/yr]}
-    \label{tab:ghg-intensity-country}
-\end{table}
+\glspl{smr} were assigned a slightly higher emission intensity of 17.24 $\pm$ 3.91 gCO$_2$-eq/kWh, reflecting Carless et al.'s (2016) finding that \glspl{smr} demonstrate approximately 9\% higher lifecycle emissions than conventional large \glspl{lwr} \cite{CARLESS201684}.
 
 \subsubsection{Spent Nuclear Fuel Production}
 Given public sensitivity regarding nuclear waste, this analysis includes \gls{snf} production as a key indicator, quantified in tons and normalized per 1 GW-annum to facilitate comparison of waste generation efficiency across reactor designs. The spent fuel estimates were calculated through material balance as outlined in equations \ref{eq:snf_production_step1} through \ref{eq:snf_production_step4}, deriving the values from each reactor's thermal efficiency and discharge burnup parameters. The variables employed are presented in Table \ref{tab:snf_variables}.
@@ -90,4 +74,10 @@ Given public sensitivity regarding nuclear waste, this analysis includes \gls{sn
 
 
 \subsubsection{Perceived Safety}
-At last we considered the perceived safety from the general public point of view. The reason of this choice are better detailed in section \ref{sec:indicators_removed}. To quantify this aspect a survey has been designed... \textcolor{red}{TO BE COMPLETED...}
+Finally, the perceived safety from the general public point of view was considered. The reason behind the exclusion of engineering safety parametrs is detailed in section \ref{sec:indicators_removed}. In short, for this analysis we recognize that, from an engineering standpoint, all reactors can be considered equally safe. Nonetheless, from the history of nuclear power it is evident that the opinion of the public is much more important than the one of probabilistic risk assesments (see Section \ref{sec:history_nuclear_power} and \ref{sec:country_selection}). This study therefore tries to quantify the opinion of the public on different reactor designs mostly based on their potential appearance in the media. The first assumption that the author was confidet to make is that any large "traditional" reactor will be judged the same way, so the difference might lie between \glspl{smr}. To have a baseline understanding a small survey was conducted presenting the three \glspl{smr} models by the keypoints that their own suppliers use, Rolls Royce is mostly focused on the modularity, size and flexibility while Nuscale and \gls{ge} enphatise, in sligthly different ways,  the safety advantages of their integrated design, mostly the ability to shutdown safetly without human intervention (which is something that all commercial reactors do anyway) and the ability to cool down without external power. For each design the participants were asked to say if they belived the reactor was safer, as safe as or less safe then traditional large reactors. The survey also provided images of the reactor to better rapresent the way they might appear in the media. The results of this small survery (n=50) show that both Nuscale and the \gls{bwrx} where percieved as safer then traditional large reactors while Rolls Royce \gls{smr} was percieved as safer by a minority of participants (one thought it was less safe, for this analysis this response was grouped with the "as safe as" category). A detailed analysis of the survery can be found in appendix \ref{sec:appendix_survey}, the results summarized as follows:
+\textcolor{red}{PLACEHOLDER DATA}
+\begin{itemize}
+    \item Nuscale: 62\% safer, 38\% as safe as
+    \item \gls{bwrx}: 62\% safer, 38\% as safe as
+    \item Rolls Royce \gls{smr}: 30\% safer, 70\% as safe as
+\end{itemize}

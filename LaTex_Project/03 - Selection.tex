@@ -1,7 +1,13 @@
+\textcolor{red}{Da rivedere una volta finito il capitolo sulla metodologia. Una volta finito questo capitolo sul caso studio aggiungi anche spiegazione di come si struttura il resto del case study}
+In summary, this study conducts a comparative analysis of six nuclear reactor designs: three Generation III+ reactors (\gls{apr}, \gls{epr}1750, and \gls{ap}) and three \glspl{smr} (\gls{bwrx}, Rolls Royce \gls{smr}, and Nuscale), across four European countries (Italy, France, Poland, and Switzerland). The analysis adopts the point of view of governmental energy policy and planning agencies. The primary objective is to evaluate which reactor design is most suitable for deployment by the mid-2030s within each national context.
+To take into account multiple dimensions, \gls{mavt} is employed...
+
+This study does not consider siting as mcda analysis of this type are plentiful in the literature as presented in the literature review (Sec \ref{sec:relevant_studies})\cite{DAMOOM2019110, BASEGMEZ2025105897, ABDULLAH2025105626}
+
+
 \section{Definition of the Study Context}
-\subsection{Country Selection for Comparative Analysis}
 \label{sec:country_selection}
-As previously discussed in Section \ref{sec:european_landscape}, several European nations are actively re-evaluating the role of nuclear power in their energy mixes, making the continent an ideal case study to examine how different environments can influence technology selection. While it is obvious that each national context has unique characteristics, a targeted selection of four countries has been made to balance research interest with practical constraints. The chosen nations: France, Italy, Poland, and Switzerland, were deliberately selected, among all European countries that are reconsidering nuclear (see Figure \ref{fig:european_nuclear_map} for all countries that could have been considered), to capture a wide range of possible scenarios as detailed in the following analysis.\footnote{Data regarding electricity loads and cross border flows presented in the following paragraphs is sourced from the \gls{entso} Transparency Platform and refers to the year 2024 \cite{ENTSOE_Transparency_2025}. The complete data analysis can be found in the repository, see Appendix \ref{sec:appendix_code}.}
+As previously discussed in Section \ref{sec:european_landscape}, several European nations are actively re-evaluating the role of nuclear power in their energy mixes, making the continent an ideal case study to examine how different environments can influence technology selection. A selection of four countries, among all European countries that are reconsidering nuclear (see Figure \ref{fig:european_nuclear_map}), has been made to balance research interest with practical constraints. The chosen nations: France, Italy, Poland, and Switzerland were deliberately selected to capture a wide range of possible scenarios as detailed in the following analysis.\footnote{Data regarding electricity loads and cross border flows presented in the following paragraphs is sourced from the \gls{entso} Transparency Platform and refers to the year 2024 \cite{ENTSOE_Transparency_2025}. The complete data analysis can be found in the repository, see Appendix \ref{sec:appendix_code}.}
 
 \begin{figure}[!ht]
     \centering
@@ -22,7 +28,7 @@ The Swiss grid is characterized by a low demand, averaging 6.79 $\pm$ 1.12 GW, a
 
 \textbf{France} demonstrates consistent public support for nuclear energy, with 75\% favouring continued operation of existing plants and $65\%$ supporting new construction according to a 2022 survey \cite{IFOP_Nuclear_Perception_2023}. Given the long-standing consensus on nuclear power as a strategic energy pillar and the country's established industrial base, significant policy reversals appear unlikely. The country electric grid relies heavily on nuclear power, which accounted for 67\% of its electricity generation \cite{IEA_Electricity_2024}. Despite the substantial demand, which averaged $49.05 \pm 9.83$ GW, France is a net electricity exporter, with 21\% of total domestic production crossing the border to neighbouring countries.
 
-\subsection{Selection of Reactor Models}
+\section{Definition of the alternatives: Selection of reactor models}
 \label{sec:selection_reactors}
 This study focuses on a curated set of reactor designs at an advanced stage of development.
 The selection process begins with the analysis of the \gls{iaea} \gls{pris} database data, collected in their "Nuclear Reactors in the World" annual publication \cite{IAEA_PRIS_2025, international2024iaea}, which catalogues operational, under-construction, and decommissioned reactors globally. \\
@@ -36,7 +42,7 @@ The author acknowledges the controversy between Westinghouse and KEPCO regarding
 The \gls{epr}2 and \gls{epr}1200 designs, while reviewed positively by the French nuclear safety authority \cite{WNN_EPR1200_Safety_2023}, lack commercial commitments (the \gls{epr}1200 was proposed for the Czech tender but ultimately unsuccessful \cite{WNN_Czech_Nuclear_Appeal_2024}). Moreover, considering their absence from the ARIS database and overall limited available technical documentation, these \gls{edf} designs have been excluded from the current study.
 
 
-\begin{table}[!hb]
+\begin{table}[!htbp]
 \centering
 \begin{tabularx}{0.8\textwidth}{Xccccc}
 \toprule
@@ -72,7 +78,7 @@ OPR-1000 & S.Korea & \cmark & \cmark & \xmark & Rejected \\
 
 Subsequently, the \gls{iaea} \gls{aris} database \cite{iaea2025aris}, was consulted to identify advanced reactor models classified as under design, under regulatory review, under construction, or operational. To avoid redundancy, Generation III+ designs captured in both \gls{aris} and \gls{pris} datasets were removed. Demonstrations units and prototypes were also excluded from this set, yielding 10 candidate designs. Each of them was then assessed for development status, technological readiness, and applicability to European deployment as summarized in Table \ref{tab:advanced-reactor-selection}.
 
-\begin{table}[!hb]
+\begin{table}[!htbp]
 \centering
 \begin{tabularx}{\textwidth}{cccX}
 \toprule
@@ -110,7 +116,7 @@ SMART & S.Korea, Saudi Arabia & \xmark & Plan to export only to South-East Asia 
 
 The overall selection produced a set of six reactors, three Generation III+ and three \glspl{smr}. Their main characteristics are summarized in Table \ref{tab:final-reactor-selection}. The most notable differences are the integrated designs of the \gls{bwrx} and Nuscale \gls{smr} which eliminate external primary loops in favour of steam generators positioned inside the reactor pressure vessel. This allows to reduce the overall size and to exploit natural circulation for cooling. The \gls{npm}, referred to as US460 in technical documentation, is the only model designed to be deployed in a multi unit configuration, with up to 12 modules in the same containment building, for this study the 6 module plant (VOYGR-6) has been selected as it recently obtained the \gls{sda} by the \gls{nrc} in May 2025 \footnote{\textit{"A standard design approval indicates that a proposed reactor design meets applicable agency safety requirements. Companies that seek to use the US460 design would have to file applications seeking permission to build and operate a nuclear reactor using the approved design"} \cite{NRC_2025_033}}.
 
-\begin{table}[!hb]
+\begin{table}[!htbp]
 \centering
 \begin{tabularx}{\textwidth}{lcccl}
 \toprule
@@ -127,8 +133,3 @@ Nuscale & \gls{ipwr} & 1 Unit & 77 & Nuscale Power (USA) \\
 \caption{Final selection of reactor models for analysis}
 \label{tab:final-reactor-selection}
 \end{table}
-
-\subsection{Recap and overview of the case study}
-\textcolor{red}{Da rivedere una volta finito il capitolo sulla metodologia. Una volta finito questo capitolo sul caso studio aggiungi anche spiegazione di come si struttura il resto del case study}
-In summary, this study conducts a comparative analysis of six nuclear reactor designs: three Generation III+ reactors (\gls{apr}, \gls{epr}1750, and \gls{ap}) and three \glspl{smr} (\gls{bwrx}, Rolls Royce \gls{smr}, and Nuscale), across four European countries (Italy, France, Poland, and Switzerland). The analysis adopts the point of view of governmental energy policy and planning agencies. The primary objective is to evaluate which reactor design is most suitable for deployment by the mid-2030s within each national context.
-To take into account multiple dimensions, \gls{mavt} is employed...

@@ -10,6 +10,7 @@ All financial data has been standardized to 2020 USD to maintain consistency wit
 
 
 \subsubsection{Risk of construction delays}
+\label{sec:risk}
 Risk evaluation is an important aspect of any project evaluation. For this analysis a qualitative risk indicator correlates the project complexity with the associated risk. It combines two primary complexity factors: design complexity and construction complexity. The following outlines the simplified methodology used to develop this indicator for the current study, while a more comprehensive approach is proposed in \textcolor{red}{Section PLACEHOLDER}.
 
 \textbf{Design complexity} was evaluated using the number of cooling loops as a proxy variable. This parameter directly correlates with system complexity, as increased cooling loops necessitate additional piping, junctions, valves, pumps, and welds. The cooling loop count—ranging from 0 for integrated designs to 4 for the EPR—was normalized on a 0-to-1 scale for comparative analysis.
@@ -18,7 +19,7 @@ Risk evaluation is an important aspect of any project evaluation. For this analy
 
 Traditional reactors rely predominantly on on-site construction. The Rolls-Royce design employs extensive off-site component manufacturing but still requires on-site cooling loop assembly. The BWRX-300 adopts a similar off-site approach to Rolls-Royce but eliminates on-site assembly requirements through its integrated design. NuScale represents the most innovative approach with sequential deployment of fully manufactured modules.
 
-The author recognized difficulties trying to determine the optimal construction methodology: On-site construction presents significant project management challenges that frequently result in delays and cost overruns, as documented in Section \textcolor{red}{PLACEHOLDER}. Conversely, modular approaches introduce complex coordination requirements for geographically dispersed suppliers, along with transportation and scheduling challenges.
+The author recognized difficulties trying to determine the optimal construction methodology: On-site construction presents significant project management challenges that frequently result in delays and cost overruns \cite{nea2020unlocking}. On the other hand, modular approaches introduce complex coordination requirements for geographically dispersed suppliers, along with transportation and scheduling challenges.
 
 Numerical values, later  then normalized on a 0-to-1 scale, were assigned to reflect each design's construction approach: 
 \begin{itemize}
@@ -28,9 +29,9 @@ Numerical values, later  then normalized on a 0-to-1 scale, were assigned to ref
     \item 3 for NuScale's novel modular construction
 \end{itemize}
 
-Given the absence of definitive evidence favouring either approach—and considering that optimal construction methods may vary depending on local industrial capabilities and specific siting conditions (factors beyond this study's scope), an adjustment factor $\alpha$ was introduced. By  using the formula $|\alpha - CC|$, where CC represents the normalized construction complexity score and $\alpha$ serves as a preference modulator, it can adjusts the final construction complexity score based on industry preferences for on-site versus off-site construction. When $\alpha$ equals 0, the formula favours on-site construction and traditional designs; if $\alpha$ is 1, it privileges off-site and innovative approaches. To evaluate the appropriate value of $\alpha$ experts were consulted. \textcolor{red}{CONTINUE...}
+Given the absence of definitive evidence favouring either approach—and considering that optimal construction methods may vary depending on local industrial capabilities and specific siting conditions (factors beyond this study's scope), an adjustment factor $\alpha$ was introduced. By  using the formula $|\alpha - CC|$, where CC represents the normalized construction complexity score and $\alpha$ serves as a preference modulator, it can adjusts the final construction complexity score based on industry preferences for on-site versus off-site construction. When $\alpha$ equals 0, the formula favours on-site construction and traditional designs; if $\alpha$ is 1, it privileges off-site and innovative approaches. To evaluate the expected value of $\alpha$ experts were consulted. \textcolor{red}{CONTINUE...}
 
-The final composite indicator combines design and construction complexity by averaging them, therefore assuming an equal weight of these two aspects. The resulting index can be interpreted as the difficulty of commissioning or better, the likelihood of encountering problems during commissioning which will lead to delays and cost overruns. Table \ref{tab:complexity_indices} presents both the intermediate calculations and final results of this complexity assessment.
+The final composite indicator combines design and construction complexity by averaging them, therefore assuming an equal weight of these two aspects. The resulting index can be interpreted as the difficulty of commissioning or better, the likelihood of encountering problems during commissioning which will lead to delays and cost overruns. Table \ref{tab:complexity_indices} presents both the final results, intermediate calculations can be found in the accompaning spreadsheet (See Appendix \ref{sec:appendix_code}).
 
 Final and intermediate results are shown in table \ref{tab:complexity_indices}.
 \textcolor{red}{SISTEMA I DATI E I RISULTATI}\\
@@ -40,17 +41,9 @@ Final and intermediate results are shown in table \ref{tab:complexity_indices}.
         \toprule
         & \textbf{APR} & \textbf{EPR} & \textbf{AP} & \textbf{BWRX} & \textbf{Rolls Royce} & \textbf{NuScale} \\
         \midrule
-        \textbf{DC} & 2 & 4 & 2 & 0 & 3 & 0 \\
-        \midrule
-        \textbf{CC} & 0 & 0 & 0 & 2 & 1 & 3 \\
-        \midrule
-        \multicolumn{7}{c}{\textit{Normalize the scores}} \\
-        DC & 0.50 & 1.00 & 0.50 & 0.00 & 0.75 & 0.00 \\
-        CC & 0.00 & 0.00 & 0.00 & 0.50 & 0.25 & 0.75 \\
-        \midrule
         \multicolumn{7}{c}{\textit{Construction Trend, if $\alpha$ is 1: benefit from off-site - 0: benefit from on-site}} \\
-        $\alpha = 0$ & 0.250 & 0.500 & 0.250 & 0.250 & 0.500 & 0.375\\
-        $\alpha = 1$ & 0.750 & 1.000 & 0.750 & 0.250 & 0.750 & 0.125 \\
+        $\alpha = 0$ ($\mathbf{P}= $)& 0.250 & 0.500 & 0.250 & 0.250 & 0.500 & 0.375\\
+        $\alpha = 1$ ($\mathbf{P}= $) & 0.750 & 1.000 & 0.750 & 0.250 & 0.750 & 0.125 \\
         \bottomrule
     \end{tabularx}
     \caption{Design complexity (DC) and construction complexity (CC) indices.}
