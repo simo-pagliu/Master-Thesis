@@ -1,0 +1,45 @@
+Type,Reference,Other,Value,Group
+best,Salary,Bonus,1460.0,Monetary
+best,Salary,Training Budget,1404.0,Monetary
+worst,Bonus,Salary,1668.0,Monetary
+worst,Bonus,Training Budget,610.0,Monetary
+best,Remote Work Days,Paid Leave,2.08,Non-monetary
+best,Remote Work Days,Commute Time,1.6,Non-monetary
+worst,Commute Time,Paid Leave,3.44,Non-monetary
+worst,Commute Time,Remote Work Days,2.05,Non-monetary
+best,Salary,Bonus,1564.0,Monetary
+best,Salary,Training Budget,1356.0,Monetary
+worst,Bonus,Salary,1520.0,Monetary
+worst,Bonus,Training Budget,530.0,Monetary
+best,Paid Leave,Remote Work Days,5.88,Non-monetary
+best,Paid Leave,Commute Time,4.72,Non-monetary
+worst,Commute Time,Paid Leave,4.12,Non-monetary
+worst,Commute Time,Remote Work Days,1.1,Non-monetary
+best,Salary,Paid Leave,1512.0,Between-groups-B
+worst,Paid Leave,Salary,1372.0,Between-groups-B
+best,Bonus,Commute Time,2575.0,Between-groups-W
+worst,Commute Time,Bonus,1425.0,Between-groups-W
+best,Salary,Bonus,1516.0,Monetary
+best,Salary,Training Budget,1360.0,Monetary
+worst,Training Budget,Salary,1336.0,Monetary
+worst,Training Budget,Bonus,1575.0,Monetary
+best,Paid Leave,Remote Work Days,5.6,Non-monetary
+best,Paid Leave,Commute Time,3.84,Non-monetary
+worst,Commute Time,Paid Leave,5.4,Non-monetary
+worst,Commute Time,Remote Work Days,1.7,Non-monetary
+best,Salary,Bonus,1576.0,Monetary
+best,Salary,Training Budget,1348.0,Monetary
+worst,Training Budget,Salary,1628.0,Monetary
+worst,Training Budget,Bonus,1100.0,Monetary
+best,Paid Leave,Remote Work Days,5.72,Non-monetary
+best,Paid Leave,Commute Time,4.32,Non-monetary
+worst,Commute Time,Paid Leave,5.52,Non-monetary
+worst,Commute Time,Remote Work Days,1.07,Non-monetary
+best,Salary,Paid Leave,1640.0,Between-groups-B
+worst,Paid Leave,Salary,1372.0,Between-groups-B
+best,Training Budget,Commute Time,1120.0,Between-groups-W
+worst,Commute Time,Training Budget,600.0,Between-groups-W
+best,Salary,Bonus,1776.0,Monetary
+best,Salary,Training Budget,1536.0,Monetary
+worst,Training Budget,Salary,1468.0,Monetary
+worst,Training Budget,Bonus,1400.0,Monetary

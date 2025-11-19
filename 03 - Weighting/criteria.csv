@@ -1,4 +1,7 @@
-name,min,max,unit,value_function
-Salary,1200,2000,€,0 if x<1500 else (x-1500)/500
-Paid Leave,2,10,days,(x-2)/8
-Bonus,0,5000,€,x/5000
+name,min,max,unit,group
+Salary,1200,2000,EUR,Monetary
+Paid Leave,2,10,days,Non-monetary
+Bonus,0,5000,EUR,Monetary
+Remote Work Days,0,5,days,Non-monetary
+Training Budget,0,2000,EUR,Monetary
+Commute Time,0,120,minutes,Non-monetary

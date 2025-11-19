@@ -26,16 +26,29 @@ def import_criteria(file_path):
                 "min": float(row["min"]),
                 "max": float(row["max"]),
                 "unit": row["unit"],
-                "value_function": eval("lambda x: " + row["value_function"])
+                "group": row["group"],
             }
     return criteria
 
 
 def plot_results(result, criteria_names):
-    weights = result.x[:-1]  # Extract weights, excluding z
     plt.close('all')
     plt.figure(figsize=(8, 6))
-    plt.bar(criteria_names, weights)
+
+    # result.x may be either a numpy array (with z as last element) or a dict
+    if isinstance(getattr(result, 'x', None), dict):
+        weights_map = result.x
+        # Use provided ordering if available, otherwise use dict key order
+        names = criteria_names if criteria_names else list(weights_map.keys())
+        weights = [weights_map.get(n, 0.0) for n in names]
+    else:
+        # Assume optimize result with weights + z
+        weights = getattr(result, 'x', [])
+        if len(weights) > 0:
+            weights = weights[:-1]
+        names = criteria_names if criteria_names else [f'C{i}' for i in range(len(weights))]
+
+    plt.bar(names, weights)
     plt.xlabel('Criteria')
     plt.ylabel('Weights')
     plt.title('Criterion Weights')
@@ -43,8 +56,18 @@ def plot_results(result, criteria_names):
 
 # Save weights to a file
 def save_to_file(result, criteria_names, working_directory):
-    weights = result.x[:-1] 
-    weights_to_save = {criteria_names[i]: f"{weights[i]:.2f}" for i in range(len(criteria_names))}
+    # Support both dict-style and optimize-result-style outputs
+    if isinstance(getattr(result, 'x', None), dict):
+        weights_map = result.x
+        names = criteria_names if criteria_names else list(weights_map.keys())
+        weights_to_save = {n: f"{weights_map.get(n, 0.0):.2f}" for n in names}
+    else:
+        weights = getattr(result, 'x', [])
+        if len(weights) > 0:
+            weights = weights[:-1]
+        names = criteria_names if criteria_names else [f'C{i}' for i in range(len(weights))]
+        weights_to_save = {names[i]: f"{weights[i]:.2f}" for i in range(len(names))}
+
     # Check for existing file and change name if necessary
     file_index = 1
     while os.path.exists(os.path.join(working_directory, f"criterion_weights_{file_index}.csv")):
