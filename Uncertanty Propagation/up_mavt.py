@@ -160,6 +160,35 @@ def rss_rel(func: Callable, *measurements: List['Measurement']) -> 'Measurement'
     total_uncertainty = math.sqrt(squared_uncertainty*value)
     return Measurement(value, total_uncertainty)
 
+def parse_distribution_as_normal(data):
+    if isinstance(data, dict):
+        data_values = list(data.values())[0]
+        if list(data.keys())[0] == "Normal":
+            mu = data_values[0]
+            sigma = data_values[1]
+        elif list(data.keys())[0] == "Uniform":
+            a = data_values[0]
+            b = data_values[1]
+            mu = (a + b) / 2
+            sigma = (b - a) / math.sqrt(12)
+        elif list(data.keys())[0] == "Discrete":
+            values = data_values[0]
+            mu = np.mean(values)
+            sigma = np.std(values)
+        elif list(data.keys())[0] == "Triangular":
+            a = data_values[0]
+            b = data_values[1]
+            c = data_values[2]
+            mu = b
+            sigma = np.std([a, b, c])
+        else:
+            raise ValueError(f"Unsupported distribution type in dictionary.{data.keys()}")
+    else:
+        # If it is just one exact value
+        mu = data
+        sigma = 0
+    return mu, sigma
+
 def mc_rss_mavt(alternatives, vf_list, weights, mc_simulations=1000):
     results = []
     for i in range(len(alternatives)):
@@ -169,27 +198,7 @@ def mc_rss_mavt(alternatives, vf_list, weights, mc_simulations=1000):
         for j in range(len(vf_list)):
             # Extract the data to evaluate
             data = alternatives[i][j]
-            if isinstance(data, tuple):
-                # If it is a Gaussian distributed value
-                mu = data[0]
-                sigma = data[1]
-
-            elif isinstance(data, list):
-                # If it is a discrete set of values
-                mu = np.mean(data)
-                sigma = np.std(data)
-
-            elif isinstance(data, dict):
-                # If it is an uniformly distributed value
-                a = list(data.keys())[0]
-                b = list(data.values())[0]
-                mu = (a + b) / 2
-                sigma = (b - a) / math.sqrt(12)
-
-            else:
-                # If it is just one exact value
-                mu = data
-                sigma = 0
+            mu, sigma = parse_distribution_as_normal(data)
             
             sampled_values = []
             for sim in range(mc_simulations):  # MC Sampling
@@ -249,34 +258,44 @@ def maximum(intermediate_results):
     return max_value
 
 # Value sampling function
-def sample_to_values(input_data, value_function):
-    if isinstance(input_data, tuple):
-        mean, std_dev = input_data
-        sample = norm.rvs(loc=mean, scale=std_dev)
-        value = value_function(sample)
-        return value
+def sample_to_values_normal(input_data, value_function):
+    mu, sigma = parse_distribution_as_normal(input_data)
+    sample = np.random.normal(mu, sigma)
+    value = value_function(sample)
+    return value
 
-    elif isinstance(input_data, list):
-        # Discrete set
-        unique_values, counts = np.unique(input_data, return_counts=True)
-        probabilities = counts / len(input_data)
-        chosen_value = np.random.choice(unique_values, p=probabilities)
-        value = value_function(chosen_value)
-        return value
-    
-    elif isinstance(input_data, dict):
-        # Uniform distribution
-        start = float(list(input_data.keys())[0])
-        end = float(list(input_data.values())[0])
-        sample = np.random.uniform(start, end)
-        value = value_function(sample)
-        return value
+def sample_to_values(data, value_function):
+    if isinstance(data, dict):
+        data_values = list(data.values())[0]
+        if list(data.keys())[0] == "Normal":
+            mu = data_values[0]
+            sigma = data_values[1]
+            sample = np.random.normal(mu, sigma)
+            
+        elif list(data.keys())[0] == "Uniform":
+            a = data_values[0]
+            b = data_values[1]
+            sample = np.random.uniform(a, b)
+
+        elif list(data.keys())[0] == "Discrete":
+            values = data_values[0]
+            sample = np.random.choice(values)
+
+        elif list(data.keys())[0] == "Triangular":
+            a = data_values[0]
+            b = data_values[1]
+            c = data_values[2]
+            sample = np.random.triangular(a, b, c)
+
+        else:
+            raise ValueError(f"Unsupported distribution type in dictionary.{data.keys()}")
     else:
-        # Exact value
-        value = value_function(input_data)
-        return value
+        sample = data
     
-def mc_simulation(alternatives, vf_list, weights, aggregation_method, sim_runs=1000, bin_size=100, strict=True):   
+    value = float(value_function(sample))
+    return value
+    
+def mc_simulation(alternatives, vf_list, weights, aggregation_method, sim_runs=1000, bin_size=100, strict_w=True, strict_v = True):   
     # Compute overall distribution of weights by combining all uniform distributions
     weight_distributions = []
     for set_elicited_weights in weights:
@@ -288,7 +307,7 @@ def mc_simulation(alternatives, vf_list, weights, aggregation_method, sim_runs=1
             start_idx = int((minimum / 1.0) * bin_size)
             end_idx = int((maximum / 1.0) * bin_size)
             weight_array[start_idx:end_idx] += 1 / (maximum - minimum +1)
-        weight_distributions.append(weight_array/np.sum(weight_array))
+        weight_distributions.append(weight_array/len(set_elicited_weights))
 
     results = []
     for _ in range(sim_runs):
@@ -297,31 +316,33 @@ def mc_simulation(alternatives, vf_list, weights, aggregation_method, sim_runs=1
             # Sample weights for each criterion
             sampled_weights = []
             for c, criterion_data in enumerate(alt):
-                if strict:
+                if strict_w:
                     weight_distribition_idx = np.random.randint(0, len(weights[c])) # Choose a random index
-                    weight = np.random.uniform(weights[weight_distribition_idx][0], weights[weight_distribition_idx][1])
+                    weight_range = weights[c][weight_distribition_idx]  # Extract the range
+                    weight = np.random.uniform(weight_range[0], weight_range[1])  # Sample a scalar weight
                     sampled_weights.append(weight)
                 else:
-                    weight_bins = np.linspace(0, 1, bin_size)
-                    probs = weight_distributions[c] / np.sum(weight_distributions[c])
-                    chosen_idx = np.random.choice(len(weight_bins), p=probs)
-                    sampled_weights.append(weight_bins[chosen_idx])
+                    non_zero_weights = weight_distributions[c][weight_distributions[c] > 0]
+                    weight_mu = np.mean(non_zero_weights)
+                    weight_sigma = np.std(non_zero_weights)/3
+                    weight = np.random.normal(weight_mu, weight_sigma)
+                    sampled_weights.append(weight)
             # Normalize weights to sum to 1
             total_weight = sum(sampled_weights) 
-            sampled_weights = [w / total_weight for w in sampled_weights]
+            sampled_weights = [float(w / total_weight) for w in sampled_weights]
 
             # Compute weighted values for each criterion
             intermediate_results = []
             for c, criterion_data in enumerate(alt):
-                if strict:
+                if strict_v:
                     v_f = np.random.choice(vf_list[c]) # Value function sampling
-                    value = sample_to_values(criterion_data, v_f) # Data sampling
+                    sampled_value = sample_to_values(criterion_data, v_f) # Data sampling
                     weight = sampled_weights[c]
-                    intermediate_results.append([weight ,value])
+                    intermediate_results.append([weight ,sampled_value])
                 else:
                     value_function_results = []
                     for v_f in vf_list[c]:
-                        value = sample_to_values(criterion_data, v_f) # Data sampling
+                        value = sample_to_values_normal(criterion_data, v_f) # Data sampling
                         value_function_results.append(value)
                     # Construct a distribution over the values obtained from different value functions
                     mean_value = np.mean(value_function_results)
@@ -331,7 +352,12 @@ def mc_simulation(alternatives, vf_list, weights, aggregation_method, sim_runs=1
                     intermediate_results.append([weight ,sampled_value])
 
             # Aggregation
+            # print("Intermediate Results:", intermediate_results)  # Debugging line
             alternative_value = aggregation_method(intermediate_results)
+
+            # Debugging: Print the output of aggregation_method
+            # print("Aggregated Value:", alternative_value)
+
             temp_results.append(alternative_value)
 
         results.append(temp_results)   
