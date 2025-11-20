@@ -296,28 +296,31 @@ def sample_to_values(data, value_function):
     return value
     
 def mc_simulation(alternatives, vf_list, weights, aggregation_method, sim_runs=1000, bin_size=100, strict_w=True, strict_v = True, strict_d=True):   
-    # Compute overall distribution of weights by combining all uniform distributions
-    weight_distributions = []
-    for set_elicited_weights in weights:
-        weight_array = np.zeros(bin_size)
-        for weight_ranges in set_elicited_weights:
-            minimum = weight_ranges[0]
-            maximum = weight_ranges[1]
-            # Find indices in the bins
-            start_idx = int((minimum / 1.0) * bin_size)
-            end_idx = int((maximum / 1.0) * bin_size)
-            weight_array[start_idx:end_idx] += 1 / (maximum - minimum +1)
-        weight_distributions.append(weight_array/len(set_elicited_weights))
 
     results = []
     for _ in range(sim_runs):
+        # Get the weights - TO ADJUST WITH BWT !!!
+        if strict_w:
+            weight_distribition_idx = np.random.randint(0, len(vf_list)-1) # Choose a random index
+        else:
+            weight_distributions = []
+            for set_elicited_weights in weights:
+                weight_array = np.zeros(bin_size)
+                for weight_ranges in set_elicited_weights:
+                    minimum = weight_ranges[0]
+                    maximum = weight_ranges[1]
+                    # Find indices in the bins
+                    start_idx = int((minimum / 1.0) * bin_size)
+                    end_idx = int((maximum / 1.0) * bin_size)
+                    weight_array[start_idx:end_idx] += 1 / (maximum - minimum +1)
+                weight_distributions.append(weight_array/len(set_elicited_weights))
+                
         temp_results = []
         for a, alt in enumerate(alternatives):
             # Sample weights for each criterion
             sampled_weights = []
             for c, criterion_data in enumerate(alt):
                 if strict_w:
-                    weight_distribition_idx = np.random.randint(0, len(weights[c])) # Choose a random index
                     weight_range = weights[c][weight_distribition_idx]  # Extract the range
                     weight = np.random.uniform(weight_range[0], weight_range[1])  # Sample a scalar weight
                     sampled_weights.append(weight)
