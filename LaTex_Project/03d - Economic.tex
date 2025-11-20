@@ -59,7 +59,7 @@ $$
 \frac{USD_{2020}}{MWh_e} = \frac{USD_{2020}}{MW_e} \cdot \frac{1}{CF \cdot 8760 \frac{h}{year}}
 $$
 
-The analysis incorporates fuel cost estimates of $6.23 USD_{2020}/MWh_e$ for \gls{pwr}-based technologies, with two exceptions: NuScale at $7.15 USD_{2020}/MWh_e$ and the \gls{bwrx} at $29.55 USD_{2020}/MWh_e$. For comparative benchmarking, operational cost data for utility-scale onshore wind, hydroelectric, and solar \gls{pv} (with single-axis tracking and DC battery storage) were sourced from the US Energy Information Administration \cite{EIA_Capital_Costs_AEO2024}. All financial data has been standardized to 2020 USD to ensure consistency with the primary reference sources \cite{STEIGERWALD2023128204,NEA2020}.
+The analysis incorporates fuel cost estimates of $6.23 USD_{2020}/MWh_e$ for \gls{pwr}-based technologies, with two exceptions: NuScale at $7.15 USD_{2020}/MWh_e$ and the \gls{bwrx} at $29.55 USD_{2020}/MWh_e$. The original BWRX estimate of $29.55 USD_{2020}/MWh_e$ appeared inconsistent given the order of magnitude difference from other \gls{lwr} designs, a discrepancy also noted by Hjelmeland (2024) \cite{HJELMELAND2024133827}. Consequently, an alternative estimate of $7.19 USD_{2020}/MWh_e$ was selected, aligning more closely with both Hjelmeland's critique and Zubair et al. (2026) \cite{ZUBAIR2026111989}. For comparative benchmarking, operational cost data for utility-scale onshore wind, hydroelectric, and solar \gls{pv} (with single-axis tracking and DC battery storage) were sourced from the US Energy Information Administration \cite{EIA_Capital_Costs_AEO2024}. All financial data has been standardized to 2020 USD to ensure consistency with the primary reference sources \cite{STEIGERWALD2023128204,NEA2020}.
 
 
 % if data to be used for E2 was with alpha=1 it would be:   0.75	1	0.75	0.25	0.75	0.125
@@ -69,18 +69,18 @@ The analysis incorporates fuel cost estimates of $6.23 USD_{2020}/MWh_e$ for \gl
         \toprule
         \textbf{Reactor Model} & \textbf{Ref} & \textbf{E1} & \textbf{E2} & \textbf{E3} \\
         \midrule
-        APR-1400         & 2410 & 1828 & 0.250 & 18.44 \\
-        EPR-1750        & 8600 & 2150 & 0.500 & 14.26 \\
-        AP-1000          & 8600 & 2000 & 0.250 & 18.69 \\
-        BWRX-300        & 3467 & 2318 & 0.250 & $18.30 \pm 0.82$ \\
-        Rolls Royce SMR & 7408 & 6050 & 0.500 & $65.68 \pm 2.94$ \\
-        NuScale         & 8600 & 3466 & 0.375 & $22.76 \pm 1.02$ \\
+        APR-1400         & 2410 & 1828 & 0.250-0.750 & 18.44 \\
+        EPR-1750        & 8600 & 2150 & 0.500-1.000 & 14.26 \\
+        AP-1000          & 8600 & 2000 & 0.250-0.750 & 18.69 \\
+        BWRX-300        & 3467 & 2318 & 0.250-0.250 & $18.30 \pm 0.82$ \\
+        Rolls Royce SMR & 7408 & 6050 & 0.500-0.750 & $65.68 \pm 2.94$ \\
+        NuScale         & 8600 & 3466 & 0.375-0.125 & $22.76 \pm 1.02$ \\
         \textbf{Other Power Plants} & & & & \\
         Onshore Wind   & NA & 1265 & NA & 28.08 \\
         Solar PV + Battery & NA & 2175 & NA & 33.33 \\
         Hydroelectric  & NA & 6007 & NA & 28.49 \\
         \bottomrule
     \end{tabularx}
-    \caption{Ref: Capital costs for FOAK installations [\$/kWe], E1: Capital costs for NOAK installations [\$/kWe], E2: Risk of construction delay, E3: Operative and fuel costs [\$/MWh].}
+    \caption{Ref: Capital costs for FOAK installations [\$/kWe], E1: Capital costs for NOAK installations [\$/kWe], E2: Risk of construction delay at $\alpha$ 0 and 1, E3: Operative and fuel costs [\$/MWh].}
     \label{tab:economic-indicators}
 \end{table}
