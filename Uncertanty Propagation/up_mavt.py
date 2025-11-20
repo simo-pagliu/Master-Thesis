@@ -295,7 +295,7 @@ def sample_to_values(data, value_function):
     value = float(value_function(sample))
     return value
     
-def mc_simulation(alternatives, vf_list, weights, aggregation_method, sim_runs=1000, bin_size=100, strict_w=True, strict_v = True):   
+def mc_simulation(alternatives, vf_list, weights, aggregation_method, sim_runs=1000, bin_size=100, strict_w=True, strict_v = True, strict_d=True):   
     # Compute overall distribution of weights by combining all uniform distributions
     weight_distributions = []
     for set_elicited_weights in weights:
@@ -336,13 +336,19 @@ def mc_simulation(alternatives, vf_list, weights, aggregation_method, sim_runs=1
             for c, criterion_data in enumerate(alt):
                 if strict_v:
                     v_f = np.random.choice(vf_list[c]) # Value function sampling
-                    sampled_value = sample_to_values(criterion_data, v_f) # Data sampling
+                    if strict_d:
+                        sampled_value = sample_to_values(criterion_data, v_f) # Data sampling
+                    else:
+                        sampled_value = sample_to_values_normal(criterion_data, v_f) # Data sampling
                     weight = sampled_weights[c]
                     intermediate_results.append([weight ,sampled_value])
                 else:
                     value_function_results = []
                     for v_f in vf_list[c]:
-                        value = sample_to_values_normal(criterion_data, v_f) # Data sampling
+                        if strict_d:
+                            value = sample_to_values(criterion_data, v_f) # Data sampling
+                        else:
+                            value = sample_to_values_normal(criterion_data, v_f) # Data sampling
                         value_function_results.append(value)
                     # Construct a distribution over the values obtained from different value functions
                     mean_value = np.mean(value_function_results)
