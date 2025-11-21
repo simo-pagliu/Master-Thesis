@@ -1,7 +1,7 @@
-name,min,max,unit,group
-Salary,1200,2000,EUR,Monetary
-Paid Leave,2,10,days,Non-monetary
-Bonus,0,5000,EUR,Monetary
-Remote Work Days,0,5,days,Non-monetary
-Training Budget,0,2000,EUR,Monetary
-Commute Time,0,120,minutes,Non-monetary
+name,group,min,max,unit,elicited_points,value_function,elicitation_meta
+Salary,Monetary,1200,2000,EUR,"[]","lambda x: (x - 1200) / (2000 - 1200)","{}"
+Paid Leave,Non-monetary,2,10,days,"[]","lambda x: (x - 2) / (10 - 2)","{}"
+Bonus,Monetary,0,5000,EUR,"[]","lambda x: (x - 0) / (5000 - 0)","{}"
+Remote Work Days,Non-monetary,0,5,days,"[]","lambda x: (x - 0) / (5 - 0)","{}"
+Training Budget,Monetary,0,2000,EUR,"[]","lambda x: (x - 0) / (2000 - 0)","{}"
+Commute Time,Non-monetary,0,120,minutes,"[]","lambda x: (x - 0) / (120 - 0)","{}"
