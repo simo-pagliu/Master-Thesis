@@ -294,90 +294,79 @@ def sample_to_values(data, value_function):
     
     value = float(value_function(sample))
     return value
-    
-def mc_simulation(alternatives, vf_list, weights, aggregation_method, sim_runs=1000, bin_size=100, strict_w=True, strict_v = True, strict_d=True):   
 
-    results = []
-    for _ in range(sim_runs):
-        # Get the weights - TO ADJUST WITH BWT !!!
-        if strict_w:
-            weight_distribition_idx = np.random.randint(0, len(vf_list)-1) # Choose a random index
-        else:
-            weight_distributions = []
-            for set_elicited_weights in weights:
-                weight_array = np.zeros(bin_size)
-                for weight_ranges in set_elicited_weights:
-                    minimum = weight_ranges[0]
-                    maximum = weight_ranges[1]
-                    # Find indices in the bins
-                    start_idx = int((minimum / 1.0) * bin_size)
-                    end_idx = int((maximum / 1.0) * bin_size)
-                    weight_array[start_idx:end_idx] += 1 / (maximum - minimum +1)
-                weight_distributions.append(weight_array/len(set_elicited_weights))
-                
-        temp_results = []
-        for a, alt in enumerate(alternatives):
-            # Sample weights for each criterion
-            sampled_weights = []
-            for c, criterion_data in enumerate(alt):
-                if strict_w:
-                    weight_range = weights[c][weight_distribition_idx]  # Extract the range
-                    weight = np.random.uniform(weight_range[0], weight_range[1])  # Sample a scalar weight
-                    sampled_weights.append(weight)
-                else:
-                    non_zero_weights = weight_distributions[c][weight_distributions[c] > 0]
-                    weight_mu = np.mean(non_zero_weights)
-                    weight_sigma = np.std(non_zero_weights)/3
-                    weight = np.random.normal(weight_mu, weight_sigma)
-                    sampled_weights.append(weight)
-            # Normalize weights to sum to 1
-            total_weight = sum(sampled_weights) 
-            sampled_weights = [float(w / total_weight) for w in sampled_weights]
+def mc_simulation(alternatives, vf_list, posterior_samples_list, aggregation_method, sim_runs=1000, bin_size=100, strict=True, strict_d=True, weight_fixed=-1):
+    """
+    Perform a series of Monte Carlo simulations.
 
-            # Compute weighted values for each criterion
-            intermediate_results = []
-            for c, criterion_data in enumerate(alt):
-                if strict_v:
-                    v_f = np.random.choice(vf_list[c]) # Value function sampling
-                    if strict_d:
-                        sampled_value = sample_to_values(criterion_data, v_f) # Data sampling
+    Parameters:
+    - weight_fixed: If >= 0, the number of weight sets to sample (each used for `sim_runs` internal runs).
+                   If < 0, use a single random weight set for all runs.
+    """
+    all_results = []  # This will store results for each weight set
+    all_relative_errors = []
+
+    # Determine the number of weight sets to use
+    if weight_fixed < 0:
+        weight_iterations = 1
+    else:
+        weight_iterations = weight_fixed
+
+    for t in range(weight_iterations):
+        # Step 0: Select ONE set of weights for this entire weight iteration
+        random_expert_idx = np.random.randint(0, len(posterior_samples_list))
+        posterior_samples = posterior_samples_list[random_expert_idx]
+        idx = np.random.randint(0, posterior_samples.shape[0])
+        sampled_weights_all = posterior_samples[idx, :]
+        sampled_weights = sampled_weights_all[:len(vf_list)]  # Extract criteria weights
+
+        # Store results for this weight set
+        results = []
+
+        # Step 1: Perform `sim_runs` with the fixed weights
+        for _ in range(sim_runs):
+            temp_results = []
+            for a, alt in enumerate(alternatives):
+                intermediate_results = []
+                for c, criterion_data in enumerate(alt):
+                    if strict:
+                        # Use the same expert's value function (if vf_list is per expert)
+                        # Note: Your current vf_list structure is per criterion, not per expert
+                        v_f = np.random.choice(vf_list[c])  # Randomly select from available VFs for this criterion
                     else:
-                        sampled_value = sample_to_values_normal(criterion_data, v_f) # Data sampling
+                        # Randomly select a value function for this criterion
+                        v_f = np.random.choice(vf_list[c])
+
+                    # Sample data
+                    if strict_d:
+                        sampled_value = sample_to_values(criterion_data, v_f)
+                    else:
+                        sampled_value = sample_to_values_normal(criterion_data, v_f)
+
                     weight = sampled_weights[c]
-                    intermediate_results.append([weight ,sampled_value])
-                else:
-                    value_function_results = []
-                    for v_f in vf_list[c]:
-                        if strict_d:
-                            value = sample_to_values(criterion_data, v_f) # Data sampling
-                        else:
-                            value = sample_to_values_normal(criterion_data, v_f) # Data sampling
-                        value_function_results.append(value)
-                    # Construct a distribution over the values obtained from different value functions
-                    mean_value = np.mean(value_function_results)
-                    std_value = np.std(value_function_results)
-                    sampled_value = np.random.normal(loc=mean_value, scale=std_value)
-                    weight = sampled_weights[c]
-                    intermediate_results.append([weight ,sampled_value])
+                    intermediate_results.append([weight, sampled_value])
 
-            # Aggregation
-            # print("Intermediate Results:", intermediate_results)  # Debugging line
-            alternative_value = aggregation_method(intermediate_results)
+                alternative_value = aggregation_method(intermediate_results)
+                temp_results.append(alternative_value)
+            results.append(temp_results)
 
-            # Debugging: Print the output of aggregation_method
-            # print("Aggregated Value:", alternative_value)
+        # Convert to numpy array and compute relative errors for this weight set
+        results_array = np.array(results)  # Shape: (sim_runs, num_alternatives)
+        num_alternatives = results_array.shape[1]
+        relative_errors = []
 
-            temp_results.append(alternative_value)
+        for i in range(num_alternatives):
+            res = results_array[:, i]
+            MC_avg = np.mean(res)
+            if len(res) > 1:  # Avoid division by zero for single runs
+                MC_std = np.sqrt(1/(len(res)*(len(res)-1)) * np.sum((res - MC_avg)**2))
+            else:
+                MC_std = 0
+            relative_errors.append(MC_std/MC_avg if MC_avg != 0 else 0)
 
-        results.append(temp_results)   
+        # Store results for this weight set
+        all_results.append(results_array)
+        all_relative_errors.append(relative_errors)
 
-    results = np.array(results)  # Shape: (sim_runs, num_alternatives)
-    num_alternatives = results.shape[1]
-    relative_errors = []
-    for i in range(num_alternatives):
-        res = results[:,i]
-        MC_avg = np.mean(res)
-        MC_std = np.sqrt(1/(len(res)*(len(res)-1)) * np.sum((res - MC_avg)**2))
-        relative_errors.append(MC_std/MC_avg)
-    
-    return results, relative_errors
+    # Return all results and errors (list of arrays, one per weight set)
+    return all_results, all_relative_errors

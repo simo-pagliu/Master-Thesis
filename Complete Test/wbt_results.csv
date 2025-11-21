@@ -1,0 +1,12 @@
+best,Salary,Bonus,1616.0,Monetary
+best,Salary,Training Budget,1436.0,Monetary
+worst,Bonus,Salary,1568.0,Monetary
+worst,Bonus,Training Budget,230.0,Monetary
+best,Paid Leave,Remote Work Days,7.88,Non-monetary
+best,Paid Leave,Commute Time,5.52,Non-monetary
+worst,Commute Time,Paid Leave,5.92,Non-monetary
+worst,Commute Time,Remote Work Days,1.48,Non-monetary
+best,Salary,Paid Leave,1748.0,Between-groups-B
+worst,Paid Leave,Salary,1624.0,Between-groups-B
+best,Commute Time,Bonus,49.2,Between-groups-W
+worst,Bonus,Commute Time,38.4,Between-groups-W
