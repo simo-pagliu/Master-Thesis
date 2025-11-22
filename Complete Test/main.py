@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib
 matplotlib.use('TkAgg')  # Set backend before importing pyplot
 import matplotlib.pyplot as plt
-from aux import load_alternatives, load_criteria
+from auxiliary import load_alternatives, load_criteria, load_criteria_definitions, load_value_functions
 from pivotal_bwt import bwt
 from up_mavt import mc_simulation
 from aggregation_methods import weighted_sum
@@ -10,37 +10,76 @@ from weight_sampling import run_mcmc_sampling
 import os
 import csv
 
-# Load data
-file_path_elicitations = ["wbt_results.csv", "wbt_results.csv"]
-file_path_criteria = "criteria.csv"
-sim_runs = 10000
-batches = 100
-sampling_bins = 100
-num_criteria = sum(len(group_data['criteria']) for group_data in load_criteria(file_path_criteria, file_path_elicitations[0]).values())
-vf_list = [[] for _ in range(num_criteria)]
-for fp in file_path_elicitations:
-    dict_data = load_criteria(file_path_criteria, fp)
-    for idx, crit_data in enumerate(
-        crit_data for group_data in dict_data.values() for crit_data in group_data['criteria'].values()
-    ):
-        vf_list[idx].append(crit_data['value_function'])
+# Load data from weight elicitation
+file_path_elicitations = ["wbt_results_1.csv", "wbt_results_2.csv"]
+# Value function files (one per elicitation / run)
+file_path_value_functions = ["value_functions_1.csv", "value_functions_2.csv"]
 
-# Run BWT and collect errors
+# Load data of criteria definiton and value functions
+# Not great that I have both definiton of criteria and value functions in the same file
+# So here there should be a loading of the criteria definitions only
+file_path_criteria = "criteria.csv"
+
+# Load value functions - build a deterministic canonical order of criteria
+# Load criteria once to establish canonical ordering (group order, then criterion order)
+first_dict = load_criteria_definitions(file_path_criteria)
+crit_names = [crit_name for group_data in first_dict.values() for crit_name in group_data['criteria'].keys()]
+num_criteria = len(crit_names)
+
+# mapping from criterion name to its index in crit_names
+crit_index = {name: idx for idx, name in enumerate(crit_names)}
+
+# Initialize list of lists: each index corresponds to a criterion in `crit_names`
+vf_list = [[] for _ in range(num_criteria)]
+
+# Build vf_list by reading the separate value function CSVs (one per elicitation)
+for vp in file_path_value_functions:
+    vf_map = load_value_functions(vp)
+    for idx, crit_name in enumerate(crit_names):
+        vf_list[idx].append(vf_map[crit_name])
+
+# # Quick sanity-check: print one evaluation per criterion using the canonical min/max
+# for idx, crit_name in enumerate(crit_names):
+#     # retrieve min/max from the canonical (first) loaded dict
+#     for group_data in first_dict.values():
+#         if crit_name in group_data['criteria']:
+#             crit_data = group_data['criteria'][crit_name]
+#             min_val = crit_data['min_value']
+#             max_val = crit_data['max_value']
+#             break
+#     vfs = vf_list[idx]
+#     # print evaluation of the first value function for this criterion
+#     print(f"Criterion {idx} ('{crit_name}'): ", vfs[0](min_val), vfs[0](max_val))
+    
+    
+# Run BWT and collect errors from the optimization problems
 err_list = []
-for fp in file_path_elicitations:
+for i, fp in enumerate(file_path_elicitations):
     dict_data = load_criteria(file_path_criteria, fp)
+    # attach value functions from the already-loaded vf_list for this elicitation index
+    for gname, gdata in dict_data.items():
+        for crit_name, crit in gdata['criteria'].items():
+            idx = crit_index[crit_name]
+            crit['value_function'] = vf_list[idx][i]
+
     results = bwt(dict_data)
     err_list.append(results["z"])
 
-# Collect valid samples and write to CSV if not already present
+# Create files of valid sets of weights
 num_groups = len(load_criteria(file_path_criteria, file_path_elicitations[0]).keys())
-weight_list = []
-    
+weight_list = []    
 for i, (fp, err_v) in enumerate(zip(file_path_elicitations, err_list)):
     # Define output file name
-    output_file = os.path.splitext(fp)[0] + "_weights_" + str(i) + ".csv"
+    output_file = os.path.splitext(fp)[0] + "_weights" + ".csv"
 
     if not os.path.exists(output_file):
+        # Load dict_data for this elicitation and attach value functions from vf_list
+        dict_data = load_criteria(file_path_criteria, fp)
+        for gname, gdata in dict_data.items():
+            for crit_name, crit in gdata['criteria'].items():
+                idx = crit_index[crit_name]
+                crit['value_function'] = vf_list[idx][i]
+
         # Generate weights
         weights = run_mcmc_sampling(dict_data, num_criteria, num_groups, err_v)
         weight_list.append(weights)
@@ -60,77 +99,120 @@ for i, (fp, err_v) in enumerate(zip(file_path_elicitations, err_list)):
                 weights.append([float(value) for value in row])
         weight_list.append(weights)
 
-# Load alternatives
+# Load alternatives definitons
 alternatives = load_alternatives("alternatives.csv")
 print(np.shape(weight_list))
-# Live plotting wrapper
-def mc_simulation_with_live_plot(alternatives, vf_list, error_list, aggregation_method, sim_runs, batches, strict, weight_fixed):
-    plt.ion()
-    fig, ax = plt.subplots()
-    lines = []
-    x_data = np.arange(sim_runs)
-    y_data = np.full((len(alternatives), sim_runs), np.nan)  # Initialize with NaN
 
-    for i in range(len(alternatives)):
-        line, = ax.plot([], [], label=f"Alternative {i+1}", lw=1)
-        lines.append(line)
+import seaborn as sns
+import matplotlib.pyplot as plt
+import numpy as np
 
-    ax.set_xlim(0, sim_runs)
-    ax.set_ylim(0, 1)
-    ax.set_xlabel("Simulation Runs")
-    ax.set_ylabel("Value")
-    ax.legend(loc='upper right')
-    ax.grid(True, alpha=0.3)
-
-    sim_generator = mc_simulation(
-        alternatives, vf_list, error_list, aggregation_method, sim_runs, batches, strict, weight_fixed
+def update_plots(rank_probs, distributions, i, n_runs, n_alternatives):
+    # Heatmap
+    ax.clear()
+    sns.heatmap(
+        rank_probs,
+        annot=True,
+        fmt=".2f",
+        xticklabels=[f"{j+1}th" for j in range(n_alternatives)],
+        yticklabels=[f"Alt {j}" for j in range(n_alternatives)],
+        cmap="YlGnBu",
+        ax=ax,
+        vmin=0,
+        vmax=1,
+        cbar=False,
     )
+    ax.set_title(f"Ranking Probabilities (Run {i+1}/{n_runs})")
+    ax.set_xlabel("Rank")
+    ax.set_ylabel("Alternative")
 
-    all_results = []
-    run_idx = 0
+    # Histograms
+    for alt_idx in range(n_alternatives):
+        axes[alt_idx].clear()
+        data = distributions[alt_idx, :i+1]
+        # show probability on the y-axis: use weights so bar heights sum to 1 (probability mass)
+        if data.size > 0:
+            weights = np.ones_like(data) / data.size
+            axes[alt_idx].hist(data, bins=30, weights=weights, alpha=0.7)
+        else:
+            axes[alt_idx].hist([], bins=30, alpha=0.7)
+        axes[alt_idx].set_xlim(0, 1)
+        axes[alt_idx].set_title(f"Distribution of Values for Alternative {alt_idx}")
+        axes[alt_idx].set_xlabel("Value")
+        axes[alt_idx].set_ylabel("Probability")
+        # Format y-axis as percentage
+        axes[alt_idx].yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(xmax=1.0))
+        axes[alt_idx].set_ylim(0, max(axes[alt_idx].get_ylim()[1], 0.1))  # Ensure some space for visibility
+    fig_hist.tight_layout()
 
-    for batch_results, _ in sim_generator:
-        if batch_results.shape[0] == sim_runs:  # Final yield (all results for this weight set)
-            all_results.append(batch_results)
-        else:  # Intermediate batch
-            batch_size = batch_results.shape[0]
-            for alt_idx in range(len(alternatives)):
-                # Fill the slice from run_idx to run_idx + batch_size
-                y_data[alt_idx, run_idx:run_idx + batch_size] = batch_results[:, alt_idx]
-                lines[alt_idx].set_data(x_data[:run_idx + batch_size], y_data[alt_idx, :run_idx + batch_size])
-            run_idx += batch_size
-            ax.relim()
-            ax.autoscale_view()
-            plt.draw()
-            plt.pause(0.01)
+    # Draw both figures
+    fig.canvas.draw()
+    fig_hist.canvas.draw()
+    fig.canvas.flush_events()
+    fig_hist.canvas.flush_events()
 
+# Initialize
+n_alternatives = len(alternatives)
+rank_counts = np.zeros((n_alternatives, n_alternatives))
+n_runs = 10000
+PLOTS = True  # Toggle plots
+UPDATE_EVERY = 10  # Update plots every N runs
+
+# Generator
+mc_code = mc_simulation(alternatives, vf_list, weight_list, weighted_sum, sim_runs=n_runs, strict=True, crit_index=crit_index)
+
+if PLOTS:
+    plt.ion()
+    # Heatmap setup
+    fig, ax = plt.subplots(figsize=(8, 6))
+    initial_data = np.zeros((n_alternatives, n_alternatives))
+    sns.heatmap(initial_data, cmap="YlGnBu", ax=ax, vmin=0, vmax=1)
+    cbar = ax.collections[0].colorbar
+
+    # Histogram setup
+    fig_hist, axes = plt.subplots(n_alternatives, 1, figsize=(8, 4 * n_alternatives))
+    axes = axes.reshape(-1)  # Ensure axes is iterable
+
+# Create csv to save results
+# Prepare live results CSV (overwrite if exists) with header
+output_file = "./results/results.csv"
+# If results.csv exists, don't overwrite — find next available filename results_1.csv, results_2.csv, ...
+if os.path.exists(output_file):
+    base, ext = os.path.splitext(output_file)
+    idx = 1
+    candidate = f"{base}_{idx}{ext}"
+    while os.path.exists(candidate):
+        idx += 1
+        candidate = f"{base}_{idx}{ext}"
+    output_file = candidate
+header = ["Run"] + [f"Alternative_{i+1}" for i in range(n_alternatives)]
+with open(output_file, mode='w', newline='') as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerow(header)
+
+full_sets = []
+for i, r in enumerate(mc_code):
+    # print(r)
+    # Compute the ranking for this run
+    ranking_run = np.argsort(r)[::-1]
+    for pos, alt in enumerate(ranking_run):
+        rank_counts[alt, pos] += 1
+    rank_probs = rank_counts / (i + 1)
+    full_sets.append(r.copy())
+    distributions = np.array(full_sets).T  # Shape: (n_alternatives, n_runs)
+    
+    # Add results to csv
+    with open(output_file, mode='a', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow([i+1] + r)
+
+    if PLOTS and (i % UPDATE_EVERY == 0 or i == n_runs - 1):
+        update_plots(rank_probs, distributions, i, n_runs, n_alternatives)
+
+    print(f"[RUNNING] {i+1}/{n_runs}", end='\r', flush=True)
+
+if PLOTS:
     plt.ioff()
     plt.show()
-    return all_results, None
 
-
-
-# Run with live plot
-results, rel_errs = mc_simulation_with_live_plot(
-    alternatives, vf_list, weight_list, weighted_sum, sim_runs, batches, strict=True, weight_fixed=10
-)
-
-num_weight_sets = len(results)
-num_alternatives = len(alternatives)
-
-# per-set and overall accumulators
-ranking_probs_per_set = np.zeros((num_alternatives, num_alternatives, num_weight_sets))
-overall_ranking_probs = np.zeros((num_alternatives, num_alternatives))
-
-for set_idx, set_results in enumerate(results):
-    # Compute ranks so 1 = best (highest score)
-    ranks = np.argsort(np.argsort(-set_results, axis=1), axis=1) + 1  # shape: (sim_runs, num_alternatives)
-
-    for alt_idx in range(num_alternatives):
-        for rank in range(1, num_alternatives + 1):
-            p = np.mean(ranks[:, alt_idx] == rank)
-            ranking_probs_per_set[alt_idx, rank-1, set_idx] = p
-            overall_ranking_probs[alt_idx, rank-1] += p  # accumulate across weight sets
-
-# Average over weight sets to get overall probabilities
-overall_ranking_probs /= num_weight_sets
+print("\n[COMPLETED] Monte Carlo simulation finished.")
