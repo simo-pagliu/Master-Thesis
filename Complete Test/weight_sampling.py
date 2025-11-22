@@ -1,6 +1,41 @@
+import os
 import pytensor.tensor as pt
 import pymc as pm
+import csv
 
+def create_weight_samples(err_list, dict_data_list, file_path_weight_elicitations, crit_index):
+    weight_list = []    
+    for i, (fp, err_v) in enumerate(zip(file_path_weight_elicitations, err_list)):
+        # Define output file name
+        output_file = os.path.splitext(fp)[0] + "_weights" + ".csv"
+
+        if not os.path.exists(output_file):
+            # Load dict_data for this elicitation and attach value functions from vf_list
+            dict_data = dict_data_list[i]
+            # Credo che la lunghezza di dict_data sia il numero di gruppi
+            num_groups = len(dict_data)
+            num_criteria = len(crit_index)
+
+            # Generate a set of possible weights
+            weights = run_mcmc_sampling(dict_data, num_criteria, num_groups, err_v)
+            weight_list.append(weights)
+
+            # Write weights to CSV
+            with open(output_file, mode='w', newline='') as csvfile:
+                writer = csv.writer(csvfile)
+                writer.writerow([f"Criterion_{i+1}" for i in range(num_criteria)])  # Header row
+                writer.writerows(weights)
+        else:
+            # Read the weights back from the existing CSV file
+            weights = []
+            with open(output_file, mode='r', newline='') as csvfile:
+                reader = csv.reader(csvfile)
+                next(reader)  # Skip header
+                for row in reader:
+                    weights.append([float(value) for value in row])
+            weight_list.append(weights)
+            return weight_list
+        
 def pytensor_constraints_func(x, dict_data, Z_max):
     cons = []
     group_indices = {}

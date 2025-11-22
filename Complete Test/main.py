@@ -2,16 +2,18 @@ import numpy as np
 import matplotlib
 matplotlib.use('TkAgg')  # Set backend before importing pyplot
 import matplotlib.pyplot as plt
+import seaborn as sns
+import os
+import csv
+
 from auxiliary import load_alternatives, load_criteria, load_criteria_definitions, load_value_functions
 from pivotal_bwt import bwt
 from up_mavt import mc_simulation
 from aggregation_methods import weighted_sum
-from weight_sampling import run_mcmc_sampling
-import os
-import csv
+from weight_sampling import create_weight_samples
 
 # Load data from weight elicitation
-file_path_elicitations = ["wbt_results_1.csv", "wbt_results_2.csv"]
+file_path_weight_elicitations = ["wbt_results_1.csv", "wbt_results_2.csv"]
 # Value function files (one per elicitation / run)
 file_path_value_functions = ["value_functions_1.csv", "value_functions_2.csv"]
 
@@ -52,60 +54,34 @@ for vp in file_path_value_functions:
 #     print(f"Criterion {idx} ('{crit_name}'): ", vfs[0](min_val), vfs[0](max_val))
     
     
-# Run BWT and collect errors from the optimization problems
-err_list = []
-for i, fp in enumerate(file_path_elicitations):
+# Construct list of dict_data for each elicitation
+# Load criteria.csv which contains only criteria definitions
+# Adds info about value functions from vf_list for each elicitation
+dict_data_list = []
+for i, fp in enumerate(file_path_weight_elicitations):
     dict_data = load_criteria(file_path_criteria, fp)
     # attach value functions from the already-loaded vf_list for this elicitation index
     for gname, gdata in dict_data.items():
         for crit_name, crit in gdata['criteria'].items():
             idx = crit_index[crit_name]
             crit['value_function'] = vf_list[idx][i]
+    dict_data_list.append(dict_data)
 
+# Run BWT for each elicitation results
+# and collect errors from the optimization problems
+err_list = []
+for i, dict_data in enumerate(dict_data_list):
     results = bwt(dict_data)
     err_list.append(results["z"])
 
 # Create files of valid sets of weights
-num_groups = len(load_criteria(file_path_criteria, file_path_elicitations[0]).keys())
-weight_list = []    
-for i, (fp, err_v) in enumerate(zip(file_path_elicitations, err_list)):
-    # Define output file name
-    output_file = os.path.splitext(fp)[0] + "_weights" + ".csv"
-
-    if not os.path.exists(output_file):
-        # Load dict_data for this elicitation and attach value functions from vf_list
-        dict_data = load_criteria(file_path_criteria, fp)
-        for gname, gdata in dict_data.items():
-            for crit_name, crit in gdata['criteria'].items():
-                idx = crit_index[crit_name]
-                crit['value_function'] = vf_list[idx][i]
-
-        # Generate weights
-        weights = run_mcmc_sampling(dict_data, num_criteria, num_groups, err_v)
-        weight_list.append(weights)
-
-        # Write weights to CSV
-        with open(output_file, mode='w', newline='') as csvfile:
-            writer = csv.writer(csvfile)
-            writer.writerow([f"Criterion_{i+1}" for i in range(num_criteria)])  # Header row
-            writer.writerows(weights)
-    else:
-        # Read the weights back from the existing CSV file
-        weights = []
-        with open(output_file, mode='r', newline='') as csvfile:
-            reader = csv.reader(csvfile)
-            next(reader)  # Skip header
-            for row in reader:
-                weights.append([float(value) for value in row])
-        weight_list.append(weights)
+# We have a list of errors, one per each eliciation
+# We have to create tables of possible weights to sample from in the MC simulation
+weight_list = create_weight_samples(err_list, dict_data_list, file_path_weight_elicitations, crit_index)
+# print(np.shape(weight_list))
 
 # Load alternatives definitons
 alternatives = load_alternatives("alternatives.csv")
-print(np.shape(weight_list))
-
-import seaborn as sns
-import matplotlib.pyplot as plt
-import numpy as np
 
 def update_plots(rank_probs, distributions, i, n_runs, n_alternatives):
     # Heatmap
