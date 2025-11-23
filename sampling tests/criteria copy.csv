@@ -1,0 +1,7 @@
+name,group,min,max,unit
+Salary,Monetary,1200,2000,EUR
+Paid Leave,Non-monetary,2,10,days
+Bonus,Monetary,0,5000,EUR
+Remote Work Days,Non-monetary,0,5,days
+Training Budget,Monetary,0,2000,EUR
+Commute Time,Non-monetary,0,120,minutes

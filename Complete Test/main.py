@@ -112,7 +112,7 @@ def update_plots(rank_probs, distributions, i, n_runs, n_alternatives):
             axes[alt_idx].hist(data, bins=30, weights=weights, alpha=0.7)
         else:
             axes[alt_idx].hist([], bins=30, alpha=0.7)
-        axes[alt_idx].set_xlim(0, 1)
+        axes[alt_idx].set_xlim(-0.2, 1.2)
         axes[alt_idx].set_title(f"Distribution of Values for Alternative {alt_idx}")
         axes[alt_idx].set_xlabel("Value")
         axes[alt_idx].set_ylabel("Probability")
