@@ -36,14 +36,16 @@ def sample_to_values(data, value_function):
     return value
 
 def mc_simulation(alternatives, vf_list, weight_list, aggregation_method, sim_runs, strict, crit_index):
-    weight_list = np.array(weight_list)
+    # weight_list = np.array(weight_list)
     for mc_run in range(sim_runs):
         # For each montecarlo run we iterate over all experts
-        for elicitation_idx in range(weight_list.shape[0]):
+        for elicitation_idx in range(len(weight_list)):
             run_results = []
             # For each expert we choose a random set of weights
-            random_weight_idx = np.random.randint(0, weight_list.shape[1])
-            sampled_weights = weight_list[elicitation_idx, random_weight_idx, :]
+            random_weight_idx = np.random.randint(0, len(weight_list[elicitation_idx]))
+            sampled_weights = weight_list[elicitation_idx][random_weight_idx]
+            # Normalization to ensure weights sum to 1 (produced by space_sampling so can have a little deviation)
+            sampled_weights = sampled_weights / np.sum(sampled_weights)
             # For each alternative we compute its value
             for a, alt in enumerate(alternatives):
                 intermediate_results = []

@@ -7,7 +7,7 @@ import os
 import csv
 
 from auxiliary import load_alternatives, load_criteria, load_criteria_definitions, load_value_functions
-from pivotal_bwt import bwt
+from pile_bwt import bwt
 from up_mavt import mc_simulation
 from aggregation_methods import weighted_sum
 from weight_sampling import create_weight_samples
@@ -54,31 +54,71 @@ for vp in file_path_value_functions:
 #     print(f"Criterion {idx} ('{crit_name}'): ", vfs[0](min_val), vfs[0](max_val))
     
     
+# Debugging: Verify file loading
+print("Weight elicitation files:", file_path_weight_elicitations)
+
 # Construct list of dict_data for each elicitation
 # Load criteria.csv which contains only criteria definitions
 # Adds info about value functions from vf_list for each elicitation
+print("Loading criteria definitions and attaching value functions...")
 dict_data_list = []
+# Debugging: Verify loop execution
+print("Starting loop over weight elicitation files...")
 for i, fp in enumerate(file_path_weight_elicitations):
-    dict_data = load_criteria(file_path_criteria, fp)
-    # attach value functions from the already-loaded vf_list for this elicitation index
+    print(f"Processing file {i+1}/{len(file_path_weight_elicitations)}: {fp}")  # Debugging: Track loop progress
+    try:
+        dict_data = load_criteria(file_path_criteria, fp)
+        # print(f"Successfully loaded data for {fp}")  # Debugging: Confirm successful load
+    except Exception as e:
+        # print(f"Error loading file {fp}: {e}")  # Debugging: Catch and print any errors
+        continue
+
+    # Attach value functions
     for gname, gdata in dict_data.items():
         for crit_name, crit in gdata['criteria'].items():
             idx = crit_index[crit_name]
             crit['value_function'] = vf_list[idx][i]
     dict_data_list.append(dict_data)
+    # print(f"Appended data for {fp} to dict_data_list")  # Debugging: Confirm append
+
+# Debugging: Verify final dict_data_list
+# print("Final dict_data_list contains:", len(dict_data_list), "entries")
 
 # Run BWT for each elicitation results
 # and collect errors from the optimization problems
-err_list = []
+print("Running BWT for each elicitation...")
+bwt_results = []
+import matplotlib.pyplot as plt
 for i, dict_data in enumerate(dict_data_list):
-    results = bwt(dict_data)
-    err_list.append(results["z"])
+    print(f"Running BWT for elicitation {i+1}...")  # Debugging: Print elicitation index
+    bwt_result = bwt(dict_data)
+    # print(f"BWT result for elicitation {i+1}: {bwt_result}")  # Debugging: Print BWT result
+    bwt_results.append(bwt_result)
+    # Plot the weights found
+    # plt.figure()
+    # weights = bwt_result["solver_result"]["x"][:-1]  # Exclude z
+    # plt.bar(range(len(weights)), weights)
+    # plt.xlabel("Criterion Index")
+    # plt.ylabel("Weight")
+    # plt.title(f"Weights from BWT for Elicitation {i+1}")
+    # plt.show()
+    
 
+print(bwt_result["solver_result"]["x"])
+
+from pile_bwt import constraints_func
+constraint_value = constraints_func(bwt_result["solver_result"]["x"], dict_data)
+print(f"\033[91mConstraint values for last BWT result: {constraint_value}\033[0m")  # Debugging
 # Create files of valid sets of weights
 # We have a list of errors, one per each eliciation
 # We have to create tables of possible weights to sample from in the MC simulation
-weight_list = create_weight_samples(err_list, dict_data_list, file_path_weight_elicitations, crit_index)
+weight_list = create_weight_samples(bwt_results, dict_data_list, file_path_weight_elicitations, crit_index)
 # print(np.shape(weight_list))
+
+# Debugging: Inspect weight_list before passing to mc_simulation
+print("Inspecting weight_list...")
+for i, weights in enumerate(weight_list):
+    print(f"Elicitation {i+1}: {len(weights)} rows, first row shape: {len(weights[0]) if weights else 'N/A'}")
 
 # Load alternatives definitons
 alternatives = load_alternatives("alternatives.csv")

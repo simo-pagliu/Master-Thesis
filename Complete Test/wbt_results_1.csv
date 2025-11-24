@@ -1,3 +1,4 @@
+type,Criterion A,Criterion B,Value,Constraint Type
 best,Salary,Bonus,1616.0,Monetary
 best,Salary,Training Budget,1436.0,Monetary
 worst,Bonus,Salary,1568.0,Monetary
