@@ -26,11 +26,21 @@ def load_criteria(file_path_criteria, file_path_elicitation):
         intraW = {}
 
         for rows in reader:
-            type_comparison = rows[0]
-            reference = rows[1]
-            other = rows[2]
-            value = float(rows[3])
-            group = rows[4]
+            # skip empty rows or rows with only whitespace
+            if not rows or all((cell is None) or (str(cell).strip() == '') for cell in rows):
+                continue
+            # Expect at least 5 columns: type, reference, other, value, group
+            if len(rows) < 5:
+                raise ValueError(f"Invalid elicitation row (expected 5 columns) in {file_path_elicitation}: {rows}")
+
+            type_comparison = rows[0].strip()
+            reference = rows[1].strip()
+            other = rows[2].strip()
+            try:
+                value = float(rows[3])
+            except Exception:
+                raise ValueError(f"Invalid numeric value for comparison in {file_path_elicitation}: {rows[3]}")
+            group = rows[4].strip()
 
             if group == "Between-groups-B":
                 intraB[f"{type_comparison}_{reference}_{other}"] = {
