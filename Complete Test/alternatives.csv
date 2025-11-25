@@ -1,4 +1,4 @@
-name,Salary,Paid Leave,Bonus,Remote Work Days,Training Budget,Commute Time
-Alternative 1,"{'Normal': [1500, 100]}","{'Uniform': [4, 8]}","{'Discrete': [[2000, 2500, 3000]]}","{'Triangular': [2, 3, 4]}","{'Normal': [1000, 200]}","{'Uniform': [30, 90]}"
-Alternative 2,"{'Normal': [1800, 150]}","{'Uniform': [6, 10]}","{'Discrete': [[3000, 4000, 5000]]}","{'Triangular': [3, 4, 5]}","{'Normal': [1500, 300]}","{'Uniform': [20, 40]}"
-Alternative 3,"{'Normal': [1300, 200]}","{'Uniform': [2, 6]}","{'Discrete': [[1000, 1500, 2000]]}","{'Triangular': [1, 2, 3]}","{'Normal': [500, 100]}","{'Uniform': [60, 120]}"
+name,C_1_1,C_1_2,C_1_3,C_2_1,C_2_2,C_2_3,C_3_1,C_3_2,C_3_3,C_4_1,C_4_2,C_4_3
+Alternative 1,"{'Discrete': [[1]]}","{'Discrete': [[2]]}","{'Discrete': [[3]]}","{'Discrete': [[4]]}","{'Discrete': [[5]]}","{'Discrete': [[6]]}","{'Discrete': [[7]]}","{'Discrete': [[8]]}","{'Discrete': [[9]]}","{'Discrete': [[1]]}","{'Discrete': [[2]]}","{'Discrete': [[3]]}"
+Alternative 2,"{'Discrete': [[1]]}","{'Discrete': [[2]]}","{'Discrete': [[3]]}","{'Discrete': [[4]]}","{'Discrete': [[5]]}","{'Discrete': [[6]]}","{'Discrete': [[7]]}","{'Discrete': [[8]]}","{'Discrete': [[9]]}","{'Discrete': [[1]]}","{'Discrete': [[2]]}","{'Discrete': [[3]]}"
+Alternative 3,"{'Discrete': [[1]]}","{'Discrete': [[2]]}","{'Discrete': [[3]]}","{'Discrete': [[4]]}","{'Discrete': [[5]]}","{'Discrete': [[6]]}","{'Discrete': [[7]]}","{'Discrete': [[8]]}","{'Discrete': [[9]]}","{'Discrete': [[1]]}","{'Discrete': [[2]]}","{'Discrete': [[3]]}"

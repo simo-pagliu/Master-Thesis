@@ -1,7 +1,0 @@
-name,elicited_points,value_function,elicitation_meta
-Salary,"[]","lambda x: (x - 1200) / (2000 - 1200)","{}"
-Paid Leave,"[]","lambda x: (x - 2) / (10 - 2)","{}"
-Bonus,"[]","lambda x: (x - 0) / (5000 - 0)","{}"
-Remote Work Days,"[]","lambda x: (x - 0) / (5 - 0)","{}"
-Training Budget,"[]","lambda x: (x - 0) / (2000 - 0)","{}"
-Commute Time,"[]","lambda x: (x - 0) / (120 - 0)","{}"

@@ -4,8 +4,8 @@ from auxiliary import load_criteria, load_criteria_definitions, load_value_funct
 from pile_bwt import bwt
 from weight_sampling import create_weight_samples
 
-file_path_weight_elicitations = ["wbt_results_1.csv", "wbt_results_2.csv"]
-file_path_value_functions = ["value_functions_1.csv", "value_functions_2.csv"]
+file_path_weight_elicitations = ["wbt_results_1.csv"]
+file_path_value_functions = ["value_functions_1.csv"]
 file_path_criteria = "criteria.csv"
 
 # Build canonical ordering

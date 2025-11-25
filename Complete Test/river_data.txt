@@ -1,0 +1,95 @@
+g1 = Group(
+
+    name="C_1",
+
+    items=["c_{1,1}", "c_{1,2}", "c_{1,3}",],
+
+    best="c_{1,1}",
+
+    worst="c_{1,3}",
+
+    a_B_to_i={"c_{1,1}": 1, "c_{1,2}": 4, "c_{1,3}": 9,},
+
+    a_i_to_W={"c_{1,1}": 9, "c_{1,2}": 4, "c_{1,3}": 1,},
+
+)
+
+ 
+
+g2 = Group(
+
+    name="C_2",
+
+    items=["c_{2,1}", "c_{2,2}", "c_{2,3}",],
+
+    best="c_{2,2}",
+
+    worst="c_{2,1}",
+
+    a_B_to_i={"c_{2,1}": 9, "c_{2,2}": 1, "c_{2,3}": 6,},
+
+    a_i_to_W={"c_{2,1}": 1, "c_{2,2}": 9, "c_{2,3}": 3,},
+
+)
+
+ 
+
+g3 = Group(
+
+    name="C_3",
+
+    items=["c_{3,1}", "c_{3,2}", "c_{3,3}",],
+
+    best="c_{3,1}",
+
+    worst="c_{3,2}",
+
+    a_B_to_i={"c_{3,1}": 1, "c_{3,2}": 9, "c_{3,3}": 7,},
+
+    a_i_to_W={"c_{3,1}": 9, "c_{3,2}": 1, "c_{3,3}": 2,},
+
+)
+
+ 
+
+g4 = Group(
+
+    name="C_4",
+
+    items=["c_{4,1}", "c_{4,2}", "c_{4,3}",],
+
+    best="c_{4,1}",
+
+    worst="c_{4,2}",
+
+    a_B_to_i={"c_{4,1}": 1, "c_{4,2}": 9, "c_{4,3}": 7,},
+
+    a_i_to_W={"c_{4,1}": 9, "c_{4,2}": 1, "c_{4,3}": 2,},
+
+)
+
+ 
+
+anchors = InterGroupAnchors(
+
+    bar_B_group="C_2",   # best-of-bests (∈ 𝔅)
+
+    ubar_B_group="C_3",  # worst-of-bests (∈ 𝔅)
+
+    bar_W_group="C_2",   # best-among-worsts (∈ 𝔚)
+
+    ubar_W_group="C_3",  # worst-among-worsts (∈ 𝔚)
+
+    # 𝔅 comparisons
+
+    aB_barB_to_Bg={"C_1": 3, "C_2": 1, "C_3": 9, "C_4":5,},
+
+    aB_Bg_to_ubarB={"C_1": 7, "C_2": 9, "C_3": 1, "C_4":3,},
+
+    # 𝔚 comparisons
+
+    aW_barW_to_Wg={"C_1": 3, "C_2": 1, "C_3": 9, "C_4":4,},
+
+    aW_Wg_to_ubarW={"C_1": 4, "C_2": 9, "C_3": 1, "C_4":3,},
+
+)

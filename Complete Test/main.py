@@ -13,9 +13,9 @@ from aggregation_methods import weighted_sum
 from weight_sampling import create_weight_samples
 
 # Load data from weight elicitation
-file_path_weight_elicitations = ["wbt_results_1.csv", "wbt_results_2.csv"]
+file_path_weight_elicitations = ["wbt_results_1.csv"]
 # Value function files (one per elicitation / run)
-file_path_value_functions = ["value_functions_1.csv", "value_functions_2.csv"]
+file_path_value_functions = ["value_functions_1.csv"]
 
 # Load data of criteria definiton and value functions
 # Not great that I have both definiton of criteria and value functions in the same file

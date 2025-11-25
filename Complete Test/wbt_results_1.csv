@@ -1,13 +1,30 @@
 type,Criterion A,Criterion B,Value,Constraint Type
-best,Salary,Bonus,1616.0,Monetary
-best,Salary,Training Budget,1436.0,Monetary
-worst,Bonus,Salary,1568.0,Monetary
-worst,Bonus,Training Budget,230.0,Monetary
-best,Paid Leave,Remote Work Days,7.88,Non-monetary
-best,Paid Leave,Commute Time,5.52,Non-monetary
-worst,Commute Time,Paid Leave,5.92,Non-monetary
-worst,Commute Time,Remote Work Days,1.48,Non-monetary
-best,Salary,Paid Leave,1748.0,Between-groups-B
-worst,Paid Leave,Salary,1624.0,Between-groups-B
-best,Commute Time,Bonus,49.2,Between-groups-W
-worst,Bonus,Commute Time,38.4,Between-groups-W
+best,C_1_1,C_1_2,4,G1
+best,C_1_1,C_1_3,9,G1
+worst,C_1_3,C_1_1,9,G1
+worst,C_1_3,C_1_2,4,G1
+best,C_2_2,C_2_1,9,G2
+best,C_2_2,C_2_3,6,G2
+worst,C_2_1,C_2_2,9,G2
+worst,C_2_1,C_2_3,3,G2
+best,C_3_1,C_3_2,9,G3
+best,C_3_1,C_3_3,7,G3
+worst,C_3_2,C_3_1,9,G3
+worst,C_3_2,C_3_3,2,G3
+best,C_4_1,C_4_2,9,G4
+best,C_4_1,C_4_3,7,G4
+worst,C_4_2,C_4_1,9,G4
+worst,C_4_2,C_4_3,2,G4
+best,C_2_2,C_1_1,3,Between-groups-B
+best,C_2_2,C_3_1,9,Between-groups-B
+best,C_2_2,C_4_1,5,Between-groups-B
+worst,C_3_1,C_1_1,7,Between-groups-B
+worst,C_3_1,C_2_2,9,Between-groups-B
+worst,C_3_1,C_4_1,3,Between-groups-B
+best,C_2_1,C_1_2,3,Between-groups-W
+best,C_2_1,C_3_2,9,Between-groups-W
+best,C_2_1,C_4_2,4,Between-groups-W
+worst,C_3_2,C_1_2,4,Between-groups-W
+worst,C_3_2,C_2_1,9,Between-groups-W
+worst,C_3_2,C_4_2,3,Between-groups-W
+

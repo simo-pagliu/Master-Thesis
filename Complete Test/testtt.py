@@ -13,9 +13,9 @@ from aggregation_methods import weighted_sum
 from weight_sampling import create_weight_samples
 
 # Load data from weight elicitation
-file_path_weight_elicitations = ["wbt_results_1.csv", "wbt_results_2.csv"]
+file_path_weight_elicitations = ["wbt_results_1.csv"]
 # Value function files (one per elicitation / run)
-file_path_value_functions = ["value_functions_1.csv", "value_functions_2.csv"]
+file_path_value_functions = ["value_functions_1.csv"]
 
 # Load data of criteria definiton and value functions
 # Not great that I have both definiton of criteria and value functions in the same file
@@ -27,6 +27,8 @@ file_path_criteria = "criteria.csv"
 first_dict = load_criteria_definitions(file_path_criteria)
 crit_names = [crit_name for group_data in first_dict.values() for crit_name in group_data['criteria'].keys()]
 num_criteria = len(crit_names)
+print(crit_names)
+print(num_criteria)
 
 # mapping from criterion name to its index in crit_names
 crit_index = {name: idx for idx, name in enumerate(crit_names)}
@@ -39,6 +41,7 @@ for vp in file_path_value_functions:
     vf_map = load_value_functions(vp)
     for idx, crit_name in enumerate(crit_names):
         vf_list[idx].append(vf_map[crit_name])
+print(len(vf_list))
 
 # # Quick sanity-check: print one evaluation per criterion using the canonical min/max
 # for idx, crit_name in enumerate(crit_names):
@@ -68,9 +71,9 @@ for i, fp in enumerate(file_path_weight_elicitations):
     print(f"Processing file {i+1}/{len(file_path_weight_elicitations)}: {fp}")  # Debugging: Track loop progress
     try:
         dict_data = load_criteria(file_path_criteria, fp)
-        # print(f"Successfully loaded data for {fp}")  # Debugging: Confirm successful load
+        print(f"Successfully loaded data for {fp}")  # Debugging: Confirm successful load
     except Exception as e:
-        # print(f"Error loading file {fp}: {e}")  # Debugging: Catch and print any errors
+        print(f"Error loading file {fp}: {e}")  # Debugging: Catch and print any errors
         continue
 
     # Attach value functions
@@ -82,7 +85,7 @@ for i, fp in enumerate(file_path_weight_elicitations):
     # print(f"Appended data for {fp} to dict_data_list")  # Debugging: Confirm append
 
 # Debugging: Verify final dict_data_list
-# print("Final dict_data_list contains:", len(dict_data_list), "entries")
+print("Final dict_data_list contains:", len(dict_data_list), "entries")
 
 # Run BWT for each elicitation results
 # and collect errors from the optimization problems
@@ -92,8 +95,7 @@ for i, dict_data in enumerate(dict_data_list):
     print(f"Running BWT for elicitation {i+1}...")  # Debugging: Print elicitation index
     bwt_result = bwt(dict_data)
     # print(f"BWT result for elicitation {i+1}: {bwt_result}")  # Debugging: Print BWT result
-    bwt_results.append(bwt_result)
-print(bwt_result["solver_result"]["x"])
+    print(bwt(dict_data))
 
 from pile_bwt import constraints_func
 constraint_value = constraints_func(bwt_result["solver_result"]["x"], dict_data)
