@@ -52,14 +52,12 @@ This study employs the mid-value splitting technique for value function elicitat
 The elicitation process begins by determining the 0.5 indifference point between the criterion's minimum and maximum values, effectively dividing the range into two segments of equivalent perceived value. This procedure is then applied to each resulting segment to establish the 0.25 and 0.75 indifference points. To ensure systematic application, a flowchart was developed to guide the elicitation process (Figure \ref{fig:value_function_flowchart}). In principle, the methodology could allow experienced \glspl{dm} familiar with value function concepts to bypass indifference point elicitation when linearity can be confidently established. Moreover, to ease the work of \glspl{dm}, it is recommended to begin with a straightforward example criterion to familiarize participants with the both the method and any aid that might be employed in the elicitation process.
 
 
-\newgeometry{margin=0pt}
 \begin{figure}[p]
 \centering
-\includegraphics[width=\paperwidth,height=\paperheight,keepaspectratio]{imgs/value_function_flowchart.png}
+\includegraphics[width=\textwidth]{imgs/value_function_elicitation.png}
 \caption{Value Function Elicitation Flowchart}
 \label{fig:value_function_flowchart}
 \end{figure}
-\restoregeometry 
 
 \textbf{Aggregation} within a fully compensatory framework, is typically performed using weighted summation (Equation \ref{eq:linear_aggregation}). The need to explore non-fully compensatory scenarios led to the development of alternative approaches employing non-linear aggregation techniques (for a comprehensive description of aggregation methods see \cite{beliakov2007aggregation}). For the \gls{mcda} application of the present study the work by Langhans et al. (2014) \cite{LANGHANS2014494} and its implementation in the \gls{mcda} calculator tool \cite{PLACEHOLDER} will be followed, which includes the following aggregation methods:
 \begin{itemize}
@@ -203,14 +201,12 @@ The non linear approach is particularly relevant to adapt the method to hierarch
 Since the problem is non-linear, there will be more then one solution (set of weights). The optimization problem will only find one from a $n_{criteria}$-dimensional space of valid weights, and its error (maximum absolute violation of the contraints, here $z$). Once this information is obtained, it is possible to further explore the solution space to obtain more valid weight sets. River et al. (20??) \textcolor{red}{RIVERs PAPER} note that any weight inside the set is equally valid, which is an important properity to consider when exploring the weight space. The complete elicitation workflow is detailed in the flowchart presented in Figure \ref{fig:BWT_flowchart}.
 
 
-\newgeometry{margin=0pt}
 \begin{figure}[p]
 \centering
-\includegraphics[width=\paperwidth,height=\paperheight,keepaspectratio]{imgs/value_function_flowchart.png}
-\caption{PLACEHOLDER: BWT Weight Elicitation Flowchart}
+\includegraphics[height=\textheight]{imgs/PILE-BWT-chart.png}
+\caption{Procedure used during elicitation of weights through the \gls{pilebwt} method}
 \label{fig:BWT_flowchart}
 \end{figure}
-\restoregeometry 
 
 
 \section{Uncertainty Charaterization}
@@ -303,14 +299,14 @@ A_i = \mu_{A_i} \pm \sigma_{A_i} = w_j \cdot v_j(x_{ij}) \pm \sqrt{\sum_{j=1}^N 
 \label{eq:rss_propagation}
 \end{equation}
 
-However, if the assumption of deterministic input data is removed, even under normally distributed variables, the analytical solution becomes intractable. In such cases, a Monte Carlo approach (designated MC-RSS) can be employed. This method samples input data from its distribution, evaluates it through normally distributed value functions, and assumes the resulting alternative scores maintain normality.
+However, if the assumption of deterministic input data is removed, even under normally distributed variables, the analytical solution becomes intractable. In such cases, a Monte Carlo approach (designated \gls{mcrss}) can be employed. This method samples input data from its distribution, evaluates it through normally distributed value functions, and assumes the resulting alternative scores maintain normality.
 
 The definitive, proper approach to apply \gls{upmavt} is to fully propagate the uncertanty by means of Montecarlo simulations, therefore sampling from the real distributions of weights, value functions and input data. To this end two approaches have been identified:
 \begin{itemize}
       \item Strict MC: each run samples value functions and weights from the same expert, to preserve the meaning of the original elicitation.
       \item Non-strict MC: Introduces more variability by sampling value functions and weights independently from all experts, therefore mixing different expert opinions in each run.
 \end{itemize}
-The \gls{smc} approach was drawn from the fundamentals of \gls{cmaa} developed by Goers and Horton (2023) \cite{GOERS2023243}. In their publication they stress the importance of maintaining the integrity of individual expert judgments to observe the differences in opinion between diverse \glspl{dm}. The \gls{ns-mc} method, instead, was inspired by the work of Lahdelma and Salminen (1998) \cite{LAHDELMA1998137} on \gls{smaa}, which employs a similar mixing strategy to explore the entire solution space.
+The \gls{smc} approach was drawn from the fundamentals of \gls{cmaa} developed by Goers and Horton (2023) \cite{GOERS2023243}. In their publication they stress the importance of maintaining the integrity of individual expert judgments to observe the differences in opinion between diverse \glspl{dm}. The \gls{nsmc} method, instead, was inspired by the work of Lahdelma and Salminen (1998) \cite{LAHDELMA1998137} on \gls{smaa}, which employs a similar mixing strategy to explore the entire solution space.
 
 The strict sampling is certantly more faithful to the elicitation results but the non-strict sampling can provide insight on the robustness of the elicited results and, as it is expected to increase the overall uncertanty, could be used as a conservative estimate expecially when the number of experts is limited. For the full algortihm refer to Appendix \ref{sec:appendix_code}, while the table \ref{tab:uncertanty_propagation_methods} summarizes the different methods presented for \gls{upmavt}.
 
@@ -320,10 +316,10 @@ The strict sampling is certantly more faithful to the elicitation results but th
       	\toprule
       	\textbf{Method} & \textbf{Description} \\
       \midrule
-      RSS &  Algebraic model, assumes certain input data and normally distributed weights and value functions\\
-      MC-RSS & Introduces uncertainty in input data, propagated by using Monte Carlo sampling and assuming normal results\\
-      S-MC &  Full montecarlo approach, preserves indipendent elicitation results\\
-      NS-MC &  Full montecarlo approach, mixes elicitation results from different experts\\
+      \gls{rss} &  Algebraic model, assumes certain input data and normally distributed weights and value functions\\
+      \gls{mcrss} & Introduces uncertainty in input data, propagated by using Monte Carlo sampling and assuming normal results\\
+      \gls{smc} &  Full montecarlo approach, preserves indipendent elicitation results\\
+      \gls{nsmc} &  Full montecarlo approach, mixes elicitation results from different experts\\
       \bottomrule
    \end{tabularx}
    \caption{Summary of Uncertanty Propagation Methods for UP-MAVT}
