@@ -116,7 +116,7 @@ def bwt(dict_data):
     # Bounds: 
     # Positive weights: w_i >= 0, 
     # Positive auxiliary variable z >= 0
-    bounds = [(0, 1) for _ in range(num_criteria)] + [(0, None)]
+    bounds = [(1e-3, 1) for _ in range(num_criteria)] + [(0, None)]
     # print("Bounds:", bounds)
 
     # Solve optimization problem

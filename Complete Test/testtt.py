@@ -110,6 +110,9 @@ print(f"\033[91mMaximum absolute constraint violation: {max_violation}\033[0m") 
 x_temp = np.concatenate([bwt_result["solver_result"]["x"][:-1], [0]])
 print(x_temp)
 constraints = constraints_func(x_temp, dict_data)
+print(f"Number of constraints {len(constraints)}")  # Debugging
 error_a = max([abs(cv) for cv in constraints])
 print(f"\033[91mMaximum absolute constraint violation with z=0: {error_a}\033[0m")  # Debugging
 ###
+
+# print(170-91) #40 + 40
