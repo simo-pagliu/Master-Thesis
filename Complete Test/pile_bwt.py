@@ -110,7 +110,7 @@ def bwt(dict_data):
     num_criteria = sum(len(group_data['criteria']) for group_data in dict_data.values())
 
     # Initial guess: for all w_i + z (auxiliary variable)
-    x0 = np.ones(num_criteria + 1) / (num_criteria)
+    x0 = np.random.dirichlet(np.ones(num_criteria + 1)) #/ (2*num_criteria)
     # print("Initial guess x0:", x0)
 
     # Bounds: 

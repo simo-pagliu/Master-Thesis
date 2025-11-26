@@ -98,12 +98,12 @@ for i, dict_data in enumerate(dict_data_list):
     print(bwt(dict_data))
 
 from pile_bwt import constraints_func
-constraint_value = constraints_func(bwt_result["solver_result"]["x"], dict_data)
-print(f"\033[91mConstraint values for last BWT result: {(constraint_value)}\033[0m")  # Debugging
+# constraint_value = constraints_func(bwt_result["solver_result"]["x"], dict_data)
+# print(f"\033[91mConstraint values for last BWT result: {(constraint_value)}\033[0m")  # Debugging
 
-# Compute the maximum absolute violation of constraints
-max_violation = max([abs(cv) for cv in constraint_value])
-print(f"\033[91mMaximum absolute constraint violation: {max_violation}\033[0m")  # Debugging
+# # Compute the maximum absolute violation of constraints
+# max_violation = max([abs(cv) for cv in constraint_value])
+# print(f"\033[91mMaximum absolute constraint violation: {max_violation}\033[0m")  # Debugging
 
 
 ###
