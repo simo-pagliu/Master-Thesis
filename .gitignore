@@ -2,6 +2,6 @@
 LaTex_Project/compile.sh
 03 - Weighting/criterion_weights_*.csv
 /01 - Attributes Definition/Electricity Data/Total Loads/BZN|IT-North_load_histogram_2024.png
-*/__pycache__
+__pycache__/
 01 - Attributes Definition/.~lock.Attributes_Draft.ods\#
 
