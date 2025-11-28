@@ -84,7 +84,24 @@ def sample_to_values(data, value_function):
             b = data_values[1]
             c = data_values[2]
             sample = np.random.triangular(a, b, c)
-
+        
+        elif list(data.keys())[0] == "Uncertain Triangular":
+            a = data_values[0]
+            b = data_values[1]
+            c = data_values[2]
+            middle = np.random.choice(b)
+            sample = np.random.triangular(a, middle, c)
+        elif list(data.keys())[0] == "Special_1":
+            a_possible = data_values[0]
+            x_low = data_values[1]
+            x_high = data_values[2]
+            x = np.random.uniform(x_low, x_high)
+            a = np.random.choice(a_possible)
+            prob_0 = a * (1-x)
+            prob_1 = a * x + (1-a)*(1-x)
+            prob_2 = (1-a)*x
+            sample = np.random.choice([0,1,2], p=[prob_0, prob_1, prob_2])
+            
         else:
             raise ValueError(f"Unsupported distribution type in dictionary.{data.keys()}")
     else:
