@@ -125,9 +125,6 @@ def space_sampling(dict_data, num_criteria, bwt_result, output_file):
                     error_b = min(max([abs(cv) for cv in constraints]), 10)
                     if sum(x_b) <= 1.0 + 1/grid_size and abs(error_b) <= known_max_error:
                         break
-                    
-
-
-                    
+                              
     print(f"\nSpace sampling completed with {len(valid_points)} valid samples found.")
     return np.array(valid_points)

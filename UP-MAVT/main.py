@@ -150,16 +150,28 @@ def update_plots(rank_probs, distributions, i, n_runs, n_alternatives):
         if data.size > 0:
             weights = np.ones_like(data) / data.size
             axes[alt_idx].hist(data, bins=30, weights=weights, alpha=0.7)
+            # Auto-scale x-axis to the data range with a small padding so values are visible
+            dmin = float(np.nanmin(data))
+            dmax = float(np.nanmax(data))
+            if dmin == dmax:
+                pad = max(0.5, abs(dmin) * 0.1)
+            else:
+                pad = (dmax - dmin) * 0.1
+            axes[alt_idx].set_xlim(dmin - pad, dmax + pad)
         else:
             axes[alt_idx].hist([], bins=30, alpha=0.7)
-        axes[alt_idx].set_xlim(-0.2, 1.2)
         axes[alt_idx].set_title(f"Distribution of Values for Alternative {alt_idx}")
         axes[alt_idx].set_xlabel("Value")
         axes[alt_idx].set_ylabel("Probability")
         # Format y-axis as percentage
         axes[alt_idx].yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(xmax=1.0))
         axes[alt_idx].set_ylim(0, max(axes[alt_idx].get_ylim()[1], 0.1))  # Ensure some space for visibility
-    fig_hist.tight_layout()
+    # Avoid expensive tight_layout on every update; call it only on the first update
+    if i == 0:
+        try:
+            fig_hist.tight_layout()
+        except Exception:
+            pass
 
     # Draw both figures
     fig.canvas.draw()
@@ -215,6 +227,14 @@ for i, r in enumerate(mc_code):
         rank_counts[alt, pos] += 1
     rank_probs = rank_counts / (i + 1)
     full_sets.append(r.copy())
+    # Debug: print first few yielded run values and array shapes to inspect why histograms might be empty
+    if i < 5:
+        try:
+            arr = np.array(full_sets)
+            print(f"DEBUG run {i+1}: sample r = {r}")
+            print(f"DEBUG full_sets array shape: {arr.shape}, dtype: {arr.dtype}")
+        except Exception as e:
+            print(f"DEBUG error while inspecting full_sets: {e}")
     distributions = np.array(full_sets).T  # Shape: (n_alternatives, n_runs)
     
     # Add results to csv
