@@ -1,8 +1,17 @@
+# PILE-BWT
+#
+# This module is the implementation of the PILE-BWT method
+# The most important part is the definition of the constraints function
+
+#################################################################################
+# Import third party libraries
 import numpy as np
 import scipy.optimize as opt
-# PILE-BWT
-def constraints_func(x, dict_data):
+#################################################################################
 
+#################################################################################
+# Define all inequality that define the space of weights according to PILE-BWT
+def constraints_func(x, dict_data):
 
     cons = []
     group_indices = {}
@@ -92,14 +101,16 @@ def constraints_func(x, dict_data):
         add_comparison_constraint(comparison, comparison["type"], cons, x, group_indices, dict_data)
 
     # Non-negativity constraints for weights
+    # is enforced by the bounds
     # for wi in x[:-1]:
     #     cons.append(wi)
 
     # Round all constraints to avoid floating-point issues
+    # this was deemed unnecessary
     # cons = [round(c, 10) for c in cons]
 
     return cons
-
+#################################################################################
 
 # Minimization problem, objective is the auxiliary variable z
 def objective(x):
@@ -110,7 +121,8 @@ def bwt(dict_data):
     num_criteria = sum(len(group_data['criteria']) for group_data in dict_data.values())
 
     # Initial guess: for all w_i + z (auxiliary variable)
-    x0 = np.random.dirichlet(np.ones(num_criteria + 1)) #/ (2*num_criteria)
+    # We ensure it starts within bounds
+    x0 = np.ones(num_criteria + 1) / (num_criteria)
     # print("Initial guess x0:", x0)
 
     # Bounds: 

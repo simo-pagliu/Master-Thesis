@@ -1,3 +1,7 @@
+# aggregation_methods.py
+#
+# This module defines various aggregation models used in MAVT
+#
 def weighted_sum(intermediate_results):
     total = 0
     for weight, value in intermediate_results:

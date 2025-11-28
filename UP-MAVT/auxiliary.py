@@ -1,3 +1,7 @@
+# auxiliary.py
+#
+# This module containes all functions used to load data from CSV files so that they can be used in other modules.
+#
 import csv
 import ast
 def load_alternatives(file_path):
@@ -136,7 +140,11 @@ def load_value_functions(file_path_value_functions):
             else:
                 raise ValueError(f"No value function expression found for criterion '{crit_name}' in {file_path_value_functions}")
 
-            # Evaluate the expression to obtain a callable (expects something like 'lambda x: ...')
+            # Evaluate the expression to obtain a callable 
+            # (expects something like 'lambda x: ...')
+            # This is not considered safe for untrusted input 
+            # therefore should not be used in a non-controlled environment.
+            # Better to think for safer alternatives for production deployment.
             try:
                 fn = eval(expr)
             except Exception as e:

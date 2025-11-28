@@ -1,5 +1,67 @@
-import numpy as np
+# up-mavt.py
+#
+# this module containes the basic functions of the UP-MAVT framework
 
+#################################################################################
+# Import third party libraries
+import numpy as np
+#################################################################################
+
+#################################################################################
+# Import internal modules
+from auxiliary import load_alternatives, load_criteria, load_criteria_definitions, load_value_functions
+#################################################################################
+
+#################################################################################
+# Data Loading and Preprocessing
+def startup(file_path_criteria, file_path_weight_elicitations, file_path_value_functions):
+    # Load value functions and criteria and establish canonical ordering
+    # This is done to ensure that criteria are consistently ordered across different elicitation files
+    # And that we do not mix up value functions in other steps
+    first_dict = load_criteria_definitions(file_path_criteria)
+    crit_names = [crit_name for group_data in first_dict.values() for crit_name in group_data['criteria'].keys()]
+
+    # Number of criteria is saved as a variable since we are going to use it multiple times
+    num_criteria = len(crit_names)
+
+    # mapping from criterion name to its index in crit_names
+    crit_index = {name: idx for idx, name in enumerate(crit_names)}
+
+    # Initialize list of lists: each index corresponds to a criterion in `crit_names`
+    # And built it by reading the separate value function CSVs (one per elicitation)
+    vf_list = [[] for _ in range(num_criteria)]
+    for vp in file_path_value_functions:
+        vf_map = load_value_functions(vp)
+        for idx, crit_name in enumerate(crit_names):
+            vf_list[idx].append(vf_map[crit_name])    
+            
+    # Construct list of dict_data for each elicitation
+    # Load criteria.csv which contains criteria definitions
+    # Adds info about value functions from vf_list for each elicitation
+    print("Loading criteria definitions and attaching value functions...")
+    dict_data_list = []
+    print("Starting loop over weight elicitation files...")
+    for i, fp in enumerate(file_path_weight_elicitations):
+        print(f"Processing file {i+1}/{len(file_path_weight_elicitations)}: {fp}")  # Debugging: Track loop progress
+        dict_data = load_criteria(file_path_criteria, fp)
+        
+        # Attach value functions
+        for gname, gdata in dict_data.items():
+            for crit_name, crit in gdata['criteria'].items():
+                idx = crit_index[crit_name]
+                crit['value_function'] = vf_list[idx][i]
+        dict_data_list.append(dict_data)
+
+    # Debugging: Verify final dict_data_list
+    # print("Final dict_data_list contains:", len(dict_data_list), "entries")
+
+    # Load data for alternatives
+    alternatives = load_alternatives("alternatives.csv")
+    return dict_data_list, crit_index, vf_list, alternatives
+#################################################################################
+
+#################################################################################
+# Sampling of data from their distributions
 def sample_to_values(data, value_function):
     if isinstance(data, dict):
         data_values = list(data.values())[0]
@@ -34,7 +96,10 @@ def sample_to_values(data, value_function):
     # if value < 0 or value > 1:
         # print(f"Sampled value: {sample} from data: {data}, value is {value}")
     return value
+#################################################################################
 
+#################################################################################
+# Montecarlo generator function
 def mc_simulation(alternatives, vf_list, weight_list, aggregation_method, sim_runs, strict, crit_index):
     # weight_list = np.array(weight_list)
     for mc_run in range(sim_runs):
