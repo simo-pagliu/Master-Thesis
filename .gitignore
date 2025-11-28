@@ -1,14 +1,7 @@
 /LaTex_Project/build
 LaTex_Project/compile.sh
-/03 - Weighting/__pycache__
 03 - Weighting/criterion_weights_*.csv
-/02 - Value Functions/__pycache__
-/01 - Attributes Definition/Reactors Data/__pycache__
 /01 - Attributes Definition/Electricity Data/Total Loads/BZN|IT-North_load_histogram_2024.png
-/01 - Attributes Definition/Electricity Data/__pycache__
-/Uncertanty Tests/__pycache__
-/Complete Test/__pycache__
-/Uncertanty Propagation/__pycache__
-/Uncertanty Propagation/__pycache__
-/Uncertanty Propagation/__pycache__
+*/__pycache__
 01 - Attributes Definition/.~lock.Attributes_Draft.ods\#
+
