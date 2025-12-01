@@ -171,6 +171,9 @@ class WBT_ui:
         if not best or not worst:
             messagebox.showerror("Error", "Please select both best and worst criteria.")
             return
+        if best == worst:
+            messagebox.showerror("Error", "Best and Worst must be different criteria.")
+            return
         self.best = best
         self.worst = worst
         # Use dicts keyed by criterion name for in-memory results (works across groups)
@@ -197,7 +200,9 @@ class WBT_ui:
                 self.comparisons.append(("best", best, name))
         # Generate worst comparisons (worst vs each other criterion in group)
         for name in group_names:
-            if name != worst:
+            # skip the worst itself and also skip the best to avoid duplicating
+            # the inverse comparison (best vs worst) which was already added
+            if name != worst and name != best:
                 self.comparisons.append(("worst", worst, name))
         self.current_comparison = 0
         # Use a single persistent results file for all groups: 'wbt_results.csv'
@@ -311,7 +316,7 @@ class WBT_ui:
             if name != best:
                 self.comparisons.append(('best', best, name))
         for name in names:
-            if name != worst:
+            if name != worst and name != best:
                 self.comparisons.append(('worst', worst, name))
 
         self.current_comparison = 0
