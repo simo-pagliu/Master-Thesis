@@ -1,0 +1,15 @@
+name,group,min,max,unit
+Thermal Efficiency,Technical,30.8,36.17,%
+Discharge Burnup,Technical,46.5,55,MWD/kgHM
+Net Power Output,Technical,300,1630,MW_e
+Load following Capabilities,Technical,0.21,4.25,(%Pnom)/min
+Design Maturity,Feasibility,1,5,Score 1-5
+Licensing Status,Feasibility,1,5,Score 1-5
+Supplier Availbility,Feasibility,0,1,0-1
+Capital Investment Budgeted,Economic,1828,6050,USD2020/kWe
+Risk of Construction Delays,Economic,0,1,0-1
+Operative + Fuel Costs,Economic,20.49,71.91,USD2020/MW_h
+Electricity Market Benefit,Social,0,49,EUR/MW_h
+GHGe Benefit,Social,0.021,9.07,MtonCO2-eq/yr
+Percived Safety,Social,0,1,Score
+Nuclear Waste,Social,5.88,27.71,tons/yr
