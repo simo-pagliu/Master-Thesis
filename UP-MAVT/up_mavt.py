@@ -157,5 +157,10 @@ def mc_simulation(alternatives, vf_list, weight_list, aggregation_method, sim_ru
             # Now we save the result from this run
             # So each run is consistent with the set of weight,
             # this means that we can later compute the ranking of the alternatives per run
-            yield run_results
+            if strict:
+                # Yield both the elicitation index and the results so the caller
+                # can aggregate and plot per-elicitation statistics
+                yield elicitation_idx, run_results
+            else:
+                yield run_results
     return
