@@ -2,6 +2,7 @@
 import pandas as pd
 import numpy as np
 import json
+import os
 from scipy.optimize import curve_fit, minimize
 from scipy.interpolate import PchipInterpolator
 
@@ -76,8 +77,19 @@ class ElicitationProcess:
         except Exception:
             self.df.at[idx, 'elicitation_meta'] = ''
 
-        # persist back to the same CSV
-        self.df.to_csv(self.file_path, index=False)
+        # persist a dedicated value_functions.csv containing only the requested columns
+        out_dir = os.path.dirname(self.file_path) or '.'
+        out_path = os.path.join(out_dir, 'value_functions.csv')
+
+        # ensure the four required columns exist in the dataframe
+        cols = ['name', 'elicited_points', 'value_function', 'elicitation_meta']
+        # create a new DataFrame with only the requested columns
+        export_df = self.df.reindex(columns=cols).copy()
+        # replace NaN with empty strings
+        export_df = export_df.fillna('')
+
+        # write to CSV (overwrite any existing file)
+        export_df.to_csv(out_path, index=False)
 
     def get_value_function_string(self, degree=2):
         """Return a string representation of the fitted polynomial inside thresholds, or empty string.
