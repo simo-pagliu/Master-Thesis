@@ -62,8 +62,8 @@ def space_sampling(dict_data, num_criteria, bwt_result, output_file):
         writer.writerow([f"Criterion_{i+1}" for i in range(num_criteria)])  # Header row
 
         i = 0
-        # while i < max_iters:
-        while True:
+        while i < 1000:
+        # while True:
             i += 1
             # print(f"Iteration {i}, Used cells: {len(used_cells)}, Valid points: {len(valid_points)}", end="\r")
             x_a_center = valid_points[np.random.randint(len(valid_points))]
