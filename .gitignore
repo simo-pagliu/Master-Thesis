@@ -2,6 +2,12 @@
 LaTex_Project/compile.sh
 03 - Weighting/criterion_weights_*.csv
 /01 - Attributes Definition/Electricity Data/Total Loads/BZN|IT-North_load_histogram_2024.png
-*/__pycache__
+__pycache__/
 01 - Attributes Definition/.~lock.Attributes_Draft.ods\#
 
+UP-MAVT/GA_PILEBWM.ipynb
+UP-MAVT/ABLE_GA_example/GA_ABLEBWM_lollipop.pdf
+UP-MAVT/ABLE_GA_example/GA_ABLEBWM_convergence.pdf
+UP-MAVT/ABLE_GA_example/GA_ABLEBWM_bar.pdf
+UP-MAVT/ABLE_GA_example/GA_ABLEBWM_allpairs.xlsx
+UP-MAVT/wbt_results_1 copy.csv

@@ -33,6 +33,7 @@ def constraints_func(x, dict_data):
         criteria_in_group = group_indices[group_name]['criteria']
         w_start = group_indices[group_name]['start']
         w_end = group_indices[group_name]['end']
+        # print(f"Processing intra-group constraints for group '{group_name}' with criteria {criteria_in_group}")
         w = x[w_start:w_end]  # Weights for this group
         z = x[-1]             # z is the last element
         # print(f"Processing intra-group constraints for group '{group_name}' with weights {w} and z={z}")
@@ -52,7 +53,7 @@ def constraints_func(x, dict_data):
                 j = criteria_in_group.index(other_crit)
                 v_f_other = group_data['criteria'][other_crit]['value_function']
                 # print(f"Adding intra-group worst comparison constraint between '{crit}' and '{other_crit}'")
-                cons.append(z - abs(v_f_other(value) - (w[j] / w[i])))
+                cons.append(z - abs(1.0 / v_f_other(value) - (w[j] / w[i])))
 
     # INTER-GROUP CONSTRAINTS
     intraB = {}
@@ -90,7 +91,7 @@ def constraints_func(x, dict_data):
             # print the comparison and the indexes
             # print(f"Best comparison: {ref_crit} (global {ref_global_index}, local {ref_local_index} in group '{ref_group}') vs {other_crit} (global {other_global_index}, local {other_local_index} in group '{other_group}')")
         else:  # worst
-            cons.append(x[-1] - abs(v_f_other(comparison['value']) - (x[other_global_index] / x[ref_global_index])))
+            cons.append(x[-1] - abs(1.0 / v_f_other(comparison['value']) - (x[other_global_index] / x[ref_global_index])))
             # print(f"adding worst comparison constraint between '{ref_crit}' and '{other_crit}'")
             # print(f"Worst comparison: {ref_crit} (global {ref_global_index}, local {ref_local_index} in group '{ref_group}') vs {other_crit} (global {other_global_index}, local {other_local_index} in group '{other_group}')")
 
@@ -108,6 +109,11 @@ def constraints_func(x, dict_data):
     # Round all constraints to avoid floating-point issues
     # this was deemed unnecessary
     # cons = [round(c, 10) for c in cons]
+    
+    # Sum shall be lower then 1 + small tolerance
+    # cons.append(np.sum(x[:len(x)-1]) - 1 + 1e-8)  # Small tolerance for equality constraint
+    # Sum shall be higher then 1 - small tolerance
+    # cons.append(1 - np.sum(x[:len(x)-1]) + 1e-8)  # Small tolerance for equality constraint
 
     return cons
 #################################################################################
@@ -128,7 +134,7 @@ def bwt(dict_data):
     # Bounds: 
     # Positive weights: w_i >= 0, 
     # Positive auxiliary variable z >= 0
-    bounds = [(1e-3, 1) for _ in range(num_criteria)] + [(0, None)]
+    bounds = [(0, 1) for _ in range(num_criteria)] + [(0, None)]
     # print("Bounds:", bounds)
 
     # Solve optimization problem
@@ -161,4 +167,159 @@ def bwt(dict_data):
         'solver_result': result,
         'criteria_weights': weights_dict,
         'z': z
+    }
+
+
+def bwt_2(dict_data):
+    num_criteria = sum(len(group_data['criteria']) for group_data in dict_data.values())
+    x0 = np.ones(num_criteria + 1) / (num_criteria + 1)
+    bounds = [(0, 1) for _ in range(num_criteria)] + [(0, None)]
+
+    result = opt.minimize(
+        objective,
+        x0,
+        method='trust-constr',
+        constraints=[
+            {'type': 'ineq', 'fun': constraints_func, 'args': (dict_data,)},
+            {'type': 'eq', 'fun': lambda x: np.sum(x[:num_criteria]) - 1}
+        ],
+        bounds=bounds,
+        options={'verbose': 1}
+    )
+
+    weights = result.x[:num_criteria]
+    weights_dict = {}
+    current_index = 0
+    for group_name, group_data in dict_data.items():
+        group_criteria = list(group_data['criteria'].keys())
+        weights_dict[group_name] = {
+            crit: weights[current_index + i] for i, crit in enumerate(group_criteria)
+        }
+        current_index += len(group_criteria)
+    z = result.x[-1]
+
+    return {
+        'solver_result': result,
+        'criteria_weights': weights_dict,
+        'z': z
+    }
+
+def bwt_3(dict_data):
+    num_criteria = sum(len(group_data['criteria']) for group_data in dict_data.values())
+    x0 = np.ones(num_criteria + 1) / (num_criteria + 1)
+    bounds = [(0, 1) for _ in range(num_criteria)] + [(0, None)]
+
+    result = opt.minimize(
+        objective,
+        x0,
+        method='COBYLA',
+        constraints=[
+            {'type': 'ineq', 'fun': constraints_func, 'args': (dict_data,)},
+            {'type': 'eq', 'fun': lambda x: np.sum(x[:num_criteria]) - 1}
+        ],
+        options={'rhobeg': 0.5, 'maxiter': 1000}
+    )
+
+    weights = result.x[:num_criteria]
+    weights_dict = {}
+    current_index = 0
+    for group_name, group_data in dict_data.items():
+        group_criteria = list(group_data['criteria'].keys())
+        weights_dict[group_name] = {
+            crit: weights[current_index + i] for i, crit in enumerate(group_criteria)
+        }
+        current_index += len(group_criteria)
+    z = result.x[-1]
+
+    return {
+        'solver_result': result,
+        'criteria_weights': weights_dict,
+        'z': z
+    }
+    
+def bwt_4(dict_data, n=100, iters=3, sampling_method='simplicial', polish=True):
+    """
+    Solve the BWT problem using scipy.optimize.shgo with native constraint handling.
+    Optionally polishes the result with a local solver for better precision.
+
+    Parameters:
+    - dict_data: criteria/groups dictionary (same format as `bwt`)
+    - n: number of sampling points for shgo
+    - iters: number of iterations for shgo
+    - sampling_method: sampling strategy for shgo (e.g., 'simplicial')
+    - polish: if True, refine the result with a local solver
+
+    Returns:
+    - dict with solver result, criteria weights, and auxiliary variable z
+    """
+    num_criteria = sum(len(group_data['criteria']) for group_data in dict_data.values())
+    bounds = [(1e-3, 1) for _ in range(num_criteria)] + [(0, None)]
+
+    # Define nonlinear constraint for shgo using a lambda to pass dict_data
+    def nl_constraint(x):
+        return constraints_func(x, dict_data)
+
+    nonlinear_constraint = opt.NonlinearConstraint(
+        fun=nl_constraint,
+        lb=-np.inf,  # constraints_func returns values >= 0 for feasibility
+        ub=0,
+    )
+
+    # Define equality constraint (sum of weights = 1)
+    def sum_constraint(x):
+        return np.sum(x[:num_criteria]) - 1
+
+    linear_constraint = opt.LinearConstraint(
+        A=np.concatenate([np.ones((1, num_criteria)), np.zeros((1, 1))], axis=1),
+        lb=[1],
+        ub=[1]
+    )
+
+    print("Starting SHGO (native constraints)...")
+    result_shgo = opt.shgo(
+        objective,
+        bounds,
+        constraints=[nonlinear_constraint, linear_constraint],
+        n=n,
+        iters=iters,
+        sampling_method=sampling_method,
+        options={'disp': True}
+    )
+
+    if polish:
+        print("Polishing SHGO result with trust-constr...")
+        result_polish = opt.minimize(
+            objective,
+            result_shgo.x,
+            method='trust-constr',
+            constraints=[
+                {'type': 'ineq', 'fun': nl_constraint},
+                {'type': 'eq', 'fun': sum_constraint}
+            ],
+            bounds=bounds,
+            options={'xtol': 1e-8}
+        )
+        if result_polish.success:
+            result = result_polish
+        else:
+            result = result_shgo
+    else:
+        result = result_shgo
+
+    weights = result.x[:num_criteria]
+    weights_dict = {}
+    current_index = 0
+    for group_name, group_data in dict_data.items():
+        group_criteria = list(group_data['criteria'].keys())
+        weights_dict[group_name] = {
+            crit: weights[current_index + i] for i, crit in enumerate(group_criteria)
+        }
+        current_index += len(group_criteria)
+    z = result.x[-1]
+
+    return {
+        'solver_result': result,
+        'criteria_weights': weights_dict,
+        'z': z,
+        'shgo_result': result_shgo,
     }
