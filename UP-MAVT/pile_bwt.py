@@ -33,6 +33,7 @@ def constraints_func(x, dict_data):
         criteria_in_group = group_indices[group_name]['criteria']
         w_start = group_indices[group_name]['start']
         w_end = group_indices[group_name]['end']
+        # print(f"Processing intra-group constraints for group '{group_name}' with criteria {criteria_in_group}")
         w = x[w_start:w_end]  # Weights for this group
         z = x[-1]             # z is the last element
         # print(f"Processing intra-group constraints for group '{group_name}' with weights {w} and z={z}")
@@ -52,7 +53,7 @@ def constraints_func(x, dict_data):
                 j = criteria_in_group.index(other_crit)
                 v_f_other = group_data['criteria'][other_crit]['value_function']
                 # print(f"Adding intra-group worst comparison constraint between '{crit}' and '{other_crit}'")
-                cons.append(z - abs(v_f_other(value) - (w[j] / w[i])))
+                cons.append(z - abs(1.0 / v_f_other(value) - (w[j] / w[i])))
 
     # INTER-GROUP CONSTRAINTS
     intraB = {}
@@ -90,7 +91,7 @@ def constraints_func(x, dict_data):
             # print the comparison and the indexes
             # print(f"Best comparison: {ref_crit} (global {ref_global_index}, local {ref_local_index} in group '{ref_group}') vs {other_crit} (global {other_global_index}, local {other_local_index} in group '{other_group}')")
         else:  # worst
-            cons.append(x[-1] - abs(v_f_other(comparison['value']) - (x[other_global_index] / x[ref_global_index])))
+            cons.append(x[-1] - abs(1.0 / v_f_other(comparison['value']) - (x[other_global_index] / x[ref_global_index])))
             # print(f"adding worst comparison constraint between '{ref_crit}' and '{other_crit}'")
             # print(f"Worst comparison: {ref_crit} (global {ref_global_index}, local {ref_local_index} in group '{ref_group}') vs {other_crit} (global {other_global_index}, local {other_local_index} in group '{other_group}')")
 
