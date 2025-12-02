@@ -10,6 +10,7 @@ import numpy as np
 #################################################################################
 # Import internal modules
 from auxiliary import load_alternatives, load_criteria, load_criteria_definitions, load_value_functions
+from weight_sampling import weight_sampler
 #################################################################################
 
 #################################################################################
@@ -117,16 +118,19 @@ def sample_to_values(data, value_function):
 
 #################################################################################
 # Montecarlo generator function
-def mc_simulation(alternatives, vf_list, weight_list, aggregation_method, sim_runs, strict, crit_index):
+def mc_simulation(alternatives, vf_list, list_of_weight_space_points, dict_data_list, aggregation_method, sim_runs, strict, crit_index):
     # weight_list = np.array(weight_list)
     for mc_run in range(sim_runs):
         # For each montecarlo run we iterate over all experts
-        for elicitation_idx in range(len(weight_list)):
+        for elicitation_idx in range(len(list_of_weight_space_points)):
             run_results = []
+            # Select the weight space for this elicitation
+            weight_space_points = list_of_weight_space_points[elicitation_idx]
+            # Load the dict_data for this elicitation
+            dict_data = dict_data_list[elicitation_idx]
             # For each expert we choose a random set of weights
-            random_weight_idx = np.random.randint(0, len(weight_list[elicitation_idx]))
-            sampled_weights = weight_list[elicitation_idx][random_weight_idx]
-            # Normalization to ensure weights sum to 1 (produced by space_sampling so can have a little deviation)
+            sampled_weights = weight_sampler(dict_data, weight_space_points)
+            # Normalization to ensure weights sum to 1 (should be already the case)
             sampled_weights = sampled_weights / np.sum(sampled_weights)
             # For each alternative we compute its value
             for a, alt in enumerate(alternatives):

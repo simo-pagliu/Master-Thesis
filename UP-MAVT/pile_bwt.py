@@ -7,11 +7,12 @@
 # Import third party libraries
 import numpy as np
 import scipy.optimize as opt
+from functools import partial
 #################################################################################
 
 #################################################################################
 # Define all inequality that define the space of weights according to PILE-BWT
-def constraints_func(x, dict_data):
+def constraints_func(x, dict_data, z_star=None):
 
     cons = []
     group_indices = {}
@@ -101,6 +102,9 @@ def constraints_func(x, dict_data):
     for comparison in intraW.values():
         add_comparison_constraint(comparison, comparison["type"], cons, x, group_indices, dict_data)
 
+    if z_star is not None:
+        # Constraint to ensure z <= z_star
+        cons.append(z_star - x[-1])
     # Non-negativity constraints for weights
     # is enforced by the bounds
     # for wi in x[:-1]:
@@ -119,10 +123,10 @@ def constraints_func(x, dict_data):
 #################################################################################
 
 # Minimization problem, objective is the auxiliary variable z
-def objective(x):
-    return x[-1]  # z is the last variable in the array
+def objective(x, var=-1):
+    return x[var]  # z is the last variable in the array
 
-def bwt(dict_data):
+def bwt(dict_data, var=-1, z_star=None, type='min'):
     # Count the number of groups and criteria
     num_criteria = sum(len(group_data['criteria']) for group_data in dict_data.values())
 
@@ -138,17 +142,84 @@ def bwt(dict_data):
     # print("Bounds:", bounds)
 
     # Solve optimization problem
-    print("Starting optimization...")
-    result = opt.minimize(
-        objective,  # Function to minimize
-        x0,  # Initial Guess
-        method='SLSQP',  # Method
-        constraints=[
-            {'type': 'ineq', 'fun': constraints_func, 'args': (dict_data,)},  # Inequality constraints
-            {'type': 'eq', 'fun': lambda x: np.sum(x[:num_criteria]) - 1}  # Equality constraint: sum of weights = 1
-        ],
-        bounds=bounds
-    )
+    print("Running optimization...")
+    objective_with_var = partial(objective, var=var)
+    # Scipy optimize only minimizes functions so for maximization we negate the objective
+    if type == 'max':
+        def neg_objective(x):
+            return -objective_with_var(x)
+        objective_func = neg_objective
+    else:
+        objective_func = objective_with_var
+
+    # Try SLSQP first
+    # if it fails catastrophically we try COBYLA as a fallback
+    try:
+        result = opt.minimize(
+            objective_func,
+            x0,
+            method='SLSQP',
+            constraints=[
+                {'type': 'ineq', 'fun': constraints_func, 'args': (dict_data, z_star,)},
+                {'type': 'eq', 'fun': lambda x: np.sum(x[:num_criteria]) - 1}
+            ],
+            bounds=bounds,
+            options={'maxiter': 1000, 'ftol': 1e-9}
+        )
+    except Exception as e:
+        print(f"SLSQP raised exception: {e}")
+        pass
+
+    # Also if it did not raised an expection but did not converge we try COBYLA
+    # Note that SLSQP can fail silently so we check the success flag
+    if not result.success:
+        print(f"\033[93mSLSQP failed (message: {getattr(result, 'message', None)})\033[0m")
+        print(f"\033[93mTrying 'COBYLA' as fallback with explicit bound constraints...\033[0m")
+        try:
+            # Build explicit inequality constraints that represent the bounds for COBYLA
+            bound_constraints = []
+            # weights 0..num_criteria-1: 0 <= x[i] <= 1
+            for idx in range(num_criteria):
+                bound_constraints.append({'type': 'ineq', 'fun': (lambda x, i=idx: x[i])})            # x[i] >= 0
+                bound_constraints.append({'type': 'ineq', 'fun': (lambda x, i=idx: 1.0 - x[i])})      # x[i] <= 1
+            # auxiliary variable z (last index) must be >= 0
+            bound_constraints.append({'type': 'ineq', 'fun': (lambda x: x[-1])})
+
+            # Combine with existing problem constraints (comparisons and sum-to-1 equality)
+            cobyla_constraints = [
+                {'type': 'ineq', 'fun': constraints_func, 'args': (dict_data, z_star,)},
+                {'type': 'eq', 'fun': lambda x: np.sum(x[:num_criteria]) - 1}
+            ] + bound_constraints
+
+            result_coby = opt.minimize(
+                objective_func,
+                x0,
+                method='COBYLA',
+                constraints=cobyla_constraints,
+                options={'maxiter': 5000, 'rhobeg': 0.5}
+            )
+            if result_coby.success:
+                result = result_coby
+                print("\033[92mCOBYLA succeeded.\033[0m")
+            else:
+                maxcv = getattr(result_coby, 'maxcv', None)
+                print(f"\033[93mCOBYLA failed (message: {getattr(result_coby, 'message', None)})\033[0m")
+                print(f"\033[93mmaxcv={maxcv}\033[0m")
+                # If COBYLA didn't converge but the maximum constraint violation
+                # is very small, treat the solution as acceptable.
+                accept_threshold = 1e-6
+                if (maxcv is not None) and (maxcv <= accept_threshold):
+                    result_coby.success = True
+                    print("\033[92mCOBYLA produced near-feasible solution: accepting result.\033[0m")
+                    result = result_coby
+                else:
+                    # If the error was too large, we set result to None
+                    print("\033[91mCOBYLA solution not acceptable.\033[0m")
+                    result = None
+        # If also COBYLA fails, we return None
+        except Exception as e:
+            print(f"\033[91mCOBYLA fallback raised exception: {e}\033[0m")
+            result = None
 
     # Extract weights for criteria and groups
     weights = result.x[:num_criteria]
@@ -167,159 +238,4 @@ def bwt(dict_data):
         'solver_result': result,
         'criteria_weights': weights_dict,
         'z': z
-    }
-
-
-def bwt_2(dict_data):
-    num_criteria = sum(len(group_data['criteria']) for group_data in dict_data.values())
-    x0 = np.ones(num_criteria + 1) / (num_criteria + 1)
-    bounds = [(0, 1) for _ in range(num_criteria)] + [(0, None)]
-
-    result = opt.minimize(
-        objective,
-        x0,
-        method='trust-constr',
-        constraints=[
-            {'type': 'ineq', 'fun': constraints_func, 'args': (dict_data,)},
-            {'type': 'eq', 'fun': lambda x: np.sum(x[:num_criteria]) - 1}
-        ],
-        bounds=bounds,
-        options={'verbose': 1}
-    )
-
-    weights = result.x[:num_criteria]
-    weights_dict = {}
-    current_index = 0
-    for group_name, group_data in dict_data.items():
-        group_criteria = list(group_data['criteria'].keys())
-        weights_dict[group_name] = {
-            crit: weights[current_index + i] for i, crit in enumerate(group_criteria)
-        }
-        current_index += len(group_criteria)
-    z = result.x[-1]
-
-    return {
-        'solver_result': result,
-        'criteria_weights': weights_dict,
-        'z': z
-    }
-
-def bwt_3(dict_data):
-    num_criteria = sum(len(group_data['criteria']) for group_data in dict_data.values())
-    x0 = np.ones(num_criteria + 1) / (num_criteria + 1)
-    bounds = [(0, 1) for _ in range(num_criteria)] + [(0, None)]
-
-    result = opt.minimize(
-        objective,
-        x0,
-        method='COBYLA',
-        constraints=[
-            {'type': 'ineq', 'fun': constraints_func, 'args': (dict_data,)},
-            {'type': 'eq', 'fun': lambda x: np.sum(x[:num_criteria]) - 1}
-        ],
-        options={'rhobeg': 0.5, 'maxiter': 1000}
-    )
-
-    weights = result.x[:num_criteria]
-    weights_dict = {}
-    current_index = 0
-    for group_name, group_data in dict_data.items():
-        group_criteria = list(group_data['criteria'].keys())
-        weights_dict[group_name] = {
-            crit: weights[current_index + i] for i, crit in enumerate(group_criteria)
-        }
-        current_index += len(group_criteria)
-    z = result.x[-1]
-
-    return {
-        'solver_result': result,
-        'criteria_weights': weights_dict,
-        'z': z
-    }
-    
-def bwt_4(dict_data, n=100, iters=3, sampling_method='simplicial', polish=True):
-    """
-    Solve the BWT problem using scipy.optimize.shgo with native constraint handling.
-    Optionally polishes the result with a local solver for better precision.
-
-    Parameters:
-    - dict_data: criteria/groups dictionary (same format as `bwt`)
-    - n: number of sampling points for shgo
-    - iters: number of iterations for shgo
-    - sampling_method: sampling strategy for shgo (e.g., 'simplicial')
-    - polish: if True, refine the result with a local solver
-
-    Returns:
-    - dict with solver result, criteria weights, and auxiliary variable z
-    """
-    num_criteria = sum(len(group_data['criteria']) for group_data in dict_data.values())
-    bounds = [(1e-3, 1) for _ in range(num_criteria)] + [(0, None)]
-
-    # Define nonlinear constraint for shgo using a lambda to pass dict_data
-    def nl_constraint(x):
-        return constraints_func(x, dict_data)
-
-    nonlinear_constraint = opt.NonlinearConstraint(
-        fun=nl_constraint,
-        lb=-np.inf,  # constraints_func returns values >= 0 for feasibility
-        ub=0,
-    )
-
-    # Define equality constraint (sum of weights = 1)
-    def sum_constraint(x):
-        return np.sum(x[:num_criteria]) - 1
-
-    linear_constraint = opt.LinearConstraint(
-        A=np.concatenate([np.ones((1, num_criteria)), np.zeros((1, 1))], axis=1),
-        lb=[1],
-        ub=[1]
-    )
-
-    print("Starting SHGO (native constraints)...")
-    result_shgo = opt.shgo(
-        objective,
-        bounds,
-        constraints=[nonlinear_constraint, linear_constraint],
-        n=n,
-        iters=iters,
-        sampling_method=sampling_method,
-        options={'disp': True}
-    )
-
-    if polish:
-        print("Polishing SHGO result with trust-constr...")
-        result_polish = opt.minimize(
-            objective,
-            result_shgo.x,
-            method='trust-constr',
-            constraints=[
-                {'type': 'ineq', 'fun': nl_constraint},
-                {'type': 'eq', 'fun': sum_constraint}
-            ],
-            bounds=bounds,
-            options={'xtol': 1e-8}
-        )
-        if result_polish.success:
-            result = result_polish
-        else:
-            result = result_shgo
-    else:
-        result = result_shgo
-
-    weights = result.x[:num_criteria]
-    weights_dict = {}
-    current_index = 0
-    for group_name, group_data in dict_data.items():
-        group_criteria = list(group_data['criteria'].keys())
-        weights_dict[group_name] = {
-            crit: weights[current_index + i] for i, crit in enumerate(group_criteria)
-        }
-        current_index += len(group_criteria)
-    z = result.x[-1]
-
-    return {
-        'solver_result': result,
-        'criteria_weights': weights_dict,
-        'z': z,
-        'shgo_result': result_shgo,
     }

@@ -23,7 +23,7 @@ import csv
 from pile_bwt import bwt, constraints_func
 from up_mavt import startup, mc_simulation
 from aggregation_methods import weighted_sum
-from weight_sampling import create_weight_samples
+from weight_sampling import obtain_weight_space_description
 #################################################################################
 
 #################################################################################
@@ -40,6 +40,7 @@ file_path_criteria = "criteria.csv"
 # Montecarlo Parameters
 n_runs = 10000
 PLOTS = True  # Toggle plots
+plot_bins = 50  # Number of bins for histograms
 STRICT = True  # Toggle strict mode
 UPDATE_EVERY = 10  # Update plots every N runs
 #################################################################################
@@ -73,13 +74,11 @@ print(f"\033[91mConstraint values for last BWT result: {constraint_value}\033[0m
 # Create files of valid sets of weights
 # We have a list of errors, one per each eliciation
 # We have to create tables of possible weights to sample from in the MC simulation
-weight_list = create_weight_samples(bwt_results, dict_data_list, file_path_weight_elicitations, crit_index)
+list_of_weight_space_points = obtain_weight_space_description(bwt_results, dict_data_list, file_path_weight_elicitations, crit_index)
 # print(np.shape(weight_list))
 
 # Debugging: Inspect weight_list before passing to mc_simulation
-print("Inspecting weight_list...")
-for i, weights in enumerate(weight_list):
-    print(f"Elicitation {i+1}: {len(weights)} rows, first row shape: {len(weights[0]) if weights else 'N/A'}")
+print(f"Imported weight spaces for {len(list_of_weight_space_points)} elicitations.")
 #################################################################################
 
 #################################################################################
@@ -139,11 +138,11 @@ def update_plots(rank_probs, distributions, i, n_runs, n_alternatives, strict=Fa
             # show probability on the y-axis: use weights so bar heights sum to 1 (probability mass)
             if data.size > 0:
                 weights = np.ones_like(data) / data.size
-                axes[alt_idx].hist(data, bins=30, weights=weights, alpha=0.7)
+                axes[alt_idx].hist(data, bins=plot_bins, weights=weights, alpha=0.7)
                 # Force x-axis to [0,1] since values are normalized
                 axes[alt_idx].set_xlim(0, 1)
             else:
-                axes[alt_idx].hist([], bins=30, alpha=0.7)
+                axes[alt_idx].hist([], bins=plot_bins, alpha=0.7)
                 axes[alt_idx].set_xlim(0, 1)
         else:
             # Strict: overlay histograms, one per elicitation, using distinct colors
@@ -160,9 +159,9 @@ def update_plots(rank_probs, distributions, i, n_runs, n_alternatives, strict=Fa
                 if data_e.size > 0:
                     any_data = True
                     weights = np.ones_like(data_e) / data_e.size
-                    axes[alt_idx].hist(data_e, bins=30, weights=weights, alpha=0.5, color=color_list[e], label=f"E{e+1}")
+                    axes[alt_idx].hist(data_e, bins=plot_bins, weights=weights, alpha=0.5, color=color_list[e], label=f"E{e+1}")
             if not any_data:
-                axes[alt_idx].hist([], bins=30, alpha=0.7)
+                axes[alt_idx].hist([], bins=plot_bins, alpha=0.7)
             else:
                 axes[alt_idx].legend(title='Elicitation')
             # Ensure all histograms show values on [0,1]
@@ -194,7 +193,7 @@ def update_plots(rank_probs, distributions, i, n_runs, n_alternatives, strict=Fa
 # Preparation for the Montecarlo Simulation
 print("Starting Monte Carlo simulation...")
 # Call the generator (yields results one by one)
-mc_code = mc_simulation(alternatives, vf_list, weight_list, weighted_sum, sim_runs=n_runs, strict=STRICT, crit_index=crit_index)
+mc_code = mc_simulation(alternatives, vf_list, list_of_weight_space_points, dict_data_list, weighted_sum, sim_runs=n_runs, strict=STRICT, crit_index=crit_index)
 # Number of elicitation files
 n_elicitations = len(dict_data_list)
 # Setup plots if enabled
