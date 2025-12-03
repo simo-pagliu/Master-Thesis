@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import (
     QLabel, QLineEdit, QFileDialog, QWidget, QSlider, QDoubleSpinBox
 )
 from PyQt5.QtWidgets import QComboBox
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 import numpy as np
@@ -70,7 +70,23 @@ class MainWindow(QMainWindow):
         self.right_indiff_input.setPlaceholderText("Right indifference x (optional)")
 
         # connect inputs so changes automatically update the plot
-        # use textChanged so deletion immediately reverts to defaults
+        # Debounce updates from text inputs to avoid heavy re-computation
+        # on every keystroke which can freeze the GUI when fitters run.
+        self._apply_timer = QTimer(self)
+        self._apply_timer.setSingleShot(True)
+        self._apply_timer.timeout.connect(self.apply_thresholds)
+
+        def _schedule_apply(*_args, **_kwargs):
+            # restart the timer (300 ms) on each change; only when typing stops
+            try:
+                self._apply_timer.start(300)
+            except Exception:
+                # fallback: call immediately if timer unavailable
+                try:
+                    self.apply_thresholds()
+                except Exception:
+                    pass
+
         for widget in (
             self.x_increase_input,
             self.x_decrease_input,
@@ -80,8 +96,9 @@ class MainWindow(QMainWindow):
             self.peak_location_input,
             self.left_indiff_input,
             self.right_indiff_input,
-        ):  # connect each to apply_thresholds
-            widget.textChanged.connect(self.apply_thresholds)
+        ):
+            # schedule apply on text changes (debounced)
+            widget.textChanged.connect(_schedule_apply)
 
         # Polynomial degree slider
         self.degree_slider = QSlider(Qt.Horizontal)
