@@ -4,7 +4,10 @@ from PyQt5.QtWidgets import (
     QLabel, QLineEdit, QFileDialog, QWidget, QSlider, QDoubleSpinBox
 )
 from PyQt5.QtWidgets import QComboBox
+from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtGui import QDoubleValidator
+import os
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 import numpy as np
@@ -27,6 +30,7 @@ class MainWindow(QMainWindow):
         self.file_label = QLabel("No file loaded")
         self.upload_button = QPushButton("Upload CSV")
         self.upload_button.clicked.connect(self.upload_csv)
+        # Optional loader function remains available; button removed per user request
 
         # Attribute info
         self.attr_label = QLabel("No attribute selected")
@@ -99,6 +103,28 @@ class MainWindow(QMainWindow):
         ):
             # schedule apply on text changes (debounced)
             widget.textChanged.connect(_schedule_apply)
+            # allow only numeric input (floating); validator range will be updated
+            try:
+                validator = QDoubleValidator(-1e12, 1e12, 12, self)
+                # accept intermediate input so user can type negative sign or dot
+                validator.setNotation(QDoubleValidator.StandardNotation)
+                widget.setValidator(validator)
+            except Exception:
+                pass
+
+        # helper to set a lineedit validator range when attribute bounds are known
+        def set_lineedit_range(le, minimum, maximum):
+            try:
+                v = QDoubleValidator(float(minimum), float(maximum), 12, self)
+                v.setNotation(QDoubleValidator.StandardNotation)
+                le.setValidator(v)
+            except Exception:
+                try:
+                    # fallback to permissive validator
+                    le.setValidator(QDoubleValidator(-1e12, 1e12, 12, self))
+                except Exception:
+                    pass
+        self._set_lineedit_range = set_lineedit_range
 
         # Polynomial degree slider
         self.degree_slider = QSlider(Qt.Horizontal)
@@ -180,9 +206,12 @@ class MainWindow(QMainWindow):
         self.canvas = FigureCanvas(self.figure)
         self.ax = self.figure.add_subplot(111)
 
-    # Add widgets to layout
+        # Add widgets to layout
         self.layout.addWidget(self.file_label)
-        self.layout.addWidget(self.upload_button)
+        # place the two CSV buttons side-by-side
+        top_btns = QHBoxLayout()
+        top_btns.addWidget(self.upload_button)
+        self.layout.addLayout(top_btns)
         self.layout.addWidget(self.attr_label)
         # Add new UI controls for monotonicity and thresholds
         self.layout.addWidget(QLabel("Select behavior:"))
@@ -243,41 +272,186 @@ class MainWindow(QMainWindow):
                 self.process.load_data(file_path)
                 self.file_label.setText(f"Loaded: {file_path}")
                 # after loading, try to load saved state for current attribute
-                self.update_ui()
+                # Ask user if they want to load an existing `value_functions.csv` or start new
+                # First, look for a candidate in the same folder
+                folder = os.path.dirname(file_path)
+                candidate = os.path.join(folder, 'value_functions.csv')
+                try:
+                    if os.path.exists(candidate):
+                        resp = QMessageBox.question(
+                            self,
+                            "Load existing value functions?",
+                            f"Found 'value_functions.csv' in the same folder. Load it?\n\n{candidate}",
+                            QMessageBox.Yes | QMessageBox.No,
+                            QMessageBox.Yes,
+                        )
+                        if resp == QMessageBox.Yes:
+                            # load the candidate without asking again
+                            self.load_elicited_csv(candidate)
+                        else:
+                            # user chose not to load; initialize UI normally
+                            self.update_ui()
+                    else:
+                        # ask whether to browse for an existing file or start new
+                        resp = QMessageBox.question(
+                            self,
+                            "Load value functions?",
+                            "Do you want to load an existing 'value_functions.csv' file?",
+                            QMessageBox.Yes | QMessageBox.No,
+                            QMessageBox.No,
+                        )
+                        if resp == QMessageBox.Yes:
+                            # open file dialog to pick the file
+                            self.load_elicited_csv(None)
+                        else:
+                            self.update_ui()
+                except Exception:
+                    # on any error during the prompt/load, fall back to normal UI init
+                    self.update_ui()
             except Exception as e:
                 self.file_label.setText(f"Error: {e}")
 
+    def load_elicited_csv(self, file_path=None):
+        """Optionally load a CSV that contains elicited points/meta (e.g. `value_functions.csv`).
+
+        The file must contain a `name` column to match attributes in the currently
+        loaded CSV. Matching rows will be merged into `self.process.df` in the
+        columns `elicited_points`, `value_function`, `elicitation_meta`.
+        """
+        if self.process.df is None:
+            self.file_label.setText("Load attribute CSV first before importing elicited values")
+            return
+        # If not provided, ask the user to pick a file
+        if file_path is None:
+            file_path, _ = QFileDialog.getOpenFileName(self, "Open Elicited CSV", "", "CSV Files (*.csv)")
+            if not file_path:
+                return
+        try:
+            import pandas as pd
+            ef = pd.read_csv(file_path)
+        except Exception as e:
+            self.file_label.setText(f"Failed to read elicited CSV: {e}")
+            return
+
+        # Need a name column to match
+        if 'name' not in ef.columns:
+            self.file_label.setText("Elicited CSV must contain a 'name' column")
+            return
+
+        # Merge rows by name into process.df
+        try:
+            # ensure our DF has an index we can use
+            for _, row in ef.iterrows():
+                nm = row.get('name')
+                if pd.isna(nm):
+                    continue
+                # find matching rows in process.df
+                try:
+                    matches = self.process.df.index[self.process.df['name'] == nm].tolist()
+                except Exception:
+                    # fallback: use boolean mask
+                    matches = list(self.process.df[self.process.df['name'] == nm].index)
+                for idx in matches:
+                    for col in ('elicited_points', 'value_function', 'elicitation_meta'):
+                        if col in ef.columns and not pd.isna(row.get(col)):
+                            try:
+                                self.process.df.at[idx, col] = row.get(col)
+                            except Exception:
+                                pass
+            # persist merged DF back to process (in-memory) and refresh UI
+            self.file_label.setText(f"Merged elicited CSV: {file_path}")
+            # refresh UI to apply any saved state for current attribute
+            self.update_ui()
+        except Exception as e:
+            self.file_label.setText(f"Error merging elicited CSV: {e}")
+
     def collect_meta_from_ui(self):
         """Collect elicitation options from the UI into a dict suitable for saving."""
+        # Validate inputs before collecting meta. Raise ValueError on invalid input
+        if self.process.df is None:
+            raise ValueError("No CSV loaded")
+
+        # get attribute bounds for validation
+        try:
+            attr = self.process.get_current_attribute()
+            amin = float(attr['min']); amax = float(attr['max'])
+        except Exception:
+            amin = None; amax = None
+
+        def parse_optional_float(w, name):
+            txt = w.text().strip()
+            if not txt:
+                return None
+            try:
+                v = float(txt)
+            except Exception:
+                raise ValueError(f"Invalid number for {name}: '{txt}'")
+            if amin is not None and amax is not None:
+                if not (amin <= v <= amax):
+                    raise ValueError(f"{name} value {v} out of range [{amin},{amax}]")
+            return v
+
         meta = {}
         meta['mode'] = self.mono_selector.currentText()
         meta['shape'] = self.shape_selector.currentText()
-        # thresholds
-        try:
-            meta['lower_threshold'] = float(self.x_decrease_input.text()) if self.x_decrease_input.text() else None
-        except Exception:
-            meta['lower_threshold'] = None
-        try:
-            meta['upper_threshold'] = float(self.x_increase_input.text()) if self.x_increase_input.text() else None
-        except Exception:
-            meta['upper_threshold'] = None
+
+        # thresholds (use empty as None)
+        lower = None; upper = None
+        if self.x_decrease_input.text().strip():
+            lower = parse_optional_float(self.x_decrease_input, 'lower_threshold')
+        if self.x_increase_input.text().strip():
+            upper = parse_optional_float(self.x_increase_input, 'upper_threshold')
+        # ensure thresholds ordering if both present
+        if (lower is not None) and (upper is not None) and (lower > upper):
+            raise ValueError(f"lower_threshold ({lower}) must be <= upper_threshold ({upper})")
+        meta['lower_threshold'] = lower
+        meta['upper_threshold'] = upper
+
         # indifference points
-        def try_float(w):
-            try:
-                return float(w.text()) if w.text() else None
-            except Exception:
-                return None
-        meta['x0'] = try_float(self.indiff_input)
-        meta['x025'] = try_float(self.indiff25_input)
-        meta['x075'] = try_float(self.indiff75_input)
-        meta['peak_location'] = try_float(self.peak_location_input)
-        meta['left_indiff'] = try_float(self.left_indiff_input)
-        meta['right_indiff'] = try_float(self.right_indiff_input)
+        x0 = parse_optional_float(self.indiff_input, 'x0') if self.indiff_input.text().strip() else None
+        x025 = parse_optional_float(self.indiff25_input, 'x025') if self.indiff25_input.text().strip() else None
+        x075 = parse_optional_float(self.indiff75_input, 'x075') if self.indiff75_input.text().strip() else None
+        # ordering checks when present. Behavior depends on monotonicity direction.
+        increasing = True
+        try:
+            if meta.get('mode') == 'Monotonic':
+                sh = self.shape_selector.currentText()
+                if 'Decreasing' in sh:
+                    increasing = False
+        except Exception:
+            increasing = True
+
+        if increasing:
+            # require x025 < x0 < x075 when applicable
+            if x025 is not None and x0 is not None and not (x025 < x0):
+                raise ValueError("Require x0.25 < x0.5")
+            if x0 is not None and x075 is not None and not (x0 < x075):
+                raise ValueError("Require x0.5 < x0.75")
+            if x025 is not None and x075 is not None and not (x025 < x075):
+                raise ValueError("Require x0.25 < x0.75")
+        else:
+            # decreasing: reversed order expected (x0.75 < x0.5 < x0.25)
+            if x075 is not None and x0 is not None and not (x075 < x0):
+                raise ValueError("Require x0.75 < x0.5 for decreasing mode")
+            if x0 is not None and x025 is not None and not (x0 < x025):
+                raise ValueError("Require x0.5 < x0.25 for decreasing mode")
+            if x075 is not None and x025 is not None and not (x075 < x025):
+                raise ValueError("Require x0.75 < x0.25 for decreasing mode")
+
+        meta['x0'] = x0
+        meta['x025'] = x025
+        meta['x075'] = x075
+
+        meta['peak_location'] = parse_optional_float(self.peak_location_input, 'peak_location') if self.peak_location_input.text().strip() else None
+        meta['left_indiff'] = parse_optional_float(self.left_indiff_input, 'left_indiff') if self.left_indiff_input.text().strip() else None
+        meta['right_indiff'] = parse_optional_float(self.right_indiff_input, 'right_indiff') if self.right_indiff_input.text().strip() else None
+
         # fit settings
         try:
             meta['fit_type'] = self.fit_type_selector.currentText()
         except Exception:
             meta['fit_type'] = 'Piecewise Linear'
+
         # collect visible param sliders into fit_params (map internal names to fit param names)
         name_map = {
             'offset_sig': 'offset'
@@ -326,16 +500,43 @@ class MainWindow(QMainWindow):
                 try:
                     idx = 0 if mode == 'Monotonic' else 1
                     self.mono_selector.setCurrentIndex(idx)
+                    # Ensure the shape selector options are in the correct semantic set
+                    try:
+                        self.on_mono_changed(self.mono_selector.currentIndex())
+                    except Exception:
+                        pass
                 except Exception:
                     pass
             shape = meta.get('shape')
             if shape:
                 try:
-                    # set shape selector if matches
-                    if 'Concave' in shape:
-                        self.shape_selector.setCurrentIndex(0)
-                    elif 'Convex' in shape:
-                        self.shape_selector.setCurrentIndex(1)
+                    # set shape selector if matches. Shape strings may be 'Concave (∩)',
+                    # 'Convex (∪)' for non-monotonic or 'Increasing'/'Decreasing' for monotonic.
+                    # Use findText to handle the currently populated items.
+                    # prefer exact match, fallback to substring checks
+                    idx = self.shape_selector.findText(shape)
+                    if idx is not None and idx >= 0:
+                        self.shape_selector.setCurrentIndex(idx)
+                    else:
+                        if 'Concave' in shape:
+                            self.shape_selector.setCurrentIndex(0)
+                        elif 'Convex' in shape:
+                            self.shape_selector.setCurrentIndex(1)
+                        elif 'Increasing' in shape:
+                            # for monotonic mode, shape_selector contains 'Increasing'/'Decreasing'
+                            try:
+                                idx2 = self.shape_selector.findText('Increasing')
+                                if idx2 is not None and idx2 >= 0:
+                                    self.shape_selector.setCurrentIndex(idx2)
+                            except Exception:
+                                pass
+                        elif 'Decreasing' in shape:
+                            try:
+                                idx2 = self.shape_selector.findText('Decreasing')
+                                if idx2 is not None and idx2 >= 0:
+                                    self.shape_selector.setCurrentIndex(idx2)
+                            except Exception:
+                                pass
                 except Exception:
                     pass
             # thresholds
@@ -568,15 +769,46 @@ class MainWindow(QMainWindow):
             self.file_label.setText("Attribute min/max invalid")
             return
 
-        # Read inputs or fallback
-        try:
-            x_inc = float(self.x_increase_input.text()) if self.x_increase_input.text() else amax
-        except Exception:
-            x_inc = amax
-        try:
-            x_dec = float(self.x_decrease_input.text()) if self.x_decrease_input.text() else amin
-        except Exception:
-            x_dec = amin
+        # Read inputs or fallback; enforce numeric input and range
+        def _parse_in_range(widget, default):
+            txt = widget.text().strip()
+            if not txt:
+                return default, None
+            try:
+                val = float(txt)
+            except Exception:
+                return None, f"Invalid number: '{txt}'"
+            if not (amin <= val <= amax):
+                return None, f"Value {val} out of range [{amin}, {amax}]"
+            return val, None
+
+        x_inc, err = _parse_in_range(self.x_increase_input, amax)
+        if err:
+            self.file_label.setText(err)
+            try:
+                self.x_increase_input.setStyleSheet("background-color: #ffcccc")
+            except Exception:
+                pass
+            return
+        else:
+            try:
+                self.x_increase_input.setStyleSheet("")
+            except Exception:
+                pass
+
+        x_dec, err = _parse_in_range(self.x_decrease_input, amin)
+        if err:
+            self.file_label.setText(err)
+            try:
+                self.x_decrease_input.setStyleSheet("background-color: #ffcccc")
+            except Exception:
+                pass
+            return
+        else:
+            try:
+                self.x_decrease_input.setStyleSheet("")
+            except Exception:
+                pass
 
         # Reset current points for the attribute
         self.process.points = []
@@ -608,44 +840,124 @@ class MainWindow(QMainWindow):
                 self.process.add_point(x_dec, 1.0)
                 self.process.add_point(x_inc, 0.0)
             # optional indifference point for monotonic
+            # parse optional points and enforce ordering x025 < x0 < x075 when present
+            x0 = x25 = x75 = None
+            if self.indiff_input.text().strip():
+                try:
+                    x0_val = float(self.indiff_input.text())
+                    if not (amin <= x0_val <= amax):
+                        self.file_label.setText(f"x0 out of range [{amin},{amax}]")
+                        self.indiff_input.setStyleSheet("background-color: #ffcccc")
+                        return
+                    x0 = x0_val
+                    self.indiff_input.setStyleSheet("")
+                    self.process.add_point(x0, 0.5)
+                except Exception:
+                    self.file_label.setText("Invalid x0 value")
+                    self.indiff_input.setStyleSheet("background-color: #ffcccc")
+                    return
+
+            if self.indiff25_input.text().strip():
+                try:
+                    x25_val = float(self.indiff25_input.text())
+                    if not (amin <= x25_val <= amax):
+                        self.file_label.setText(f"x0.25 out of range [{amin},{amax}]")
+                        self.indiff25_input.setStyleSheet("background-color: #ffcccc")
+                        return
+                    x25 = x25_val
+                    self.indiff25_input.setStyleSheet("")
+                except Exception:
+                    self.file_label.setText("Invalid x0.25 value")
+                    self.indiff25_input.setStyleSheet("background-color: #ffcccc")
+                    return
+
+            if self.indiff75_input.text().strip():
+                try:
+                    x75_val = float(self.indiff75_input.text())
+                    if not (amin <= x75_val <= amax):
+                        self.file_label.setText(f"x0.75 out of range [{amin},{amax}]")
+                        self.indiff75_input.setStyleSheet("background-color: #ffcccc")
+                        return
+                    x75 = x75_val
+                    self.indiff75_input.setStyleSheet("")
+                except Exception:
+                    self.file_label.setText("Invalid x0.75 value")
+                    self.indiff75_input.setStyleSheet("background-color: #ffcccc")
+                    return
+
+            # ordering check if at least two of them present: require x25 < x0 < x75 when applicable
             try:
-                if self.indiff_input.text():
-                    x0 = float(self.indiff_input.text())
-                    if amin <= x0 <= amax:
-                        self.process.add_point(x0, 0.5)
+                vals = {'x25': x25, 'x0': x0, 'x75': x75}
+                present_keys = [k for k, v in vals.items() if v is not None]
+                if len(present_keys) >= 2:
+                    # define expected order depending on increasing/decreasing
+                    if increasing:
+                        expected = ['x25', 'x0', 'x75']
+                        err_msg = "Require x0.25 < x0.5 < x0.75"
+                    else:
+                        expected = ['x75', 'x0', 'x25']
+                        err_msg = "Require x0.75 < x0.5 < x0.25"
+
+                    # all three present: enforce full ordering
+                    if all(vals[k] is not None for k in expected):
+                        if not (vals[expected[0]] < vals[expected[1]] < vals[expected[2]]):
+                            self.file_label.setText(err_msg)
+                            self.indiff25_input.setStyleSheet("background-color: #ffcccc")
+                            self.indiff_input.setStyleSheet("background-color: #ffcccc")
+                            self.indiff75_input.setStyleSheet("background-color: #ffcccc")
+                            return
+                    else:
+                        # two present: ensure their relative order matches expected ordering
+                        if len(present_keys) == 2:
+                            k1, k2 = present_keys[0], present_keys[1]
+                            try:
+                                idx1 = expected.index(k1)
+                                idx2 = expected.index(k2)
+                            except Exception:
+                                idx1 = idx2 = 0
+                            v1 = vals[k1]; v2 = vals[k2]
+                            if idx1 < idx2:
+                                if not (v1 < v2):
+                                    self.file_label.setText("Indifference points ordering invalid")
+                                    if k1 == 'x25': self.indiff25_input.setStyleSheet("background-color: #ffcccc")
+                                    if k1 == 'x0': self.indiff_input.setStyleSheet("background-color: #ffcccc")
+                                    if k1 == 'x75': self.indiff75_input.setStyleSheet("background-color: #ffcccc")
+                                    if k2 == 'x25': self.indiff25_input.setStyleSheet("background-color: #ffcccc")
+                                    if k2 == 'x0': self.indiff_input.setStyleSheet("background-color: #ffcccc")
+                                    if k2 == 'x75': self.indiff75_input.setStyleSheet("background-color: #ffcccc")
+                                    return
+                            else:
+                                if not (v1 > v2):
+                                    self.file_label.setText("Indifference points ordering invalid")
+                                    if k1 == 'x25': self.indiff25_input.setStyleSheet("background-color: #ffcccc")
+                                    if k1 == 'x0': self.indiff_input.setStyleSheet("background-color: #ffcccc")
+                                    if k1 == 'x75': self.indiff75_input.setStyleSheet("background-color: #ffcccc")
+                                    if k2 == 'x25': self.indiff25_input.setStyleSheet("background-color: #ffcccc")
+                                    if k2 == 'x0': self.indiff_input.setStyleSheet("background-color: #ffcccc")
+                                    if k2 == 'x75': self.indiff75_input.setStyleSheet("background-color: #ffcccc")
+                                    return
             except Exception:
                 pass
-            # optional 0.25 and 0.75 indifference points (only meaningful for monotonic)
+            # Add parsed x25/x75 points following original ordering rules
             try:
-                if self.indiff25_input.text():
-                    x25 = float(self.indiff25_input.text())
-                    # if x0 exists enforce ordering (min <= x25 <= x0)
-                    if self.indiff_input.text():
-                        x0 = float(self.indiff_input.text())
-                        # ordering depends on increasing/decreasing: keep relative to x0
+                if x25 is not None:
+                    # if x0 exists enforce ordering (min <= x25 <= x0) for increasing, else (x0 <= x25 <= max)
+                    if x0 is not None:
                         if increasing:
                             if amin <= x25 <= x0:
                                 self.process.add_point(x25, 0.25)
                         else:
-                            # for decreasing, x25 should be between x0 and amax
                             if x0 <= x25 <= amax:
                                 self.process.add_point(x25, 0.25)
                     else:
                         if amin <= x25 <= amax:
                             self.process.add_point(x25, 0.25)
-            except Exception:
-                pass
-            try:
-                if self.indiff75_input.text():
-                    x75 = float(self.indiff75_input.text())
-                    # if x0 exists enforce ordering (x0 <= x75 <= max)
-                    if self.indiff_input.text():
-                        x0 = float(self.indiff_input.text())
+                if x75 is not None:
+                    if x0 is not None:
                         if increasing:
                             if x0 <= x75 <= amax:
                                 self.process.add_point(x75, 0.75)
                         else:
-                            # for decreasing, x75 should be between amin and x0
                             if amin <= x75 <= x0:
                                 self.process.add_point(x75, 0.75)
                     else:
@@ -656,65 +968,109 @@ class MainWindow(QMainWindow):
         else:
             shape = self.shape_selector.currentText()
             if shape.startswith("Concave"):
-                # Peak: tails 0
+                # Peak (concave): tails 0, inner thresholds set to 0, peak (if any) at y=1
                 self.process.left_tail_value = 0.0
                 self.process.right_tail_value = 0.0
                 self.process.add_point(amin, 0.0)
-                self.process.add_point(x_inc, 1.0)
+                self.process.add_point(x_inc, 0.0)
                 self.process.add_point(x_dec, 0.0)
                 self.process.add_point(amax, 0.0)
-                # if user provided a specific peak location, add it
+                # optional peak
                 try:
-                    if self.peak_location_input.text():
+                    if self.peak_location_input.text().strip():
                         px = float(self.peak_location_input.text())
                         if amin <= px <= amax:
                             self.process.add_point(px, 1.0)
                 except Exception:
                     pass
-                # optional left/right indifference points (must lie left/right of peak if provided)
+                # left/right indifference points (must be within range and on correct sides of peak if provided)
                 try:
-                    if self.left_indiff_input.text():
+                    if self.left_indiff_input.text().strip():
                         lx = float(self.left_indiff_input.text())
-                        # only add if a peak exists and lx < peak, otherwise just add if in range
-                        if amin <= lx <= amax:
-                            self.process.add_point(lx, 0.5)
+                        if not (amin <= lx <= amax):
+                            self.file_label.setText(f"Left indifference out of range [{amin},{amax}]")
+                            self.left_indiff_input.setStyleSheet("background-color: #ffcccc")
+                            return
+                        try:
+                            if 'px' in locals() and not (lx <= px):
+                                self.file_label.setText("Left indifference must not be larger than peak")
+                                self.left_indiff_input.setStyleSheet("background-color: #ffcccc")
+                                return
+                        except Exception:
+                            pass
+                        self.left_indiff_input.setStyleSheet("")
+                        self.process.add_point(lx, 0.5)
                 except Exception:
                     pass
                 try:
-                    if self.right_indiff_input.text():
+                    if self.right_indiff_input.text().strip():
                         rx = float(self.right_indiff_input.text())
-                        if amin <= rx <= amax:
-                            self.process.add_point(rx, 0.5)
+                        if not (amin <= rx <= amax):
+                            self.file_label.setText(f"Right indifference out of range [{amin},{amax}]")
+                            self.right_indiff_input.setStyleSheet("background-color: #ffcccc")
+                            return
+                        try:
+                            if 'px' in locals() and not (rx >= px):
+                                self.file_label.setText("Right indifference must not be smaller than peak")
+                                self.right_indiff_input.setStyleSheet("background-color: #ffcccc")
+                                return
+                        except Exception:
+                            pass
+                        self.right_indiff_input.setStyleSheet("")
+                        self.process.add_point(rx, 0.5)
                 except Exception:
                     pass
             else:
-                # Convex/valley: tails 1
+                # Convex (valley): tails 1, inner thresholds set to 1, valley (if any) at y=0
                 self.process.left_tail_value = 1.0
                 self.process.right_tail_value = 1.0
                 self.process.add_point(amin, 1.0)
-                self.process.add_point(x_inc, 0.0)
+                self.process.add_point(x_inc, 1.0)
                 self.process.add_point(x_dec, 1.0)
                 self.process.add_point(amax, 1.0)
-                # optional valley location
+                # optional valley
                 try:
-                    if self.peak_location_input.text():
+                    if self.peak_location_input.text().strip():
                         px = float(self.peak_location_input.text())
                         if amin <= px <= amax:
                             self.process.add_point(px, 0.0)
                 except Exception:
                     pass
+                # left/right indifference points (must be within range and on correct sides of valley if provided)
                 try:
-                    if self.left_indiff_input.text():
+                    if self.left_indiff_input.text().strip():
                         lx = float(self.left_indiff_input.text())
-                        if amin <= lx <= amax:
-                            self.process.add_point(lx, 0.5)
+                        if not (amin <= lx <= amax):
+                            self.file_label.setText(f"Left indifference out of range [{amin},{amax}]")
+                            self.left_indiff_input.setStyleSheet("background-color: #ffcccc")
+                            return
+                        try:
+                            if 'px' in locals() and not (lx <= px):
+                                self.file_label.setText("Left indifference must not be larger than valley")
+                                self.left_indiff_input.setStyleSheet("background-color: #ffcccc")
+                                return
+                        except Exception:
+                            pass
+                        self.left_indiff_input.setStyleSheet("")
+                        self.process.add_point(lx, 0.5)
                 except Exception:
                     pass
                 try:
-                    if self.right_indiff_input.text():
+                    if self.right_indiff_input.text().strip():
                         rx = float(self.right_indiff_input.text())
-                        if amin <= rx <= amax:
-                            self.process.add_point(rx, 0.5)
+                        if not (amin <= rx <= amax):
+                            self.file_label.setText(f"Right indifference out of range [{amin},{amax}]")
+                            self.right_indiff_input.setStyleSheet("background-color: #ffcccc")
+                            return
+                        try:
+                            if 'px' in locals() and not (rx >= px):
+                                self.file_label.setText("Right indifference must not be smaller than valley")
+                                self.right_indiff_input.setStyleSheet("background-color: #ffcccc")
+                                return
+                        except Exception:
+                            pass
+                        self.right_indiff_input.setStyleSheet("")
+                        self.process.add_point(rx, 0.5)
                 except Exception:
                     pass
 
@@ -953,6 +1309,19 @@ class MainWindow(QMainWindow):
                 self.x_decrease_input.setPlaceholderText(f"X after which decreasing not important (default = {amin})")
             except Exception:
                 pass
+                # update lineedit validators ranges when attribute bounds known
+            try:
+                if hasattr(self, '_set_lineedit_range'):
+                    self._set_lineedit_range(self.x_increase_input, amin, amax)
+                    self._set_lineedit_range(self.x_decrease_input, amin, amax)
+                    self._set_lineedit_range(self.indiff_input, amin, amax)
+                    self._set_lineedit_range(self.indiff25_input, amin, amax)
+                    self._set_lineedit_range(self.indiff75_input, amin, amax)
+                    self._set_lineedit_range(self.peak_location_input, amin, amax)
+                    self._set_lineedit_range(self.left_indiff_input, amin, amax)
+                    self._set_lineedit_range(self.right_indiff_input, amin, amax)
+            except Exception:
+                pass
                 # update parameter slider ranges based on attribute span
             try:
                 rng = max(1e-6, float(amax) - float(amin))
@@ -1021,12 +1390,19 @@ class MainWindow(QMainWindow):
             self.mono_selector.setCurrentIndex(0)
         finally:
             self.mono_selector.blockSignals(False)
+        # Ensure shape/mono visibility and semantics are consistent after reset
         try:
+            # reset shape index but DO NOT explicitly hide it here; on_mono_changed will set visibility
             self.shape_selector.blockSignals(True)
             self.shape_selector.setCurrentIndex(0)
-            self.shape_selector.setVisible(False)
         finally:
             self.shape_selector.blockSignals(False)
+
+        # Apply mono/shape logic so the correct controls are shown for the current mode
+        try:
+            self.on_mono_changed(self.mono_selector.currentIndex())
+        except Exception:
+            pass
 
         # Reset process points and thresholds/tails so plotting starts fresh
         try:
@@ -1040,12 +1416,39 @@ class MainWindow(QMainWindow):
 
     def prev_attribute(self):
         """Move to the previous attribute."""
-        # save current attribute state then move
+        # ensure any pending debounced apply runs so points reflect UI
         try:
-            meta = self.collect_meta_from_ui()
-            self.process.save_current_state(degree=self.degree_slider.value(), meta=meta)
+            if hasattr(self, '_apply_timer') and self._apply_timer.isActive():
+                self._apply_timer.stop()
+            # apply thresholds synchronously to update process.points
+            self.apply_thresholds()
         except Exception:
             pass
+
+        # save current attribute state then move; block navigation on validation/save errors
+        try:
+            meta = self.collect_meta_from_ui()
+        except ValueError as e:
+            # validation failed; show message and do not navigate
+            try:
+                self.file_label.setText(str(e))
+            except Exception:
+                pass
+            return
+        except Exception as e:
+            try:
+                self.file_label.setText(f"Error collecting settings: {e}")
+            except Exception:
+                pass
+            return
+        try:
+            self.process.save_current_state(degree=self.degree_slider.value(), meta=meta)
+        except Exception as e:
+            try:
+                self.file_label.setText(f"Save error: {e}")
+            except Exception:
+                pass
+            return
         if self.process.prev_attribute():
             # reset UI fields so old values are not retained
             self.reset_ui_fields()
@@ -1064,12 +1467,37 @@ class MainWindow(QMainWindow):
 
     def next_attribute(self):
         """Move to the next attribute."""
-        # save current attribute state then move
+        # ensure any pending debounced apply runs so points reflect UI
         try:
-            meta = self.collect_meta_from_ui()
-            self.process.save_current_state(degree=self.degree_slider.value(), meta=meta)
+            if hasattr(self, '_apply_timer') and self._apply_timer.isActive():
+                self._apply_timer.stop()
+            self.apply_thresholds()
         except Exception:
             pass
+
+        # save current attribute state then move; block navigation on validation/save errors
+        try:
+            meta = self.collect_meta_from_ui()
+        except ValueError as e:
+            try:
+                self.file_label.setText(str(e))
+            except Exception:
+                pass
+            return
+        except Exception as e:
+            try:
+                self.file_label.setText(f"Error collecting settings: {e}")
+            except Exception:
+                pass
+            return
+        try:
+            self.process.save_current_state(degree=self.degree_slider.value(), meta=meta)
+        except Exception as e:
+            try:
+                self.file_label.setText(f"Save error: {e}")
+            except Exception:
+                pass
+            return
         if self.process.next_attribute():
             # reset UI fields so old values are not retained
             self.reset_ui_fields()

@@ -569,6 +569,9 @@ class ElicitationProcess:
 
     def next_attribute(self):
         """Move to the next attribute."""
+        # guard when no dataframe loaded
+        if self.df is None:
+            return False
         if self.current_attribute_index < len(self.df) - 1:
             self.current_attribute_index += 1
             self.points = []  # Reset points for the new attribute
@@ -577,6 +580,9 @@ class ElicitationProcess:
 
     def prev_attribute(self):
         """Move to the previous attribute."""
+        # guard when no dataframe loaded
+        if self.df is None:
+            return False
         if self.current_attribute_index > 0:
             self.current_attribute_index -= 1
             self.points = []  # Reset points for the previous attribute
