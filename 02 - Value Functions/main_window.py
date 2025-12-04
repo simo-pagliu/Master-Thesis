@@ -1110,6 +1110,27 @@ class MainWindow(QMainWindow):
                     except Exception:
                         pass
 
+            # Pass monotonicity flags from UI into params so fitters know direction
+            try:
+                # default: not enforcing monotonic unless UI requests it
+                if hasattr(self, 'mono_selector') and self.mono_selector.currentText() == 'Monotonic':
+                    # shape_selector contains 'Increasing' or 'Decreasing' in monotonic mode
+                    sh = self.shape_selector.currentText() if hasattr(self, 'shape_selector') else ''
+                    increasing_flag = True
+                    try:
+                        if 'Decreasing' in sh:
+                            increasing_flag = False
+                    except Exception:
+                        increasing_flag = True
+                    params['increasing'] = bool(increasing_flag)
+                    # signal to polynomial fitter that monotonic constraint should be applied
+                    params['monotonic'] = True
+                else:
+                    params.setdefault('monotonic', False)
+            except Exception:
+                # be tolerant: do not break plotting if UI not available
+                pass
+
             # compute attribute range to adjust relative parameters (e.g. sigmoid k, exp/log b)
             try:
                 attr = self.process.get_current_attribute()
