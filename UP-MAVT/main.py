@@ -51,6 +51,22 @@ UPDATE_EVERY = 10  # Update plots every N runs
 dict_data_list, crit_index, vf_list, alternatives = startup(file_path_criteria, file_path_weight_elicitations, file_path_value_functions)
 n_alternatives = len(alternatives)
 print(f"Loaded {len(dict_data_list)} elicitation(s) with {n_alternatives} alternatives.")
+
+# Extract alternative names for plotting (the CSV contains a `name` column)
+alternative_names = []
+try:
+    with open("alternatives.csv", mode='r') as altf:
+        reader = csv.DictReader(altf)
+        for idx, row in enumerate(reader):
+            name = row.get('name') if row is not None else None
+            if name is None or name == '':
+                name = f"Alt {idx}"
+            alternative_names.append(name)
+    # Fallback to generic names if the file didn't contain names or had fewer rows
+    if len(alternative_names) < n_alternatives:
+        alternative_names = [f"Alt {i+1}" for i in range(n_alternatives)]
+except Exception:
+    alternative_names = [f"Alt {i+1}" for i in range(n_alternatives)]
 #################################################################################
 
 #################################################################################
@@ -88,22 +104,24 @@ print(f"Imported weight spaces for {len(list_of_weight_space_points)} elicitatio
 # rather than relying on a fixed number of runs
 def update_plots(rank_probs, distributions, i, n_runs, n_alternatives, strict=False, n_elicitations=1, lists_of_full_sets=None, rank_counts_per_el=None):
     # General Heatmap (all elicitations aggregated)
-    ax.clear()
-    sns.heatmap(
-        rank_probs,
-        annot=True,
-        fmt=".2f",
-        xticklabels=[f"{j+1}th" for j in range(n_alternatives)],
-        yticklabels=[f"Alt {j}" for j in range(n_alternatives)],
-        cmap="YlGnBu",
-        ax=ax,
-        vmin=0,
-        vmax=1,
-        cbar=False,
-    )
-    ax.set_title(f"Ranking Probabilities (Run {i+1}/{n_runs})")
-    ax.set_xlabel("Rank")
-    ax.set_ylabel("Alternative")
+    # In strict mode we do not compute or show the aggregated heatmap
+    if not strict and ax is not None:
+        ax.clear()
+        sns.heatmap(
+            rank_probs.T,
+            annot=True,
+            fmt=".2f",
+            xticklabels=alternative_names,
+            yticklabels=[f"{j+1}th" for j in range(n_alternatives)],
+            cmap="YlGnBu",
+            ax=ax,
+            vmin=0,
+            vmax=1,
+            cbar=False,
+        )
+        ax.set_title(f"Ranking Probabilities (Run {i+1}/{n_runs})")
+        ax.set_xlabel("Alternative")
+        ax.set_ylabel("Rank")
 
     # Per-elicitation heatmaps (strict mode)
     if strict and axes_el is not None and lists_of_full_sets is not None and rank_counts_per_el is not None:
@@ -115,11 +133,11 @@ def update_plots(rank_probs, distributions, i, n_runs, n_alternatives, strict=Fa
             else:
                 rank_probs_e = np.zeros((n_alternatives, n_alternatives))
             sns.heatmap(
-                rank_probs_e,
+                rank_probs_e.T,
                 annot=True,
                 fmt=".2f",
-                xticklabels=[f"{j+1}th" for j in range(n_alternatives)],
-                yticklabels=[f"Alt {j}" for j in range(n_alternatives)],
+                xticklabels=alternative_names,
+                yticklabels=[f"{j+1}th" for j in range(n_alternatives)],
                 cmap="YlGnBu",
                 ax=axes_el[e],
                 vmin=0,
@@ -127,8 +145,8 @@ def update_plots(rank_probs, distributions, i, n_runs, n_alternatives, strict=Fa
                 cbar=False,
             )
             axes_el[e].set_title(f"Elicitation {e+1} Ranking Prob (runs={runs_e})")
-            axes_el[e].set_xlabel("Rank")
-            axes_el[e].set_ylabel("Alternative")
+            axes_el[e].set_xlabel("Alternative")
+            axes_el[e].set_ylabel("Rank")
 
     # Histograms
     for alt_idx in range(n_alternatives):
@@ -180,11 +198,13 @@ def update_plots(rank_probs, distributions, i, n_runs, n_alternatives, strict=Fa
     #         pass
 
     # Draw figures
-    fig.canvas.draw()
-    fig.canvas.flush_events()
-    fig_hist.canvas.draw()
-    fig_hist.canvas.flush_events()
-    if strict and fig_el is not None:
+    if 'fig' in globals() and fig is not None:
+        fig.canvas.draw()
+        fig.canvas.flush_events()
+    if 'fig_hist' in globals() and fig_hist is not None:
+        fig_hist.canvas.draw()
+        fig_hist.canvas.flush_events()
+    if strict and 'fig_el' in globals() and fig_el is not None:
         fig_el.canvas.draw()
         fig_el.canvas.flush_events()
 #################################################################################
@@ -193,7 +213,7 @@ def update_plots(rank_probs, distributions, i, n_runs, n_alternatives, strict=Fa
 # Preparation for the Montecarlo Simulation
 print("Starting Monte Carlo simulation...")
 # Call the generator (yields results one by one)
-mc_code = mc_simulation(alternatives, vf_list, list_of_weight_space_points, dict_data_list, weighted_sum, sim_runs=n_runs, strict=STRICT, crit_index=crit_index)
+mc_code = mc_simulation(alternatives,opinion_weights, vf_list, list_of_weight_space_points, dict_data_list, weighted_sum, sim_runs=n_runs, strict=STRICT, crit_index=crit_index)
 # Number of elicitation files
 n_elicitations = len(dict_data_list)
 # Setup plots if enabled
@@ -201,16 +221,33 @@ if PLOTS:
     
     # Heatmap setup (general)
     plt.ion()
-    fig, ax = plt.subplots(figsize=(8, 6))
-    initial_data = np.zeros((n_alternatives, n_alternatives))
-    sns.heatmap(initial_data, cmap="YlGnBu", ax=ax, vmin=0, vmax=1)
-    cbar = ax.collections[0].colorbar
-    # Ensure top and bottom margins aren't cut off by the window manager
-    try:
-        fig.tight_layout()
-        fig.subplots_adjust(top=0.95, bottom=0.08)
-    except Exception:
-        pass
+    # Create aggregated heatmap only when not running in strict mode
+    if not STRICT:
+        fig, ax = plt.subplots(figsize=(8, 6))
+        initial_data = np.zeros((n_alternatives, n_alternatives))
+        sns.heatmap(
+            initial_data.T,
+            cmap="YlGnBu",
+            ax=ax,
+            xticklabels=alternative_names,
+            yticklabels=[f"{j+1}th" for j in range(n_alternatives)],
+            vmin=0,
+            vmax=1,
+        )
+        try:
+            cbar = ax.collections[0].colorbar
+        except Exception:
+            cbar = None
+        # Ensure top and bottom margins aren't cut off by the window manager
+        try:
+            fig.tight_layout()
+            fig.subplots_adjust(top=0.95, bottom=0.08)
+        except Exception:
+            pass
+    else:
+        # aggregated heatmap disabled in strict mode
+        fig = None
+        ax = None
 
     # Heatmaps per elicitation (new figure) - one subplot per elicitation
     if STRICT and n_elicitations > 0:
