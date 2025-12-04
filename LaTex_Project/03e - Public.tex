@@ -74,10 +74,27 @@ Given public sensitivity regarding nuclear waste, this analysis includes \gls{sn
 
 
 \subsubsection{Perceived Safety}
-Finally, the perceived safety from the general public point of view was considered. The reason behind the exclusion of engineering safety parametrs is detailed in section \ref{sec:indicators_removed}. In short, for this analysis we recognize that, from an engineering standpoint, all reactors can be considered equally safe. Nonetheless, from the history of nuclear power it is evident that the opinion of the public is much more important than the one of probabilistic risk assesments (see Section \ref{sec:history_nuclear_power} and \ref{sec:country_selection}). This study therefore tries to quantify the opinion of the public on different reactor designs mostly based on their potential appearance in the media. The first assumption that the author was confidet to make is that any large "traditional" reactor will be judged the same way, so the difference might lie between \glspl{smr}. To have a baseline understanding a small survey was conducted presenting the three \glspl{smr} models by the keypoints that their own suppliers use, Rolls Royce is mostly focused on the modularity, size and flexibility while Nuscale and \gls{ge} enphatise, in sligthly different ways,  the safety advantages of their integrated design, mostly the ability to shutdown safetly without human intervention (which is something that all commercial reactors do anyway) and the ability to cool down without external power. For each design the participants were asked to say if they belived the reactor was safer, as safe as or less safe then traditional large reactors. The survey also provided images of the reactor to better rapresent the way they might appear in the media. The results of this small survery (n=50) show that both Nuscale and the \gls{bwrx} where percieved as safer then traditional large reactors while Rolls Royce \gls{smr} was percieved as safer by a minority of participants (one thought it was less safe, for this analysis this response was grouped with the "as safe as" category). A detailed analysis of the survery can be found in appendix \ref{sec:appendix_survey}, the results summarized as follows:
-\textcolor{red}{PLACEHOLDER DATA}
+Finally, the perceived safety from the general public point of view was considered. The reason behind the exclusion of engineering safety parametrs is detailed in section \ref{sec:indicators_removed}. In short, for this analysis we recognize that, from an engineering standpoint, all reactors can be considered equally safe. Nonetheless, from the history of nuclear power it is evident that the opinion of the public is much more important than the one of probabilistic risk assesments (see Section \ref{sec:history_nuclear_power} and \ref{sec:country_selection}). This study therefore tries to quantify the opinion of the public on different reactor designs mostly based on their potential appearance in the media. The first assumption that the author was confidet to make is that any large "traditional" reactor will be judged the same way, so the difference might lie between \glspl{smr}. To have a baseline understanding a small survey was conducted presenting the three \glspl{smr} models by the keypoints that their own suppliers use, Rolls Royce is mostly focused on the modularity, size and flexibility while Nuscale and \gls{ge} enphatise, in sligthly different ways,  the safety advantages of their integrated design, mostly the ability to shutdown safetly without human intervention (which is something that all commercial reactors do anyway) and the ability to cool down without external power. For each design the participants were asked to say if they belived the reactor was safer, as safe as or less safe then traditional large reactors. The survey also provided images of the reactor to better rapresent the way they might appear in the media. The results of this small survery (n=50) show that both Nuscale and the \gls{bwrx} where percieved as safer then traditional large reactors while Rolls Royce \gls{smr} was percieved as safer by a minority of participants (one thought it was less safe, for this analysis this response was grouped with the "as safe as" category). A detailed presentation of the survery can be found in appendix \ref{sec:appendix_survey}, the results summarized as follows:
 \begin{itemize}
     \item Nuscale: 62\% safer, 38\% as safe as
     \item \gls{bwrx}: 62\% safer, 38\% as safe as
     \item Rolls Royce \gls{smr}: 30\% safer, 70\% as safe as
 \end{itemize}
+If we state that the amount of people that think that nuclear reactors are safe is $x$ we can decude the distribution as follows:
+\begin{table}[h]
+\centering
+\caption{Summary of Public Perception of Reactor Safety}
+\label{tab:safety_distribution}
+\begin{tabularx}{\textwidth}{rcccc}
+\toprule
+      & Traditional & NuScale & \gls{bwrx} & Rolls-Royce \\
+\midrule
+Unsafe (0) & $1 - x$   & $0.38 \cdot (1 - x)$ & $0.38 \cdot (1 - x)$ & $0.30 \cdot (1 - x)$ \\
+Safe (1) & $x$ & $0.38 \cdot x$ + $0.62 \cdot (1 - x)$ & $0.38 \cdot x$ + $0.62 \cdot (1 - x)$ & $0.30 \cdot (1-x)$ + $0.70 \cdot x$ \\
+Safer (2) & 0 & $0.62 \cdot x$ & $0.62 \cdot x$ & $0.30 \cdot x$ \\
+\bottomrule
+\end{tabularx}
+\end{table}
+While it is obvius that to the lowest score will corespond a value of 0 and to the highest the value function shall return 1, we cannot assume linearity for the middle ground, this information will be elicited from experts though value functions elicitation (see Section \ref{sec:value_functions}).
+
+The value of $x$ is unknown, and will be treated as an uncertain parameter sampled form an uniform distribution between 0.3 and 0.7 to capture both a generally pro-nuclear and a generally anti-nuclear public opinion. Public surveys were not employed in this regard for reasons disclosed in section \ref{sec:indicators_removed}.
