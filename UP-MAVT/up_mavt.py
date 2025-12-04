@@ -117,54 +117,56 @@ def sample_to_values(data, value_function):
 #################################################################################
 
 #################################################################################
+def evaluation_func(elicitation_idx, alternatives, opinion_weights, vf_list, list_of_weight_space_points, dict_data_list, aggregation_method, strict, crit_index):
+    run_results = []
+    # Select the weight space for this elicitation
+    weight_space_points = list_of_weight_space_points[elicitation_idx]
+    # Load the dict_data for this elicitation
+    dict_data = dict_data_list[elicitation_idx]
+    # For each expert we choose a random set of weights
+    sampled_weights = weight_sampler(dict_data, weight_space_points)
+    # Normalization to ensure weights sum to 1 (should be already the case)
+    sampled_weights = sampled_weights / np.sum(sampled_weights)
+    # For each alternative we compute its value
+    for a, alt in enumerate(alternatives):
+        intermediate_results = []
+        # For each criterion
+        # iterate over criterion name + data so we can align with vf_list by name
+        for c_idx, (crit_name, criterion_data) in enumerate(alt.items()):
+            # determine the index into vf_list for this criterion
+            idx = crit_index.get(crit_name, None)
+
+            # choose the value function: strict -> same expert index, otherwise random
+            if strict:
+                v_f = vf_list[idx][elicitation_idx]
+            else:
+                v_f = np.random.choice(vf_list[idx], p=opinion_weights)
+
+            # compute the value of the criterion by sampling from its distribution
+            sampled_value = sample_to_values(criterion_data, v_f)
+            # Get the weight for this criterion from the sampled weight set
+            weight = sampled_weights[idx]
+            # save this pair of weight and value
+            intermediate_results.append([weight, sampled_value])
+        # Once all criterion have been evaluated we aggregate to get the overall alternative value
+        # print(intermediate_results[2][1])
+        alternative_value = aggregation_method(intermediate_results)
+        # And save the alternative value to go then to the next alternative
+        run_results.append(alternative_value)
+    # Return the list of alternative values for this evaluation
+    return run_results
 # Montecarlo generator function
-def mc_simulation(alternatives, vf_list, list_of_weight_space_points, dict_data_list, aggregation_method, sim_runs, strict, crit_index):
+def mc_simulation(alternatives,opinion_weights, vf_list, list_of_weight_space_points, dict_data_list, aggregation_method, sim_runs, strict, crit_index):
     # weight_list = np.array(weight_list)
+    possible_idxs = [i for i in range(len(list_of_weight_space_points))]
     for mc_run in range(sim_runs):
         # For each montecarlo run we iterate over all experts
-        for elicitation_idx in range(len(list_of_weight_space_points)):
-            run_results = []
-            # Select the weight space for this elicitation
-            weight_space_points = list_of_weight_space_points[elicitation_idx]
-            # Load the dict_data for this elicitation
-            dict_data = dict_data_list[elicitation_idx]
-            # For each expert we choose a random set of weights
-            sampled_weights = weight_sampler(dict_data, weight_space_points)
-            # Normalization to ensure weights sum to 1 (should be already the case)
-            sampled_weights = sampled_weights / np.sum(sampled_weights)
-            # For each alternative we compute its value
-            for a, alt in enumerate(alternatives):
-                intermediate_results = []
-                # For each criterion
-                # iterate over criterion name + data so we can align with vf_list by name
-                for c_idx, (crit_name, criterion_data) in enumerate(alt.items()):
-                    # determine the index into vf_list for this criterion
-                    idx = crit_index.get(crit_name, None)
-
-                    # choose the value function: strict -> same expert index, otherwise random
-                    if strict:
-                        v_f = vf_list[idx][elicitation_idx]
-                    else:
-                        v_f = np.random.choice(vf_list[idx])
-
-                    # compute the value of the criterion by sampling from its distribution
-                    sampled_value = sample_to_values(criterion_data, v_f)
-                    # Get the weight for this criterion from the sampled weight set
-                    weight = sampled_weights[idx]
-                    # save this pair of weight and value
-                    intermediate_results.append([weight, sampled_value])
-                # Once all criterion have been evaluated we aggregate to get the overall alternative value
-                # print(intermediate_results[2][1])
-                alternative_value = aggregation_method(intermediate_results)
-                # And save the alternative value to go then to the next alternative
-                run_results.append(alternative_value)
-            # Now we save the result from this run
-            # So each run is consistent with the set of weight,
-            # this means that we can later compute the ranking of the alternatives per run
-            if strict:
-                # Yield both the elicitation index and the results so the caller
-                # can aggregate and plot per-elicitation statistics
+        if strict:
+            for elicitation_idx in range(len(list_of_weight_space_points)):
+                run_results = evaluation_func(elicitation_idx, alternatives, None, vf_list, list_of_weight_space_points, dict_data_list, aggregation_method, strict, crit_index)
                 yield elicitation_idx, run_results
-            else:
-                yield run_results
+        else:
+            elicitation_idx = np.random.choice(possible_idxs, p=opinion_weights)
+            run_results = evaluation_func(elicitation_idx, alternatives, opinion_weights, vf_list, list_of_weight_space_points, dict_data_list, aggregation_method, strict, crit_index)
+            yield run_results
     return
