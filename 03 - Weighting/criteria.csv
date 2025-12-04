@@ -1,6 +1,6 @@
 name,group,min,max,unit
 C_1_1,G1,1,9,score
-C_1_2,G1,1,9,score
+C_1_2,G1,9,1,score
 C_1_3,G1,1,9,score
 C_2_1,G2,1,9,score
 C_2_2,G2,1,9,score

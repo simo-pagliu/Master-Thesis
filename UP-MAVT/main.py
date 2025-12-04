@@ -104,8 +104,8 @@ print(f"Imported weight spaces for {len(list_of_weight_space_points)} elicitatio
 # So we can stop the simulation when we see results converging 
 # rather than relying on a fixed number of runs
 def update_plots(rank_probs, distributions, i, n_runs, n_alternatives, strict=False, n_elicitations=1, lists_of_full_sets=None, rank_counts_per_el=None):
-    # General Heatmap (all elicitations aggregated)
-    # In strict mode we do not compute or show the aggregated heatmap
+    # General Heatmap is shows the aggregated ranking probabilities
+    # Only shown when not in strict mode
     if not strict and ax is not None:
         ax.clear()
         sns.heatmap(
@@ -124,79 +124,36 @@ def update_plots(rank_probs, distributions, i, n_runs, n_alternatives, strict=Fa
         ax.set_xlabel("Alternative")
         ax.set_ylabel("Rank")
 
-    # Per-elicitation heatmaps (strict mode)
-    if strict and axes_el is not None and lists_of_full_sets is not None and rank_counts_per_el is not None:
-        for e in range(n_elicitations):
-            axes_el[e].clear()
-            runs_e = len(lists_of_full_sets[e])
-            if runs_e > 0:
-                rank_probs_e = rank_counts_per_el[e] / runs_e
-            else:
-                rank_probs_e = np.zeros((n_alternatives, n_alternatives))
-            sns.heatmap(
-                rank_probs_e.T,
-                annot=True,
-                fmt=".2f",
-                xticklabels=alternative_names,
-                yticklabels=[f"{j+1}th" for j in range(n_alternatives)],
-                cmap="YlGnBu",
-                ax=axes_el[e],
-                vmin=0,
-                vmax=1,
-                cbar=False,
-            )
-            axes_el[e].set_title(f"Elicitation {e+1} Ranking Prob (runs={runs_e})")
-            axes_el[e].set_xlabel("Alternative")
-            axes_el[e].set_ylabel("Rank")
-
-    # Histograms
-    for alt_idx in range(n_alternatives):
-        axes[alt_idx].clear()
-        if not strict:
-            data = distributions[alt_idx, :i+1]
-            # show probability on the y-axis: use weights so bar heights sum to 1 (probability mass)
-            if data.size > 0:
-                weights = np.ones_like(data) / data.size
-                axes[alt_idx].hist(data, bins=plot_bins, weights=weights, alpha=0.7)
-                # Force x-axis to [0,1] since values are normalized
+    # Histograms of alternative values
+    # Only show in strict mode
+    # Used to judge the consensus
+    if strict and axes is not None:
+        for alt_idx in range(n_alternatives):
+            axes[alt_idx].clear()
+            if lists_of_full_sets is not None:
+                cmap = plt.get_cmap('tab10')
+                color_list = list(cmap(np.linspace(0, 1, max(1, n_elicitations))))
+                any_data = False
+                for e in range(n_elicitations):
+                    runs_e = len(lists_of_full_sets[e])
+                    if runs_e == 0:
+                        continue
+                    data_e = np.array(lists_of_full_sets[e]).T[alt_idx]
+                    if data_e.size > 0:
+                        any_data = True
+                        weights = np.ones_like(data_e) / data_e.size
+                        axes[alt_idx].hist(data_e, bins=plot_bins, weights=weights, alpha=0.5, color=color_list[e], label=f"E{e+1}")
+                if not any_data:
+                    axes[alt_idx].hist([], bins=plot_bins, alpha=0.7)
+                else:
+                    axes[alt_idx].legend(title='Elicitation')
                 axes[alt_idx].set_xlim(0, 1)
-            else:
-                axes[alt_idx].hist([], bins=plot_bins, alpha=0.7)
-                axes[alt_idx].set_xlim(0, 1)
-        else:
-            # Strict: overlay histograms, one per elicitation, using distinct colors
-            # Create a discrete list of colors from the 'tab10' colormap in a
-            # backwards-compatible way (works across Matplotlib versions).
-            cmap = plt.get_cmap('tab10')
-            color_list = list(cmap(np.linspace(0, 1, max(1, n_elicitations))))
-            any_data = False
-            for e in range(n_elicitations):
-                runs_e = len(lists_of_full_sets[e])
-                if runs_e == 0:
-                    continue
-                data_e = np.array(lists_of_full_sets[e]).T[alt_idx]
-                if data_e.size > 0:
-                    any_data = True
-                    weights = np.ones_like(data_e) / data_e.size
-                    axes[alt_idx].hist(data_e, bins=plot_bins, weights=weights, alpha=0.5, color=color_list[e], label=f"E{e+1}")
-            if not any_data:
-                axes[alt_idx].hist([], bins=plot_bins, alpha=0.7)
-            else:
-                axes[alt_idx].legend(title='Elicitation')
-            # Ensure all histograms show values on [0,1]
-            axes[alt_idx].set_xlim(0, 1)
-        axes[alt_idx].set_title(f"Distribution of Values for Alternative {alt_idx}")
-        axes[alt_idx].set_xlabel("Value")
-        axes[alt_idx].set_ylabel("Probability")
-        # Format y-axis as percentage
-        axes[alt_idx].yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(xmax=1.0))
-        axes[alt_idx].set_ylim(0, max(axes[alt_idx].get_ylim()[1], 0.1))  # Ensure some space for visibility
-    # Avoid expensive tight_layout on every update; call it only on the first update
-    # if i == 0:
-    #     try:
-    #         fig_hist.tight_layout()
-    #     except Exception:
-    #         pass
+            axes[alt_idx].set_title(f"Distribution of Values for Alternative {alt_idx}")
+            axes[alt_idx].set_xlabel("Value")
+            axes[alt_idx].set_ylabel("Probability")
+            # Format y-axis as percentage
+            axes[alt_idx].yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(xmax=1.0))
+            axes[alt_idx].set_ylim(0, max(axes[alt_idx].get_ylim()[1], 0.1))  # Ensure some space for visibility
 
     # Draw figures
     if 'fig' in globals() and fig is not None:
@@ -205,9 +162,6 @@ def update_plots(rank_probs, distributions, i, n_runs, n_alternatives, strict=Fa
     if 'fig_hist' in globals() and fig_hist is not None:
         fig_hist.canvas.draw()
         fig_hist.canvas.flush_events()
-    if strict and 'fig_el' in globals() and fig_el is not None:
-        fig_el.canvas.draw()
-        fig_el.canvas.flush_events()
 #################################################################################
 
 #################################################################################
@@ -250,32 +204,20 @@ if PLOTS:
         fig = None
         ax = None
 
-    # Heatmaps per elicitation (new figure) - one subplot per elicitation
-    if STRICT and n_elicitations > 0:
-        fig_el, axes_el = plt.subplots(n_elicitations, 1, figsize=(8, 4 * n_elicitations))
-        if n_elicitations == 1:
-            axes_el = np.array([axes_el])
-        # Add spacing so titles and labels don't overlap between subplots
+    # Histogram setup: only create histogram figures when running in strict mode
+    if STRICT:
+        fig_hist, axes = plt.subplots(n_alternatives, 1, figsize=(8, 4 * n_alternatives))
+        axes = axes.reshape(-1)  # Ensure axes is iterable
+        # Prevent overlapping text between stacked histograms and ensure margins
         try:
-            fig_el.tight_layout()
-            # slightly reduce vertical spacing and ensure top/bottom margins
-            fig_el.subplots_adjust(hspace=0.35, top=0.95, bottom=0.08)
+            fig_hist.tight_layout()
+            # slightly reduce vertical spacing and set bottom/top margins
+            fig_hist.subplots_adjust(hspace=0.35, top=0.95, bottom=0.08)
         except Exception:
             pass
     else:
-        fig_el = None
-        axes_el = None
-
-    # Histogram setup (one plot per alternative). In strict mode we will overlay one histogram per elicitation
-    fig_hist, axes = plt.subplots(n_alternatives, 1, figsize=(8, 4 * n_alternatives))
-    axes = axes.reshape(-1)  # Ensure axes is iterable
-    # Prevent overlapping text between stacked histograms and ensure margins
-    try:
-        fig_hist.tight_layout()
-        # slightly reduce vertical spacing and set bottom/top margins
-        fig_hist.subplots_adjust(hspace=0.35, top=0.95, bottom=0.08)
-    except Exception:
-        pass
+        fig_hist = None
+        axes = None
     
 # Create csv to save results LIVE (avoids excessive memory usage)
 output_file = "./results/results.csv"
@@ -367,9 +309,6 @@ if PLOTS:
         if 'fig_hist' in globals() and fig_hist is not None:
             fig_hist.tight_layout()
             fig_hist.subplots_adjust(hspace=0.35, top=0.95, bottom=0.08)
-        if 'fig_el' in globals() and fig_el is not None:
-            fig_el.tight_layout()
-            fig_el.subplots_adjust(hspace=0.35, top=0.95, bottom=0.08)
     except Exception:
         pass
     plt.ioff()
