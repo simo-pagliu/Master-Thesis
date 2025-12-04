@@ -41,7 +41,7 @@ file_path_criteria = "criteria.csv"
 n_runs = 10000
 PLOTS = True  # Toggle plots
 plot_bins = 50  # Number of bins for histograms
-STRICT = True  # Toggle strict mode
+STRICT = False  # Toggle strict mode
 UPDATE_EVERY = 10  # Update plots every N runs
 #################################################################################
 

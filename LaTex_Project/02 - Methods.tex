@@ -292,38 +292,20 @@ A_i = \sum_{j=1}^N w_j \cdot v_j(x_{ij})
 \label{eq:mavt_up}
 \end{equation}
 
-A first, much simplified approach to apply \gls{upmavt} is to assume independence between weights, value functions and input data, assume input values are certain while weights are normally distributed as well as value functions (meaning the resulting value of $v(x)$ is a normal distribution of values). With these assumption it is possible to compute an algebraic solution by means of the \gls{rss} method to propagate the uncertainties and obtain the standard deviation of the final alternative value as shown in equation \ref{eq:rss_propagation}. 
+% A first, much simplified approach to apply \gls{upmavt} is to assume independence between weights, value functions and input data, assume input values are certain while weights are normally distributed as well as value functions (meaning the resulting value of $v(x)$ is a normal distribution of values). With these assumption it is possible to compute an algebraic solution by means of the \gls{rss} method to propagate the uncertainties and obtain the standard deviation of the final alternative value as shown in equation \ref{eq:rss_propagation}. 
 
-\begin{equation}
-A_i = \mu_{A_i} \pm \sigma_{A_i} = w_j \cdot v_j(x_{ij}) \pm \sqrt{\sum_{j=1}^N \left( \left( \mu_{v_j} \cdot \sigma_{w_j} \right)^2 + \left( \mu_{w_j} \cdot \sigma_{v_j} \right)^2 \right) }
-\label{eq:rss_propagation}
-\end{equation}
+% \begin{equation}
+% A_i = \mu_{A_i} \pm \sigma_{A_i} = w_j \cdot v_j(x_{ij}) \pm \sqrt{\sum_{j=1}^N \left( \left( \mu_{v_j} \cdot \sigma_{w_j} \right)^2 + \left( \mu_{w_j} \cdot \sigma_{v_j} \right)^2 \right) }
+% \label{eq:rss_propagation}
+% \end{equation}
 
-However, if the assumption of deterministic input data is removed, even under normally distributed variables, the analytical solution becomes intractable. In such cases, a Monte Carlo approach (designated \gls{mcrss}) can be employed. This method samples input data from its distribution, evaluates it through normally distributed value functions, and assumes the resulting alternative scores maintain normality.
+% However, if the assumption of deterministic input data is removed, even under normally distributed variables, the analytical solution becomes intractable. In such cases, a Monte Carlo approach (designated \gls{mcrss}) can be employed. This method samples input data from its distribution, evaluates it through normally distributed value functions, and assumes the resulting alternative scores maintain normality.
 
-The definitive, proper approach to apply \gls{upmavt} is to fully propagate the uncertanty by means of Montecarlo simulations, therefore sampling from the real distributions of weights, value functions and input data. To this end two approaches have been identified:
+In practice, the most convinient way to properly propagate diverse distributions in \gls{upmavt} is by means of Montecarlo simulations, therefore sampling from the real distributions of weights, value functions and input data. To this end two approaches have been identified:
 \begin{itemize}
-      \item Strict MC: each run samples value functions and weights from the same expert, to preserve the meaning of the original elicitation.
-      \item Non-strict MC: Introduces more variability by sampling value functions and weights independently from all experts, therefore mixing different expert opinions in each run.
+      \item Strict MC: Each "opinion" from the elicitation process is preserved as indipendent. Results are presented per expert, or more in general per stakeholder.
+      \item Non-strict MC: Introduces variability by sampling uncertain information from all possible alternatives, therefore aggregating all opinions into one value distribution.
 \end{itemize}
-The \gls{smc} approach was drawn from the fundamentals of \gls{cmaa} developed by Goers and Horton (2023) \cite{GOERS2023243}. In their publication they stress the importance of maintaining the integrity of individual expert judgments to observe the differences in opinion between diverse \glspl{dm}. The \gls{nsmc} method, instead, was inspired by the work of Lahdelma and Salminen (1998) \cite{LAHDELMA1998137} on \gls{smaa}, which employs a similar mixing strategy to explore the entire solution space.
+The \gls{smc} approach was drawn from the fundamentals of \gls{cmaa} developed by Goers and Horton (2023) \cite{GOERS2023243}. In their publication they stress the importance of maintaining the integrity of individual expert judgments to observe the differences in opinion between diverse \glspl{dm}. The \gls{nsmc} method, instead, was inspired by the work of Lahdelma and Salminen (1998) \cite{LAHDELMA1998137} on \gls{smaa}, which employs a similar mixing strategy to explore the entire solution space. A similar approach was also adopted by Baudry et al. (2017) \cite{BAUDRY2018257} but applied to the \gls{ahp} framework. 
 
-The strict sampling is certantly more faithful to the elicitation results but the non-strict sampling can provide insight on the robustness of the elicited results and, as it is expected to increase the overall uncertanty, could be used as a conservative estimate expecially when the number of experts is limited. For the full algortihm refer to Appendix \ref{sec:appendix_code}, while the table \ref{tab:uncertanty_propagation_methods} summarizes the different methods presented for \gls{upmavt}.
-
-\begin{table}[H]
-   \centering
-   \begin{tabularx}{0.85\textwidth}{cX}
-      	\toprule
-      	\textbf{Method} & \textbf{Description} \\
-      \midrule
-      \gls{rss} &  Algebraic model, assumes certain input data and normally distributed weights and value functions\\
-      \gls{mcrss} & Introduces uncertainty in input data, propagated by using Monte Carlo sampling and assuming normal results\\
-      \gls{smc} &  Full montecarlo approach, preserves indipendent elicitation results\\
-      \gls{nsmc} &  Full montecarlo approach, mixes elicitation results from different experts\\
-      \bottomrule
-   \end{tabularx}
-   \caption{Summary of Uncertanty Propagation Methods for UP-MAVT}
-   \label{tab:uncertanty_propagation_methods}
-\end{table}
-
-In this \gls{upmavt} framework, all methods will be employed to compare their results against the computational efforts required.
+The strict sampling is certantly more faithful to the elicitation results but the non-strict sampling can provide insight on the robustness of the elicited results and, as it is expected to increase the overall uncertanty, could be used as a conservative estimate expecially whenever the number of experts is limited. For the full algortihm refer to Appendix \ref{sec:appendix_code}.
