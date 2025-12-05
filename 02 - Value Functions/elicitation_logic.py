@@ -81,8 +81,8 @@ class ElicitationProcess:
         out_dir = os.path.dirname(self.file_path) or '.'
         out_path = os.path.join(out_dir, 'value_functions.csv')
 
-        # ensure the four required columns exist in the dataframe
-        cols = ['name', 'elicited_points', 'value_function', 'elicitation_meta']
+        # ensure the required columns exist in the dataframe (include group)
+        cols = ['name', 'group', 'elicited_points', 'value_function', 'elicitation_meta']
         # create a new DataFrame with only the requested columns
         export_df = self.df.reindex(columns=cols).copy()
         # replace NaN with empty strings
