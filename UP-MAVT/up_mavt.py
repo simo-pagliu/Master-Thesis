@@ -85,13 +85,17 @@ def sample_to_values(data, value_function):
             b = data_values[1]
             c = data_values[2]
             sample = np.random.triangular(a, b, c)
-        
-        elif list(data.keys())[0] == "Uncertain Triangular":
-            a = data_values[0]
-            b = data_values[1]
-            c = data_values[2]
-            middle = np.random.choice(b)
-            sample = np.random.triangular(a, middle, c)
+        elif list(data.keys())[0] == "Trapezoidal":
+            a, b, c, d = data_values[0], data_values[1], data_values[2], data_values[3]
+            u = np.random.uniform(0, 1)
+            k = d - a + c - b
+            if u < (b - a) / k:
+                sample = a + np.sqrt(u * (b - a) * k)
+            elif u < (d - c) / k + (b - a) / k:
+                sample = b + (u - (b - a) / k) * k / 2
+            else:
+                sample = d - np.sqrt((1 - u) * (d - c) * k)
+
         elif list(data.keys())[0] == "Special_1":
             a_possible = data_values[0]
             x_low = data_values[1]
@@ -111,9 +115,8 @@ def sample_to_values(data, value_function):
         except ValueError:
             raise TypeError(f"Invalid data type for sampling: {data}")
     value = float(value_function(sample))
-    # if value < 0 or value > 1:
-        # print(f"Sampled value: {sample} from data: {data}, value is {value}")
     return value
+
 #################################################################################
 
 #################################################################################
