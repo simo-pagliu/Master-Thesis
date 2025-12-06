@@ -1,3 +1,5 @@
-QI1: ranking
-QI2: ranking, [IT,CH,FR]
-QI3: sorting
+Design Maturity: ranking
+Licensing Status: ranking, [IT,CH,FR,PO]
+Supplier Availbility: ranking, [IT,CH,FR,PO]
+Design Complexity: ranking
+Construction Complexity: sorting, [IT,CH,FR,PO]

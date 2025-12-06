@@ -1,4 +1,6 @@
 name,group,min,max,unit
-QI1,G1,1,4,score
-QI2,G1,1,4,score
-QI3,G1,1,4,score
+Design Maturity,Feasibility,1,5,Score
+Licensing Status,Feasibility,1,5,Score
+Supplier Availbility,Feasibility,0,1,Score
+Design Complexity,Economic,0,1,Score
+Construction Complexity,Economic,0,1,Score

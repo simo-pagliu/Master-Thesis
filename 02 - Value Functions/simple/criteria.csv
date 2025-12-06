@@ -1,10 +1,7 @@
 name,group,min,max,unit
-C_2_1,G2,1,9,score
-C_2_2,G2,1,9,score
-C_2_3,G2,1,9,score
-C_3_1,G3,1,9,score
-C_3_2,G3,1,9,score
-C_3_3,G3,1,9,score
-C_4_1,G4,1,9,score
-C_4_2,G4,1,9,score
-C_4_3,G4,1,9,score
+Thermal Efficiency,Technical,30.8,36.17,%
+Discharge Burnup,Technical,46.5,55,MWD/kgHM
+Capital Investment Budgeted,Economic,6050,1825,USD2020/kWe
+Operative + Fuel Costs,Economic,72,20,USD2020/MW_h
+Percived Safety,Social,0,2,Score
+Nuclear Waste,Social,27.71,5.88,tons/yr

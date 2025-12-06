@@ -1,3 +1,5 @@
 name,group,min,max,unit
-QI1,G1,1,9,score
-QI2,G1,1,9,score
+GHGe Benefit,Social-IT,0.021,9.07,MtonCO2-eq/yr
+GHGe Benefit,Social-PO,0.021,9.07,MtonCO2-eq/yr
+GHGe Benefit,Social-CH,0.021,9.07,MtonCO2-eq/yr
+GHGe Benefit,Social-FR,0.021,9.07,MtonCO2-eq/yr

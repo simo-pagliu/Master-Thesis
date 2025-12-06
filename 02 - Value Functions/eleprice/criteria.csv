@@ -1,0 +1,5 @@
+name,group,min,max,unit
+Electricity Market Benefit,Social-IT,0,49,EUR/MW_h
+Electricity Market Benefit,Social-PO,0,49,EUR/MW_h
+Electricity Market Benefit,Social-CH,0,49,EUR/MW_h
+Electricity Market Benefit,Social-FR,0,49,EUR/MW_h
