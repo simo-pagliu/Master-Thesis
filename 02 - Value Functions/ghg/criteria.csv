@@ -1,4 +1,3 @@
 name,group,min,max,unit
-C_1_1,G1-IT,1,9,score
-C_1_1,G1-CH,1,9,score
-C_1_1,G1-FR,1,9,score
+QI1,G1,1,9,score
+QI2,G1,1,9,score
