@@ -1,0 +1,3 @@
+QI1: ranking
+QI2: ranking, [IT,CH,FR]
+QI3: sorting
