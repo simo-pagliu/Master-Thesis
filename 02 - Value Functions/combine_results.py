@@ -373,6 +373,12 @@ try:
             cols = ['name', 'group', 'min', 'max', 'unit']
             cols_present = [c for c in cols if c in out_df.columns]
             out_df = out_df[cols_present]
+            # sanitize group column: remove trailing country suffixes like '-IT' or ' - FR'
+            try:
+                if 'group' in out_df.columns:
+                    out_df['group'] = out_df['group'].astype(str).apply(lambda g: re.sub(r"\s*-\s*[A-Za-z]{2,3}$", '', g).strip())
+            except Exception:
+                pass
             out_df.to_csv(os.path.join(AGG_DIR, 'criteria.csv'), index=False)
         except Exception:
             pass
