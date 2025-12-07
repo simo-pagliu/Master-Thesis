@@ -355,7 +355,7 @@ class RankingWindow(QWidget):
 
 
 class ValueFunctionWidget(QWidget):
-    def __init__(self, criterion, points_count, xs_override=None, ys_override=None, on_save=None, on_cancel=None, parent=None):
+    def __init__(self, criterion, points_count, xs_override=None, ys_override=None, point_labels=None, on_save=None, on_cancel=None, parent=None):
         super().__init__(parent)
         self.on_save = on_save
         self.on_cancel = on_cancel
@@ -408,8 +408,15 @@ class ValueFunctionWidget(QWidget):
         form = QFormLayout()
         self.sliders = []
         self.value_labels = []
+        # allow custom labels for each point (e.g., the alternative names at that rank)
+        if point_labels is None:
+            point_labels = [None] * points_count
         for i in range(points_count):
-            label = QLabel(f"Point {i+1} (x={self.xs[i]:.3g})")
+            pl = point_labels[i] if i < len(point_labels) else None
+            if pl:
+                label = QLabel(f"{pl} (x={self.xs[i]:.3g})")
+            else:
+                label = QLabel(f"Point {i+1} (x={self.xs[i]:.3g})")
             slider = QSlider(Qt.Horizontal)
             slider.setMinimum(0)
             slider.setMaximum(100)
@@ -1140,7 +1147,8 @@ class MainApp(QWidget):
                 except Exception:
                     pass
 
-        vf_widget = ValueFunctionWidget(crit, num_ranks, xs_override=xs_override, ys_override=ys_override, on_save=_on_save, on_cancel=_on_cancel, parent=self.container)
+        point_labels = [', '.join(rank) for rank in ranks]
+        vf_widget = ValueFunctionWidget(crit, num_ranks, xs_override=xs_override, ys_override=ys_override, point_labels=point_labels, on_save=_on_save, on_cancel=_on_cancel, parent=self.container)
         self.show_view(vf_widget)
 
     def append_scoring_to_alternatives(self, alts_path: Path, alt_names, alt_score_map, label='Computed scoring'):
