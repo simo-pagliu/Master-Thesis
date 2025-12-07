@@ -24,6 +24,15 @@ class ElicitationProcess:
         """Load and validate the CSV file."""
         self.df = pd.read_csv(file_path)
         self.file_path = file_path
+        # choose a results VF file for this loaded dataset (value_functions_1.csv, _2, ...)
+        out_dir = os.path.dirname(self.file_path) or '.'
+        i = 1
+        while True:
+            candidate = os.path.join(out_dir, f'value_functions_{i}.csv')
+            if not os.path.exists(candidate):
+                self.results_vf_path = candidate
+                break
+            i += 1
         required_columns = ["name", "min", "max"]
         if not all(col in self.df.columns for col in required_columns):
             raise ValueError(f"CSV must contain columns: {', '.join(required_columns)}")
@@ -37,6 +46,47 @@ class ElicitationProcess:
         points = None
         func = None
         meta = None
+        # Prefer defaults from an external `value_functions.csv` in the same folder as
+        # the loaded CSV. If present, its rows (by name) override the per-row columns
+        # in the loaded attributes CSV for display only. Otherwise fall back to the
+        # values stored in the loaded dataframe.
+        try:
+            out_dir = os.path.dirname(self.file_path) or '.'
+            ext_path = os.path.join(out_dir, 'value_functions.csv')
+            if os.path.exists(ext_path):
+                try:
+                    vf_df = pd.read_csv(ext_path)
+                    name = str(row.get('name')).strip()
+                    # try exact match then case-insensitive
+                    match = None
+                    if 'name' in vf_df.columns:
+                        matches = vf_df[vf_df['name'] == name]
+                        if matches.shape[0] == 0:
+                            matches = vf_df[vf_df['name'].str.lower() == name.lower()]
+                        if matches.shape[0] > 0:
+                            match = matches.iloc[-1]
+                    if match is not None:
+                        if 'elicited_points' in match and pd.notna(match.get('elicited_points')):
+                            try:
+                                points = json.loads(match.get('elicited_points'))
+                            except Exception:
+                                points = None
+                        if 'value_function' in match and pd.notna(match.get('value_function')):
+                            func = match.get('value_function')
+                        if 'elicitation_meta' in match and pd.notna(match.get('elicitation_meta')):
+                            try:
+                                meta = json.loads(match.get('elicitation_meta'))
+                            except Exception:
+                                meta = None
+                        return {'points': points, 'value_function': func, 'meta': meta}
+                except Exception:
+                    # fall back to per-row values below
+                    pass
+
+        except Exception:
+            pass
+
+        # fallback: read from the loaded dataframe row
         if 'elicited_points' in self.df.columns and pd.notna(row.get('elicited_points')):
             try:
                 points = json.loads(row.get('elicited_points'))
@@ -79,7 +129,16 @@ class ElicitationProcess:
 
         # persist a dedicated value_functions.csv containing only the requested columns
         out_dir = os.path.dirname(self.file_path) or '.'
-        out_path = os.path.join(out_dir, 'value_functions.csv')
+        # Use preselected results path for this loaded dataset if present, otherwise pick one now
+        out_path = getattr(self, 'results_vf_path', None)
+        if not out_path:
+            i = 1
+            while True:
+                candidate = os.path.join(out_dir, f'value_functions_{i}.csv')
+                if not os.path.exists(candidate):
+                    out_path = candidate
+                    break
+                i += 1
 
         # ensure the required columns exist in the dataframe (include group)
         cols = ['name', 'group', 'elicited_points', 'value_function', 'elicitation_meta']
@@ -88,8 +147,10 @@ class ElicitationProcess:
         # replace NaN with empty strings
         export_df = export_df.fillna('')
 
-        # write to CSV (overwrite any existing file)
+        # write to CSV (create new results file for this session)
         export_df.to_csv(out_path, index=False)
+        # return the path for caller information/debugging
+        return out_path
 
     def get_value_function_string(self, degree=2):
         """Return a string representation of the fitted polynomial inside thresholds, or empty string.

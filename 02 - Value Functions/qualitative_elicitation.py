@@ -1,6 +1,7 @@
 import sys
 import csv
 import json
+import os
 from pathlib import Path
 from PyQt5.QtWidgets import (
     QApplication,
@@ -28,6 +29,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
 import re
+import math
 
 
 def read_criteria(path: Path):
@@ -169,18 +171,37 @@ class RankingWindow(QWidget):
         self.listw.clear()
         items = list(self.alt_names)
         # if starting points are provided, sort by them to create initial ranking
+        # and collapse equal scores into tied items (comma-separated labels)
         if self.start_points and len(self.start_points) >= len(items):
             try:
                 paired = list(zip(items, self.start_points))
-                # scores in the alternatives file use higher == better (P = best).
-                # Sort descending so best items appear first in the ranking/spectrum.
+                # convert scores to floats where possible; use -inf for non-numeric so they sort last
                 def _safe_float(v):
                     try:
                         return float(v)
                     except Exception:
                         return float('-inf')
-                paired.sort(key=lambda p: _safe_float(p[1]), reverse=True)
-                items = [p[0] for p in paired]
+                paired = [(a, _safe_float(s)) for a, s in paired]
+                # scores in the alternatives file use higher == better (P = best).
+                # Sort descending so best items appear first in the ranking/spectrum.
+                paired.sort(key=lambda p: p[1], reverse=True)
+                # group consecutive items with equal scores into tied composite items
+                grouped = []
+                i = 0
+                while i < len(paired):
+                    a, score = paired[i]
+                    group_names = [a]
+                    j = i + 1
+                    while j < len(paired) and math.isclose(paired[j][1], score, rel_tol=1e-9, abs_tol=1e-12):
+                        group_names.append(paired[j][0])
+                        j += 1
+                    if len(group_names) == 1:
+                        grouped.append(group_names[0])
+                    else:
+                        # tie: join names with comma
+                        grouped.append(','.join(group_names))
+                    i = j
+                items = grouped
             except Exception:
                 pass
         for a in items:
@@ -255,7 +276,8 @@ class RankingWindow(QWidget):
         sels = self.listw.selectedItems()
         if not sels:
             return
-        for s in sels:
+        # operate on a snapshot to avoid mutation during iteration
+        for s in list(sels):
             txt = s.text()
             if ',' in txt:
                 row = self.listw.row(s)
@@ -355,7 +377,7 @@ class RankingWindow(QWidget):
 
 
 class ValueFunctionWidget(QWidget):
-    def __init__(self, criterion, points_count, xs_override=None, ys_override=None, on_save=None, on_cancel=None, parent=None):
+    def __init__(self, criterion, points_count, xs_override=None, ys_override=None, point_labels=None, on_save=None, on_cancel=None, parent=None):
         super().__init__(parent)
         self.on_save = on_save
         self.on_cancel = on_cancel
@@ -408,8 +430,15 @@ class ValueFunctionWidget(QWidget):
         form = QFormLayout()
         self.sliders = []
         self.value_labels = []
+        # allow custom labels for each point (e.g., the alternative names at that rank)
+        if point_labels is None:
+            point_labels = [None] * points_count
         for i in range(points_count):
-            label = QLabel(f"Point {i+1} (x={self.xs[i]:.3g})")
+            pl = point_labels[i] if i < len(point_labels) else None
+            if pl:
+                label = QLabel(f"{pl} (x={self.xs[i]:.3g})")
+            else:
+                label = QLabel(f"Point {i+1} (x={self.xs[i]:.3g})")
             slider = QSlider(Qt.Horizontal)
             slider.setMinimum(0)
             slider.setMaximum(100)
@@ -583,6 +612,8 @@ class MainApp(QWidget):
         # bookkeeping for qualitative multi-entry elicitation
         self._qual_entries = None
         self._qual_index = 0
+        # track the progressive value_functions file for the current elicitation session
+        self._vf_session_outpath = None
         # map base indicator -> first elicitation label (used to seed subsequent entries)
         self._first_elicitation_label_per_base = {}
 
@@ -930,16 +961,31 @@ class MainApp(QWidget):
         if num_ranks <= 0:
             self.set_status('No ranks found; cannot compute scoring')
             return
-        # integer scores: first rank -> 1, second -> 2, ..., last -> num_ranks
-        scores_per_rank = list(range(1, num_ranks + 1))
+        # Determine criterion bounds so scoring and VF x-positions respect criteria
+        crit = None
+        if indicator_name:
+            for c in self.criteria:
+                if str(c.get('name')).strip().lower() == str(indicator_name).strip().lower():
+                    crit = c
+                    break
+        if crit is None:
+            crit = {'name': indicator_name or 'Indicator', 'min': 0.0, 'max': 1.0, 'group': ''}
 
         alt_score = {}
-        # assign scores so that 1 = worst, num_ranks = best
+        # assign scores so that topmost rank (idx=0) gets the criterion max,
+        # and bottommost gets the criterion min; equally spaced between them
+        cmin = float(crit.get('min', 0.0))
+        cmax = float(crit.get('max', 1.0))
+        if num_ranks == 1:
+            score_for_rank = [(cmin + cmax) / 2.0]
+        else:
+            step = (cmax - cmin) / (num_ranks - 1)
+            # rank 0 -> cmax, rank 1 -> cmax - step, ..., rank N-1 -> cmin
+            score_for_rank = [cmax - i * step for i in range(num_ranks)]
         for idx, rank in enumerate(ranks):
-            # topmost rank (idx=0) should get the highest score
-            val = num_ranks - idx
+            val = score_for_rank[idx]
             for a in rank:
-                alt_score[a] = int(val)
+                alt_score[a] = val
 
         # write scoring into alternatives.csv as a new row
         # determine label for this elicitation. If we have an indicator name, use QI - E# pattern
@@ -987,11 +1033,26 @@ class MainApp(QWidget):
             vf_rows_local = [(vf_name, pts, base_group)]
             out_path = Path(self.criteria_path).parent / 'value_functions.csv'
             try:
-                write_value_functions(out_path, vf_rows_local)
+                # if we are already in a session, reuse the same progressive file
+                if getattr(self, '_vf_session_outpath', None) is None:
+                    written = write_value_functions(out_path, vf_rows_local)
+                    # store session path for subsequent saves during this elicitation run
+                    try:
+                        self._vf_session_outpath = Path(written)
+                    except Exception:
+                        self._vf_session_outpath = Path(written)
+                else:
+                    # write into the already-chosen session file
+                    written = write_value_functions(self._vf_session_outpath, vf_rows_local)
             except Exception as e:
                 self.set_status(f'Failed to write value functions: {e}')
                 return
-            self.set_status(f'Value functions saved to {out_path}; scoring appended to {self.alts_path}')
+            # write_value_functions returns the actual file path written
+            try:
+                display_path = written if isinstance(written, str) else str(written)
+            except Exception:
+                display_path = str(out_path)
+            self.set_status(f'Value functions saved to {display_path}; scoring appended to {self.alts_path}')
             # If there are subsequent qualitative entries that share the same base indicator
             # and were intended as repeats (e.g., QI2 - CH, QI2 - FR), copy the saved VF and
             # the scoring row to those entries so the user doesn't have to re-elicit identical VFs.
@@ -1040,7 +1101,12 @@ class MainApp(QWidget):
                                 ent_i['vf_points'] = None
                             # also write the duplicated value function to the file for traceability, inheriting base group
                             try:
-                                write_value_functions(out_path, [(ent_i.get('indicator'), pts, base_group)])
+                                # prefer using the session outpath if set so all VFs end up in the same file
+                                session_path = getattr(self, '_vf_session_outpath', None)
+                                if session_path is None:
+                                    write_value_functions(out_path, [(ent_i.get('indicator'), pts, base_group)])
+                                else:
+                                    write_value_functions(session_path, [(ent_i.get('indicator'), pts, base_group)])
                             except Exception:
                                 pass
                             i += 1
@@ -1101,16 +1167,25 @@ class MainApp(QWidget):
         def _on_cancel():
             self.set_status('Value function elicitation cancelled; partial results not saved.')
             # do not show popups; leave container empty
+            try:
+                self._vf_session_outpath = None
+            except Exception:
+                pass
 
         # show the embedded editor (replacing the ranking view)
-        # For qualitative indicators, use integer ranks 1..P as the X positions so saved
-        # value_functions reflect elicited rank levels rather than criterion min/max.
+        # For qualitative indicators, use criterion min..max spaced positions as the X positions
         xs_override = None
         if indicator_name is not None:
             try:
-                xs_override = [float(i) for i in range(1, num_ranks + 1)]
+                cmin = float(crit.get('min', 0.0))
+                cmax = float(crit.get('max', 1.0))
+                if num_ranks == 1:
+                    xs_override = [(cmin + cmax) / 2.0]
+                else:
+                    step_x = (cmax - cmin) / (num_ranks - 1)
+                    xs_override = [cmin + i * step_x for i in range(num_ranks)]
             except Exception:
-                xs_override = [i for i in range(1, num_ranks + 1)]
+                xs_override = [float(i) for i in range(1, num_ranks + 1)]
 
         # attempt to seed the value function points: prefer in-memory pre-seeded `vf_points`
         ys_override = None
@@ -1140,7 +1215,8 @@ class MainApp(QWidget):
                 except Exception:
                     pass
 
-        vf_widget = ValueFunctionWidget(crit, num_ranks, xs_override=xs_override, ys_override=ys_override, on_save=_on_save, on_cancel=_on_cancel, parent=self.container)
+        point_labels = [', '.join(rank) for rank in ranks]
+        vf_widget = ValueFunctionWidget(crit, num_ranks, xs_override=xs_override, ys_override=ys_override, point_labels=point_labels, on_save=_on_save, on_cancel=_on_cancel, parent=self.container)
         self.show_view(vf_widget)
 
     def append_scoring_to_alternatives(self, alts_path: Path, alt_names, alt_score_map, label='Computed scoring'):
@@ -1216,18 +1292,42 @@ class MainApp(QWidget):
 def write_value_functions(path: Path, vf_rows):
     # vf_rows: list of (name, [(x,y),...]) or (name, [(x,y)...], group)
     header = ['name', 'group', 'elicited_points', 'value_function', 'elicitation_meta']
-    # If the file exists, read existing rows and remove any rows whose name matches
-    # one of the names being written (case-insensitive). Then write header + filtered
-    # existing rows + the new rows. This ensures only the latest entry for a given
-    # name remains in the file.
+    # If callers pass the base 'value_functions.csv' path we will not overwrite
+    # that base file; instead, write to the next progressive numbered file
+    # `value_functions_1.csv`, `value_functions_2.csv`, ... in the same folder.
+    actual_path = Path(path)
+    try:
+        if actual_path.name.lower() == 'value_functions.csv':
+            parent = actual_path.parent
+            # find existing numbered files
+            idx_re = re.compile(r'^value_functions(?:_(\d+))?\.csv$', flags=re.IGNORECASE)
+            max_idx = 0
+            for fn in os.listdir(parent):
+                m = idx_re.match(fn)
+                if not m:
+                    continue
+                g = m.group(1)
+                if g:
+                    try:
+                        v = int(g)
+                        if v > max_idx:
+                            max_idx = v
+                    except Exception:
+                        pass
+            next_idx = max_idx + 1
+            out_path = parent / f'value_functions_{next_idx}.csv'
+        else:
+            out_path = actual_path
+    except Exception:
+        out_path = actual_path
+
     names_to_replace = { (item[0] if len(item) >= 1 else '').strip().lower() for item in vf_rows }
     existing_rows = []
-    if path.exists():
+    if out_path.exists():
         try:
-            with path.open(newline='', encoding='utf-8') as f:
+            with out_path.open(newline='', encoding='utf-8') as f:
                 rdr = list(csv.reader(f))
                 if len(rdr) > 0:
-                    # preserve header if present (assume first row is header)
                     existing_header = rdr[0]
                     existing_rows = rdr[1:]
                 else:
@@ -1245,7 +1345,7 @@ def write_value_functions(path: Path, vf_rows):
         filtered.append(r)
 
     # now write header, filtered rows, and new rows
-    with path.open('w', newline='', encoding='utf-8') as f:
+    with out_path.open('w', newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
         writer.writerow(header)
         for r in filtered:
@@ -1283,6 +1383,8 @@ def write_value_functions(path: Path, vf_rows):
                 expr,
                 json.dumps({'mode': 'Manual', 'notes': 'elicited via ranking_value_ui'})
             ])
+    # return the actual file path written for caller display
+    return str(out_path)
 
 
 def main():

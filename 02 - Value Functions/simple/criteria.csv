@@ -1,7 +1,7 @@
 name,group,min,max,unit
 Thermal Efficiency,Technical,30.8,36.17,%
 Discharge Burnup,Technical,46.5,55,MWD/kgHM
-Capital Investment Budgeted,Economic,6050,1825,USD2020/kWe
-Operative + Fuel Costs,Economic,72,20,USD2020/MW_h
+Capital Investment Budgeted,Economic,1825,6050,USD2020/kWe
+Operative + Fuel Costs,Economic,20,72,USD2020/MW_h
 Percived Safety,Social,0,2,Score
-Nuclear Waste,Social,27.71,5.88,tons/yr
+Nuclear Waste,Social,5.88,27.71,tons/yr

@@ -1,11 +1,16 @@
 name,group,min,max,unit
-C_2_1,G2,1,9,score
-C_2_2,G2,1,9,score
-C_2_3,G2,1,9,score
-C_3_1,G3,1,9,score
-C_3_2,G3,1,9,score
-C_3_3,G3,1,9,score
-C_4_1,G4,1,9,score
-C_4_2,G4,1,9,score
-C_4_3,G4,1,9,score
-C_1_1,G2,1,9,score
+Capital Investment Budgeted,Economic,1825.0,6050.0,USD2020/kWe
+Construction Complexity,Economic,1.0,6.0,Score
+Design Complexity,Economic,1.0,6.0,Score
+Design Maturity,Feasibility,1.0,6.0,Score
+Discharge Burnup,Technical,46.5,55.0,MWD/kgHM
+Electricity Market Benefit,Social-IT,0.0,49.0,EUR/MW_h
+GHGe Benefit,Social-IT,0.021,9.07,MtonCO2-eq/yr
+Licensing Status,Feasibility,1.0,6.0,Score
+Load following Capabilities,Technical-IT,0.21,4.25,(%Pnom)/min
+Net Power Output,Technical-IT,300.0,1630.0,MW_e
+Nuclear Waste,Social,5.88,27.71,tons/yr
+Operative + Fuel Costs,Economic,20.0,72.0,USD2020/MW_h
+Percived Safety,Social,0.0,2.0,Score
+Supplier Availbility,Feasibility,1.0,6.0,Score
+Thermal Efficiency,Technical,30.8,36.17,%
