@@ -268,6 +268,124 @@ country_codes.discard('GLOBAL')
 # Ensure aggregated output dir exists
 os.makedirs(AGG_DIR, exist_ok=True)
 
+# Build and write an overall `aggregatedresults/criteria.csv` containing the union
+# of all criteria names. Use values from `combined_common_criteria_df` when
+# available (these are the defaults); for names that have no common/default
+# entry include a placeholder row keeping the name but leaving min/max empty.
+try:
+    # gather all criterion names seen across common, specific and qualitative sources
+    all_names = set()
+    try:
+        if not combined_common_criteria_df.empty and 'name' in combined_common_criteria_df.columns:
+            all_names.update([str(x).strip() for x in combined_common_criteria_df['name'].astype(str).tolist() if str(x).strip()])
+    except Exception:
+        pass
+    try:
+        for country, rows in country_criteria.items():
+            for r in rows:
+                try:
+                    n = str(r.get('name','')).strip()
+                    if n:
+                        all_names.add(n)
+                except Exception:
+                    pass
+    except Exception:
+        pass
+    # also include qualitative criteria names if present
+    try:
+        for qfolder in qualitative_data:
+            qcrit = os.path.join(SCRIPT_DIR, qfolder, 'criteria.csv')
+            if os.path.exists(qcrit):
+                try:
+                    qdfc = pd.read_csv(qcrit)
+                    if 'name' in qdfc.columns:
+                        for n in qdfc['name'].astype(str).tolist():
+                            if n and str(n).strip():
+                                # sanitize E-series suffixes
+                                parts = [p.strip() for p in str(n).split(' - ')]
+                                if parts:
+                                    all_names.add(parts[0])
+                except Exception:
+                    pass
+    except Exception:
+        pass
+
+    # Build rows for overall file: prefer the full row from combined_common_criteria_df
+    overall_rows = []
+    try:
+        # index combined_common_criteria_df by name for quick lookup (these are the intended defaults)
+        common_map = {}
+        if not combined_common_criteria_df.empty and 'name' in combined_common_criteria_df.columns:
+            for _, r in combined_common_criteria_df.iterrows():
+                try:
+                    common_map[str(r.get('name','')).strip()] = r
+                except Exception:
+                    pass
+
+        # index GLOBAL criteria rows (if any) as a secondary source of defaults
+        global_map = {}
+        try:
+            for r in country_criteria.get('GLOBAL', []):
+                try:
+                    n = str(r.get('name','')).strip()
+                    if n:
+                        global_map[n] = r
+                except Exception:
+                    pass
+        except Exception:
+            pass
+
+        # prepare a first-found country-specific fallback map (used only if neither common nor GLOBAL provide a row)
+        first_country_map = {}
+        try:
+            for ccode, rows in country_criteria.items():
+                if ccode == 'GLOBAL':
+                    continue
+                for r in rows:
+                    try:
+                        n = str(r.get('name','')).strip()
+                        if n and n not in first_country_map:
+                            first_country_map[n] = r
+                    except Exception:
+                        pass
+        except Exception:
+            pass
+
+        for name in sorted(all_names):
+            if name in common_map:
+                overall_rows.append(common_map[name].to_dict())
+            elif name in global_map:
+                overall_rows.append(global_map[name].to_dict())
+            elif name in first_country_map:
+                # fallback to any country-specific entry to avoid blanks
+                overall_rows.append(first_country_map[name])
+            else:
+                # placeholder row with empty/default fields
+                overall_rows.append({'name': name, 'group': '', 'min': '', 'max': '', 'unit': ''})
+    except Exception:
+        overall_rows = []
+
+    # Write overall criteria CSV (if we have at least some names)
+    if overall_rows:
+        try:
+            out_df = pd.DataFrame(overall_rows)
+            # Ensure consistent column ordering if possible
+            cols = ['name', 'group', 'min', 'max', 'unit']
+            cols_present = [c for c in cols if c in out_df.columns]
+            out_df = out_df[cols_present]
+            out_df.to_csv(os.path.join(AGG_DIR, 'criteria.csv'), index=False)
+        except Exception:
+            pass
+    else:
+        # fallback: if combined_common_criteria_df exists, write it
+        try:
+            if not combined_common_criteria_df.empty:
+                combined_common_criteria_df.to_csv(os.path.join(AGG_DIR, 'criteria.csv'), index=False)
+        except Exception:
+            pass
+except Exception:
+    pass
+
 if not country_codes:
     # No specific country codes found: write common aggregated criteria and any numbered value_functions
     # ensure criteria are deduplicated and normalized
@@ -295,24 +413,31 @@ else:
         out_dir = os.path.join(AGG_DIR, country_code)
         os.makedirs(out_dir, exist_ok=True)
 
-        # Build criteria: common + all specific rows for this country + GLOBAL rows
-        criteria_parts = [combined_common_criteria_df, pd.DataFrame(country_criteria.get(country_code, [])), pd.DataFrame(country_criteria.get('GLOBAL', []))]
+        # Build criteria: prefer specific rows for this country, then GLOBAL, then common defaults
+        criteria_parts = [pd.DataFrame(country_criteria.get(country_code, [])), pd.DataFrame(country_criteria.get('GLOBAL', [])), combined_common_criteria_df]
         country_criteria_df = pd.concat(criteria_parts, ignore_index=True)
 
-        # Strip "-COUNTRY" suffix for this country in group column
+        # Strip "-COUNTRY" suffix for this country in group column (so group values are normalized)
         suffix_pattern = re.compile(r"-" + re.escape(country_code) + r"$")
         if 'group' in country_criteria_df.columns:
             country_criteria_df['group'] = country_criteria_df['group'].astype(str).apply(lambda g: suffix_pattern.sub('', g))
 
-        country_criteria_df.to_csv(os.path.join(out_dir, 'criteria.csv'), index=False)
-        # Deduplicate criteria rows by 'name' (trim whitespace first)
+        # Deduplicate criteria rows by 'name' (trim whitespace first) so country-specific rows override common defaults
         try:
             if 'name' in country_criteria_df.columns:
                 country_criteria_df['name'] = country_criteria_df['name'].astype(str).str.strip()
                 country_criteria_df = country_criteria_df.drop_duplicates(subset=['name'], keep='first', ignore_index=True)
-                country_criteria_df.to_csv(os.path.join(out_dir, 'criteria.csv'), index=False)
+            else:
+                country_criteria_df = country_criteria_df.drop_duplicates(keep='first', ignore_index=True)
         except Exception:
             pass
+
+        # Defer writing the per-country `criteria.csv` until after we've assembled
+        # the final alternatives frame so we can compute indicator min/max from
+        # actual alternative values (this ensures cases where all alternatives
+        # have the same value — e.g. always 0 — are captured).
+        # The `country_criteria_df` DataFrame is available here and will be
+        # updated later once `final_df` is built.
         
         # ---------- Combine alternatives for this country into final normalized shape ----------
         # Desired final shape: header with 'name' followed by one column per indicator (rows = alternatives)
@@ -681,6 +806,121 @@ else:
                     final_df = pd.DataFrame(synth, columns=['name'] + merged_inds)
                 except Exception:
                     pass
+            # Before writing alternatives, update per-country criteria min/max using
+            # actual assembled alternative values so case-specific ranges (including
+            # constant-zero cases) are preserved.
+            try:
+                # ensure country_criteria_df exists
+                try:
+                    country_criteria_df
+                except NameError:
+                    country_criteria_df = pd.DataFrame(country_criteria.get(country_code, []))
+
+                # helper to extract numeric values from a cell
+                import math
+                def extract_numbers_from_cell(cell):
+                    nums = []
+                    try:
+                        if pd.isna(cell):
+                            return nums
+                        s = str(cell).strip()
+                        if not s:
+                            return nums
+                        # JSON discrete cell
+                        if (s.startswith('{') or s.startswith('[')):
+                            try:
+                                obj = json.loads(s)
+                                if isinstance(obj, dict) and 'Discrete' in obj:
+                                    # Discrete is expected as a list of lists
+                                    di = obj.get('Discrete')
+                                    if isinstance(di, list) and di:
+                                        first = di[0]
+                                        for v in first:
+                                            try:
+                                                nums.append(float(v))
+                                            except Exception:
+                                                # try regex fallback
+                                                import re
+                                                m = re.search(r"[-+]?[0-9]*\.?[0-9]+", str(v))
+                                                if m:
+                                                    nums.append(float(m.group(0)))
+                                else:
+                                    # attempt to flatten numeric values in obj
+                                    import re
+                                    text = json.dumps(obj)
+                                    for m in re.finditer(r"[-+]?[0-9]*\.?[0-9]+", text):
+                                        nums.append(float(m.group(0)))
+                                return nums
+                            except Exception:
+                                pass
+                        # otherwise try direct float conversion
+                        try:
+                            nums.append(float(s))
+                            return nums
+                        except Exception:
+                            pass
+                        # fallback: regex find numbers in string
+                        import re
+                        for m in re.finditer(r"[-+]?[0-9]*\.?[0-9]+", s):
+                            try:
+                                nums.append(float(m.group(0)))
+                            except Exception:
+                                continue
+                        return nums
+                    except Exception:
+                        return nums
+
+                # iterate indicators and compute min/max from final_df
+                for ind in merged_inds:
+                    try:
+                        if ind not in final_df.columns:
+                            continue
+                        col = final_df[ind].astype(object).tolist()
+                        vals = []
+                        for cell in col:
+                            try:
+                                nums = extract_numbers_from_cell(cell)
+                                if nums:
+                                    vals.extend(nums)
+                            except Exception:
+                                continue
+                        if vals:
+                            mn = min(vals)
+                            mx = max(vals)
+                            # find row in country_criteria_df and set min/max
+                            try:
+                                if 'name' in country_criteria_df.columns:
+                                    mask = country_criteria_df['name'].astype(str).str.strip() == str(ind).strip()
+                                    if mask.any():
+                                        country_criteria_df.loc[mask, 'min'] = mn
+                                        country_criteria_df.loc[mask, 'max'] = mx
+                                    else:
+                                        # append new row
+                                        newr = {'name': ind, 'group': '', 'min': mn, 'max': mx}
+                                        country_criteria_df = pd.concat([country_criteria_df, pd.DataFrame([newr])], ignore_index=True)
+                                else:
+                                    # no name column: append
+                                    newr = {'name': ind, 'group': '', 'min': mn, 'max': mx}
+                                    country_criteria_df = pd.concat([country_criteria_df, pd.DataFrame([newr])], ignore_index=True)
+                            except Exception:
+                                pass
+                    except Exception:
+                        pass
+
+                # normalize and write per-country criteria now
+                try:
+                    if 'name' in country_criteria_df.columns:
+                        country_criteria_df['name'] = country_criteria_df['name'].astype(str).str.strip()
+                        country_criteria_df = country_criteria_df.drop_duplicates(subset=['name'], keep='first', ignore_index=True)
+                except Exception:
+                    pass
+                try:
+                    country_criteria_df.to_csv(os.path.join(out_dir, 'criteria.csv'), index=False)
+                except Exception:
+                    pass
+            except Exception:
+                pass
+
             final_df.to_csv(alt_out_path, index=False)
         except Exception:
             try:

@@ -1,6 +1,6 @@
 name,group,min,max,unit
-Design Maturity,Feasibility,1,5,Score
-Licensing Status,Feasibility,1,5,Score
-Supplier Availbility,Feasibility,0,1,Score
-Design Complexity,Economic,0,1,Score
-Construction Complexity,Economic,0,1,Score
+Design Maturity,Feasibility,1,6,Score
+Licensing Status,Feasibility,1,6,Score
+Supplier Availbility,Feasibility,1,6,Score
+Design Complexity,Economic,1,6,Score
+Construction Complexity,Economic,1,6,Score
