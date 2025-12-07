@@ -3,6 +3,7 @@ Design Maturity - starting point,5,4,5,2,1,1
 Licensing Status - starting point,4,5,4,2,1,1
 Design Complexity - starting point,2,4,2,0,3,0
 Construction Complexity - starting point,0,0,0,2,1,3
+Supplier Availbility - starting point,1,3,3,2,1,1
 Design Maturity - E1,6,4,5,3,2,1
 Licensing Status - IT - E1,5,6,4,3,2,1
 Licensing Status - CH - E1,5,6,4,3,2,1
@@ -13,3 +14,7 @@ Construction Complexity - IT - E1,3,2,1,5,4,6
 Construction Complexity - CH - E1,3,2,1,5,4,6
 Construction Complexity - FR - E1,3,2,1,5,4,6
 Construction Complexity - PO - E1,3,2,1,5,4,6
+Supplier Availbility - IT - E1,3,6,5,4,2,1
+Supplier Availbility - CH - E1,3,6,5,4,2,1
+Supplier Availbility - FR - E1,3,6,5,4,2,1
+Supplier Availbility - PO - E1,3,6,5,4,2,1
