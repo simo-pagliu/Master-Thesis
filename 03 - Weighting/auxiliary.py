@@ -22,11 +22,38 @@ def import_criteria(file_path):
     with open(file_path, mode='r') as file:
         reader = csv.DictReader(file)
         for row in reader:
+            # Read raw min/max values with safe defaults
+            try:
+                raw_min = float(row.get("min", "0"))
+            except Exception:
+                raw_min = 0.0
+            try:
+                raw_max = float(row.get("max", raw_min + 1.0))
+            except Exception:
+                raw_max = raw_min + 1.0
+
+            # Determine type (positive/negative). If negative, invert the
+            # meaning of min/max for elicitation so that UI shows the
+            # criterion range with the logical "min" coming from the CSV's
+            # max column and vice-versa.
+            type_str = str(row.get("type", "")).strip().lower()
+            if type_str in ("negative", "neg", "-"):
+                lo = raw_max
+                hi = raw_min
+            else:
+                lo = raw_min
+                hi = raw_max
+
+            # Ensure a non-zero range
+            if hi == lo:
+                hi = lo + 1.0
+
             criteria[row["name"]] = {
-                "min": float(row["min"]),
-                "max": float(row["max"]),
-                "unit": row["unit"],
-                "group": row["group"],
+                "min": lo,
+                "max": hi,
+                "unit": row.get("unit"),
+                "group": row.get("group"),
+                "type": type_str,
             }
     return criteria
 
