@@ -63,12 +63,16 @@ def define_weight_space(dict_data, num_criteria, bwt_result, plot = True, increm
         mins = [max(0, weight_ranges[i][0][i]) for i in range(num_criteria)]
         maxs = [min(1, weight_ranges[i][1][i]) for i in range(num_criteria)]
         widths = [maxs[i] - mins[i] for i in range(num_criteria)]
+        # Extract the BWT solution for visual reference (ignore slack at the end)
+        bwt_weights = bwt_result["solver_result"]["x"][:num_criteria]
 
         fig_height = max(2, 0.6 * num_criteria)
         fig, ax = plt.subplots(figsize=(8, fig_height))
 
         y = np.arange(num_criteria)
         ax.barh(y, widths, left=mins, height=0.5, color='C0', edgecolor='k')
+        # Overlay the BWT point estimates as stars on each bar
+        ax.plot(bwt_weights, y, linestyle='none', marker='*', color='crimson', markersize=10, label='BWT solution')
 
         ax.set_yticks(y)
         ax.set_yticklabels(crit_names)
@@ -82,6 +86,7 @@ def define_weight_space(dict_data, num_criteria, bwt_result, plot = True, increm
 
         ax.set_xlabel('Weight Value')
         ax.grid(axis='x', linestyle='--', alpha=0.5)
+        ax.legend(loc='upper right')
         plt.tight_layout()
         plt.show()
 
