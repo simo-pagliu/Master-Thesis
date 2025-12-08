@@ -1,5 +1,5 @@
 name,group,min,max,unit,type
-Capital Investment Budgeted,Economic,1825.0,6050.0,USD2020/kWe,negative
+Capital Investment Budgeted,Economic,4000.0,20000.0,USD2020/kWe,negative
 Construction Complexity,Economic,1.0,6.0,Score,negative
 Design Complexity,Economic,1.0,6.0,Score,negative
 Design Maturity,Feasibility,1.0,6.0,Score,positive
