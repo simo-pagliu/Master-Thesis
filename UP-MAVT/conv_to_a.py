@@ -59,7 +59,6 @@ def read_wbt_rows(path: str) -> Iterable[Dict[str, str]]:
 
 
 def make_code(comp_type: str, group: str, reference: str, other: str) -> str:
-	"""Build compact code like b_E1_E2 based on type/group and criteria codes."""
 	comp_type = comp_type.lower()
 	group_lower = group.lower()
 
