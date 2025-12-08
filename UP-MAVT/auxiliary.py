@@ -118,37 +118,25 @@ def load_criteria_definitions(file_path_criteria):
 
 
 def load_value_functions(file_path_value_functions):
-    """Load value functions CSV where each row contains criterion name and a Python expression
-    for the value function (callable when eval'ed). Returns dict: {crit_name: value_function_callable}
-    Expected CSV format: crit_name, value_function_expr
-    """
+    """Load value functions from CSV using the `value_function` column when available."""
     import csv
 
     vfs = {}
     with open(file_path_value_functions, mode='r') as infile:
-        reader = csv.reader(infile)
-        next(reader)
-        for rows in reader:
-            if not rows:
+        reader = csv.DictReader(infile)
+        for row in reader:
+            if not row:
                 continue
-            crit_name = rows[0]
-            # prefer the column named `value_function` if present as third column
-            if len(rows) > 2 and rows[2].strip() != '':
-                expr = rows[2]
-            elif len(rows) > 1:
-                expr = rows[1]
-            else:
+            crit_name = row.get('name') or ''
+            expr = row.get('value_function')
+            if not expr:
+                # fallback for legacy two-column files: use the second column's value
+                values = list(row.values())
+                expr = values[1] if len(values) > 1 else None
+            if not expr:
                 raise ValueError(f"No value function expression found for criterion '{crit_name}' in {file_path_value_functions}")
 
-            # Evaluate the expression to obtain a callable 
-            # (expects something like 'lambda x: ...')
-            # This is not considered safe for untrusted input 
-            # therefore should not be used in a non-controlled environment.
-            # Better to think for safer alternatives for production deployment.
-            try:
-                fn = eval(expr)
-            except Exception as e:
-                raise ValueError(f"Failed to eval value function for '{crit_name}' in {file_path_value_functions}: {e}")
+            fn = eval(expr)
             vfs[crit_name] = fn
 
     return vfs

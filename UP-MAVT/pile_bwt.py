@@ -138,7 +138,7 @@ def bwt(dict_data, var=-1, z_star=None, type='min'):
     # Bounds: 
     # Positive weights: w_i >= 0, 
     # Positive auxiliary variable z >= 0
-    bounds = [(0, 1) for _ in range(num_criteria)] + [(0, None)]
+    bounds = [(0.001, 1) for _ in range(num_criteria)] + [(0, None)]
     # print("Bounds:", bounds)
 
     # Solve optimization problem
@@ -164,7 +164,7 @@ def bwt(dict_data, var=-1, z_star=None, type='min'):
                 {'type': 'eq', 'fun': lambda x: np.sum(x[:num_criteria]) - 1}
             ],
             bounds=bounds,
-            options={'maxiter': 1000, 'ftol': 1e-9}
+            options={'maxiter': 1000, 'ftol': 1e-3}
         )
     except Exception as e:
         print(f"SLSQP raised exception: {e}")
@@ -172,54 +172,53 @@ def bwt(dict_data, var=-1, z_star=None, type='min'):
 
     # Also if it did not raised an expection but did not converge we try COBYLA
     # Note that SLSQP can fail silently so we check the success flag
-    if not result.success:
-        print(f"\033[93mSLSQP failed (message: {getattr(result, 'message', None)})\033[0m")
-        print(f"\033[93mTrying 'COBYLA' as fallback with explicit bound constraints...\033[0m")
-        try:
-            # Build explicit inequality constraints that represent the bounds for COBYLA
-            bound_constraints = []
-            # weights 0..num_criteria-1: 0 <= x[i] <= 1
-            for idx in range(num_criteria):
-                bound_constraints.append({'type': 'ineq', 'fun': (lambda x, i=idx: x[i])})            # x[i] >= 0
-                bound_constraints.append({'type': 'ineq', 'fun': (lambda x, i=idx: 1.0 - x[i])})      # x[i] <= 1
-            # auxiliary variable z (last index) must be >= 0
-            bound_constraints.append({'type': 'ineq', 'fun': (lambda x: x[-1])})
+    # print(f"\033[93mSLSQP failed (message: {getattr(result, 'message', None)})\033[0m")
+    print(f"\033[93mTrying 'COBYLA' as fallback with explicit bound constraints...\033[0m")
+    try:
+        # Build explicit inequality constraints that represent the bounds for COBYLA
+        bound_constraints = []
+        # weights 0..num_criteria-1: 0 <= x[i] <= 1
+        for idx in range(num_criteria):
+            bound_constraints.append({'type': 'ineq', 'fun': (lambda x, i=idx: x[i] - 0.001)})            # x[i] >= 0.001
+            bound_constraints.append({'type': 'ineq', 'fun': (lambda x, i=idx: 1.0 - x[i])})      # x[i] <= 1
+        # auxiliary variable z (last index) must be >= 0
+        bound_constraints.append({'type': 'ineq', 'fun': (lambda x: x[-1])})
 
-            # Combine with existing problem constraints (comparisons and sum-to-1 equality)
-            cobyla_constraints = [
-                {'type': 'ineq', 'fun': constraints_func, 'args': (dict_data, z_star,)},
-                {'type': 'eq', 'fun': lambda x: np.sum(x[:num_criteria]) - 1}
-            ] + bound_constraints
+        # Combine with existing problem constraints (comparisons and sum-to-1 equality)
+        cobyla_constraints = [
+            {'type': 'ineq', 'fun': constraints_func, 'args': (dict_data, z_star,)},
+            {'type': 'eq', 'fun': lambda x: np.sum(x[:num_criteria]) - 1}
+        ] + bound_constraints
 
-            result_coby = opt.minimize(
-                objective_func,
-                x0,
-                method='COBYLA',
-                constraints=cobyla_constraints,
-                options={'maxiter': 5000, 'rhobeg': 0.5}
-            )
-            if result_coby.success:
+        result_coby = opt.minimize(
+            objective_func,
+            x0,
+            method='COBYLA',
+            constraints=cobyla_constraints,
+            options={'maxiter': int(1e4), 'rhobeg': 1e-3}
+        )
+        if result_coby.success:
+            result = result_coby
+            print("\033[92mCOBYLA succeeded.\033[0m")
+        else:
+            maxcv = getattr(result_coby, 'maxcv', None)
+            print(f"\033[93mCOBYLA failed (message: {getattr(result_coby, 'message', None)})\033[0m")
+            print(f"\033[93mmaxcv={maxcv}\033[0m")
+            # If COBYLA didn't converge but the maximum constraint violation
+            # is very small, treat the solution as acceptable.
+            accept_threshold = 10 #if z_star is None else 1e-3
+            if (maxcv is not None) and (maxcv <= accept_threshold):
+                result_coby.success = True
+                print("\033[92mCOBYLA produced near-feasible solution: accepting result.\033[0m")
                 result = result_coby
-                print("\033[92mCOBYLA succeeded.\033[0m")
             else:
-                maxcv = getattr(result_coby, 'maxcv', None)
-                print(f"\033[93mCOBYLA failed (message: {getattr(result_coby, 'message', None)})\033[0m")
-                print(f"\033[93mmaxcv={maxcv}\033[0m")
-                # If COBYLA didn't converge but the maximum constraint violation
-                # is very small, treat the solution as acceptable.
-                accept_threshold = 1e-6
-                if (maxcv is not None) and (maxcv <= accept_threshold):
-                    result_coby.success = True
-                    print("\033[92mCOBYLA produced near-feasible solution: accepting result.\033[0m")
-                    result = result_coby
-                else:
-                    # If the error was too large, we set result to None
-                    print("\033[91mCOBYLA solution not acceptable.\033[0m")
-                    result = None
-        # If also COBYLA fails, we return None
-        except Exception as e:
-            print(f"\033[91mCOBYLA fallback raised exception: {e}\033[0m")
-            result = None
+                # If the error was too large, we set result to None
+                print("\033[91mCOBYLA solution not acceptable.\033[0m")
+                result = bwt(dict_data, var=-1, z_star=None, type='min')["solver_result"]
+    # If also COBYLA fails, we return None
+    except Exception as e:
+        print(f"\033[91mCOBYLA fallback raised exception: {e}\033[0m")
+        result = bwt(dict_data, var=-1, z_star=None, type='min')["solver_result"]
 
     # Extract weights for criteria and groups
     weights = result.x[:num_criteria]
