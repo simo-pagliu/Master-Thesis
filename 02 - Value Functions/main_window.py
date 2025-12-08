@@ -133,7 +133,7 @@ class MainWindow(QMainWindow):
         self.degree_slider.setValue(2)
         self.degree_label = QLabel("Polynomial Degree: 2")
 
-        # Fit type selector (Piecewise linear by default)
+        # Fit type selector (Monotone spline by default)
         self.fit_type_selector = QComboBox()
         self.fit_type_selector.addItems([
             "Piecewise Linear",
@@ -142,7 +142,13 @@ class MainWindow(QMainWindow):
             "Gaussian",
             "Sigmoid",
         ])
-        self.fit_type_selector.setCurrentIndex(0)
+        try:
+            default_fit_idx = self.fit_type_selector.findText("Monotone Spline (PCHIP)")
+        except Exception:
+            default_fit_idx = -1
+        if default_fit_idx is None or default_fit_idx < 0:
+            default_fit_idx = 0
+        self.fit_type_selector.setCurrentIndex(default_fit_idx)
         self.fit_type_selector.currentIndexChanged.connect(self.on_fit_type_changed)
 
         # Parameter controls (created once; visibility toggled by fit type)
@@ -450,7 +456,7 @@ class MainWindow(QMainWindow):
         try:
             meta['fit_type'] = self.fit_type_selector.currentText()
         except Exception:
-            meta['fit_type'] = 'Piecewise Linear'
+            meta['fit_type'] = 'Monotone Spline (PCHIP)'
 
         # collect visible param sliders into fit_params (map internal names to fit param names)
         name_map = {
@@ -605,8 +611,11 @@ class MainWindow(QMainWindow):
                         idx = self.fit_type_selector.findText(ft)
                     except Exception:
                         idx = 0
+                    default_idx = self.fit_type_selector.findText('Monotone Spline (PCHIP)')
+                    if default_idx is None or default_idx < 0:
+                        default_idx = 0
                     if idx is None or idx < 0:
-                        idx = 0
+                        idx = default_idx
                     self.fit_type_selector.setCurrentIndex(idx)
                     # ensure UI reflects this
                     try:
@@ -686,7 +695,10 @@ class MainWindow(QMainWindow):
                     pass
             # if switched to monotonic while Gaussian is selected, choose a safe default
             if not is_non_mono and self.fit_type_selector.currentText() == 'Gaussian':
-                self.fit_type_selector.setCurrentIndex(0)
+                fallback_idx = self.fit_type_selector.findText('Monotone Spline (PCHIP)')
+                if fallback_idx is None or fallback_idx < 0:
+                    fallback_idx = 0
+                self.fit_type_selector.setCurrentIndex(fallback_idx)
         except Exception:
             pass
         # Show/hide indifference/peak inputs
@@ -1092,7 +1104,7 @@ class MainWindow(QMainWindow):
         try:
             degree = self.degree_slider.value()
             # parse fit type and params from UI (use visible sliders)
-            fit_type = self.fit_type_selector.currentText() if hasattr(self, 'fit_type_selector') else 'Piecewise Linear'
+            fit_type = self.fit_type_selector.currentText() if hasattr(self, 'fit_type_selector') else 'Monotone Spline (PCHIP)'
             params = {}
             # mapping internal control names to fit param names when needed
             name_map = {
