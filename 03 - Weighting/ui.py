@@ -108,7 +108,7 @@ class WBT_ui:
             group_name = self.groups[self.current_group_idx] if self.groups else 'Ungrouped'
             group_criteria = self.group_map.get(group_name, [])
             names = [c.get('name') for c in group_criteria]
-            display_names = [f"{c.get('name')} ({c.get('unit')})" if c.get('unit') else c.get('name') for c in group_criteria]
+            display_names = [f"{c.get('name')} \n ({c.get('unit')})" if c.get('unit') else c.get('name') for c in group_criteria]
             n = len(names)
             mins = []
             maxs = []
@@ -129,7 +129,7 @@ class WBT_ui:
             # Values: show all criteria at their max (for overview)
             vals = maxs.copy()
 
-            fig = plt.Figure(figsize=(8, 3))
+            fig = plt.Figure(figsize=(8, 5))
             ax = fig.add_subplot(1, 1, 1)
 
             # Normalize to 0..1 for display
@@ -252,7 +252,7 @@ class WBT_ui:
         try:
             crit_list = [self.criteria_by_name[n] for n in candidates]
             base_names = [c['name'] for c in crit_list]
-            display_names = [f"{c.get('name')} ({c.get('unit')})" if c.get('unit') else c.get('name') for c in crit_list]
+            display_names = [f"{c.get('name')} \n ({c.get('unit')})" if c.get('unit') else c.get('name') for c in crit_list]
             mins = []
             maxs = []
             for c in crit_list:
@@ -343,7 +343,7 @@ class WBT_ui:
 
         # Prepare base and display names (display includes units when available)
         base_names = [c.get('name') for c in group_criteria]
-        display_names = [f"{c.get('name')} ({c.get('unit')})" if c.get('unit') else c.get('name') for c in group_criteria]
+        display_names = [f"{c.get('name')} \n ({c.get('unit')})" if c.get('unit') else c.get('name') for c in group_criteria]
         n = len(base_names)
         ref_idx = next((i for i, c in enumerate(group_criteria) if c.get('name') == ref_criterion), 0)
         other_idx = next((i for i, c in enumerate(group_criteria) if c.get('name') == other_criterion), 0)
@@ -390,7 +390,7 @@ class WBT_ui:
         ttk.Label(frm, text=f"Other: {other_criterion}").pack(pady=(0, 6))
 
         # Matplotlib figure with two side-by-side bar plots
-        fig = plt.Figure(figsize=(8, 3.5))
+        fig = plt.Figure(figsize=(8, 5))
         ax_left = fig.add_subplot(1, 2, 1)
         ax_right = fig.add_subplot(1, 2, 2)
 
