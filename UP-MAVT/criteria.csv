@@ -10,7 +10,7 @@ Licensing Status,Feasibility,1.0,6.0,Score,positive
 Load following Capabilities,Technical,0.21,4.25,(%Pnom)/min,positive
 Net Power Output,Technical,300.0,1630.0,MW_e,positive
 Nuclear Waste,Social,5.88,27.71,tons/yr,negative
-Operative + Fuel Costs,Economic,20.0,72.0,USD2020/MW_h,positive
+Operative + Fuel Costs,Economic,20.0,72.0,USD2020/MW_h,negative
 Percived Safety,Social,0.0,2.0,Score,positive
 Supplier Availbility,Feasibility,1.0,6.0,Score,positive
 Thermal Efficiency,Technical,30.8,36.17,%,positive
