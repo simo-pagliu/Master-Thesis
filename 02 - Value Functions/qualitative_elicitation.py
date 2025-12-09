@@ -20,6 +20,7 @@ from PyQt5.QtWidgets import (
     QFormLayout,
     QDialogButtonBox,
     QSizePolicy,
+    QCheckBox,
 )
 from PyQt5.QtCore import Qt, QSize
 # Matplotlib for plotting in dialogs
@@ -389,6 +390,10 @@ class ValueFunctionWidget(QWidget):
         self.points_count = points_count
         self.xs = []
         self.ys = []
+        # endpoints: first and last points are treated as fixed dummy endpoints
+        # controlled via toggles (0 or 1). Callers should include endpoints
+        # in points_count when they want them present.
+        self.has_endpoints = (self.points_count >= 2)
         # allow caller to specify explicit X positions (e.g., ranks 1..P for qualitative indicators)
         if xs_override is not None:
             try:
@@ -424,12 +429,29 @@ class ValueFunctionWidget(QWidget):
             if points_count == 1:
                 self.ys = [1.0]
             else:
+                # default linear increasing between 0 and 1
                 self.ys = [i / (points_count - 1) for i in range(points_count)]
 
         layout = QVBoxLayout()
         form = QFormLayout()
         self.sliders = []
         self.value_labels = []
+        # endpoint toggles (only meaningful when there are at least two points)
+        if self.has_endpoints:
+            self.left_toggle = QCheckBox('Left endpoint = 1')
+            self.right_toggle = QCheckBox('Right endpoint = 1')
+            # set initial toggle states based on initial ys if available
+            try:
+                self.left_toggle.setChecked(bool(round(self.ys[0]) == 1))
+                self.right_toggle.setChecked(bool(round(self.ys[-1]) == 1))
+            except Exception:
+                self.left_toggle.setChecked(False)
+                self.right_toggle.setChecked(True)
+            htog = QHBoxLayout()
+            htog.addWidget(self.left_toggle)
+            htog.addStretch(1)
+            htog.addWidget(self.right_toggle)
+            form.addRow(QLabel('Endpoints:'), htog)
         # allow custom labels for each point (e.g., the alternative names at that rank)
         if point_labels is None:
             point_labels = [None] * points_count
@@ -443,7 +465,10 @@ class ValueFunctionWidget(QWidget):
             slider.setMinimum(0)
             slider.setMaximum(100)
             slider.setValue(int(self.ys[i] * 100))
-            # endpoints are editable
+            # endpoints are controlled by toggles and locked (disabled)
+            if self.has_endpoints and (i == 0 or i == points_count - 1):
+                slider.setEnabled(False)
+            # otherwise editable
             self.sliders.append(slider)
             val_label = QLabel(f"{self.ys[i]:.2f}")
             self.value_labels.append(val_label)
@@ -472,6 +497,14 @@ class ValueFunctionWidget(QWidget):
         # Connect sliders to update plot and value labels
         for idx, s in enumerate(self.sliders):
             s.valueChanged.connect(lambda _v, i=idx: self.on_slider_changed(i))
+
+        # connect endpoint toggles to update endpoint slider values
+        if self.has_endpoints:
+            try:
+                self.left_toggle.toggled.connect(lambda v: self._apply_endpoint_toggle(0, v))
+                self.right_toggle.toggled.connect(lambda v: self._apply_endpoint_toggle(self.points_count - 1, v))
+            except Exception:
+                pass
 
         # draw initial plot so widget is not blank when shown
         self.update_plot()
@@ -513,34 +546,106 @@ class ValueFunctionWidget(QWidget):
             self.sliders[0].setValue(100)
             self.update_plot()
             return
+        # If endpoints exist, they are controlled by toggles; compute interior count
+        interior_count = n
+        if self.has_endpoints and n >= 2:
+            interior_count = n - 2
+        # helper to set interior values between left and right endpoints
+        def set_interior_values(f_left, f_right):
+            if interior_count <= 0:
+                return
+            if interior_count == 1:
+                v = int((f_left + f_right) / 2.0 * 100)
+                self.sliders[1].setValue(v)
+                return
+            for j in range(interior_count):
+                frac = j / (interior_count - 1)
+                val = f_left + frac * (f_right - f_left)
+                idx = j + (1 if self.has_endpoints else 0)
+                self.sliders[idx].setValue(int(val * 100))
+
+        # determine left/right endpoint values
+        left_val = 0.0
+        right_val = 1.0
+        if self.has_endpoints:
+            try:
+                left_val = 1.0 if self.left_toggle.isChecked() else 0.0
+                right_val = 1.0 if self.right_toggle.isChecked() else 0.0
+                # apply endpoint sliders (they are disabled but reflect state)
+                self.sliders[0].setValue(int(left_val * 100))
+                self.sliders[-1].setValue(int(right_val * 100))
+            except Exception:
+                pass
+
         if mode == 'Linear Increasing':
-            for i, s in enumerate(self.sliders):
-                v = int((i / (n - 1)) * 100)
-                s.setValue(v)
+            set_interior_values(left_val, right_val)
         elif mode == 'Linear Decreasing':
-            for i, s in enumerate(self.sliders):
-                v = int((1 - i / (n - 1)) * 100)
-                s.setValue(v)
+            set_interior_values(right_val, left_val)
         elif mode == 'Triangular':
-            # triangular peak at center
-            center = (n - 1) / 2.0
-            for i, s in enumerate(self.sliders):
-                dist = abs(i - center)
-                y = 1.0 - (2.0 * dist / (n - 1))
-                if y < 0:
-                    y = 0.0
-                s.setValue(int(y * 100))
+            # triangular peak at center between endpoints
+            if interior_count <= 0:
+                pass
+            else:
+                # build triangular values between left_val and right_val
+                center_idx = (interior_count - 1) / 2.0
+                for j in range(interior_count):
+                    dist = abs(j - center_idx)
+                    span = (interior_count - 1)
+                    peak = 1.0 - (2.0 * dist / span) if span > 0 else 1.0
+                    # map peak [0..1] into [min(left,right), max(left,right)]
+                    low = min(left_val, right_val)
+                    high = max(left_val, right_val)
+                    val = low + peak * (high - low)
+                    idx = j + (1 if self.has_endpoints else 0)
+                    self.sliders[idx].setValue(int(max(0.0, min(1.0, val)) * 100))
         self.update_plot()
+
+    def _apply_endpoint_toggle(self, idx, checked):
+        # idx expected 0 or points_count-1
+        try:
+            val = 1.0 if checked else 0.0
+            self.sliders[idx].setValue(int(val * 100))
+            # keep label in sync
+            self.value_labels[idx].setText(f"{val:.2f}")
+            self.update_plot()
+        except Exception:
+            pass
 
     def update_plot(self):
         ys = [s.value() / 100.0 for s in self.sliders]
         for i, lbl in enumerate(self.value_labels):
-            lbl.setText(f"{ys[i]:.2f}")
-        self._plot_line.set_ydata(ys)
+            try:
+                lbl.setText(f"{ys[i]:.2f}")
+            except Exception:
+                pass
+        # Sort points by X so the plotted line connects neighbors in X-order
+        try:
+            pairs = list(zip(self.xs, ys))
+            pairs_sorted = sorted(pairs, key=lambda t: float(t[0]))
+            xs_sorted, ys_sorted = zip(*pairs_sorted)
+            self._plot_line.set_xdata(xs_sorted)
+            self._plot_line.set_ydata(ys_sorted)
+            # update x-limits to encompass sorted Xs
+            try:
+                self.ax.set_xlim(min(xs_sorted), max(xs_sorted))
+            except Exception:
+                pass
+        except Exception:
+            # fallback: preserve original order
+            try:
+                self._plot_line.set_ydata(ys)
+            except Exception:
+                pass
         # adjust y-limits if necessary
-        self.ax.relim()
-        self.ax.autoscale_view()
-        self.canvas.draw_idle()
+        try:
+            self.ax.relim()
+            self.ax.autoscale_view()
+        except Exception:
+            pass
+        try:
+            self.canvas.draw_idle()
+        except Exception:
+            pass
 
     def get_points(self):
         ys = [s.value() / 100.0 for s in self.sliders]
@@ -938,6 +1043,35 @@ class MainApp(QWidget):
 
             self._qual_entries = expanded
             self._qual_index = 0
+            # try to seed any existing value functions for these indicators
+            try:
+                vf_path = Path(self.criteria_path).parent / 'value_functions.csv'
+                if vf_path.exists():
+                    for ent in self._qual_entries:
+                        try:
+                            name = ent.get('indicator') or ''
+                            raw = ent.get('raw_label') or ''
+                            pts = None
+                            # try exact indicator name first
+                            if name:
+                                pts = self.get_value_function_points_for_label(vf_path, name)
+                            # try raw label
+                            if pts is None and raw:
+                                pts = self.get_value_function_points_for_label(vf_path, raw)
+                            # try base name before any ' - ' suffix
+                            if pts is None and name and ' - ' in name:
+                                base = name.split(' - ')[0].strip()
+                                pts = self.get_value_function_points_for_label(vf_path, base)
+                            # as a last resort try the first token
+                            if pts is None and name:
+                                base = name.split('-')[0].strip()
+                                pts = self.get_value_function_points_for_label(vf_path, base)
+                            if pts is not None:
+                                ent['vf_points'] = pts
+                        except Exception:
+                            continue
+            except Exception:
+                pass
             # start with first indicator entry
             ent0 = self._qual_entries[self._qual_index]
             detected_mode = ent0.get('mode', 'ranking')
@@ -974,8 +1108,17 @@ class MainApp(QWidget):
         alt_score = {}
         # assign scores so that topmost rank (idx=0) gets the criterion max,
         # and bottommost gets the criterion min; equally spaced between them
-        cmin = float(crit.get('min', 0.0))
-        cmax = float(crit.get('max', 1.0))
+        # Ensure criterion bounds are ordered so that top rank maps to the larger value.
+        try:
+            raw_min = float(crit.get('min', 0.0))
+        except Exception:
+            raw_min = 0.0
+        try:
+            raw_max = float(crit.get('max', 1.0))
+        except Exception:
+            raw_max = 1.0
+        cmin = min(raw_min, raw_max)
+        cmax = max(raw_min, raw_max)
         if num_ranks == 1:
             score_for_rank = [(cmin + cmax) / 2.0]
         else:
@@ -1173,19 +1316,27 @@ class MainApp(QWidget):
                 pass
 
         # show the embedded editor (replacing the ranking view)
-        # For qualitative indicators, use criterion min..max spaced positions as the X positions
+        # For qualitative indicators, include fixed endpoints at criterion min/max
+        # Points shown = num_ranks interior points + 2 endpoints
+        points_with_endpoints = num_ranks + 2
         xs_override = None
         if indicator_name is not None:
             try:
                 cmin = float(crit.get('min', 0.0))
                 cmax = float(crit.get('max', 1.0))
-                if num_ranks == 1:
-                    xs_override = [(cmin + cmax) / 2.0]
+                if num_ranks <= 0:
+                    xs_override = [cmin, cmax]
                 else:
-                    step_x = (cmax - cmin) / (num_ranks - 1)
-                    xs_override = [cmin + i * step_x for i in range(num_ranks)]
+                    # spacing between points including the two endpoints
+                    step_x = (cmax - cmin) / (num_ranks + 1)
+                    # interior points correspond to ranked items; ensure the first (top) rank
+                    # maps to the highest X (near cmax). Compute interior positions from
+                    # cmin+step_x .. cmin+num_ranks*step_x, then reverse to make descending.
+                    interior = [cmin + i * step_x for i in range(1, num_ranks + 1)]
+                    interior_desc = list(reversed(interior))
+                    xs_override = [cmin] + interior_desc + [cmax]
             except Exception:
-                xs_override = [float(i) for i in range(1, num_ranks + 1)]
+                xs_override = [float(i) for i in range(points_with_endpoints)]
 
         # attempt to seed the value function points: prefer in-memory pre-seeded `vf_points`
         ys_override = None
@@ -1196,7 +1347,17 @@ class MainApp(QWidget):
                 if ent_lookup is not None:
                     vfp = ent_lookup.get('vf_points')
                     if vfp:
-                        ys_override = vfp
+                        # normalize vfp to include endpoints: vfp may contain only interior ys
+                        try:
+                            existing_ys = [float(y) for x, y in vfp]
+                        except Exception:
+                            existing_ys = [float(y) for x, y in vfp if isinstance(y, (int, float))]
+                        if len(existing_ys) == num_ranks:
+                            ys_override = [0.0] + existing_ys + [1.0]
+                        elif len(existing_ys) == points_with_endpoints:
+                            ys_override = existing_ys
+                        else:
+                            ys_override = [i / (points_with_endpoints - 1) for i in range(points_with_endpoints)]
                         if xs_override is None:
                             xs_override = [float(x) for x, y in vfp]
             except Exception:
@@ -1209,14 +1370,25 @@ class MainApp(QWidget):
                 try:
                     pts = self.get_value_function_points_for_label(vf_path, seed_label)
                     if pts:
-                        ys_override = pts
+                        try:
+                            existing_ys = [float(y) for x, y in pts]
+                        except Exception:
+                            existing_ys = [float(y) for x, y in pts if isinstance(y, (int, float))]
+                        if len(existing_ys) == num_ranks:
+                            ys_override = [0.0] + existing_ys + [1.0]
+                        elif len(existing_ys) == points_with_endpoints:
+                            ys_override = existing_ys
+                        else:
+                            ys_override = [i / (points_with_endpoints - 1) for i in range(points_with_endpoints)]
                         if xs_override is None:
                             xs_override = [float(x) for x, y in pts]
                 except Exception:
                     pass
 
+        # include endpoint labels
         point_labels = [', '.join(rank) for rank in ranks]
-        vf_widget = ValueFunctionWidget(crit, num_ranks, xs_override=xs_override, ys_override=ys_override, point_labels=point_labels, on_save=_on_save, on_cancel=_on_cancel, parent=self.container)
+        point_labels_with_endpoints = ['Min'] + point_labels + ['Max']
+        vf_widget = ValueFunctionWidget(crit, points_with_endpoints, xs_override=xs_override, ys_override=ys_override, point_labels=point_labels_with_endpoints, on_save=_on_save, on_cancel=_on_cancel, parent=self.container)
         self.show_view(vf_widget)
 
     def append_scoring_to_alternatives(self, alts_path: Path, alt_names, alt_score_map, label='Computed scoring'):
