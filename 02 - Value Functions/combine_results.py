@@ -379,10 +379,97 @@ try:
                     out_df['group'] = out_df['group'].astype(str).apply(lambda g: re.sub(r"\s*-\s*[A-Za-z]{2,3}$", '', g).strip())
             except Exception:
                 pass
+            # Compute aggregated min/max across all specific country entries and common defaults.
+            try:
+                minmax_map = {}
+                # country_criteria contains lists of rows (dict-like) per country
+                try:
+                    for ccode, rows in country_criteria.items():
+                        for r in rows:
+                            try:
+                                n = str(r.get('name','')).strip()
+                                if not n:
+                                    continue
+                                mn = None
+                                mx = None
+                                try:
+                                    if r.get('min') not in (None, ''):
+                                        mn = float(r.get('min'))
+                                except Exception:
+                                    mn = None
+                                try:
+                                    if r.get('max') not in (None, ''):
+                                        mx = float(r.get('max'))
+                                except Exception:
+                                    mx = None
+                                cur = minmax_map.get(n)
+                                if cur is None:
+                                    minmax_map[n] = [mn, mx]
+                                else:
+                                    if mn is not None and (cur[0] is None or mn < cur[0]):
+                                        cur[0] = mn
+                                    if mx is not None and (cur[1] is None or mx > cur[1]):
+                                        cur[1] = mx
+                            except Exception:
+                                continue
+                except Exception:
+                    pass
+
+                # include common/default criteria if they carry min/max
+                try:
+                    if not combined_common_criteria_df.empty and 'name' in combined_common_criteria_df.columns:
+                        for _, r in combined_common_criteria_df.iterrows():
+                            try:
+                                n = str(r.get('name','')).strip()
+                                if not n:
+                                    continue
+                                mn = None
+                                mx = None
+                                try:
+                                    if r.get('min') not in (None, ''):
+                                        mn = float(r.get('min'))
+                                except Exception:
+                                    mn = None
+                                try:
+                                    if r.get('max') not in (None, ''):
+                                        mx = float(r.get('max'))
+                                except Exception:
+                                    mx = None
+                                cur = minmax_map.get(n)
+                                if cur is None:
+                                    minmax_map[n] = [mn, mx]
+                                else:
+                                    if mn is not None and (cur[0] is None or mn < cur[0]):
+                                        cur[0] = mn
+                                    if mx is not None and (cur[1] is None or mx > cur[1]):
+                                        cur[1] = mx
+                            except Exception:
+                                continue
+                except Exception:
+                    pass
+
+                # apply aggregated min/max to overall DataFrame rows when available
+                try:
+                    for i, r in out_df.iterrows():
+                        name = str(r.get('name','')).strip()
+                        if not name:
+                            continue
+                        mm = minmax_map.get(name)
+                        if not mm:
+                            continue
+                        mn, mx = mm
+                        if mn is not None:
+                            out_df.at[i, 'min'] = mn
+                        if mx is not None:
+                            out_df.at[i, 'max'] = mx
+                except Exception:
+                    pass
+            except Exception:
+                pass
             # Determine 'type' (positive/negative) based on value functions
             try:
-                # build a map of criterion -> list of value function expressions found in source folders
-                vf_exprs = defaultdict(list)
+                # build a map of criterion -> list of elicited point sets found in source folders
+                vf_points = defaultdict(list)
                 src_folders = list(set(common_folders + specific_folders + qualitative_data))
                 for sf in src_folders:
                     folderp = os.path.join(SCRIPT_DIR, sf)
@@ -399,46 +486,55 @@ try:
                             continue
                         for _, r in df_vf.iterrows():
                             name = str(r.get('name', '')).strip() if 'name' in df_vf.columns else ''
-                            # prefer third column named 'value_function' if present, else second column
-                            expr = None
-                            if 'value_function' in df_vf.columns:
-                                expr = r.get('value_function')
-                            else:
-                                # try common positions (1 or 2)
-                                try:
-                                    # dataframe may have unnamed second column storing expression
-                                    cols = list(df_vf.columns)
-                                    if len(cols) >= 2:
-                                        expr = r.get(cols[1])
-                                    if (expr is None or str(expr).strip() == '') and len(cols) >= 3:
-                                        expr = r.get(cols[2])
-                                except Exception:
-                                    pass
-                            if expr is None:
-                                continue
-                            expr = str(expr)
-                            if name:
-                                vf_exprs[name].append(expr)
-
-                def is_strictly_decreasing(fn, a, b, samples=11):
-                    try:
-                        xs = [a + (b - a) * i / (samples - 1) for i in range(samples)]
-                        vals = []
-                        for x in xs:
-                            v = fn(x)
-                            # coerce to float when possible
+                            # sanitize trailing country suffix ' - XX' so country-specific
+                            # VF rows map to the base criterion name
                             try:
-                                v = float(v)
+                                mname = re.match(r'^(?P<base>.+?)\s*-\s*(?P<ctry>[A-Za-z]{2,3})$', name)
+                                if mname:
+                                    name = mname.group('base').strip()
                             except Exception:
                                 pass
-                            vals.append(v)
-                        # check strictly decreasing for all adjacent pairs with tolerance
-                        tol = 1e-9
-                        for i in range(len(vals) - 1):
+                            pts = None
+                            # prefer explicit elicited_points column (JSON list of [x,y])
+                            if 'elicited_points' in df_vf.columns:
+                                pts = r.get('elicited_points')
+                            elif 'points' in df_vf.columns:
+                                pts = r.get('points')
+                            # as a fallback, metadata may carry shape info
+                            meta = None
+                            if 'elicitation_meta' in df_vf.columns:
+                                meta = r.get('elicitation_meta')
+                            if pts is None or str(pts).strip() == '':
+                                # try to infer from meta if present
+                                if meta:
+                                    try:
+                                        meta_obj = json.loads(meta)
+                                        shape = meta_obj.get('shape') if isinstance(meta_obj, dict) else None
+                                        if shape and name:
+                                            vf_points[name].append({'shape': shape})
+                                    except Exception:
+                                        pass
+                                continue
+                            # parse points (JSON preferred, eval fallback)
+                            parsed = None
                             try:
-                                if not (vals[i+1] < vals[i] - tol):
-                                    return False
+                                parsed = json.loads(pts)
                             except Exception:
+                                try:
+                                    parsed = eval(pts)
+                                except Exception:
+                                    parsed = None
+                            if parsed and name:
+                                vf_points[name].append(parsed)
+
+                def points_are_nonincreasing(ptlist, tol=1e-9):
+                    try:
+                        # ptlist: list of [x,y] pairs (or nested structures)
+                        pts = sorted(ptlist, key=lambda p: float(p[0]))
+                        ys = [float(p[1]) for p in pts]
+                        # allow equal y-values (non-increasing sequence)
+                        for i in range(len(ys) - 1):
+                            if not (ys[i+1] <= ys[i] + tol):
                                 return False
                         return True
                     except Exception:
@@ -447,35 +543,38 @@ try:
                 types = []
                 for _, row in out_df.iterrows():
                     cname = str(row.get('name', '')).strip()
-                    # determine numeric range to sample from
-                    try:
-                        a = float(row.get('min')) if row.get('min') not in (None, '') else None
-                    except Exception:
-                        a = None
-                    try:
-                        b = float(row.get('max')) if row.get('max') not in (None, '') else None
-                    except Exception:
-                        b = None
-                    if a is None or b is None or a == b:
-                        a, b = 0.0, 1.0
-
-                    exprs = vf_exprs.get(cname, [])
+                    exprs = vf_points.get(cname, [])
                     if not exprs:
                         # if no value functions found, default to 'positive'
                         types.append('positive')
                         continue
                     evaluable = 0
                     decreasing_count = 0
-                    for expr in exprs:
-                        try:
-                            fn = eval(expr)
-                            if callable(fn):
+                    for item in exprs:
+                        # item may be either a parsed point-list or a dict with metadata
+                        if isinstance(item, dict):
+                            shape = item.get('shape')
+                            if isinstance(shape, str) and shape.lower().startswith('decre'):
                                 evaluable += 1
-                                if is_strictly_decreasing(fn, a, b):
-                                    decreasing_count += 1
-                        except Exception:
-                            continue
-                    # classify: negative only if all evaluable functions are strictly decreasing
+                                decreasing_count += 1
+                            elif isinstance(shape, str) and shape.lower().startswith('incre'):
+                                evaluable += 1
+                        else:
+                            # expect list of [x,y]
+                            try:
+                                if isinstance(item, list) and item:
+                                    # ensure inner items have length>=2
+                                    cleaned = []
+                                    for p in item:
+                                        if isinstance(p, (list, tuple)) and len(p) >= 2:
+                                            cleaned.append([p[0], p[1]])
+                                    if not cleaned:
+                                        continue
+                                    evaluable += 1
+                                    if points_are_nonincreasing(cleaned):
+                                        decreasing_count += 1
+                            except Exception:
+                                continue
                     if evaluable > 0 and decreasing_count == evaluable:
                         types.append('negative')
                     else:
