@@ -1463,7 +1463,9 @@ class MainApp(QWidget):
 
 def write_value_functions(path: Path, vf_rows):
     # vf_rows: list of (name, [(x,y),...]) or (name, [(x,y)...], group)
-    header = ['name', 'group', 'elicited_points', 'value_function', 'elicitation_meta']
+    # We no longer save executable/lambda expressions to the CSV. Persist only
+    # elicited points and metadata so callers can rebuild safe interpolators.
+    header = ['name', 'group', 'elicited_points', 'elicitation_meta']
     # If callers pass the base 'value_functions.csv' path we will not overwrite
     # that base file; instead, write to the next progressive numbered file
     # `value_functions_1.csv`, `value_functions_2.csv`, ... in the same folder.
@@ -1521,38 +1523,32 @@ def write_value_functions(path: Path, vf_rows):
         writer = csv.writer(f)
         writer.writerow(header)
         for r in filtered:
-            writer.writerow(r)
+            # normalize existing rows to the new header layout:
+            # existing formats may include a value_function column at index 3.
+            try:
+                name = r[0] if len(r) > 0 else ''
+                group = r[1] if len(r) > 1 else ''
+                elicited = r[2] if len(r) > 2 else ''
+                # prefer meta at index 4 if present (old schema), else at 3
+                meta = r[4] if len(r) > 4 else (r[3] if len(r) > 3 else '')
+            except Exception:
+                name = r[0] if r else ''
+                group = ''
+                elicited = ''
+                meta = ''
+            writer.writerow([name, group, elicited, meta])
         for item in vf_rows:
             if len(item) == 3:
                 name, pts, group = item
             else:
                 name, pts = item
                 group = ''
-            # build a simple 'lambda x: ...' piecewise-linear interpolation expression
-            xs = [float(x) for x, y in pts]
-            ys = [float(y) for x, y in pts]
-            n = len(xs)
-            if n == 1:
-                expr = f"lambda x: {ys[0]}"
-            else:
-                # build nested conditional interpolation: for each interval compute linear interpolation
-                tail = repr(ys[-1])
-                for i in range(n - 1, 0, -1):
-                    prev_x = xs[i - 1]
-                    prev_y = ys[i - 1]
-                    cur_x = xs[i]
-                    cur_y = ys[i]
-                    # interpolation formula for interval [prev_x, cur_x]
-                    interp = f"({prev_y} + ({cur_y} - {prev_y})*(x - {prev_x})/({cur_x} - {prev_x}))"
-                    tail = f"{interp} if x <= {cur_x} else ({tail})"
-                # now handle x <= first x0
-                tail = f"{repr(ys[0])} if x <= {xs[0]} else ({tail})"
-                expr = "lambda x: " + tail
+            # Persist elicited points and a small metadata blob; do NOT write
+            # executable expressions.
             writer.writerow([
                 name,
                 group,
                 json.dumps([[float(x), float(y)] for x, y in pts]),
-                expr,
                 json.dumps({'mode': 'Manual', 'notes': 'elicited via ranking_value_ui'})
             ])
     # return the actual file path written for caller display

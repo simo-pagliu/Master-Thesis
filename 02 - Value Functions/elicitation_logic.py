@@ -117,11 +117,8 @@ class ElicitationProcess:
         except Exception:
             self.df.at[idx, 'elicited_points'] = ''
 
-        # compute value function string
-        vf = self.get_value_function_string(degree)
-        self.df.at[idx, 'value_function'] = vf if vf is not None else ''
-
-        # meta
+        # We no longer persist executable/lambda expressions to CSV for security and portability.
+        # Only save elicited points and elicitation_meta (as JSON).
         try:
             self.df.at[idx, 'elicitation_meta'] = json.dumps(meta or {})
         except Exception:
@@ -141,7 +138,7 @@ class ElicitationProcess:
                 i += 1
 
         # ensure the required columns exist in the dataframe (include group)
-        cols = ['name', 'group', 'elicited_points', 'value_function', 'elicitation_meta']
+        cols = ['name', 'group', 'elicited_points', 'elicitation_meta']
         # create a new DataFrame with only the requested columns
         export_df = self.df.reindex(columns=cols).copy()
         # replace NaN with empty strings

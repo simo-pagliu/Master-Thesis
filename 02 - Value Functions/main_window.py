@@ -143,7 +143,7 @@ class MainWindow(QMainWindow):
             "Sigmoid",
         ])
         try:
-            default_fit_idx = self.fit_type_selector.findText("Monotone Spline (PCHIP)")
+            default_fit_idx = self.fit_type_selector.findText("Piecewise Linear")
         except Exception:
             default_fit_idx = -1
         if default_fit_idx is None or default_fit_idx < 0:
@@ -611,7 +611,7 @@ class MainWindow(QMainWindow):
                         idx = self.fit_type_selector.findText(ft)
                     except Exception:
                         idx = 0
-                    default_idx = self.fit_type_selector.findText('Monotone Spline (PCHIP)')
+                    default_idx = self.fit_type_selector.findText('Piecewise Linear')
                     if default_idx is None or default_idx < 0:
                         default_idx = 0
                     if idx is None or idx < 0:
