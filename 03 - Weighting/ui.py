@@ -126,28 +126,37 @@ class WBT_ui:
                 mins.append(lo)
                 maxs.append(hi)
 
-            # Values: show all criteria at their max (for overview)
-            vals = maxs.copy()
+            # Values: show each criterion's value function evaluated at its max
+            vals = []
+            for i, c in enumerate(group_criteria):
+                val_at_max = maxs[i]
+                vf = c.get('value_function')
+                if callable(vf):
+                    try:
+                        v = float(vf(val_at_max))
+                    except Exception:
+                        v = 0.001
+                else:
+                    # fallback linear normalization if no value_function attached
+                    lo = mins[i]
+                    hi = maxs[i]
+                    if hi == lo:
+                        v = 1.0
+                    else:
+                        v = (val_at_max - lo) / (hi - lo)
+                # clip to allowed range
+                v = float(np.clip(v, 0.001, 1.0))
+                vals.append(v)
 
             fig = plt.Figure(figsize=(8, 5))
             ax = fig.add_subplot(1, 1, 1)
 
-            # Normalize to 0..1 for display
-            normalized = []
-            for i, v in enumerate(vals):
-                lo = mins[i]
-                hi = maxs[i]
-                try:
-                    normalized.append((v - lo) / (hi - lo))
-                except Exception:
-                    normalized.append(0.0)
-
-            bars = ax.bar(range(n), normalized, tick_label=display_names)
+            bars = ax.bar(range(n), vals, tick_label=display_names, color='#9ecae1')
             ax.set_ylim(0, 1)
-            ax.set_title(f'Overview — {group_name} (all criteria at max)')
+            ax.set_title(f'Overview — {group_name} (value functions at max)')
             for j in range(n):
-                ax.text(j, 0.02, f"{mins[j]:.2f}", ha='center', va='bottom', fontsize=8)
-                ax.text(j, 0.98, f"{maxs[j]:.2f}", ha='center', va='top', fontsize=8)
+                ax.text(j, 0.02, f"{mins[j]:.2f}", ha='center', va='bottom', fontsize=8, color='black')
+                ax.text(j, 0.98, f"{maxs[j]:.2f}", ha='center', va='top', fontsize=8, color='black')
 
             # Embed the overview plot inside the selection frame to the right
             selection_frame.grid_columnconfigure(2, weight=1)
@@ -271,14 +280,30 @@ class WBT_ui:
 
             fig = plt.Figure(figsize=(4, 2.5))
             ax = fig.add_subplot(1, 1, 1)
-            # Represent range as normalized bar from 0 to 1
-            normalized = [1.0] * len(display_names)
-            bars = ax.bar(range(len(display_names)), normalized, tick_label=display_names)
+            # Represent value-function at max for each candidate (or fallback to linear)
+            vals = []
+            for i, c in enumerate(crit_list):
+                lo = mins[i]
+                hi = maxs[i]
+                val_at_max = maxs[i]
+                vf = c.get('value_function')
+                if callable(vf):
+                    try:
+                        v = float(vf(val_at_max))
+                    except Exception:
+                        v = 0.001
+                else:
+                    if hi == lo:
+                        v = 1.0
+                    else:
+                        v = (val_at_max - lo) / (hi - lo)
+                vals.append(float(np.clip(v, 0.001, 1.0)))
+            bars = ax.bar(range(len(display_names)), vals, tick_label=display_names, color='#9ecae1')
             ax.set_ylim(0, 1)
-            ax.set_title('Candidate ranges (max shown)')
+            ax.set_title('Candidate ranges (value functions at max)')
             for j in range(len(display_names)):
-                ax.text(j, 0.02, f"{mins[j]:.2f}", ha='center', va='bottom', fontsize=7)
-                ax.text(j, 0.98, f"{maxs[j]:.2f}", ha='center', va='top', fontsize=7)
+                ax.text(j, 0.02, f"{mins[j]:.2f}", ha='center', va='bottom', fontsize=7, color='black')
+                ax.text(j, 0.98, f"{maxs[j]:.2f}", ha='center', va='top', fontsize=7, color='black')
 
             canvas = FigureCanvasTkAgg(fig, master=plot_frame)
             canvas.draw()
@@ -365,18 +390,86 @@ class WBT_ui:
             mins.append(lo)
             maxs.append(hi)
 
-        left_vals = mins.copy()
-        right_vals = mins.copy()
+        # Build baseline values: the 'minimum' data point per criterion
+        # interpreted according to polarity: if type is positive -> data min; if negative -> data max
+        base_vals = []
+        best_vals = []
+        for i, c in enumerate(group_criteria):
+            ctype = str(c.get('type', '')).strip().lower()
+            if ctype in ('negative', 'neg', '-'):
+                # For negative criteria, the 'minimum' (worst) in value terms is the CSV max
+                base_vals.append(maxs[i])
+                # The 'best' data point is the CSV min
+                best_vals.append(mins[i])
+            else:
+                # For positive criteria, the 'minimum' (worst) is the CSV min
+                base_vals.append(mins[i])
+                # The 'best' data point is the CSV max
+                best_vals.append(maxs[i])
+
+        left_vals = base_vals.copy()
+        right_vals = base_vals.copy()
+
+        # Precompute x positions for VF levels 0.0,0.1,...,1.0 for each criterion
+        # Store as list under key '_precomputed_x_for_y' in each criterion dict
+        try:
+            for i, c in enumerate(group_criteria):
+                lo = mins[i]
+                hi = maxs[i]
+                low = float(min(lo, hi))
+                high = float(max(lo, hi))
+                vf = c.get('value_function')
+                pre = []
+                for k in range(11):
+                    y = float(k) / 10.0
+                    xval = low
+                    try:
+                        if callable(vf):
+                            # sample densely and pick closest x (choose smallest x on ties)
+                            xs = np.linspace(low, high, 401)
+                            ys = np.empty_like(xs)
+                            for j, x in enumerate(xs):
+                                try:
+                                    ys[j] = float(vf(x))
+                                except Exception:
+                                    ys[j] = np.nan
+                            valid = ~np.isnan(ys)
+                            if np.any(valid):
+                                diffs = np.abs(ys[valid] - y)
+                                vidx = np.nonzero(valid)[0]
+                                minpos = int(np.argmin(diffs))
+                                # pick smallest x among equal diffs
+                                eq = np.isclose(diffs, diffs[minpos])
+                                if np.any(eq):
+                                    chosen = vidx[eq].min()
+                                else:
+                                    chosen = vidx[minpos]
+                                xval = float(xs[chosen])
+                            else:
+                                # no valid evaluations: fallback linear
+                                xval = float(low + (high - low) * np.clip(y, 0.0, 1.0))
+                        else:
+                            xval = float(low + (high - low) * np.clip(y, 0.0, 1.0))
+                    except Exception:
+                        xval = float(low)
+                    # ensure within bounds
+                    xval = float(np.clip(xval, low, high))
+                    pre.append(xval)
+                c['_precomputed_x_for_y'] = pre
+        except Exception:
+            # non-fatal: continue without precomputation
+            pass
+
         # Configure left plot according to comparison type
         if comparison_type == 'best':
-            # For best elicitation: left shows the OTHER criterion maxed,
+            # For best elicitation: left shows the OTHER criterion at its best data point,
             # and the user adjusts the REFERENCE (best) on the right.
-            left_vals[other_idx] = maxs[other_idx]
+            left_vals[other_idx] = best_vals[other_idx]
             slider_target = ref_idx
         else:
-            # For worst comparisons: left shows the REFERENCE (worst) maxed,
+            # For worst comparisons: left shows the REFERENCE (worst) at its best data point,
             # and the user adjusts the OTHER on the right.
-            left_vals[ref_idx] = maxs[ref_idx]
+            left_vals[ref_idx] = best_vals[ref_idx]
             slider_target = other_idx
 
         # Right initially all mins (slider will modify slider_target)
@@ -394,22 +487,42 @@ class WBT_ui:
         ax_left = fig.add_subplot(1, 2, 1)
         ax_right = fig.add_subplot(1, 2, 2)
 
-        def normalize(vals):
+        def vf_values(vals):
+            """
+            Convert raw data values `vals` (x in original units) to value-function outputs
+            in [0.001, 1.0]. Uses attached `value_function` if available, otherwise falls back
+            to linear mapping between min->0.001 and max->1.0.
+            """
             out = []
-            for i, v in enumerate(vals):
+            for i, xval in enumerate(vals):
+                c = group_criteria[i]
                 lo = mins[i]
                 hi = maxs[i]
-                try:
-                    out.append((v - lo) / (hi - lo))
-                except Exception:
-                    out.append(0.0)
+                vf = c.get('value_function')
+                if callable(vf):
+                    try:
+                        v = float(vf(xval))
+                    except Exception:
+                        v = 0.001
+                else:
+                    # fallback linear mapping
+                    try:
+                        if hi == lo:
+                            v = 1.0
+                        else:
+                            v = (float(xval) - lo) / (hi - lo)
+                    except Exception:
+                        v = 0.001
+                out.append(float(np.clip(v, 0.001, 1.0)))
             return out
 
-        nl = normalize(left_vals)
-        nr = normalize(right_vals)
-
+        # For elicitation display: left shows 'other' at vf=1 and others at vf=0;
+        # right starts with all criteria at vf=0 and the slider will change the target bar.
         n = len(base_names)
-        bars_left = ax_left.bar(range(n), nl, tick_label=display_names)
+        left_vf = [1.0 if i == other_idx else 0.0 for i in range(n)]
+        right_vf = [0.0 for _ in range(n)]
+
+        bars_left = ax_left.bar(range(n), left_vf, tick_label=display_names, color='#9ecae1')
         ax_left.set_ylim(0, 1)
         # Clarify which criterion is maxed on the left
         if comparison_type == 'best':
@@ -417,26 +530,141 @@ class WBT_ui:
         else:
             ax_left.set_title(f"Reference left: {display_names[ref_idx]} maxed")
 
-        bars_right = ax_right.bar(range(n), nr, tick_label=display_names)
+        bars_right = ax_right.bar(range(n), right_vf, tick_label=display_names, color='#9ecae1')
         ax_right.set_ylim(0, 1)
         # Clarify which criterion the user adjusts on the right
         ax_right.set_title(f"Adjustable right: {display_names[slider_target]}")
 
-        # Add min/max text inside the plot (near bottom/top) so it doesn't overlap
-        # with outer UI elements.
-        for ax, vals in ((ax_left, left_vals), (ax_right, right_vals)):
-            for j in range(n):
-                ax.text(j, 0.02, f"{mins[j]:.2f}", ha='center', va='bottom', fontsize=8)
-                ax.text(j, 0.98, f"{maxs[j]:.2f}", ha='center', va='top', fontsize=8)
+        # (old min/max labels removed) — we now draw value-based labels centered on bars below
 
         canvas = FigureCanvasTkAgg(fig, master=frm)
         canvas.draw()
-        canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+        # Pack the canvas without expanding so control widgets remain clickable below
+        canvas.get_tk_widget().pack(fill=tk.BOTH, expand=False, pady=(0, 6))
+
+        # --- Draw value-function labels at increments 0.0,0.1,...,1.0 for each bar ---
+        def invert_vf_for_criterion(c, y_target, lo, hi):
+            """Return an x such that vf(x)=y_target (approx)."""
+            vf = c.get('value_function')
+            # If VF exposes node arrays, invert analytically on segments
+            if callable(vf) and hasattr(vf, '_xs') and hasattr(vf, '_ys'):
+                xs = np.array(vf._xs, dtype=float)
+                ys = np.array(vf._ys, dtype=float)
+                # search segments where y_target lies between ys[i] and ys[i+1]
+                for i in range(len(xs) - 1):
+                    y0, y1 = ys[i], ys[i+1]
+                    x0, x1 = xs[i], xs[i+1]
+                    if (y_target >= min(y0, y1) - 1e-12) and (y_target <= max(y0, y1) + 1e-12):
+                        if abs(y1 - y0) < 1e-12:
+                            return float(x0)
+                        t = (y_target - y0) / (y1 - y0)
+                        return float(x0 + t * (x1 - x0))
+                # If not in any segment, allow linear extrapolation using end segments
+                if y_target <= ys.min():
+                    # extrapolate left using first two nodes
+                    x0, x1 = xs[0], xs[1]
+                    y0, y1 = ys[0], ys[1]
+                    if abs(y1 - y0) < 1e-12:
+                        return float(x0)
+                    t = (y_target - y0) / (y1 - y0)
+                    return float(x0 + t * (x1 - x0))
+                if y_target >= ys.max():
+                    x0, x1 = xs[-2], xs[-1]
+                    y0, y1 = ys[-2], ys[-1]
+                    if abs(y1 - y0) < 1e-12:
+                        return float(x1)
+                    t = (y_target - y0) / (y1 - y0)
+                    return float(x0 + t * (x1 - x0))
+            # fallback: sample within [lo,hi] and find closest
+            try:
+                samples = np.linspace(lo, hi, 201)
+                vals = [float(vf(x)) if callable(vf) else (0.001 if hi==lo else (x-lo)/(hi-lo)) for x in samples]
+                idx = (np.abs(np.array(vals) - y_target)).argmin()
+                return float(samples[idx])
+            except Exception:
+                return float(lo)
+
+        def compute_x_for_vf(c, y_target, lo, hi, samples=1001):
+            """Robustly compute an x in [lo,hi] whose VF(x) is closest to y_target.
+            Returns the smallest x if multiple matches. Falls back to linear inverse if VF sampling fails."""
+            vf = c.get('value_function')
+            # simple linear fallback/analytic inverse when no callable VF
+            if not callable(vf):
+                try:
+                    return float(lo + (hi - lo) * float(np.clip(y_target, 0.0, 1.0)))
+                except Exception:
+                    return float(lo)
+
+            # sample densely and evaluate VF safely (sample in ascending order)
+            try:
+                sample_lo = min(lo, hi)
+                sample_hi = max(lo, hi)
+                xs = np.linspace(sample_lo, sample_hi, samples)
+                ys = np.empty_like(xs)
+                ys.fill(np.nan)
+                for i, x in enumerate(xs):
+                    try:
+                        y = float(vf(x))
+                        ys[i] = y
+                    except Exception:
+                        ys[i] = np.nan
+                # mask invalid values
+                valid = ~np.isnan(ys)
+                if not np.any(valid):
+                    # all evaluations failed; fallback to linear inverse
+                    return float(lo + (hi - lo) * float(np.clip(y_target, 0.0, 1.0)))
+                # compute absolute differences only on valid entries
+                diffs = np.abs(ys[valid] - float(y_target))
+                min_idx = np.argmin(diffs)
+                # map back to original xs index; choose smallest x in case multiple
+                valid_idxs = np.nonzero(valid)[0]
+                chosen_idx = valid_idxs[min_idx]
+                # if multiple entries have same diff, pick smallest index
+                equal_idxs = valid_idxs[np.isclose(diffs, diffs[min_idx])]
+                if equal_idxs.size:
+                    chosen_idx = int(equal_idxs.min())
+                return float(xs[chosen_idx])
+            except Exception:
+                # final fallback
+                try:
+                    return float(lo + (hi - lo) * float(np.clip(y_target, 0.0, 1.0)))
+                except Exception:
+                    return float(lo)
+
+        # Add labels for each axis: left and right
+        for ax in (ax_left, ax_right):
+            for j in range(n):
+                # For each bar, place small labels at y=0.0..1.0 (step 0.1)
+                for ytick in np.linspace(0.0, 1.0, 11):
+                    xval = invert_vf_for_criterion(group_criteria[j], ytick, mins[j], maxs[j])
+                    # format label with 2 decimals
+                    lbl = f"{xval:.2f}"
+                    # Make first/last (0.0 and 1.0) a bit larger and nudge inward
+                    if abs(ytick - 0.0) < 1e-8:
+                        fontsize = 8
+                        y_pos = min(ytick + 0.035, 0.05)
+                    elif abs(ytick - 1.0) < 1e-8:
+                        fontsize = 8
+                        y_pos = max(ytick - 0.035, 0.95)
+                    else:
+                        fontsize = 6
+                        y_pos = ytick
+                    # center label horizontally with respect to the bar; ensure it's inside plot
+                    ax.text(j, y_pos, lbl, fontsize=fontsize, va='center', ha='center', color='black', clip_on=True)
+
+        # Determine initial slider x such that vf(x)=0 (choose smallest if multiple)
+        try:
+            pre = group_criteria[slider_target].get('_precomputed_x_for_y')
+            if pre and len(pre) > 0 and pre[0] is not None:
+                initial_x_zero = float(pre[0])
+            else:
+                initial_x_zero = float(compute_x_for_vf(group_criteria[slider_target], 0.0, mins[slider_target], maxs[slider_target]))
+        except Exception:
+            initial_x_zero = float(mins[slider_target])
 
         # Slider to adjust the target criterion on the right plot
         resolution = max((maxs[slider_target] - mins[slider_target]) / 200.0, 1e-6)
         slider = tk.Scale(frm, from_=mins[slider_target], to=maxs[slider_target], orient=tk.HORIZONTAL, resolution=resolution, length=500)
-        slider.set(mins[slider_target])
         slider.pack(pady=(6, 8))
 
         def on_slide(val):
@@ -444,13 +672,122 @@ class WBT_ui:
                 v = float(val)
             except Exception:
                 return
-            right_vals[slider_target] = v
-            nr2 = normalize(right_vals)
-            for rect, h in zip(bars_right, nr2):
-                rect.set_height(h)
+            # Compute VF for the slider target only; others remain at 0 for display
+            idx = slider_target
+            c = group_criteria[idx]
+            vf = c.get('value_function')
+            if callable(vf):
+                try:
+                    h = float(vf(v))
+                except Exception:
+                    h = 0.001
+            else:
+                lo = mins[idx]
+                hi = maxs[idx]
+                try:
+                    if hi == lo:
+                        h = 1.0
+                    else:
+                        h = (v - lo) / (hi - lo)
+                except Exception:
+                    h = 0.001
+            h = float(np.clip(h, 0.001, 1.0))
+            for i, rect in enumerate(bars_right):
+                rect.set_height(h if i == idx else 0.0)
+            # keep radio buttons in sync (if present)
+            try:
+                # indicate we're updating radios programmatically so the trace ignores it
+                if 'rb_state' in locals():
+                    rb_state['updating'] = True
+                rb_var.set(int(round(h * 10)))
+            except Exception:
+                pass
+            finally:
+                try:
+                    if 'rb_state' in locals():
+                        rb_state['updating'] = False
+                except Exception:
+                    pass
             canvas.draw_idle()
 
         slider.configure(command=on_slide)
+
+        # Initialize slider position to x where vf(x)=0 and update the right bars
+        try:
+            # Clip initial_x_zero into allowable data range
+            initial_x_zero = max(min(initial_x_zero, maxs[slider_target]), mins[slider_target])
+            slider.set(initial_x_zero)
+            # Trigger the slide handler to update bar heights accordingly
+            on_slide(initial_x_zero)
+        except Exception:
+            # Fallback: set to min
+            slider.set(mins[slider_target])
+
+        # --- Radio buttons: choose VF levels 0.0,0.1,...,1.0 and jump slider to x with vf(x)=y ---
+        try:
+            # Determine initial VF value at current slider pos for radio init
+            try:
+                vf_fn = group_criteria[slider_target].get('value_function')
+                if callable(vf_fn):
+                    current_y = float(vf_fn(float(slider.get())))
+                else:
+                    lo = mins[slider_target]; hi = maxs[slider_target]
+                    current_y = 0.001 if hi == lo else ((float(slider.get()) - lo) / (hi - lo))
+            except Exception:
+                current_y = 0.0
+            current_y = float(np.clip(current_y, 0.0, 1.0))
+            rb_init = int(round(current_y * 10))
+            rb_var = tk.IntVar(value=rb_init)
+            # guard to avoid recursive updates between slider->radio and radio->slider
+            rb_state = {'updating': False}
+
+            radiobtn_frame = ttk.Frame(frm)
+            radiobtn_frame.pack(pady=(4, 6))
+            # create radio buttons horizontally
+            for i in range(11):
+                rb = ttk.Radiobutton(radiobtn_frame, text=f"{i/10:.1f}", variable=rb_var, value=i)
+                rb.pack(side=tk.LEFT, padx=2)
+
+            # trace callback: when the IntVar changes (user clicks a radio), move the slider
+            def on_rb_change(*args):
+                # if we're programmatically updating the radio from the slider, ignore
+                try:
+                    if rb_state.get('updating'):
+                        return
+                except Exception:
+                    pass
+                try:
+                    ix = int(rb_var.get())
+                    target_y = ix / 10.0
+                    # prefer precomputed mapping if available
+                    pre = group_criteria[slider_target].get('_precomputed_x_for_y')
+                    try:
+                        if pre and 0 <= ix < len(pre) and pre[ix] is not None:
+                            x = float(pre[ix])
+                        else:
+                            x = compute_x_for_vf(group_criteria[slider_target], target_y, mins[slider_target], maxs[slider_target])
+                    except Exception:
+                        x = compute_x_for_vf(group_criteria[slider_target], target_y, mins[slider_target], maxs[slider_target])
+                    # clip into allowed data range (support lo>hi)
+                    low = float(min(mins[slider_target], maxs[slider_target]))
+                    high = float(max(mins[slider_target], maxs[slider_target]))
+                    x = float(np.clip(x, low, high))
+                    slider.set(x)
+                    on_slide(x)
+                except Exception:
+                    pass
+
+            try:
+                # trace_add is available on modern Tkinter; fallback to trace for older versions
+                if hasattr(rb_var, 'trace_add'):
+                    rb_var.trace_add('write', on_rb_change)
+                else:
+                    rb_var.trace('w', lambda *a: on_rb_change())
+            except Exception:
+                pass
+        except Exception:
+            # don't fail the UI if radios can't be created
+            pass
 
         btn_frm = ttk.Frame(frm)
         btn_frm.pack(pady=(6, 2))

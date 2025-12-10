@@ -151,6 +151,8 @@ def import_value_functions(vf_csv_path):
             if len(pts) == 0:
                 def vf_constant(x, _v=0.001):
                     return float(_v)
+                vf_constant._xs = np.array([0.0])
+                vf_constant._ys = np.array([0.001])
                 vfs[name] = vf_constant
                 continue
 
@@ -159,6 +161,8 @@ def import_value_functions(vf_csv_path):
                 y0 = 0.001 if pts[0][1] == 0.0 else pts[0][1]
                 def vf_single(x, _y=y0):
                     return float(np.clip(_y, 0.001, 1.0))
+                vf_single._xs = np.array([pts[0][0]])
+                vf_single._ys = np.array([y0])
                 vfs[name] = vf_single
                 continue
 
@@ -197,8 +201,15 @@ def import_value_functions(vf_csv_path):
                     # Clip to allowed range
                     return float(np.clip(val, 0.001, 1.0))
                 return vf
-
-            vfs[name] = make_piecewise(xs, ys)
+            v = make_piecewise(xs, ys)
+            # attach node arrays so callers can invert the VF if needed
+            try:
+                v._xs = np.array(xs, dtype=float)
+                v._ys = np.array(ys, dtype=float)
+            except Exception:
+                v._xs = np.array(xs)
+                v._ys = np.array(ys)
+            vfs[name] = v
 
     return vfs
 
