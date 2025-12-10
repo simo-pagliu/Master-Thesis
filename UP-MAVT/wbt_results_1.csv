@@ -1,23 +1,29 @@
-type,Criterion A,Criterion B,Value,Constraint Type
-best,C_1_1,C_1_2,4,G1
-best,C_1_1,C_1_3,9,G1
-worst,C_1_3,C_1_2,4,G1
-best,C_2_2,C_2_1,9,G2
-best,C_2_2,C_2_3,6,G2
-worst,C_2_1,C_2_3,3,G2
-best,C_3_1,C_3_2,9,G3
-best,C_3_1,C_3_3,7,G3
-worst,C_3_2,C_3_3,2,G3
-best,C_4_1,C_4_2,9,G4
-best,C_4_1,C_4_3,7,G4
-worst,C_4_2,C_4_3,2,G4
-best,C_2_2,C_1_1,3,Between-groups-B
-best,C_2_2,C_3_1,9,Between-groups-B
-best,C_2_2,C_4_1,5,Between-groups-B
-worst,C_3_1,C_1_1,7,Between-groups-B
-worst,C_3_1,C_4_1,3,Between-groups-B
-best,C_2_1,C_1_3,3,Between-groups-W
-best,C_2_1,C_3_2,9,Between-groups-W
-best,C_2_1,C_4_2,4,Between-groups-W
-worst,C_3_2,C_1_3,4,Between-groups-W
-worst,C_3_2,C_4_2,3,Between-groups-W
+Type,Reference,Other,Value,Group
+best,Capital Investment Budgeted,Construction Complexity,4000.0,Economic
+best,Capital Investment Budgeted,Design Complexity,4000.0,Economic
+best,Capital Investment Budgeted,Operative + Fuel Costs,7247.863248,Economic
+worst,Operative + Fuel Costs,Construction Complexity,1.950855,Economic
+worst,Operative + Fuel Costs,Design Complexity,1.99359,Economic
+best,Design Maturity,Licensing Status,5.0,Feasibility
+best,Design Maturity,Supplier Availbility,5.0,Feasibility
+worst,Licensing Status,Supplier Availbility,4.9,Feasibility
+best,Load following Capabilities,Discharge Burnup,0.59,Technical
+best,Load following Capabilities,Net Power Output,3.36,Technical
+best,Load following Capabilities,Thermal Efficiency,0.57,Technical
+worst,Discharge Burnup,Net Power Output,380.0,Technical
+worst,Discharge Burnup,Thermal Efficiency,31.18,Technical
+best,Percived Safety,Electricity Market Benefit,1.59,Social
+best,Percived Safety,GHGe Benefit,1.56,Social
+best,Percived Safety,Nuclear Waste,0.76,Social
+worst,Nuclear Waste,Electricity Market Benefit,29.4,Social
+worst,Nuclear Waste,GHGe Benefit,1.02,Social
+best,Percived Safety,Capital Investment Budgeted,1.61,Between-groups-B
+best,Percived Safety,Design Maturity,1.56,Between-groups-B
+best,Percived Safety,Load following Capabilities,0.78,Between-groups-B
+worst,Load following Capabilities,Capital Investment Budgeted,7179.487179,Between-groups-B
+worst,Load following Capabilities,Design Maturity,3.0,Between-groups-B
+best,Licensing Status,Operative + Fuel Costs,2.03,Between-groups-W
+best,Licensing Status,Discharge Burnup,1.52,Between-groups-W
+best,Licensing Status,Nuclear Waste,1.43,Between-groups-W
+worst,Discharge Burnup,Operative + Fuel Costs,61.777778,Between-groups-W
+worst,Discharge Burnup,Nuclear Waste,25.237799,Between-groups-W

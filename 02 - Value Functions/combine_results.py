@@ -379,6 +379,112 @@ try:
                     out_df['group'] = out_df['group'].astype(str).apply(lambda g: re.sub(r"\s*-\s*[A-Za-z]{2,3}$", '', g).strip())
             except Exception:
                 pass
+            # Determine 'type' (positive/negative) based on value functions
+            try:
+                # build a map of criterion -> list of value function expressions found in source folders
+                vf_exprs = defaultdict(list)
+                src_folders = list(set(common_folders + specific_folders + qualitative_data))
+                for sf in src_folders:
+                    folderp = os.path.join(SCRIPT_DIR, sf)
+                    if not os.path.isdir(folderp):
+                        continue
+                    for fn in os.listdir(folderp):
+                        m = vf_re.match(fn)
+                        if not m:
+                            continue
+                        vf_path = os.path.join(folderp, fn)
+                        try:
+                            df_vf = pd.read_csv(vf_path, dtype=str)
+                        except Exception:
+                            continue
+                        for _, r in df_vf.iterrows():
+                            name = str(r.get('name', '')).strip() if 'name' in df_vf.columns else ''
+                            # prefer third column named 'value_function' if present, else second column
+                            expr = None
+                            if 'value_function' in df_vf.columns:
+                                expr = r.get('value_function')
+                            else:
+                                # try common positions (1 or 2)
+                                try:
+                                    # dataframe may have unnamed second column storing expression
+                                    cols = list(df_vf.columns)
+                                    if len(cols) >= 2:
+                                        expr = r.get(cols[1])
+                                    if (expr is None or str(expr).strip() == '') and len(cols) >= 3:
+                                        expr = r.get(cols[2])
+                                except Exception:
+                                    pass
+                            if expr is None:
+                                continue
+                            expr = str(expr)
+                            if name:
+                                vf_exprs[name].append(expr)
+
+                def is_strictly_decreasing(fn, a, b, samples=11):
+                    try:
+                        xs = [a + (b - a) * i / (samples - 1) for i in range(samples)]
+                        vals = []
+                        for x in xs:
+                            v = fn(x)
+                            # coerce to float when possible
+                            try:
+                                v = float(v)
+                            except Exception:
+                                pass
+                            vals.append(v)
+                        # check strictly decreasing for all adjacent pairs with tolerance
+                        tol = 1e-9
+                        for i in range(len(vals) - 1):
+                            try:
+                                if not (vals[i+1] < vals[i] - tol):
+                                    return False
+                            except Exception:
+                                return False
+                        return True
+                    except Exception:
+                        return False
+
+                types = []
+                for _, row in out_df.iterrows():
+                    cname = str(row.get('name', '')).strip()
+                    # determine numeric range to sample from
+                    try:
+                        a = float(row.get('min')) if row.get('min') not in (None, '') else None
+                    except Exception:
+                        a = None
+                    try:
+                        b = float(row.get('max')) if row.get('max') not in (None, '') else None
+                    except Exception:
+                        b = None
+                    if a is None or b is None or a == b:
+                        a, b = 0.0, 1.0
+
+                    exprs = vf_exprs.get(cname, [])
+                    if not exprs:
+                        # if no value functions found, default to 'positive'
+                        types.append('positive')
+                        continue
+                    evaluable = 0
+                    decreasing_count = 0
+                    for expr in exprs:
+                        try:
+                            fn = eval(expr)
+                            if callable(fn):
+                                evaluable += 1
+                                if is_strictly_decreasing(fn, a, b):
+                                    decreasing_count += 1
+                        except Exception:
+                            continue
+                    # classify: negative only if all evaluable functions are strictly decreasing
+                    if evaluable > 0 and decreasing_count == evaluable:
+                        types.append('negative')
+                    else:
+                        types.append('positive')
+                out_df['type'] = types
+            except Exception:
+                # on any error, default to positive for all
+                out_df['type'] = ['positive'] * len(out_df)
+
             out_df.to_csv(os.path.join(AGG_DIR, 'criteria.csv'), index=False)
         except Exception:
             pass

@@ -224,11 +224,11 @@ class ElicitationProcess:
         y_fit = np.polyval(coeffs, x_fit)
         return x_fit, y_fit
 
-    def fit_curve(self, fit_type='Piecewise Linear', degree=2, params=None):
+    def fit_curve(self, fit_type='Monotone Spline (PCHIP)', degree=2, params=None):
         """Generalized fitter supporting multiple curve types.
 
-        fit_type: one of 'Piecewise Linear', 'Polynomial', 'Gaussian', 'Sigmoid',
-                  'Exponential', 'Logarithmic'
+        fit_type: one of 'Piecewise Linear', 'Polynomial', 'Monotone Spline (PCHIP)',
+                  'Gaussian', 'Sigmoid', 'Exponential', 'Logarithmic'
         degree: used for polynomial fits
         params: dict of parameter values (optional). If provided and contains
                 the necessary parameters, those are used directly. Otherwise
@@ -284,7 +284,7 @@ class ElicitationProcess:
 
         x_fit = np.linspace(xmin, xmax, 200)
 
-        ft = fit_type or 'Piecewise Linear'
+        ft = fit_type or 'Monotone Spline (PCHIP)'
         ft = ft.strip()
 
         try:

@@ -24,6 +24,7 @@ def startup(file_path_criteria, file_path_weight_elicitations, file_path_value_f
 
     # Number of criteria is saved as a variable since we are going to use it multiple times
     num_criteria = len(crit_names)
+    print(f"Number of criteria identified: {num_criteria}")
 
     # mapping from criterion name to its index in crit_names
     crit_index = {name: idx for idx, name in enumerate(crit_names)}
@@ -114,6 +115,12 @@ def sample_to_values(data, value_function):
             sample = float(data)  # Ensure the data is numeric
         except ValueError:
             raise TypeError(f"Invalid data type for sampling: {data}")
+    # Normalize sampled values to numeric scalars (handle numpy scalar or numeric strings)
+    if isinstance(sample, str):
+        sample = float(sample)
+    if isinstance(sample, np.generic):
+        sample = float(sample)
+
     value = float(value_function(sample))
     return value
 

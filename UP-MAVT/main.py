@@ -26,13 +26,17 @@ from aggregation_methods import weighted_sum
 from weight_sampling import obtain_weight_space_description
 #################################################################################
 
+# Ensure all relative file accesses resolve relative to this script location
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+os.chdir(SCRIPT_DIR)
+
 #################################################################################
 # USER INPUTS
 # Weight elicitation files (one per elicitation / run)
-file_path_weight_elicitations = ["wbt_results_1.csv", "wbt_results_2.csv"]
+file_path_weight_elicitations = ["wbt_results_1.csv"]
 
 # Value function files (one per elicitation / run)
-file_path_value_functions = ["value_functions_1.csv", "value_functions_2.csv"]
+file_path_value_functions = ["value_functions_1.csv"]
 
 # Criteria definitions file
 file_path_criteria = "criteria.csv"
@@ -41,9 +45,9 @@ file_path_criteria = "criteria.csv"
 n_runs = 10000
 PLOTS = True  # Toggle plots
 plot_bins = 50  # Number of bins for histograms
-STRICT = True  # Toggle strict mode
+STRICT = False  # Toggle strict mode
 UPDATE_EVERY = 100  # Update plots every N runs
-opinion_weights = [0.7, 0.3]
+opinion_weights = np.ones(len(file_path_weight_elicitations))/len(file_path_weight_elicitations)  # Equal weights for each elicitation
 #################################################################################
 
 
@@ -56,7 +60,8 @@ print(f"Loaded {len(dict_data_list)} elicitation(s) with {n_alternatives} altern
 # Extract alternative names for plotting (the CSV contains a `name` column)
 alternative_names = []
 try:
-    with open("alternatives.csv", mode='r') as altf:
+    alt_path = os.path.join(SCRIPT_DIR, "alternatives.csv")
+    with open(alt_path, mode='r') as altf:
         reader = csv.DictReader(altf)
         for idx, row in enumerate(reader):
             name = row.get('name') if row is not None else None
