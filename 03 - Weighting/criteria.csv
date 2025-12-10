@@ -1,6 +1,6 @@
 name,group,min,max,unit,type
 Capital Investment Budgeted,Economic,4000.0,20000.0,USD2020/kWe,negative
-Construction Complexity,Economic,1.0,6.0,Score,negative
+Construction Complexity,Economic,0.0,1.0,Score,negative
 Design Complexity,Economic,1.0,6.0,Score,negative
 Design Maturity,Feasibility,1.0,6.0,Score,positive
 Discharge Burnup,Technical,46.5,55.0,MWD/kgHM,positive

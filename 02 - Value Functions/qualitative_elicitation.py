@@ -1322,8 +1322,10 @@ class MainApp(QWidget):
         xs_override = None
         if indicator_name is not None:
             try:
-                cmin = float(crit.get('min', 0.0))
-                cmax = float(crit.get('max', 1.0))
+                # For qualitative elicitation, X positions must be integer ranks
+                # starting at 1 and ending at the number of alternatives.
+                cmin = 1.0
+                cmax = float(len(self.alt_names)) if self.alt_names else float(crit.get('max', 1.0))
                 if num_ranks <= 0:
                     xs_override = [cmin, cmax]
                 else:
@@ -1336,7 +1338,8 @@ class MainApp(QWidget):
                     interior_desc = list(reversed(interior))
                     xs_override = [cmin] + interior_desc + [cmax]
             except Exception:
-                xs_override = [float(i) for i in range(points_with_endpoints)]
+                # fallback: use 1..N numbering for qualitative ranks (not 0..N-1)
+                xs_override = [float(i) for i in range(1, points_with_endpoints + 1)]
 
         # attempt to seed the value function points: prefer in-memory pre-seeded `vf_points`
         ys_override = None

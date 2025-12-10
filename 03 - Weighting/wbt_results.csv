@@ -45,3 +45,12 @@ best,Capital Investment Budgeted,Design Complexity,8800.0,Economic
 best,Capital Investment Budgeted,Operative + Fuel Costs,8800.0,Economic
 worst,Operative + Fuel Costs,Construction Complexity,6.0,Economic
 worst,Operative + Fuel Costs,Design Complexity,6.0,Economic
+best,Capital Investment Budgeted,Construction Complexity,8000.0,Economic
+best,Capital Investment Budgeted,Design Complexity,7200.0,Economic
+best,Capital Investment Budgeted,Operative + Fuel Costs,8000.0,Economic
+best,Capital Investment Budgeted,Construction Complexity,8800.0,Economic
+best,Capital Investment Budgeted,Design Complexity,8000.0,Economic
+best,Capital Investment Budgeted,Operative + Fuel Costs,8000.0,Economic
+worst,Operative + Fuel Costs,Construction Complexity,0.4975,Economic
+worst,Operative + Fuel Costs,Design Complexity,4.151709,Economic
+best,Design Maturity,Licensing Status,3.08,Feasibility
