@@ -2,6 +2,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import csv
 import os
+import glob
+import json
+import ast
+import warnings
 
 def value_function_plot(criteria):
     criteria_import = import_criteria(criteria)
@@ -55,7 +59,149 @@ def import_criteria(file_path):
                 "group": row.get("group"),
                 "type": type_str,
             }
+    # Attempt to load value functions from a neighboring value_functions*.csv
+    try:
+        base_dir = os.path.dirname(os.path.abspath(file_path))
+        candidates = glob.glob(os.path.join(base_dir, 'value_functions*.csv'))
+        if candidates:
+            vf_path = candidates[0]
+            vfs = import_value_functions(vf_path)
+            # Attach to criteria if names match; provide a default linear mapping otherwise
+            for name, meta in criteria.items():
+                if name in vfs:
+                    meta['value_function'] = vfs[name]
+                else:
+                    # Default linear mapping between min -> 0.001 and max -> 1.0
+                    lo = meta.get('min', 0.0)
+                    hi = meta.get('max', lo + 1.0)
+                    def make_default(lo, hi):
+                        def vf(x):
+                            try:
+                                xv = float(x)
+                            except Exception:
+                                xv = lo
+                            if hi == lo:
+                                val = 1.0
+                            else:
+                                val = (xv - lo) / (hi - lo)
+                            return float(np.clip(max(val, 0.001), 0.001, 1.0))
+                        return vf
+                    meta['value_function'] = make_default(lo, hi)
+    except Exception:
+        # On any error while attaching value functions, continue silently
+        pass
+
     return criteria
+
+
+
+def import_value_functions(vf_csv_path):
+    """
+    Read a value functions CSV and return a dict mapping criterion name -> callable
+
+    - Reads `elicited_points` (Python list literal) and `elicitation_meta` (JSON).
+    - Does NOT evaluate any `value_function` column (deprecated).
+    - Builds a simple piecewise-linear interpolator using if/else (no external deps).
+    - If `elicitation_meta` does not indicate a piecewise/monotonic fit, a warning
+      is emitted but the piecewise-linear interpolator is still used.
+    - Ensures outputs are clipped to [0.001, 1.0] and any explicit 0.0 points
+      are increased to 0.001.
+    """
+    vfs = {}
+    if not os.path.exists(vf_csv_path):
+        raise FileNotFoundError(vf_csv_path)
+
+    with open(vf_csv_path, mode='r', newline='') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            name = row.get('name')
+            if not name:
+                continue
+
+            # Parse elicited_points (expect a Python list literal)
+            pts_raw = row.get('elicited_points', '')
+            try:
+                points = ast.literal_eval(pts_raw) if pts_raw else []
+            except Exception:
+                warnings.warn(f"Could not parse elicited_points for '{name}', falling back to empty points")
+                points = []
+
+            # Parse elicitation_meta (expect JSON)
+            meta_raw = row.get('elicitation_meta', '')
+            intended = False
+            try:
+                meta = json.loads(meta_raw) if meta_raw else {}
+                # Basic heuristic: if fit_type explicitly Piecewise Linear or mode suggests manual/monotonic
+                if meta.get('fit_type') == 'Piecewise Linear' or meta.get('mode') in ('Monotonic', 'Manual'):
+                    intended = True
+            except Exception:
+                meta = {}
+
+            if not intended:
+                warnings.warn(f"Value-function metadata for '{name}' does not indicate piecewise linear elicitation; using piecewise-linear fallback.")
+
+            # Build piecewise interpolator using simple if/else logic
+            # Normalize/clean points: ensure sorted by x and convert y==0 to 0.001
+            try:
+                pts = sorted([(float(p[0]), float(p[1])) for p in points], key=lambda x: x[0])
+            except Exception:
+                pts = []
+
+            # If no points, create a trivial constant function returning 0.001
+            if len(pts) == 0:
+                def vf_constant(x, _v=0.001):
+                    return float(_v)
+                vfs[name] = vf_constant
+                continue
+
+            # If a single point, return constant function with clipping
+            if len(pts) == 1:
+                y0 = 0.001 if pts[0][1] == 0.0 else pts[0][1]
+                def vf_single(x, _y=y0):
+                    return float(np.clip(_y, 0.001, 1.0))
+                vfs[name] = vf_single
+                continue
+
+            xs = np.array([p[0] for p in pts], dtype=float)
+            ys = np.array([0.001 if p[1] == 0.0 else p[1] for p in pts], dtype=float)
+
+            def make_piecewise(xs, ys):
+                def vf(x):
+                    try:
+                        xv = float(x)
+                    except Exception:
+                        xv = float(xs[0])
+
+                    # Left extrapolation
+                    if xv <= xs[0]:
+                        x0, x1 = xs[0], xs[1]
+                        y0, y1 = ys[0], ys[1]
+                        slope = (y1 - y0) / (x1 - x0) if (x1 != x0) else 0.0
+                        val = y0 + slope * (xv - x0)
+                    # Right extrapolation
+                    elif xv >= xs[-1]:
+                        x0, x1 = xs[-2], xs[-1]
+                        y0, y1 = ys[-2], ys[-1]
+                        slope = (y1 - y0) / (x1 - x0) if (x1 != x0) else 0.0
+                        val = y1 + slope * (xv - xs[-1])
+                    else:
+                        # Find segment
+                        idx = np.searchsorted(xs, xv) - 1
+                        x0, x1 = xs[idx], xs[idx + 1]
+                        y0, y1 = ys[idx], ys[idx + 1]
+                        slope = (y1 - y0) / (x1 - x0) if (x1 != x0) else 0.0
+                        val = y0 + slope * (xv - x0)
+
+                    if np.isnan(val):
+                        val = 0.001
+                    # Clip to allowed range
+                    return float(np.clip(val, 0.001, 1.0))
+                return vf
+
+            vfs[name] = make_piecewise(xs, ys)
+
+    return vfs
+
 
 
 def plot_results(result, criteria_names):
