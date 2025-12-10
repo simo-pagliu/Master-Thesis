@@ -126,27 +126,9 @@ class WBT_ui:
                 mins.append(lo)
                 maxs.append(hi)
 
-            # Values: show each criterion's value function evaluated at its max
-            vals = []
-            for i, c in enumerate(group_criteria):
-                val_at_max = maxs[i]
-                vf = c.get('value_function')
-                if callable(vf):
-                    try:
-                        v = float(vf(val_at_max))
-                    except Exception:
-                        v = 0.001
-                else:
-                    # fallback linear normalization if no value_function attached
-                    lo = mins[i]
-                    hi = maxs[i]
-                    if hi == lo:
-                        v = 1.0
-                    else:
-                        v = (val_at_max - lo) / (hi - lo)
-                # clip to allowed range
-                v = float(np.clip(v, 0.001, 1.0))
-                vals.append(v)
+            # For the selection screen the bars are purely representational and
+            # should appear full regardless of underlying value functions.
+            vals = [1.0] * n
 
             fig = plt.Figure(figsize=(8, 5))
             ax = fig.add_subplot(1, 1, 1)
