@@ -1,29 +1,29 @@
 Type,Reference,Other,Value,Group
-best,Capital Investment Budgeted,Construction Complexity,10000.0,Economic
-best,Capital Investment Budgeted,Design Complexity,10000.0,Economic
-best,Capital Investment Budgeted,Operative + Fuel Costs,5624.812406203102,Economic
+best,Capital Investment Budgeted,Construction Complexity,5000.0,Economic
+best,Capital Investment Budgeted,Design Complexity,5000.0,Economic
+best,Capital Investment Budgeted,Operative + Fuel Costs,10000.812406203102,Economic
 worst,Operative + Fuel Costs,Construction Complexity,1.0,Economic
 worst,Operative + Fuel Costs,Design Complexity,5.019509754877439,Economic
-best,Design Maturity,Licensing Status,2.6658329164582293,Feasibility
-best,Design Maturity,Supplier Availbility,2.6658329164582293,Feasibility
-worst,Licensing Status,Supplier Availbility,1.0,Feasibility
-best,Load following Capabilities,Discharge Burnup,0.496983491745873,Technical
-best,Load following Capabilities,Net Power Output,2.707968984492246,Technical
-best,Load following Capabilities,Thermal Efficiency,0.4828364182091045,Technical
-worst,Discharge Burnup,Net Power Output,379.83991995997997,Technical
-worst,Discharge Burnup,Thermal Efficiency,31.1787743871936,Technical
+best,Design Maturity,Licensing Status,3,Feasibility
+best,Design Maturity,Supplier Availbility,3,Feasibility
+worst,Licensing Status,Supplier Availbility,0.5,Feasibility
+best,Load following Capabilities,Discharge Burnup,0.5,Technical
+best,Load following Capabilities,Net Power Output,2.7,Technical
+best,Load following Capabilities,Thermal Efficiency,0.5,Technical
+worst,Discharge Burnup,Net Power Output,500,Technical
+worst,Discharge Burnup,Thermal Efficiency,33,Technical
 best,Percived Safety,Electricity Market Benefit,1.1795897948974485,Social
 best,Percived Safety,GHGe Benefit,1.1195597798899448,Social
-best,Percived Safety,Nuclear Waste,0.5062531265632816,Social
-worst,Nuclear Waste,Electricity Market Benefit,29.402701350675336,Social
-worst,Nuclear Waste,GHGe Benefit,1.0196498249124564,Social
+best,Percived Safety,Nuclear Waste,0.3,Social
+worst,Nuclear Waste,Electricity Market Benefit,32,Social
+worst,Nuclear Waste,GHGe Benefit,2,Social
 best,Percived Safety,Capital Investment Budgeted,1.8,Between-groups-B
 best,Percived Safety,Design Maturity,1.8,Between-groups-B
-best,Percived Safety,Load following Capabilities,0.5202601300650325,Between-groups-B
-worst,Load following Capabilities,Capital Investment Budgeted,13000,Between-groups-B
+best,Percived Safety,Load following Capabilities,0.3,Between-groups-B
+worst,Load following Capabilities,Capital Investment Budgeted,9000,Between-groups-B
 worst,Load following Capabilities,Design Maturity,2,Between-groups-B
-best,Licensing Status,Operative + Fuel Costs,1.0,Between-groups-W
-best,Licensing Status,Discharge Burnup,1.0,Between-groups-W
-best,Licensing Status,Nuclear Waste,1.0,Between-groups-W
-worst,Discharge Burnup,Operative + Fuel Costs,38.20910455227614,Between-groups-W
-worst,Discharge Burnup,Nuclear Waste,25.241975987994,Between-groups-W
+best,Licensing Status,Operative + Fuel Costs,1.5,Between-groups-W
+best,Licensing Status,Discharge Burnup,1.5,Between-groups-W
+best,Licensing Status,Nuclear Waste,1.5,Between-groups-W
+worst,Discharge Burnup,Operative + Fuel Costs,37,Between-groups-W
+worst,Discharge Burnup,Nuclear Waste,23,Between-groups-W

@@ -29,7 +29,7 @@ from weight_sampling import obtain_weight_space_description
 #################################################################################
 # USER INPUTS
 # Weight elicitation files (one per elicitation / run)
-file_path_weight_elicitations = ["wbt_results_1.csv"]
+# file_path_weight_elicitations = ["wbt_results_1.csv"]
 file_path_weight_elicitations = ["wbt_results_alt.csv"]
 
 
@@ -205,7 +205,7 @@ import pandas as pd
 
 # Example usage:
 while True:
-    s = np.random.uniform(0, 1e6)
+    s = int(np.random.uniform(0, 1e6))
     print(f'Running with RNG seed: {s}')
     results = find_all_solutions(dict_data, z_star=None, rng_seed=s)
     # Build weights array (n_solutions x n_criteria), drop last element (z)

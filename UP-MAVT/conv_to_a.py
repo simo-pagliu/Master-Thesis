@@ -40,7 +40,7 @@ CRITERION_CODES = {
 }
 
 # Input/output paths (relative to this file)
-INPUT_WBT = "wbt_results_1.csv"
+INPUT_WBT = "wbt_results_alt.csv"
 INPUT_VALUE_FUNCTIONS = "value_functions_1.csv"
 OUTPUT_A_VALUES = "a_values.csv"
 
