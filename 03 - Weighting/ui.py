@@ -137,8 +137,10 @@ class WBT_ui:
             ax.set_ylim(0, 1)
             ax.set_title(f'Overview — {group_name} (value functions at max)')
             for j in range(n):
-                ax.text(j, 0.02, f"{mins[j]:.2f}", ha='center', va='bottom', fontsize=8, color='black')
-                ax.text(j, 0.98, f"{maxs[j]:.2f}", ha='center', va='top', fontsize=8, color='black')
+                low = min(mins[j], maxs[j])
+                high = max(mins[j], maxs[j])
+                ax.text(j, 0.02, f"{low:.2f}", ha='center', va='bottom', fontsize=8, color='black')
+                ax.text(j, 0.98, f"{high:.2f}", ha='center', va='top', fontsize=8, color='black')
 
             # Embed the overview plot inside the selection frame to the right
             selection_frame.grid_columnconfigure(2, weight=1)
@@ -284,8 +286,10 @@ class WBT_ui:
             ax.set_ylim(0, 1)
             ax.set_title('Candidate ranges (value functions at max)')
             for j in range(len(display_names)):
-                ax.text(j, 0.02, f"{mins[j]:.2f}", ha='center', va='bottom', fontsize=7, color='black')
-                ax.text(j, 0.98, f"{maxs[j]:.2f}", ha='center', va='top', fontsize=7, color='black')
+                low = min(mins[j], maxs[j])
+                high = max(mins[j], maxs[j])
+                ax.text(j, 0.02, f"{low:.2f}", ha='center', va='bottom', fontsize=7, color='black')
+                ax.text(j, 0.98, f"{high:.2f}", ha='center', va='top', fontsize=7, color='black')
 
             canvas = FigureCanvasTkAgg(fig, master=plot_frame)
             canvas.draw()
@@ -498,10 +502,14 @@ class WBT_ui:
                 out.append(float(np.clip(v, 0.001, 1.0)))
             return out
 
-        # For elicitation display: left shows 'other' at vf=1 and others at vf=0;
-        # right starts with all criteria at vf=0 and the slider will change the target bar.
+        # For elicitation display: left shows the "maxed" criterion at vf=1
+        # (which is the OTHER for 'best' comparisons, and the REFERENCE for 'worst').
+        # Right starts with all criteria at vf=0 and the slider will change the target bar.
         n = len(base_names)
-        left_vf = [1.0 if i == other_idx else 0.0 for i in range(n)]
+        if comparison_type == 'best':
+            left_vf = [1.0 if i == other_idx else 0.0 for i in range(n)]
+        else:
+            left_vf = [1.0 if i == ref_idx else 0.0 for i in range(n)]
         right_vf = [0.0 for _ in range(n)]
 
         bars_left = ax_left.bar(range(n), left_vf, tick_label=display_names, color='#9ecae1')
@@ -541,22 +549,36 @@ class WBT_ui:
                             return float(x0)
                         t = (y_target - y0) / (y1 - y0)
                         return float(x0 + t * (x1 - x0))
-                # If not in any segment, allow linear extrapolation using end segments
-                if y_target <= ys.min():
-                    # extrapolate left using first two nodes
-                    x0, x1 = xs[0], xs[1]
-                    y0, y1 = ys[0], ys[1]
-                    if abs(y1 - y0) < 1e-12:
-                        return float(x0)
-                    t = (y_target - y0) / (y1 - y0)
-                    return float(x0 + t * (x1 - x0))
-                if y_target >= ys.max():
-                    x0, x1 = xs[-2], xs[-1]
-                    y0, y1 = ys[-2], ys[-1]
-                    if abs(y1 - y0) < 1e-12:
-                        return float(x1)
-                    t = (y_target - y0) / (y1 - y0)
-                    return float(x0 + t * (x1 - x0))
+                # If not in any segment, clamp to the criterion domain extremes
+                # rather than extrapolating numerically. This ensures labels
+                # correspond to the actual data range (low/high) shown on plots.
+                    # Use VF node endpoints to decide which data-end corresponds
+                    # to the extreme VF values, taking the node monotonicity into account.
+                    try:
+                        x_start = float(xs[0])
+                        x_end = float(xs[-1])
+                        y_start = float(ys[0])
+                        y_end = float(ys[-1])
+                        # If VF increases with x (y_start < y_end), small y -> x_start
+                        if y_start <= y_end:
+                            if y_target <= float(ys.min()):
+                                return float(x_start)
+                            if y_target >= float(ys.max()):
+                                return float(x_end)
+                        else:
+                            # VF decreases with x: small y -> x_end
+                            if y_target <= float(ys.min()):
+                                return float(x_end)
+                            if y_target >= float(ys.max()):
+                                return float(x_start)
+                    except Exception:
+                        # fallback to domain extremes if anything goes wrong
+                        low_dom = float(min(lo, hi))
+                        high_dom = float(max(lo, hi))
+                        if y_target <= float(ys.min()):
+                            return float(low_dom)
+                        if y_target >= float(ys.max()):
+                            return float(high_dom)
             # fallback: sample within [lo,hi] and find closest
             try:
                 samples = np.linspace(lo, hi, 201)
@@ -618,7 +640,9 @@ class WBT_ui:
             for j in range(n):
                 # For each bar, place small labels at y=0.0..1.0 (step 0.1)
                 for ytick in np.linspace(0.0, 1.0, 11):
-                    xval = invert_vf_for_criterion(group_criteria[j], ytick, mins[j], maxs[j])
+                    low = min(mins[j], maxs[j])
+                    high = max(mins[j], maxs[j])
+                    xval = invert_vf_for_criterion(group_criteria[j], ytick, low, high)
                     # format label with 2 decimals
                     lbl = f"{xval:.2f}"
                     # Make first/last (0.0 and 1.0) a bit larger and nudge inward
@@ -640,7 +664,9 @@ class WBT_ui:
             if pre and len(pre) > 0 and pre[0] is not None:
                 initial_x_zero = float(pre[0])
             else:
-                initial_x_zero = float(compute_x_for_vf(group_criteria[slider_target], 0.0, mins[slider_target], maxs[slider_target]))
+                low = min(mins[slider_target], maxs[slider_target])
+                high = max(mins[slider_target], maxs[slider_target])
+                initial_x_zero = float(compute_x_for_vf(group_criteria[slider_target], 0.0, low, high))
         except Exception:
             initial_x_zero = float(mins[slider_target])
 
