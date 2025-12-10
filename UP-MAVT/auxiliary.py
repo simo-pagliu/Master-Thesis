@@ -98,11 +98,18 @@ def load_criteria_definitions(file_path_criteria):
             min_value = float(rows[2]) if len(rows) > 2 and rows[2] != '' else None
             max_value = float(rows[3]) if len(rows) > 3 and rows[3] != '' else None
             units = rows[4] if len(rows) > 4 else ''
+            # optional "type" column (e.g. 'positive'/'negative') in position 5
+            crit_type = rows[5].strip() if len(rows) > 5 and rows[5] != '' else None
             criteria[crit_name] = {
                 "group": group,
+                # keep old keys for backward compatibility
                 "min_value": min_value,
                 "max_value": max_value,
                 "units": units,
+                # add convenience keys used elsewhere: 'min','max','type'
+                "min": min_value,
+                "max": max_value,
+                "type": crit_type,
                 "best_comparisons": {},
                 "worst_comparisons": {}
             }

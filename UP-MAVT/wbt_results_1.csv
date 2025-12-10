@@ -2,8 +2,8 @@ Type,Reference,Other,Value,Group
 best,Capital Investment Budgeted,Construction Complexity,4000.0,Economic
 best,Capital Investment Budgeted,Design Complexity,4000.0,Economic
 best,Capital Investment Budgeted,Operative + Fuel Costs,7247.863248,Economic
-worst,Operative + Fuel Costs,Construction Complexity,1.950855,Economic
-worst,Operative + Fuel Costs,Design Complexity,1.99359,Economic
+worst,Operative + Fuel Costs,Construction Complexity,2,Economic
+worst,Operative + Fuel Costs,Design Complexity,2,Economic
 best,Design Maturity,Licensing Status,5.0,Feasibility
 best,Design Maturity,Supplier Availbility,5.0,Feasibility
 worst,Licensing Status,Supplier Availbility,4.9,Feasibility

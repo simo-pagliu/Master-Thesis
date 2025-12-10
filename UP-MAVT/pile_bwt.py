@@ -126,6 +126,59 @@ def constraints_func(x, dict_data, z_star=None):
 def objective(x, var=-1):
     return x[var]  # z is the last variable in the array
 
+def slsqp_run(objective_func, x0, bounds, num_criteria, dict_data, z_star):
+    result = opt.minimize(
+    objective_func,
+    x0,
+    method='SLSQP',
+    constraints=[
+        {'type': 'ineq', 'fun': constraints_func, 'args': (dict_data, z_star,)},
+        {'type': 'eq', 'fun': lambda x: np.sum(x[:num_criteria]) - 1}
+    ],
+    bounds=bounds,
+    options={'maxiter': 1000, 'ftol': 1e-3}
+    )
+    return result
+
+def trust_constr_run(objective_func, x0, bounds, num_criteria, dict_data, z_star):
+    nonlinear_constraints = [
+        opt.NonlinearConstraint(
+            lambda x: constraints_func(x, dict_data, z_star),
+            lb=0,
+            ub=np.inf,
+        ),
+        opt.NonlinearConstraint(
+            lambda x: np.sum(x[:num_criteria]) - 1,
+            lb=0,
+            ub=0,
+        ),
+    ]
+
+    result_trust = opt.minimize(
+        objective_func,
+        x0,
+        method='trust-constr',
+        constraints=nonlinear_constraints,
+        bounds=bounds,
+        options={'maxiter': int(2e3), 'gtol': 1e-3, 'xtol': 1e-6}
+    )
+    return result_trust  
+  
+def cobyqa_run(objective_func, x0, bounds, num_criteria, dict_data, z_star):
+    # COBYQA in SciPy requires bounds as a list of tuples (min, max)
+    result_cobyqa = opt.minimize(
+        objective_func,
+        x0,
+        method='COBYQA',
+        bounds=bounds,
+        constraints=[
+            {'type': 'ineq', 'fun': constraints_func, 'args': (dict_data, z_star)},
+            {'type': 'eq', 'fun': lambda x: np.sum(x[:num_criteria]) - 1}
+        ],
+        options={'maxiter': 2000}
+    )
+    return result_cobyqa
+
 def bwt(dict_data, var=-1, z_star=None, type='min'):
     # Count the number of groups and criteria
     num_criteria = sum(len(group_data['criteria']) for group_data in dict_data.values())
@@ -133,7 +186,9 @@ def bwt(dict_data, var=-1, z_star=None, type='min'):
     # Initial guess: for all w_i + z (auxiliary variable)
     # We ensure it starts within bounds
     x0 = np.ones(num_criteria + 1) / (num_criteria)
-    # print("Initial guess x0:", x0)
+    if z_star is not None:
+        x0 = bwt(dict_data, var=-1, z_star=None, type='min')["solver_result"].x
+        print("\033[93mRe-initializing x0 from known optimal solution without z_star constraint...\033[0m")
 
     # Bounds: 
     # Positive weights: w_i >= 0, 
@@ -153,72 +208,47 @@ def bwt(dict_data, var=-1, z_star=None, type='min'):
         objective_func = objective_with_var
 
     # Try SLSQP first
-    # if it fails catastrophically we try COBYLA as a fallback
-    try:
-        result = opt.minimize(
-            objective_func,
-            x0,
-            method='SLSQP',
-            constraints=[
-                {'type': 'ineq', 'fun': constraints_func, 'args': (dict_data, z_star,)},
-                {'type': 'eq', 'fun': lambda x: np.sum(x[:num_criteria]) - 1}
-            ],
-            bounds=bounds,
-            options={'maxiter': 1000, 'ftol': 1e-3}
-        )
-    except Exception as e:
-        print(f"SLSQP raised exception: {e}")
-        pass
-
-    # Also if it did not raised an expection but did not converge we try COBYLA
-    # Note that SLSQP can fail silently so we check the success flag
-    # print(f"\033[93mSLSQP failed (message: {getattr(result, 'message', None)})\033[0m")
-    print(f"\033[93mTrying 'COBYLA' as fallback with explicit bound constraints...\033[0m")
-    try:
-        # Build explicit inequality constraints that represent the bounds for COBYLA
-        bound_constraints = []
-        # weights 0..num_criteria-1: 0 <= x[i] <= 1
-        for idx in range(num_criteria):
-            bound_constraints.append({'type': 'ineq', 'fun': (lambda x, i=idx: x[i] - 0.001)})            # x[i] >= 0.001
-            bound_constraints.append({'type': 'ineq', 'fun': (lambda x, i=idx: 1.0 - x[i])})      # x[i] <= 1
-        # auxiliary variable z (last index) must be >= 0
-        bound_constraints.append({'type': 'ineq', 'fun': (lambda x: x[-1])})
-
-        # Combine with existing problem constraints (comparisons and sum-to-1 equality)
-        cobyla_constraints = [
-            {'type': 'ineq', 'fun': constraints_func, 'args': (dict_data, z_star,)},
-            {'type': 'eq', 'fun': lambda x: np.sum(x[:num_criteria]) - 1}
-        ] + bound_constraints
-
-        result_coby = opt.minimize(
-            objective_func,
-            x0,
-            method='COBYLA',
-            constraints=cobyla_constraints,
-            options={'maxiter': int(1e4), 'rhobeg': 1e-3}
-        )
-        if result_coby.success:
-            result = result_coby
-            print("\033[92mCOBYLA succeeded.\033[0m")
+    # if it fails catastrophically we try trust-constr as a fallback
+    if z_star is None:
+        try:
+            result = slsqp_run(objective_func, x0, bounds, num_criteria, dict_data, z_star)
+        except Exception as e:
+            print(f"SLSQP raised exception: {e}")
+            class dummy_result:
+                success = False
+                message = str(e)
+            result = dummy_result()
+            pass
+    
+    # If SLSQP fails or does not converge, try trust-constr
+    if z_star is not None or not result.success:
+        if z_star is None:
+            print(f"\033[93mSLSQP failed: {getattr(result, 'message', 'No message provided')}\033[0m")
+            print(f"\033[93mTrying 'trust-constr' as fallback...\033[0m")
         else:
-            maxcv = getattr(result_coby, 'maxcv', None)
-            print(f"\033[93mCOBYLA failed (message: {getattr(result_coby, 'message', None)})\033[0m")
-            print(f"\033[93mmaxcv={maxcv}\033[0m")
-            # If COBYLA didn't converge but the maximum constraint violation
-            # is very small, treat the solution as acceptable.
-            accept_threshold = 10 #if z_star is None else 1e-3
-            if (maxcv is not None) and (maxcv <= accept_threshold):
-                result_coby.success = True
-                print("\033[92mCOBYLA produced near-feasible solution: accepting result.\033[0m")
-                result = result_coby
-            else:
-                # If the error was too large, we set result to None
-                print("\033[91mCOBYLA solution not acceptable.\033[0m")
-                result = bwt(dict_data, var=-1, z_star=None, type='min')["solver_result"]
-    # If also COBYLA fails, we return None
-    except Exception as e:
-        print(f"\033[91mCOBYLA fallback raised exception: {e}\033[0m")
+            print(f"\033[93mRe-running with 'trust-constr' due to z_star constraint...\033[0m")
+        try:
+            result = trust_constr_run(objective_func, x0, bounds, num_criteria, dict_data, z_star)
+        except Exception as e:
+            print(f"\033[91mtrust-constr fallback raised exception: {e}\033[0m")
+            pass
+
+    if not result.success:
+        print(f"\033[93mtrust-constr failed (message: {getattr(result, 'message', None)})\033[0m")
+        print("\033[93mTrying 'COBYQA' (SciPy) as fallback...\033[0m")
+        try:
+            result = cobyqa_run(objective_func, x0, bounds, num_criteria, dict_data, z_star)
+            if result.success:
+                print("\033[92mCOBYQA succeeded.\033[0m")
+        except Exception as e:
+            print(f"\033[91mCOBYQA fallback raised exception: {e}\033[0m")
+            pass
+
+    if not result.success :
+        print(f"\033[93mCOBYQA failed (message: {getattr(result, 'message', None)})\033[0m")
+        print("\033[93mFallback to known optimal solution...\033[0m")
         result = bwt(dict_data, var=-1, z_star=None, type='min')["solver_result"]
+
 
     # Extract weights for criteria and groups
     weights = result.x[:num_criteria]

@@ -40,7 +40,7 @@ CRITERION_CODES = {
 }
 
 # Input/output paths (relative to this file)
-INPUT_WBT = "wbt_results_1.csv"
+INPUT_WBT = "wbt_results_alt.csv"
 INPUT_VALUE_FUNCTIONS = "value_functions_1.csv"
 OUTPUT_A_VALUES = "a_values.csv"
 
@@ -59,7 +59,6 @@ def read_wbt_rows(path: str) -> Iterable[Dict[str, str]]:
 
 
 def make_code(comp_type: str, group: str, reference: str, other: str) -> str:
-	"""Build compact code like b_E1_E2 based on type/group and criteria codes."""
 	comp_type = comp_type.lower()
 	group_lower = group.lower()
 

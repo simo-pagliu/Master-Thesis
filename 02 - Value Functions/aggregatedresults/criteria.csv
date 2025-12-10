@@ -1,7 +1,7 @@
 name,group,min,max,unit,type
-Capital Investment Budgeted,Economic,4000.0,20000.0,USD2020/kWe,negative
-Construction Complexity,Economic,1.0,6.0,Score,negative
-Design Complexity,Economic,1.0,6.0,Score,negative
+Capital Investment Budgeted,Economic,4000.0,20000.0,USD2020/kWe,positive
+Construction Complexity,Economic,1.0,6.0,Score,positive
+Design Complexity,Economic,1.0,6.0,Score,positive
 Design Maturity,Feasibility,1.0,6.0,Score,positive
 Discharge Burnup,Technical,46.5,55.0,MWD/kgHM,positive
 Electricity Market Benefit,Social,24.0,49.0,EUR/MW_h,positive
@@ -10,7 +10,7 @@ Licensing Status,Feasibility,1.0,6.0,Score,positive
 Load following Capabilities,Technical,0.21,4.25,(%Pnom)/min,positive
 Net Power Output,Technical,300.0,1630.0,MW_e,positive
 Nuclear Waste,Social,5.88,27.71,tons/yr,negative
-Operative + Fuel Costs,Economic,20.0,72.0,USD2020/MW_h,negative
+Operative + Fuel Costs,Economic,20.0,72.0,USD2020/MW_h,positive
 Percived Safety,Social,0.0,2.0,Score,positive
 Supplier Availbility,Feasibility,1.0,6.0,Score,positive
 Thermal Efficiency,Technical,30.8,36.17,%,positive

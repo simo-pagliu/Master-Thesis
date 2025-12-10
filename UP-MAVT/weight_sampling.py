@@ -98,8 +98,8 @@ def define_weight_space(dict_data, num_criteria, bwt_result, plot = True, increm
     decimals = max(0, int(np.ceil(-np.log10(increment)))) if increment > 0 else 6
 
     for i in range(num_criteria):
-        w_min = max(0, weight_ranges[i][0][i])
-        w_max = min(1, weight_ranges[i][1][i])
+        w_min = min(bwt_weights[i], max(0, weight_ranges[i][0][i]))
+        w_max = max(bwt_weights[i], min(1, weight_ranges[i][1][i]))
 
         if w_max - w_min < increment:
             mid = round((w_min + w_max) / 2.0, decimals)
