@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import (
     QMainWindow, QVBoxLayout, QHBoxLayout, QPushButton,
     QLabel, QLineEdit, QFileDialog, QWidget, QSlider, QDoubleSpinBox
 )
-from PyQt5.QtWidgets import QComboBox
+from PyQt5.QtWidgets import QComboBox, QRadioButton, QButtonGroup
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QDoubleValidator
@@ -54,19 +54,23 @@ class MainWindow(QMainWindow):
         self.x_decrease_input = QLineEdit()
         self.x_decrease_input.setPlaceholderText("X after which decreasing X not important (default = min)")
 
-        # Expert confidence selector (0..4) — store as part of elicitation_meta
-        self.confidence_selector = QComboBox()
+        # Expert confidence selector (0..4) — use radio buttons for compactness
         self._conf_options = [
-            "0: Not confident at all (pure guess)",
-            "1: Low confidence",
-            "2: Moderately confident",
-            "3: High confidence",
-            "4: Extremely confident (certain)",
+            "Not confident at all (pure guess)",
+            "Low confidence",
+            "Moderately confident",
+            "High confidence",
+            "Extremely confident (certain)",
         ]
-        self.confidence_selector.addItems(self._conf_options)
-        # default moderately confident
+        self.confidence_group = QButtonGroup(self)
+        self.confidence_radios = []
+        for i, txt in enumerate(self._conf_options):
+            rb = QRadioButton(f"{i}: {txt}")
+            self.confidence_group.addButton(rb, i)
+            self.confidence_radios.append(rb)
+        # default moderately confident (index 2)
         try:
-            self.confidence_selector.setCurrentIndex(2)
+            self.confidence_radios[2].setChecked(True)
         except Exception:
             pass
 
@@ -228,32 +232,50 @@ class MainWindow(QMainWindow):
         self.canvas = FigureCanvas(self.figure)
         self.ax = self.figure.add_subplot(111)
 
-        # Add widgets to layout
+        # Add widgets to layout in requested order:
+        # 1) Expert confidence
+        # 2) Behaviour (monotonic/non-monotonic + shape)
+        # 3) Thresholds (increase/decrease)
+        # 4) Indifference / peak inputs
+        # 5) Fit type and parameters
         self.layout.addWidget(self.file_label)
         # place the two CSV buttons side-by-side
         top_btns = QHBoxLayout()
         top_btns.addWidget(self.upload_button)
         self.layout.addLayout(top_btns)
         self.layout.addWidget(self.attr_label)
-        # Add new UI controls for monotonicity and thresholds
+
+        # 1) Confidence first (radio buttons row)
+        self.layout.addWidget(QLabel("Expert confidence:"))
+        conf_row = QHBoxLayout()
+        for rb in self.confidence_radios:
+            conf_row.addWidget(rb)
+        self.layout.addLayout(conf_row)
+
+        # 2) Behaviour
         self.layout.addWidget(QLabel("Select behavior:"))
         self.layout.addWidget(self.mono_selector)
         self.layout.addWidget(self.shape_selector)
-        # indifference / peak widgets (shown depending on selection)
+
+        # 3) Thresholds (same horizontal row)
+        thresholds_layout = QHBoxLayout()
+        thresholds_layout.addWidget(QLabel("Thresholds:"))
+        thresholds_layout.addWidget(QLabel("Increase:"))
+        thresholds_layout.addWidget(self.x_increase_input)
+        thresholds_layout.addWidget(QLabel("Decrease:"))
+        thresholds_layout.addWidget(self.x_decrease_input)
+        self.layout.addLayout(thresholds_layout)
+
+        # 4) Indifference / peak widgets (shown depending on selection)
         self.layout.addWidget(QLabel("Indifference / peak inputs:"))
         self.layout.addWidget(self.indiff_input)
         self.layout.addWidget(self.indiff25_input)
         self.layout.addWidget(self.indiff75_input)
-        # Confidence selector placed near indifference inputs so it's visible during elicitation
-        self.layout.addWidget(QLabel("Expert confidence:"))
-        self.layout.addWidget(self.confidence_selector)
         self.layout.addWidget(self.peak_location_input)
         self.layout.addWidget(self.left_indiff_input)
         self.layout.addWidget(self.right_indiff_input)
-        self.layout.addWidget(QLabel("Thresholds:"))
-        self.layout.addWidget(self.x_increase_input)
-        self.layout.addWidget(self.x_decrease_input)
-        # Move fit controls to the bottom (above the plot)
+
+        # 5) Move fit controls to the bottom (above the plot)
         fit_container_label = QLabel("Fit type:")
         self.layout.addWidget(fit_container_label)
         self.layout.addWidget(self.fit_type_selector)
@@ -507,13 +529,11 @@ class MainWindow(QMainWindow):
         meta['fit_params'] = fit_params
         # collect expert confidence selection (store numeric 0..4)
         try:
-            if hasattr(self, 'confidence_selector'):
-                conf_txt = str(self.confidence_selector.currentText())
-                try:
-                    conf_val = int(conf_txt.split(':', 1)[0])
-                except Exception:
-                    conf_val = 2
-                meta['confidence'] = int(conf_val)
+            if hasattr(self, 'confidence_group'):
+                cid = int(self.confidence_group.checkedId())
+                if cid is None or cid < 0:
+                    cid = 2
+                meta['confidence'] = int(cid)
         except Exception:
             pass
         return meta
@@ -637,14 +657,18 @@ class MainWindow(QMainWindow):
 
         # restore confidence if present in meta
         try:
-            if meta and 'confidence' in meta and hasattr(self, 'confidence_selector'):
+            if meta and 'confidence' in meta and hasattr(self, 'confidence_group'):
                 try:
                     conf_val = int(meta.get('confidence'))
                     if 0 <= conf_val < len(self._conf_options):
-                        self.confidence_selector.setCurrentIndex(conf_val)
+                        btn = self.confidence_group.button(conf_val)
+                        if btn is not None:
+                            btn.setChecked(True)
                     else:
-                        # clamp
-                        self.confidence_selector.setCurrentIndex(max(0, min(conf_val, len(self._conf_options)-1)))
+                        # clamp to default
+                        btn = self.confidence_group.button(2)
+                        if btn is not None:
+                            btn.setChecked(True)
                 except Exception:
                     pass
         except Exception:
@@ -1498,8 +1522,10 @@ class MainWindow(QMainWindow):
             pass
         # Reset confidence selector to default moderately confident
         try:
-            if hasattr(self, 'confidence_selector'):
-                self.confidence_selector.setCurrentIndex(2)
+            if hasattr(self, 'confidence_group'):
+                btn = self.confidence_group.button(3)
+                if btn is not None:
+                    btn.setChecked(True)
         except Exception:
             pass
 
