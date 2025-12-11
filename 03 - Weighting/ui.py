@@ -498,8 +498,10 @@ class WBT_ui:
             fig.subplots_adjust(bottom=0.22)
         except Exception:
             pass
-        ax_left = fig.add_subplot(1, 2, 1)
-        ax_right = fig.add_subplot(1, 2, 2)
+        # three subplots: left (other/reference), middle (adjustable), right (value function)
+        ax_left = fig.add_subplot(1, 3, 1)
+        ax_right = fig.add_subplot(1, 3, 2)
+        ax_vf = fig.add_subplot(1, 3, 3)
 
         def vf_values(vals):
             """
@@ -560,6 +562,44 @@ class WBT_ui:
         ax_right.set_ylim(0, 1)
         # Clarify which criterion the user adjusts on the right
         ax_right.set_title(f"Adjustable right: {display_names[slider_target]}")
+
+        # --- Plot the value function for the slider target on the right subplot ---
+        try:
+            idx_vf = slider_target
+            c_vf = group_criteria[idx_vf]
+            lo_vf = min(mins[idx_vf], maxs[idx_vf])
+            hi_vf = max(mins[idx_vf], maxs[idx_vf])
+            xs_vf = np.linspace(lo_vf, hi_vf, 400)
+            vf_fn = c_vf.get('value_function')
+            if callable(vf_fn):
+                ys_vf = [float(vf_fn(x)) if (vf_fn is not None) else 0.001 for x in xs_vf]
+            else:
+                # linear fallback
+                if hi_vf == lo_vf:
+                    ys_vf = [1.0 for _ in xs_vf]
+                else:
+                    ys_vf = [(x - lo_vf) / (hi_vf - lo_vf) for x in xs_vf]
+            ys_vf = [float(np.clip(y, 0.001, 1.0)) for y in ys_vf]
+            ax_vf.plot(xs_vf, ys_vf, color='#1f77b4')
+            ax_vf.set_xlim(lo_vf, hi_vf)
+            ax_vf.set_ylim(0.0, 1.0)
+            ax_vf.set_title(f"Value function: {display_names[slider_target]}")
+            ax_vf.set_xlabel('Data')
+            ax_vf.set_ylabel('Value')
+            # initial marker for the current slider position; will be updated by slider
+            try:
+                start_x = lo_vf
+                if callable(vf_fn):
+                    init_y = float(vf_fn(float(start_x)))
+                else:
+                    init_y = 0.001 if hi_vf == lo_vf else ((float(start_x) - lo_vf) / (hi_vf - lo_vf))
+            except Exception:
+                init_y = 0.0
+            init_y = float(np.clip(init_y, 0.0, 1.0))
+            vf_marker, = ax_vf.plot([start_x], [init_y], marker='o', color='C3', markersize=6)
+        except Exception:
+            ax_vf = None
+            vf_marker = None
 
         # (old min/max labels removed) — we now draw value-based labels centered on bars below
 
@@ -753,6 +793,12 @@ class WBT_ui:
                         rb_state['updating'] = False
                 except Exception:
                     pass
+            # update value-function marker if present
+            try:
+                if vf_marker is not None:
+                    vf_marker.set_data([v], [h])
+            except Exception:
+                pass
             canvas.draw_idle()
 
         slider.configure(command=on_slide)
