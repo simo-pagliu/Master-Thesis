@@ -46,23 +46,48 @@ class ElicitationProcess:
         points = None
         func = None
         meta = None
-        # Prefer defaults from an external `value_functions.csv` in the same folder as
-        # the loaded CSV. If present, its rows (by name) override the per-row columns
-        # in the loaded attributes CSV for display only. Otherwise fall back to the
-        # values stored in the loaded dataframe.
+        # Prefer defaults from an external `value_functions.csv` or any
+        # `value_functions_*.csv` in the same folder as the loaded CSV. If
+        # present, its rows (by name) override the per-row columns in the
+        # loaded dataframe row for display only. Also respect the session
+        # `results_vf_path` if set. Otherwise fall back to the values stored
+        # in the loaded dataframe.
         try:
             out_dir = os.path.dirname(self.file_path) or '.'
-            ext_path = os.path.join(out_dir, 'value_functions.csv')
-            if os.path.exists(ext_path):
+            candidates = []
+            # canonical name
+            candidates.append(os.path.join(out_dir, 'value_functions.csv'))
+            # session results path (may be value_functions_1.csv etc.)
+            rv = getattr(self, 'results_vf_path', None)
+            if rv:
+                candidates.append(rv)
+            # also consider any value_functions_*.csv present (pick latest if multiple)
+            try:
+                import glob
+                patt = os.path.join(out_dir, 'value_functions_*.csv')
+                found = sorted(glob.glob(patt))
+                # add reversed so newer (lexicographically later) are preferred
+                for f in reversed(found):
+                    if f not in candidates:
+                        candidates.append(f)
+            except Exception:
+                pass
+
+            name = str(row.get('name')).strip()
+            for ext_path in candidates:
                 try:
+                    if not ext_path or not os.path.exists(ext_path):
+                        continue
                     vf_df = pd.read_csv(ext_path)
-                    name = str(row.get('name')).strip()
                     # try exact match then case-insensitive
                     match = None
                     if 'name' in vf_df.columns:
                         matches = vf_df[vf_df['name'] == name]
                         if matches.shape[0] == 0:
-                            matches = vf_df[vf_df['name'].str.lower() == name.lower()]
+                            try:
+                                matches = vf_df[vf_df['name'].str.lower() == name.lower()]
+                            except Exception:
+                                matches = pd.DataFrame()
                         if matches.shape[0] > 0:
                             match = matches.iloc[-1]
                     if match is not None:
@@ -78,10 +103,23 @@ class ElicitationProcess:
                                 meta = json.loads(match.get('elicitation_meta'))
                             except Exception:
                                 meta = None
+                        # top-level confidence column overrides meta.confidence
+                        try:
+                            if 'confidence' in match and pd.notna(match.get('confidence')):
+                                try:
+                                    confv = match.get('confidence')
+                                    meta = meta or {}
+                                    meta['confidence'] = int(confv)
+                                except Exception:
+                                    pass
+                        except Exception:
+                            pass
                         return {'points': points, 'value_function': func, 'meta': meta}
                 except Exception:
-                    # fall back to per-row values below
-                    pass
+                    # try next candidate
+                    continue
+        except Exception:
+            pass
 
         except Exception:
             pass
@@ -99,6 +137,19 @@ class ElicitationProcess:
                 meta = json.loads(row.get('elicitation_meta'))
             except Exception:
                 meta = None
+        # also read a top-level 'confidence' column if present
+        try:
+            if 'confidence' in self.df.columns and pd.notna(row.get('confidence')):
+                try:
+                    confv = row.get('confidence')
+                    # coerce to int if possible
+                    meta = meta or {}
+                    meta['confidence'] = int(confv)
+                except Exception:
+                    # ignore non-numeric confidence values
+                    pass
+        except Exception:
+            pass
         return {'points': points, 'value_function': func, 'meta': meta}
 
     def save_current_state(self, degree=2, meta=None):
@@ -124,6 +175,23 @@ class ElicitationProcess:
         except Exception:
             self.df.at[idx, 'elicitation_meta'] = ''
 
+        # persist confidence as a top-level column if provided in meta
+        try:
+            conf_val = None
+            if isinstance(meta, dict) and 'confidence' in meta:
+                try:
+                    conf_val = int(meta.get('confidence'))
+                except Exception:
+                    conf_val = None
+            # fallback: leave blank if not provided
+            if conf_val is None:
+                # ensure column exists but leave empty string
+                self.df.at[idx, 'confidence'] = ''
+            else:
+                self.df.at[idx, 'confidence'] = int(conf_val)
+        except Exception:
+            pass
+
         # persist a dedicated value_functions.csv containing only the requested columns
         out_dir = os.path.dirname(self.file_path) or '.'
         # Use preselected results path for this loaded dataset if present, otherwise pick one now
@@ -137,8 +205,8 @@ class ElicitationProcess:
                     break
                 i += 1
 
-        # ensure the required columns exist in the dataframe (include group)
-        cols = ['name', 'group', 'elicited_points', 'elicitation_meta']
+        # ensure the required columns exist in the dataframe (include group and confidence)
+        cols = ['name', 'group', 'elicited_points', 'confidence', 'elicitation_meta']
         # create a new DataFrame with only the requested columns
         export_df = self.df.reindex(columns=cols).copy()
         # replace NaN with empty strings
@@ -146,6 +214,11 @@ class ElicitationProcess:
 
         # write to CSV (create new results file for this session)
         export_df.to_csv(out_path, index=False)
+        # remember this path for the session so future loads prefer it
+        try:
+            self.results_vf_path = out_path
+        except Exception:
+            pass
         # return the path for caller information/debugging
         return out_path
 

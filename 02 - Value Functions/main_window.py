@@ -54,6 +54,22 @@ class MainWindow(QMainWindow):
         self.x_decrease_input = QLineEdit()
         self.x_decrease_input.setPlaceholderText("X after which decreasing X not important (default = min)")
 
+        # Expert confidence selector (0..4) — store as part of elicitation_meta
+        self.confidence_selector = QComboBox()
+        self._conf_options = [
+            "0: Not confident at all (pure guess)",
+            "1: Low confidence",
+            "2: Moderately confident",
+            "3: High confidence",
+            "4: Extremely confident (certain)",
+        ]
+        self.confidence_selector.addItems(self._conf_options)
+        # default moderately confident
+        try:
+            self.confidence_selector.setCurrentIndex(2)
+        except Exception:
+            pass
+
         # (textChanged connections moved after indifference/peak widgets are created)
 
         # Indifference / peak inputs
@@ -228,6 +244,9 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(self.indiff_input)
         self.layout.addWidget(self.indiff25_input)
         self.layout.addWidget(self.indiff75_input)
+        # Confidence selector placed near indifference inputs so it's visible during elicitation
+        self.layout.addWidget(QLabel("Expert confidence:"))
+        self.layout.addWidget(self.confidence_selector)
         self.layout.addWidget(self.peak_location_input)
         self.layout.addWidget(self.left_indiff_input)
         self.layout.addWidget(self.right_indiff_input)
@@ -366,6 +385,11 @@ class MainWindow(QMainWindow):
                                 pass
             # persist merged DF back to process (in-memory) and refresh UI
             self.file_label.setText(f"Merged elicited CSV: {file_path}")
+            # remember this file as the active results path so saves/loads use it
+            try:
+                self.process.results_vf_path = file_path
+            except Exception:
+                pass
             # refresh UI to apply any saved state for current attribute
             self.update_ui()
         except Exception as e:
@@ -481,6 +505,17 @@ class MainWindow(QMainWindow):
             pass
 
         meta['fit_params'] = fit_params
+        # collect expert confidence selection (store numeric 0..4)
+        try:
+            if hasattr(self, 'confidence_selector'):
+                conf_txt = str(self.confidence_selector.currentText())
+                try:
+                    conf_val = int(conf_txt.split(':', 1)[0])
+                except Exception:
+                    conf_val = 2
+                meta['confidence'] = int(conf_val)
+        except Exception:
+            pass
         return meta
 
     def apply_saved_state_to_ui(self, state):
@@ -599,6 +634,21 @@ class MainWindow(QMainWindow):
                             self.process.right_tail_value = 1.0
             except Exception:
                 pass
+
+        # restore confidence if present in meta
+        try:
+            if meta and 'confidence' in meta and hasattr(self, 'confidence_selector'):
+                try:
+                    conf_val = int(meta.get('confidence'))
+                    if 0 <= conf_val < len(self._conf_options):
+                        self.confidence_selector.setCurrentIndex(conf_val)
+                    else:
+                        # clamp
+                        self.confidence_selector.setCurrentIndex(max(0, min(conf_val, len(self._conf_options)-1)))
+                except Exception:
+                    pass
+        except Exception:
+            pass
 
         # restore fit type and slider parameters if present in meta
         if meta:
@@ -1444,6 +1494,12 @@ class MainWindow(QMainWindow):
             self.process.upper_threshold = None
             self.process.left_tail_value = None
             self.process.right_tail_value = None
+        except Exception:
+            pass
+        # Reset confidence selector to default moderately confident
+        try:
+            if hasattr(self, 'confidence_selector'):
+                self.confidence_selector.setCurrentIndex(2)
         except Exception:
             pass
 
