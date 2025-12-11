@@ -296,7 +296,12 @@ def import_value_functions(vf_csv_path):
 
 def plot_results(result, criteria_names):
     plt.close('all')
-    plt.figure(figsize=(8, 6))
+    # larger figure and bottom margin to avoid clipping rotated x-labels
+    plt.figure(figsize=(10, 6))
+    try:
+        plt.gcf().subplots_adjust(bottom=0.5)
+    except Exception:
+        pass
 
     # result.x may be either a numpy array (with z as last element) or a dict
     if isinstance(getattr(result, 'x', None), dict):
@@ -311,7 +316,15 @@ def plot_results(result, criteria_names):
             weights = weights[:-1]
         names = criteria_names if criteria_names else [f'C{i}' for i in range(len(weights))]
 
-    plt.bar(names, weights)
+    # thinner bars and increased spacing for readability
+    n = len(names)
+    if n == 0:
+        return
+    bar_width = 0.35
+    spacing = 1.6
+    x = np.arange(n) * spacing
+    plt.bar(x, weights, width=bar_width)
+    plt.xticks(x, names, rotation=25, ha='right', fontsize=10)
     plt.xlabel('Criteria')
     plt.ylabel('Weights')
     plt.title('Criterion Weights')

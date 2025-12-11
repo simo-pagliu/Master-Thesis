@@ -130,17 +130,28 @@ class WBT_ui:
             # should appear full regardless of underlying value functions.
             vals = [1.0] * n
 
-            fig = plt.Figure(figsize=(8, 5))
+            fig = plt.Figure(figsize=(10, 5))
+            # leave extra room at the bottom so rotated x-labels aren't clipped
+            try:
+                fig.subplots_adjust(bottom=0.4)
+            except Exception:
+                pass
             ax = fig.add_subplot(1, 1, 1)
 
-            bars = ax.bar(range(n), vals, tick_label=display_names, color='#9ecae1')
+            # space bars farther apart and make them thinner so x-labels don't overlap
+            bar_width = 0.4
+            spacing = 1.6
+            x = np.arange(n) * spacing
+            bars = ax.bar(x, vals, width=bar_width, color='#9ecae1')
+            ax.set_xticks(x)
+            ax.set_xticklabels(display_names, rotation=25, ha='right', fontsize=10)
             ax.set_ylim(0, 1)
             ax.set_title(f'Overview — {group_name} (value functions at max)')
             for j in range(n):
                 low = min(mins[j], maxs[j])
                 high = max(mins[j], maxs[j])
-                ax.text(j, 0.02, f"{low:.2f}", ha='center', va='bottom', fontsize=8, color='black')
-                ax.text(j, 0.98, f"{high:.2f}", ha='center', va='top', fontsize=8, color='black')
+                ax.text(x[j], 0.02, f"{low:.2f}", ha='center', va='bottom', fontsize=10, color='black')
+                ax.text(x[j], 0.98, f"{high:.2f}", ha='center', va='top', fontsize=10, color='black')
 
             # Embed the overview plot inside the selection frame to the right
             selection_frame.grid_columnconfigure(2, weight=1)
@@ -148,7 +159,7 @@ class WBT_ui:
             plot_frame.grid(row=0, column=2, rowspan=4, sticky='nsew', padx=(8, 0))
             canvas = FigureCanvasTkAgg(fig, master=plot_frame)
             canvas.draw()
-            canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+            canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True, pady=(0, 12))
         except Exception:
             # If plotting fails for any reason, silently continue (UI still usable)
             pass
@@ -262,8 +273,6 @@ class WBT_ui:
                 mins.append(lo)
                 maxs.append(hi)
 
-            fig = plt.Figure(figsize=(4, 2.5))
-            ax = fig.add_subplot(1, 1, 1)
             # Represent value-function at max for each candidate (or fallback to linear)
             vals = []
             for i, c in enumerate(crit_list):
@@ -282,18 +291,31 @@ class WBT_ui:
                     else:
                         v = (val_at_max - lo) / (hi - lo)
                 vals.append(float(np.clip(v, 0.001, 1.0)))
-            bars = ax.bar(range(len(display_names)), vals, tick_label=display_names, color='#9ecae1')
+            fig = plt.Figure(figsize=(4, 2.5))
+            # leave extra bottom room for rotated x-labels in small overview
+            try:
+                fig.subplots_adjust(bottom=0.28)
+            except Exception:
+                pass
+            ax = fig.add_subplot(1, 1, 1)
+            # thinner bars and increased spacing for clarity of x-axis labels
+            bar_width = 0.4
+            spacing = 1.6
+            x = np.arange(len(display_names)) * spacing
+            bars = ax.bar(x, vals, width=bar_width, color='#9ecae1')
+            ax.set_xticks(x)
+            ax.set_xticklabels(display_names, rotation=25, ha='right', fontsize=10)
             ax.set_ylim(0, 1)
             ax.set_title('Candidate ranges (value functions at max)')
             for j in range(len(display_names)):
                 low = min(mins[j], maxs[j])
                 high = max(mins[j], maxs[j])
-                ax.text(j, 0.02, f"{low:.2f}", ha='center', va='bottom', fontsize=7, color='black')
-                ax.text(j, 0.98, f"{high:.2f}", ha='center', va='top', fontsize=7, color='black')
+                ax.text(x[j], 0.02, f"{low:.2f}", ha='center', va='bottom', fontsize=9, color='black')
+                ax.text(x[j], 0.98, f"{high:.2f}", ha='center', va='top', fontsize=9, color='black')
 
             canvas = FigureCanvasTkAgg(fig, master=plot_frame)
             canvas.draw()
-            canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+            canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True, pady=(0, 12))
         except Exception:
             pass
 
@@ -469,7 +491,13 @@ class WBT_ui:
         ttk.Label(frm, text=f"Other: {other_criterion}").pack(pady=(0, 6))
 
         # Matplotlib figure with two side-by-side bar plots
-        fig = plt.Figure(figsize=(8, 5))
+        # Increase figure size so plots have more vertical space and are not cut off
+        fig = plt.Figure(figsize=(10, 6))
+        # leave extra room at the bottom so rotated x-labels aren't clipped
+        try:
+            fig.subplots_adjust(bottom=0.22)
+        except Exception:
+            pass
         ax_left = fig.add_subplot(1, 2, 1)
         ax_right = fig.add_subplot(1, 2, 2)
 
@@ -512,7 +540,13 @@ class WBT_ui:
             left_vf = [1.0 if i == ref_idx else 0.0 for i in range(n)]
         right_vf = [0.0 for _ in range(n)]
 
-        bars_left = ax_left.bar(range(n), left_vf, tick_label=display_names, color='#9ecae1')
+        # thinner bars and more spacing so x-axis labels don't overlap
+        bar_width = 0.35
+        spacing = 1.6
+        x = np.arange(n) * spacing
+        bars_left = ax_left.bar(x, left_vf, width=bar_width, color='#9ecae1')
+        ax_left.set_xticks(x)
+        ax_left.set_xticklabels(display_names, rotation=25, ha='right', fontsize=10)
         ax_left.set_ylim(0, 1)
         # Clarify which criterion is maxed on the left
         if comparison_type == 'best':
@@ -520,7 +554,9 @@ class WBT_ui:
         else:
             ax_left.set_title(f"Reference left: {display_names[ref_idx]} maxed")
 
-        bars_right = ax_right.bar(range(n), right_vf, tick_label=display_names, color='#9ecae1')
+        bars_right = ax_right.bar(x, right_vf, width=bar_width, color='#9ecae1')
+        ax_right.set_xticks(x)
+        ax_right.set_xticklabels(display_names, rotation=25, ha='right', fontsize=10)
         ax_right.set_ylim(0, 1)
         # Clarify which criterion the user adjusts on the right
         ax_right.set_title(f"Adjustable right: {display_names[slider_target]}")
@@ -529,8 +565,9 @@ class WBT_ui:
 
         canvas = FigureCanvasTkAgg(fig, master=frm)
         canvas.draw()
-        # Pack the canvas without expanding so control widgets remain clickable below
-        canvas.get_tk_widget().pack(fill=tk.BOTH, expand=False, pady=(0, 6))
+        # Allow the canvas to expand so the plots get full available space
+        # add more bottom padding so the slider/radio controls don't overlap the labels
+        canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True, pady=(0, 12))
 
         # --- Draw value-function labels at increments 0.0,0.1,...,1.0 for each bar ---
         def invert_vf_for_criterion(c, y_target, lo, hi):
@@ -647,16 +684,16 @@ class WBT_ui:
                     lbl = f"{xval:.2f}"
                     # Make first/last (0.0 and 1.0) a bit larger and nudge inward
                     if abs(ytick - 0.0) < 1e-8:
-                        fontsize = 8
+                        fontsize = 9
                         y_pos = min(ytick + 0.035, 0.05)
                     elif abs(ytick - 1.0) < 1e-8:
-                        fontsize = 8
+                        fontsize = 9
                         y_pos = max(ytick - 0.035, 0.95)
                     else:
-                        fontsize = 6
+                        fontsize = 8
                         y_pos = ytick
                     # center label horizontally with respect to the bar; ensure it's inside plot
-                    ax.text(j, y_pos, lbl, fontsize=fontsize, va='center', ha='center', color='black', clip_on=True)
+                    ax.text(x[j], y_pos, lbl, fontsize=fontsize, va='center', ha='center', color='black', clip_on=True)
 
         # Determine initial slider x such that vf(x)=0 (choose smallest if multiple)
         try:
