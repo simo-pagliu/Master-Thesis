@@ -21,6 +21,8 @@ from PyQt5.QtWidgets import (
     QDialogButtonBox,
     QSizePolicy,
     QCheckBox,
+    QRadioButton,
+    QButtonGroup,
 )
 from PyQt5.QtCore import Qt, QSize
 # Matplotlib for plotting in dialogs
@@ -73,6 +75,16 @@ def read_alternatives(path: Path):
             return [], []
         # If first row looks like header with alternative names in columns 1..
         header = rows[0]
+        # If a 'confidence' column is present, remove that column from header and all rows
+        conf_indices = [i for i, h in enumerate(header) if (h or '').strip().lower() == 'confidence']
+        if conf_indices:
+            # remove those indices from each row
+            new_rows = []
+            for r in rows:
+                new_r = [v for i, v in enumerate(r) if i not in conf_indices]
+                new_rows.append(new_r)
+            rows = new_rows
+            header = rows[0]
         # If header first cell is 'indicator' then this is the qualitative format
         exclude_headers = {'meta', 'metadata', 'notes', 'note', 'comment', 'info'}
         if header[0].strip().lower() == 'indicator':
@@ -167,6 +179,27 @@ class RankingWindow(QWidget):
 
         self.setLayout(layout)
         self.populate()
+
+        # Confidence selector for this indicator elicitation (0..4, default 3)
+        try:
+            conf_layout = QHBoxLayout()
+            conf_layout.addWidget(QLabel('Confidence:'))
+            self._conf_group = QButtonGroup(self)
+            self._conf_buttons = []
+            for i in range(5):
+                rb = QRadioButton(str(i))
+                conf_layout.addWidget(rb)
+                self._conf_group.addButton(rb, i)
+                self._conf_buttons.append(rb)
+            # default to 3
+            try:
+                self._conf_buttons[3].setChecked(True)
+            except Exception:
+                self._conf_buttons[2].setChecked(True)
+            layout.addLayout(conf_layout)
+        except Exception:
+            # non-critical; continue without confidence selector
+            self._conf_group = None
 
     def populate(self):
         self.listw.clear()
@@ -337,12 +370,21 @@ class RankingWindow(QWidget):
         try:
             top = self.window()
             if hasattr(top, 'open_value_editor'):
-                top.open_value_editor(ranks, indicator_name=self.indicator_name)
+                # pass selected confidence to the value editor
+                try:
+                    conf = self._conf_group.checkedId() if self._conf_group is not None else None
+                except Exception:
+                    conf = None
+                top.open_value_editor(ranks, indicator_name=self.indicator_name, confidence=conf)
             else:
                 # fallback to parent if it exposes the method
                 p = self.parent()
                 if hasattr(p, 'open_value_editor'):
-                    p.open_value_editor(ranks, indicator_name=self.indicator_name)
+                    try:
+                        conf = self._conf_group.checkedId() if self._conf_group is not None else None
+                    except Exception:
+                        conf = None
+                    p.open_value_editor(ranks, indicator_name=self.indicator_name, confidence=conf)
                 else:
                     if hasattr(top, 'set_status'):
                         top.set_status('Cannot open value editor: parent does not expose the method')
@@ -513,6 +555,25 @@ class ValueFunctionWidget(QWidget):
         except Exception:
             pass
 
+        # Confidence selector for this value function (0..4, default 3)
+        try:
+            conf_row = QHBoxLayout()
+            conf_row.addWidget(QLabel('VF Confidence:'))
+            self._vf_conf_group = QButtonGroup(self)
+            self._vf_conf_buttons = []
+            for i in range(5):
+                rb = QRadioButton(str(i))
+                conf_row.addWidget(rb)
+                self._vf_conf_group.addButton(rb, i)
+                self._vf_conf_buttons.append(rb)
+            try:
+                self._vf_conf_buttons[3].setChecked(True)
+            except Exception:
+                self._vf_conf_buttons[2].setChecked(True)
+            layout.addLayout(conf_row)
+        except Exception:
+            self._vf_conf_group = None
+
         btns = QHBoxLayout()
         # Shape cycle button: cycles between Increasing, Decreasing, Triangular
         self.shape_states = ['Linear Increasing', 'Linear Decreasing', 'Triangular']
@@ -654,7 +715,11 @@ class ValueFunctionWidget(QWidget):
     def save(self):
         pts = self.get_points()
         if callable(self.on_save):
-            self.on_save(pts)
+            try:
+                conf = self._vf_conf_group.checkedId() if self._vf_conf_group is not None else None
+            except Exception:
+                conf = None
+            self.on_save(pts, conf)
 
     def cancel(self):
         if callable(self.on_cancel):
@@ -913,6 +978,35 @@ class MainApp(QWidget):
         # not found
         return None
 
+    def get_value_function_confidence_for_label(self, vf_path: Path, label: str):
+        """
+        Read `value_functions.csv` and return the `confidence` field (if present)
+        for the last matching entry whose name matches `label`. Returns int or None.
+        """
+        if not vf_path.exists():
+            return None
+        with vf_path.open(newline='', encoding='utf-8') as f:
+            reader = list(csv.DictReader(f))
+            last_match = None
+            for r in reader:
+                name = (r.get('name') or '').strip()
+                if not name:
+                    continue
+                if name == label or name.lower() == label.lower():
+                    last_match = r
+            if last_match is None:
+                return None
+            conf_raw = last_match.get('confidence')
+            if conf_raw is None or conf_raw == '':
+                return None
+            try:
+                return int(float(conf_raw))
+            except Exception:
+                try:
+                    return int(conf_raw)
+                except Exception:
+                    return None
+
     def clear_container(self):
         # remove all widgets from the container layout
         while self.container_layout.count():
@@ -1030,7 +1124,8 @@ class MainApp(QWidget):
                 mode = cfg.get('mode', 'ranking')
                 suffixes = cfg.get('suffixes')
                 if suffixes:
-                    # create one entry per suffix; first uses original start_points, others will fetch start_points after prior elicitation
+                    # create one entry per suffix; first uses original start_points,
+                    # others will fetch start_points after previous elicitation
                     for i, suf in enumerate(suffixes):
                         lbl = f"{base} - {suf}"
                         if i == 0:
@@ -1068,6 +1163,12 @@ class MainApp(QWidget):
                                 pts = self.get_value_function_points_for_label(vf_path, base)
                             if pts is not None:
                                 ent['vf_points'] = pts
+                                try:
+                                    conf = self.get_value_function_confidence_for_label(vf_path, name)
+                                    if conf is not None:
+                                        ent['vf_confidence'] = conf
+                                except Exception:
+                                    pass
                         except Exception:
                             continue
             except Exception:
@@ -1087,7 +1188,7 @@ class MainApp(QWidget):
             rw.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
             self.show_view(rw)
 
-    def open_value_editor(self, ranks, indicator_name=None):
+    def open_value_editor(self, ranks, indicator_name=None, confidence=None):
         # compute integer scoring values based on distinct ranks (places)
         # Scores range from 1 .. P where P = number of distinct ranks
         # e.g. 4 alternatives -> ranks (no ties) -> scores 1,2,3,4
@@ -1134,11 +1235,15 @@ class MainApp(QWidget):
         # determine label for this elicitation. If we have an indicator name, use QI - E# pattern
         label = 'Computed scoring'
         if indicator_name:
-            label = self.next_elicitation_label(self.alts_path, indicator_name)
+            # Use the indicator name itself as the scoring label. Do not create '-E#' variants.
+            label = indicator_name
         try:
             # remember the label we will write so subsequent elicitations can use it as seed
             self._last_elicitation_label = label
-            self.append_scoring_to_alternatives(self.alts_path, self.alt_names, alt_score, label=label)
+            # pass along indicator-level confidence (may be None)
+            # If the label already exists in the alternatives file, append_scoring_to_alternatives
+            # will overwrite the existing row rather than adding a new '-E#' row.
+            self.append_scoring_to_alternatives(self.alts_path, self.alt_names, alt_score, label=label, confidence=confidence)
         except Exception as e:
             # show error in status label instead of popup
             self.set_status(f'Could not append scoring: {e}')
@@ -1160,7 +1265,7 @@ class MainApp(QWidget):
         # embed the ValueFunctionWidget inside the main window's container
         pts_store = {}
 
-        def _on_save(pts):
+        def _on_save(pts, vf_confidence=None):
             # write value functions and update status label
             vf_name = indicator_name or crit.get('name')
             # determine base indicator (e.g., 'QI2' from 'QI2 - IT') and inherit its group
@@ -1173,7 +1278,8 @@ class MainApp(QWidget):
                         base_group = bc.get('group', '')
             except Exception:
                 base_group = ''
-            vf_rows_local = [(vf_name, pts, base_group)]
+            # include VF-level confidence if provided
+            vf_rows_local = [(vf_name, pts, base_group, vf_confidence)]
             out_path = Path(self.criteria_path).parent / 'value_functions.csv'
             try:
                 # if we are already in a session, reuse the same progressive file
@@ -1247,9 +1353,9 @@ class MainApp(QWidget):
                                 # prefer using the session outpath if set so all VFs end up in the same file
                                 session_path = getattr(self, '_vf_session_outpath', None)
                                 if session_path is None:
-                                    write_value_functions(out_path, [(ent_i.get('indicator'), pts, base_group)])
+                                    write_value_functions(out_path, [(ent_i.get('indicator'), pts, base_group, vf_confidence)])
                                 else:
-                                    write_value_functions(session_path, [(ent_i.get('indicator'), pts, base_group)])
+                                    write_value_functions(session_path, [(ent_i.get('indicator'), pts, base_group, vf_confidence)])
                             except Exception:
                                 pass
                             i += 1
@@ -1394,8 +1500,10 @@ class MainApp(QWidget):
         vf_widget = ValueFunctionWidget(crit, points_with_endpoints, xs_override=xs_override, ys_override=ys_override, point_labels=point_labels_with_endpoints, on_save=_on_save, on_cancel=_on_cancel, parent=self.container)
         self.show_view(vf_widget)
 
-    def append_scoring_to_alternatives(self, alts_path: Path, alt_names, alt_score_map, label='Computed scoring'):
+    def append_scoring_to_alternatives(self, alts_path: Path, alt_names, alt_score_map, label='Computed scoring', confidence=None):
         # read everything, then append a row where first cell describes the row and following are scores in the same column order
+        # This function will ensure a top-level 'confidence' column exists in the header and will write
+        # the provided confidence value for the appended scoring row.
         rows = []
         with alts_path.open(newline='', encoding='utf-8') as f:
             reader = csv.reader(f)
@@ -1406,6 +1514,14 @@ class MainApp(QWidget):
             raise RuntimeError('Alternatives file empty')
         header = rows[0]
         header_cols = [h for h in header[1:]] if len(header) > 1 else []
+        # ensure 'confidence' column exists in header (case-insensitive)
+        hdr_lower = [h.strip().lower() for h in header]
+        if 'confidence' not in hdr_lower:
+            # append confidence column name and pad existing rows with empty cell
+            rows[0] = rows[0] + ['confidence']
+            for i in range(1, len(rows)):
+                rows[i] = rows[i] + ['']
+            header_cols = [h for h in rows[0][1:]]
         # Prepare a mapping for case-insensitive name matching from alt_score_map
         score_map_ci = {k.strip().lower(): v for k, v in alt_score_map.items()}
 
@@ -1414,11 +1530,26 @@ class MainApp(QWidget):
             new_row = [label]
             for col in header_cols:
                 key = col.strip()
-                if key and key.strip().lower() in score_map_ci:
+                if key and key.strip().lower() == 'confidence':
+                    new_row.append(str(confidence) if confidence is not None else '')
+                elif key and key.strip().lower() in score_map_ci:
                     new_row.append(str(score_map_ci[key.strip().lower()]))
                 else:
                     new_row.append('')
-            rows.append(new_row)
+            # If a row for this label already exists, overwrite it; otherwise append
+            replaced = False
+            for i in range(1, len(rows)):
+                try:
+                    first = rows[i][0].strip() if rows[i] and rows[i][0] is not None else ''
+                except Exception:
+                    first = ''
+                if first.lower() == (label or '').strip().lower():
+                    # normalize length to header length (including first cell)
+                    rows[i] = new_row
+                    replaced = True
+                    break
+            if not replaced:
+                rows.append(new_row)
         else:
             # No header columns to align to; fall back to using provided alt_names order
             scores = []
@@ -1430,7 +1561,8 @@ class MainApp(QWidget):
                     scores.append('')
                 else:
                     scores.append(str(val))
-            new_row = [label] + scores
+            # append confidence at end
+            new_row = [label] + scores + ([str(confidence)] if confidence is not None else [''])
             rows.append(new_row)
 
         with alts_path.open('w', newline='', encoding='utf-8') as f:
@@ -1468,35 +1600,12 @@ def write_value_functions(path: Path, vf_rows):
     # vf_rows: list of (name, [(x,y),...]) or (name, [(x,y)...], group)
     # We no longer save executable/lambda expressions to the CSV. Persist only
     # elicited points and metadata so callers can rebuild safe interpolators.
-    header = ['name', 'group', 'elicited_points', 'elicitation_meta']
+    header = ['name', 'group', 'elicited_points', 'confidence', 'elicitation_meta']
     # If callers pass the base 'value_functions.csv' path we will not overwrite
     # that base file; instead, write to the next progressive numbered file
     # `value_functions_1.csv`, `value_functions_2.csv`, ... in the same folder.
     actual_path = Path(path)
-    try:
-        if actual_path.name.lower() == 'value_functions.csv':
-            parent = actual_path.parent
-            # find existing numbered files
-            idx_re = re.compile(r'^value_functions(?:_(\d+))?\.csv$', flags=re.IGNORECASE)
-            max_idx = 0
-            for fn in os.listdir(parent):
-                m = idx_re.match(fn)
-                if not m:
-                    continue
-                g = m.group(1)
-                if g:
-                    try:
-                        v = int(g)
-                        if v > max_idx:
-                            max_idx = v
-                    except Exception:
-                        pass
-            next_idx = max_idx + 1
-            out_path = parent / f'value_functions_{next_idx}.csv'
-        else:
-            out_path = actual_path
-    except Exception:
-        out_path = actual_path
+    out_path = actual_path
 
     names_to_replace = { (item[0] if len(item) >= 1 else '').strip().lower() for item in vf_rows }
     existing_rows = []
@@ -1511,12 +1620,13 @@ def write_value_functions(path: Path, vf_rows):
                     existing_header = header
         except Exception:
             existing_rows = []
+
     # filter out any existing rows matching the names
     filtered = []
     for r in existing_rows:
         if not r:
             continue
-        first = r[0].strip().lower() if r and r[0] is not None else ''
+        first = (r[0].strip().lower() if r and r[0] is not None else '')
         if first in names_to_replace:
             continue
         filtered.append(r)
@@ -1526,35 +1636,52 @@ def write_value_functions(path: Path, vf_rows):
         writer = csv.writer(f)
         writer.writerow(header)
         for r in filtered:
-            # normalize existing rows to the new header layout:
-            # existing formats may include a value_function column at index 3.
             try:
                 name = r[0] if len(r) > 0 else ''
                 group = r[1] if len(r) > 1 else ''
                 elicited = r[2] if len(r) > 2 else ''
-                # prefer meta at index 4 if present (old schema), else at 3
-                meta = r[4] if len(r) > 4 else (r[3] if len(r) > 3 else '')
-            except Exception:
-                name = r[0] if r else ''
-                group = ''
-                elicited = ''
+                confidence = ''
                 meta = ''
-            writer.writerow([name, group, elicited, meta])
+                if len(r) >= 5:
+                    confidence = r[3]
+                    meta = r[4]
+                elif len(r) == 4:
+                    cand = (r[3] or '').strip()
+                    if cand.startswith('{') or cand.startswith('['):
+                        meta = cand
+                    else:
+                        confidence = cand
+                writer.writerow([name, group, elicited, confidence, meta])
+            except Exception:
+                # skip malformed row
+                continue
+
         for item in vf_rows:
-            if len(item) == 3:
+            # items may be (name, pts), (name, pts, group) or (name, pts, group, confidence)
+            name = ''
+            pts = []
+            group = ''
+            confidence_val = ''
+            if len(item) == 4:
+                name, pts, group, confidence_val = item
+            elif len(item) == 3:
                 name, pts, group = item
-            else:
+            elif len(item) == 2:
                 name, pts = item
-                group = ''
-            # Persist elicited points and a small metadata blob; do NOT write
-            # executable expressions.
+            else:
+                try:
+                    name = item[0]
+                    pts = item[1]
+                except Exception:
+                    continue
+
             writer.writerow([
                 name,
                 group,
                 json.dumps([[float(x), float(y)] for x, y in pts]),
+                (str(confidence_val) if confidence_val is not None else ''),
                 json.dumps({'mode': 'Manual', 'notes': 'elicited via ranking_value_ui'})
             ])
-    # return the actual file path written for caller display
     return str(out_path)
 
 
