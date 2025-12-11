@@ -100,7 +100,19 @@ class WBT_ui:
         ttk.Label(selection_frame, text="Worst Criterion:").grid(row=2, column=0)
         self.worst_dropdown = ttk.Combobox(selection_frame, textvariable=self.worst_criterion, values=group_vals)
         self.worst_dropdown.grid(row=2, column=1)
-        ttk.Button(selection_frame, text="Continue", command=self.start_comparisons).grid(row=3, columnspan=2)
+        # Expert confidence selector for this group (0..4)
+        conf_options = [
+            "0: Not confident at all (pure guess)",
+            "1: Low confidence",
+            "2: Moderately confident",
+            "3: High confidence",
+            "4: Extremely confident (certain)",
+        ]
+        self.group_confidence_var = tk.StringVar(value=conf_options[2])
+        ttk.Label(selection_frame, text="Group confidence:").grid(row=3, column=0)
+        self.group_confidence_cb = ttk.Combobox(selection_frame, textvariable=self.group_confidence_var, values=conf_options, width=40)
+        self.group_confidence_cb.grid(row=3, column=1)
+        ttk.Button(selection_frame, text="Continue", command=self.start_comparisons).grid(row=4, columnspan=2)
 
         # Show a single overview plot with all criteria at their max and their ranges
         try:
@@ -156,7 +168,8 @@ class WBT_ui:
             # Embed the overview plot inside the selection frame to the right
             selection_frame.grid_columnconfigure(2, weight=1)
             plot_frame = ttk.Frame(selection_frame)
-            plot_frame.grid(row=0, column=2, rowspan=4, sticky='nsew', padx=(8, 0))
+            # rowspan increased to cover the added confidence row
+            plot_frame.grid(row=0, column=2, rowspan=5, sticky='nsew', padx=(8, 0))
             canvas = FigureCanvasTkAgg(fig, master=plot_frame)
             canvas.draw()
             canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True, pady=(0, 12))
@@ -190,7 +203,13 @@ class WBT_ui:
         group_names = [c['name'] for c in group_criteria]
 
         # remember the selected best/worst for this group
-        self.group_selected[group_name] = {'best': best, 'worst': worst}
+        # store group-level confidence chosen in selection screen (default to 2)
+        try:
+            conf_str = self.group_confidence_var.get()
+            conf_val = int(conf_str.split(':', 1)[0])
+        except Exception:
+            conf_val = 2
+        self.group_selected[group_name] = {'best': best, 'worst': worst, 'confidence': conf_val}
 
         # set current context for plotting/saving
         self._context_criteria = group_criteria
@@ -216,7 +235,7 @@ class WBT_ui:
         if not os.path.exists(self._results_fn):
             with open(self._results_fn, 'w', newline='') as f:
                 w = csv.writer(f)
-                w.writerow(['Type', 'Reference', 'Other', 'Value', 'Group'])
+                w.writerow(['Type', 'Reference', 'Other', 'Value', 'Group', 'Confidence'])
 
         self.show_next_comparison()
 
@@ -330,7 +349,13 @@ class WBT_ui:
             context_criteria = [self.criteria_by_name[n] for n in candidates]
             group_label = f'Between-groups-{"B" if phase=="B" else "W"}'
             scope_label = f'between-groups-{"B" if phase=="B" else "W"}'
-            self.start_comparisons_for_context(b, w, context_criteria, group_label, scope_label)
+            # Start comparisons using the same flow as intra-group contexts so
+            # the updated comparison UI and CSV behavior are applied.
+            try:
+                self.start_comparisons_for_context(b, w, context_criteria, group_label, scope_label)
+            except Exception:
+                # If something goes wrong, show an error so the user is not stuck.
+                messagebox.showerror('Error', 'Failed to start between-groups comparisons')
 
         ttk.Button(sel_frame, text='Continue', command=on_continue).grid(row=3, column=0, columnspan=2, pady=6)
 
@@ -340,8 +365,8 @@ class WBT_ui:
         self._context_group_name = context_group_name
         self._context_scope = scope_label
         names = [c['name'] for c in context_criteria]
-        # store as a synthetic 'group' selection
-        self.group_selected[context_group_name] = {'best': best, 'worst': worst}
+        # store as a synthetic 'group' selection (use default confidence 2)
+        self.group_selected[context_group_name] = {'best': best, 'worst': worst, 'confidence': 2}
 
         # Build comparisons (best vs others, worst vs others) within the context
         self.comparisons = []
@@ -486,9 +511,10 @@ class WBT_ui:
         frm = ttk.Frame(self.root, padding=8)
         frm.pack(fill=tk.BOTH, expand=True)
         ttk.Label(frm, text=f"Comparison {self.current_comparison + 1} of {len(self.comparisons)}", font=(None, 12, 'bold')).pack(pady=(0, 6))
-        ttk.Label(frm, text=f"Type: {comparison_type}").pack()
-        ttk.Label(frm, text=f"Reference: {ref_criterion}").pack()
-        ttk.Label(frm, text=f"Other: {other_criterion}").pack(pady=(0, 6))
+
+        # per-comparison confidence combobox will be placed together with the
+        # slider/radio controls at the bottom (created later) so it appears
+        # to the right of the slider as requested.
 
         # Matplotlib figure with two side-by-side bar plots
         # Increase figure size so plots have more vertical space and are not cut off
@@ -749,7 +775,33 @@ class WBT_ui:
 
         # Slider to adjust the target criterion on the right plot
         resolution = max((maxs[slider_target] - mins[slider_target]) / 200.0, 1e-6)
-        slider = tk.Scale(frm, from_=mins[slider_target], to=maxs[slider_target], orient=tk.HORIZONTAL, resolution=resolution, length=500)
+        # Create a controls frame divided into three equal columns:
+        # left (info), center (slider & radios), right (confidence)
+        controls_frame = ttk.Frame(frm)
+        controls_frame.pack(fill=tk.X, pady=(6, 4))
+        # use grid to make three equal columns
+        left_col = ttk.Frame(controls_frame)
+        center_col = ttk.Frame(controls_frame)
+        right_col = ttk.Frame(controls_frame)
+        left_col.grid(row=0, column=0, sticky='nsew', padx=(8, 8))
+        center_col.grid(row=0, column=1, sticky='n', padx=(8, 8))
+        right_col.grid(row=0, column=2, sticky='nsew', padx=(8, 8))
+        controls_frame.grid_columnconfigure(0, weight=1)
+        controls_frame.grid_columnconfigure(1, weight=1)
+        controls_frame.grid_columnconfigure(2, weight=1)
+
+        # Move the info texts into the left column (center them vertically)
+        try:
+            info_frame = ttk.Frame(left_col)
+            info_frame.pack(expand=True)
+            ttk.Label(info_frame, text=f"Type: {comparison_type}").pack(anchor='w', pady=(6, 2))
+            ttk.Label(info_frame, text=f"Reference: {ref_criterion}").pack(anchor='w', pady=2)
+            ttk.Label(info_frame, text=f"Other: {other_criterion}").pack(anchor='w', pady=2)
+        except Exception:
+            pass
+
+        # center column gets the slider and radios; keep slider reasonably sized
+        slider = tk.Scale(center_col, from_=mins[slider_target], to=maxs[slider_target], orient=tk.HORIZONTAL, resolution=resolution, length=400)
         slider.pack(pady=(6, 8))
 
         def on_slide(val):
@@ -832,7 +884,7 @@ class WBT_ui:
             # guard to avoid recursive updates between slider->radio and radio->slider
             rb_state = {'updating': False}
 
-            radiobtn_frame = ttk.Frame(frm)
+            radiobtn_frame = ttk.Frame(center_col)
             radiobtn_frame.pack(pady=(4, 6))
             # create radio buttons horizontally
             for i in range(11):
@@ -880,10 +932,46 @@ class WBT_ui:
             # don't fail the UI if radios can't be created
             pass
 
-        btn_frm = ttk.Frame(frm)
-        btn_frm.pack(pady=(6, 2))
-        ttk.Button(btn_frm, text='Next', command=self.save_and_next).pack(side=tk.LEFT, padx=6)
-        ttk.Button(btn_frm, text='Cancel', command=self.cancel).pack(side=tk.LEFT, padx=6)
+        # Create the per-comparison confidence selector on the right of the slider
+        try:
+            conf_options = [
+                "0: Not confident at all (pure guess)",
+                "1: Low confidence",
+                "2: Moderately confident",
+                "3: High confidence",
+                "4: Extremely confident (certain)",
+            ]
+            try:
+                default_conf = int(self.group_selected.get(group_name, {}).get('confidence', 2))
+            except Exception:
+                default_conf = 2
+            self._current_conf_var = tk.StringVar(value=conf_options[default_conf])
+            # add a top offset so the confidence selector sits aligned with the slider
+            ttk.Label(right_col, text='Confidence:').pack(anchor='w', pady=(18, 0))
+            conf_cb = ttk.Combobox(right_col, textvariable=self._current_conf_var, values=conf_options, width=40)
+            conf_cb.pack(pady=(8, 0))
+        except Exception:
+            self._current_conf_var = None
+
+        # Create a triangular Next button inline in the right column (beside confidence)
+        try:
+            tri_h = 56
+            tri_w = 48
+            tri_canvas = tk.Canvas(right_col, width=tri_w, height=tri_h, highlightthickness=0)
+            # draw a right-pointing triangle
+            tri_canvas.create_polygon(4, 4, 4, tri_h-4, tri_w-6, tri_h/2, fill='#2b78c8', outline='black')
+            tri_canvas.configure(cursor='hand2')
+            tri_canvas.pack(side=tk.RIGHT, padx=(8, 4), pady=(4, 4), fill=tk.Y)
+            def on_tri_click(event=None):
+                try:
+                    self.save_and_next()
+                except Exception:
+                    pass
+            tri_canvas.bind('<Button-1>', on_tri_click)
+        except Exception:
+            # fallback to a regular button if canvas creation fails
+            next_btn = ttk.Button(right_col, text='Next ', command=self.save_and_next)
+            next_btn.pack(side=tk.RIGHT, padx=10)
 
         # Save state
         self._current_comp = (comparison_type, ref_criterion, other_criterion)
@@ -912,13 +1000,23 @@ class WBT_ui:
             fn = os.path.join(ui_dir, 'wbt_results.csv')
             if not os.path.exists(fn):
                 with open(fn, 'w', newline='') as f:
-                    csv.writer(f).writerow(['Type', 'Reference', 'Other', 'Value', 'Group'])
+                    csv.writer(f).writerow(['Type', 'Reference', 'Other', 'Value', 'Group', 'Confidence'])
 
         # write row with Group (use current context)
         group_name = getattr(self, '_context_group_name', self.groups[self.current_group_idx] if self.groups else 'Ungrouped')
+        # determine confidence to write: prefer the per-screen selector, fall back to group default
+        try:
+            conf_val = None
+            if hasattr(self, '_current_conf_var') and self._current_conf_var is not None:
+                conf_val = int(self._current_conf_var.get().split(':', 1)[0])
+            if conf_val is None:
+                conf_val = int(self.group_selected.get(group_name, {}).get('confidence', 2))
+        except Exception:
+            conf_val = ''
+
         with open(fn, 'a', newline='') as f:
             w = csv.writer(f)
-            w.writerow([comp_type, ref, other, val, group_name])
+            w.writerow([comp_type, ref, other, val, group_name, conf_val])
 
         # keep an in-memory record (optional) keyed by criterion name
         if comp_type == 'best':

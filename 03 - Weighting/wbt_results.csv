@@ -1,178 +1,55 @@
-Type,Reference,Other,Value,Group
-best,Capital Investment Budgeted,Construction Complexity,9948.717949,Economic
-best,Capital Investment Budgeted,Design Complexity,8444.444444,Economic
-best,Capital Investment Budgeted,Operative + Fuel Costs,11589.74359,Economic
-worst,Operative + Fuel Costs,Construction Complexity,1.0,Economic
-worst,Operative + Fuel Costs,Design Complexity,3.884615,Economic
-best,Design Maturity,Licensing Status,4.53,Feasibility
-best,Capital Investment Budgeted,Construction Complexity,8752.136752,Economic
-best,Capital Investment Budgeted,Design Complexity,11589.74359,Economic
-best,Capital Investment Budgeted,Operative + Fuel Costs,10256.410256,Economic
-worst,Design Complexity,Construction Complexity,1.811966,Economic
-best,Capital Investment Budgeted,Construction Complexity,12444.444444,Economic
-best,Capital Investment Budgeted,Design Complexity,12547.008547,Economic
-best,Capital Investment Budgeted,Operative + Fuel Costs,12820.512821,Economic
-best,Capital Investment Budgeted,Construction Complexity,12273.504274,Economic
-best,Capital Investment Budgeted,Design Complexity,12512.820513,Economic
-best,Capital Investment Budgeted,Operative + Fuel Costs,12034.188034,Economic
-best,Capital Investment Budgeted,Construction Complexity,7623.931624,Economic
-best,Capital Investment Budgeted,Design Complexity,11076.923077,Economic
-best,Capital Investment Budgeted,Operative + Fuel Costs,10085.470085,Economic
-worst,Operative + Fuel Costs,Construction Complexity,4.472222,Economic
-best,Capital Investment Budgeted,Construction Complexity,9982.905983,Economic
-best,Capital Investment Budgeted,Design Complexity,11384.615385,Economic
-best,Capital Investment Budgeted,Operative + Fuel Costs,11179.487179,Economic
-worst,Design Complexity,Construction Complexity,6.0,Economic
-worst,Design Complexity,Operative + Fuel Costs,38.5,Economic
-best,Design Maturity,Licensing Status,3.08,Feasibility
-best,Design Maturity,Supplier Availbility,2.88,Feasibility
-best,Capital Investment Budgeted,Construction Complexity,6632.478632,Economic
-best,Capital Investment Budgeted,Design Complexity,12068.376068,Economic
-best,Capital Investment Budgeted,Operative + Fuel Costs,12957.264957,Economic
-worst,Operative + Fuel Costs,Construction Complexity,4.461538,Economic
-worst,Operative + Fuel Costs,Design Complexity,1.0,Economic
-best,Capital Investment Budgeted,Construction Complexity,11042.735043,Economic
-best,Capital Investment Budgeted,Design Complexity,20000.0,Economic
-best,Capital Investment Budgeted,Operative + Fuel Costs,20000.0,Economic
-worst,Operative + Fuel Costs,Construction Complexity,6.0,Economic
-best,Capital Investment Budgeted,Construction Complexity,4800.0,Economic
-best,Capital Investment Budgeted,Design Complexity,5600.0,Economic
-best,Capital Investment Budgeted,Operative + Fuel Costs,8000.0,Economic
-worst,Operative + Fuel Costs,Construction Complexity,5.25,Economic
-worst,Operative + Fuel Costs,Design Complexity,2.5125,Economic
-best,Capital Investment Budgeted,Construction Complexity,4000.0,Economic
-best,Capital Investment Budgeted,Design Complexity,8800.0,Economic
-best,Capital Investment Budgeted,Operative + Fuel Costs,8800.0,Economic
-worst,Operative + Fuel Costs,Construction Complexity,6.0,Economic
-worst,Operative + Fuel Costs,Design Complexity,6.0,Economic
-best,Capital Investment Budgeted,Construction Complexity,8000.0,Economic
-best,Capital Investment Budgeted,Design Complexity,7200.0,Economic
-best,Capital Investment Budgeted,Operative + Fuel Costs,8000.0,Economic
-best,Capital Investment Budgeted,Construction Complexity,8800.0,Economic
-best,Capital Investment Budgeted,Design Complexity,8000.0,Economic
-best,Capital Investment Budgeted,Operative + Fuel Costs,8000.0,Economic
-worst,Operative + Fuel Costs,Construction Complexity,0.4975,Economic
-worst,Operative + Fuel Costs,Design Complexity,4.151709,Economic
-best,Design Maturity,Licensing Status,3.08,Feasibility
-best,Capital Investment Budgeted,Construction Complexity,4800.0,Economic
-best,Capital Investment Budgeted,Design Complexity,5600.0,Economic
-best,Capital Investment Budgeted,Operative + Fuel Costs,8000.0,Economic
-best,Capital Investment Budgeted,Construction Complexity,6400.0,Economic
-best,Capital Investment Budgeted,Design Complexity,7200.0,Economic
-best,Capital Investment Budgeted,Operative + Fuel Costs,8000.0,Economic
-worst,Operative + Fuel Costs,Construction Complexity,3.638889,Economic
-worst,Operative + Fuel Costs,Design Complexity,3.4875,Economic
-best,Electricity Market Benefit,GHGe Benefit,28.5,Social
-best,Electricity Market Benefit,Nuclear Waste,34.2,Social
-best,Electricity Market Benefit,Percived Safety,36.5,Social
-worst,Percived Safety,GHGe Benefit,1.24,Social
-worst,Percived Safety,Nuclear Waste,12.270406,Social
-best,Electricity Market Benefit,GHGe Benefit,36.5,Social
-best,Electricity Market Benefit,Nuclear Waste,34.0,Social
-best,Electricity Market Benefit,Percived Safety,31.5,Social
-worst,Percived Safety,GHGe Benefit,1.12,Social
-worst,Percived Safety,Nuclear Waste,20.526624,Social
-best,Electricity Market Benefit,GHGe Benefit,37.8,Social
-best,Electricity Market Benefit,Nuclear Waste,31.5,Social
-best,Electricity Market Benefit,Percived Safety,34.0,Social
-worst,Percived Safety,GHGe Benefit,0.53,Social
-worst,Percived Safety,Nuclear Waste,18.847393,Social
-best,Electricity Market Benefit,GHGe Benefit,39.1,Social
-best,Electricity Market Benefit,Nuclear Waste,37.0,Social
-best,Electricity Market Benefit,Percived Safety,33.4,Social
-worst,Nuclear Waste,GHGe Benefit,1.67,Social
-worst,Nuclear Waste,Percived Safety,0.85,Social
-best,Electricity Market Benefit,GHGe Benefit,42.4,Social
-best,Electricity Market Benefit,Nuclear Waste,36.5,Social
-best,Electricity Market Benefit,Percived Safety,34.0,Social
-best,Electricity Market Benefit,GHGe Benefit,41.9,Social
-best,Electricity Market Benefit,Nuclear Waste,36.5,Social
-best,Electricity Market Benefit,Percived Safety,34.0,Social
-worst,Percived Safety,GHGe Benefit,1.53,Social
-worst,Percived Safety,Nuclear Waste,12.429,Social
-best,Electricity Market Benefit,GHGe Benefit,43.9,Social
-best,Electricity Market Benefit,Nuclear Waste,34.0,Social
-best,Electricity Market Benefit,Percived Safety,34.0,Social
-worst,Percived Safety,GHGe Benefit,1.72,Social
-best,Capital Investment Budgeted,Construction Complexity,8000.0,Economic
-best,Capital Investment Budgeted,Design Complexity,8800.0,Economic
-best,Capital Investment Budgeted,Operative + Fuel Costs,8800.0,Economic
-worst,Operative + Fuel Costs,Construction Complexity,3.4875,Economic
-worst,Operative + Fuel Costs,Design Complexity,4.440171,Economic
-best,Design Maturity,Licensing Status,3.3,Feasibility
-best,Design Maturity,Supplier Availbility,3.38,Feasibility
-worst,Supplier Availbility,Licensing Status,2.3,Feasibility
-best,Discharge Burnup,Load following Capabilities,52.7,Technical
-best,Discharge Burnup,Net Power Output,50.75,Technical
-best,Discharge Burnup,Thermal Efficiency,52.45,Technical
-worst,Thermal Efficiency,Load following Capabilities,1.72,Technical
-worst,Thermal Efficiency,Net Power Output,832.0,Technical
-best,Capital Investment Budgeted,Construction Complexity,8034.188034,Economic
-best,Capital Investment Budgeted,Design Complexity,7965.811966,Economic
-best,Capital Investment Budgeted,Operative + Fuel Costs,8000.0,Economic
-worst,Design Complexity,Construction Complexity,1.0,Economic
-worst,Design Complexity,Operative + Fuel Costs,23.9,Economic
-best,Design Maturity,Licensing Status,1.77,Feasibility
-best,Design Maturity,Supplier Availbility,2.42,Feasibility
-worst,Licensing Status,Supplier Availbility,3.12,Feasibility
-best,Discharge Burnup,Load following Capabilities,52.58,Technical
-best,Capital Investment Budgeted,Construction Complexity,7487.179487,Economic
-best,Capital Investment Budgeted,Design Complexity,8102.564103,Economic
-best,Capital Investment Budgeted,Operative + Fuel Costs,8000.0,Economic
-worst,Operative + Fuel Costs,Construction Complexity,3.7875,Economic
-worst,Operative + Fuel Costs,Design Complexity,4.0875,Economic
-best,Capital Investment Budgeted,Construction Complexity,8800.0,Economic
-best,Capital Investment Budgeted,Design Complexity,9600.0,Economic
-best,Capital Investment Budgeted,Operative + Fuel Costs,8800.0,Economic
-worst,Operative + Fuel Costs,Construction Complexity,4.0875,Economic
-worst,Operative + Fuel Costs,Design Complexity,3.7875,Economic
-best,Capital Investment Budgeted,Construction Complexity,9811.965812,Economic
-best,Capital Investment Budgeted,Design Complexity,8800.0,Economic
-best,Capital Investment Budgeted,Operative + Fuel Costs,8000.0,Economic
-worst,Operative + Fuel Costs,Construction Complexity,3.649573,Economic
-worst,Operative + Fuel Costs,Design Complexity,4.226496,Economic
-best,Capital Investment Budgeted,Construction Complexity,11897.435897,Economic
-best,Capital Investment Budgeted,Design Complexity,8800.0,Economic
-best,Capital Investment Budgeted,Operative + Fuel Costs,8800.0,Economic
-worst,Operative + Fuel Costs,Construction Complexity,2.826923,Economic
-worst,Operative + Fuel Costs,Design Complexity,3.4875,Economic
-best,Design Maturity,Licensing Status,2.35,Feasibility
-best,Design Maturity,Supplier Availbility,5.0,Feasibility
-worst,Licensing Status,Supplier Availbility,4.0,Feasibility
-best,Discharge Burnup,Load following Capabilities,52.32,Technical
-best,Discharge Burnup,Net Power Output,50.75,Technical
-best,Discharge Burnup,Thermal Efficiency,49.05,Technical
-worst,Thermal Efficiency,Load following Capabilities,1.42,Technical
-worst,Thermal Efficiency,Net Power Output,965.0,Technical
-best,Capital Investment Budgeted,Construction Complexity,10495.726496,Economic
-best,Capital Investment Budgeted,Design Complexity,9600.0,Economic
-best,Capital Investment Budgeted,Operative + Fuel Costs,8000.0,Economic
-worst,Operative + Fuel Costs,Construction Complexity,4.0875,Economic
-worst,Operative + Fuel Costs,Design Complexity,3.7875,Economic
-best,Capital Investment Budgeted,Construction Complexity,6222.222222,Economic
-best,Capital Investment Budgeted,Design Complexity,8717.948718,Economic
-best,Capital Investment Budgeted,Operative + Fuel Costs,9059.82906,Economic
-worst,Operative + Fuel Costs,Construction Complexity,3.4875,Economic
-worst,Operative + Fuel Costs,Design Complexity,3.4875,Economic
-best,Capital Investment Budgeted,Construction Complexity,7200.0,Economic
-best,Capital Investment Budgeted,Design Complexity,8800.0,Economic
-best,Capital Investment Budgeted,Operative + Fuel Costs,8000.0,Economic
-worst,Operative + Fuel Costs,Construction Complexity,3.8125,Economic
-worst,Operative + Fuel Costs,Design Complexity,1.876068,Economic
-best,Design Maturity,Licensing Status,4.85,Feasibility
-best,Design Maturity,Supplier Availbility,3.38,Feasibility
-best,Capital Investment Budgeted,Construction Complexity,8800.0,Economic
-best,Capital Investment Budgeted,Design Complexity,8800.0,Economic
-best,Capital Investment Budgeted,Operative + Fuel Costs,8800.0,Economic
-best,Capital Investment Budgeted,Construction Complexity,10632.478632,Economic
-best,Capital Investment Budgeted,Construction Complexity,8000.0,Economic
-best,Capital Investment Budgeted,Design Complexity,8800.0,Economic
-best,Capital Investment Budgeted,Operative + Fuel Costs,8800.0,Economic
-worst,Design Complexity,Construction Complexity,1.331197,Economic
-worst,Design Complexity,Operative + Fuel Costs,43.0,Economic
-best,Design Maturity,Licensing Status,4.38,Feasibility
-best,Design Maturity,Supplier Availbility,3.25,Feasibility
-worst,Licensing Status,Supplier Availbility,3.4,Feasibility
-best,Discharge Burnup,Load following Capabilities,51.6,Technical
-best,Discharge Burnup,Net Power Output,50.75,Technical
-best,Discharge Burnup,Thermal Efficiency,50.66,Technical
+Type,Reference,Other,Value,Group,Confidence
+best,Capital Investment Budgeted,Construction Complexity,8913.043478,Economic,4
+best,Capital Investment Budgeted,Design Complexity,6400.0,Economic,3
+best,Capital Investment Budgeted,Operative + Fuel Costs,9600.0,Economic,2
+worst,Operative + Fuel Costs,Construction Complexity,2.440217,Economic,4
+best,Capital Investment Budgeted,Construction Complexity,20000.0,Economic,3
+best,Capital Investment Budgeted,Design Complexity,8800.0,Economic,3
+best,Capital Investment Budgeted,Operative + Fuel Costs,5600.0,Economic,3
+worst,Operative + Fuel Costs,Construction Complexity,6.0,Economic,4
+worst,Operative + Fuel Costs,Design Complexity,6.0,Economic,0
+best,Supplier Availbility,Design Maturity,3.33,Feasibility,3
+best,Supplier Availbility,Licensing Status,4.0,Feasibility,1
+worst,Licensing Status,Design Maturity,3.68,Feasibility,3
+best,Load following Capabilities,Discharge Burnup,2.05,Technical,3
+best,Load following Capabilities,Net Power Output,1.42,Technical,0
+best,Load following Capabilities,Thermal Efficiency,2.05,Technical,1
+worst,Discharge Burnup,Net Power Output,1497.0,Technical,3
+worst,Discharge Burnup,Thermal Efficiency,31.07,Technical,2
+best,Load following Capabilities,Electricity Market Benefit,36.5,Social,4
+best,Load following Capabilities,GHGe Benefit,46.5,Social,4
+best,Load following Capabilities,Nuclear Waste,29.0,Social,4
+best,Load following Capabilities,Percived Safety,36.5,Social,4
+worst,Discharge Burnup,Electricity Market Benefit,49.0,Social,4
+worst,Discharge Burnup,GHGe Benefit,2.19,Social,4
+worst,Discharge Burnup,Nuclear Waste,12.998478,Social,4
+worst,Discharge Burnup,Percived Safety,0.54,Social,4
+worst,Discharge Burnup,Percived Safety,1.16,Social,4
+best,Capital Investment Budgeted,Construction Complexity,20000.0,Economic,4
+best,Capital Investment Budgeted,Design Complexity,20000.0,Economic,4
+best,Capital Investment Budgeted,Operative + Fuel Costs,20000.0,Economic,4
+worst,Operative + Fuel Costs,Construction Complexity,6.0,Economic,4
+worst,Operative + Fuel Costs,Design Complexity,6.0,Economic,4
+best,Design Maturity,Licensing Status,1.0,Feasibility,2
+best,Design Maturity,Supplier Availbility,1.0,Feasibility,2
+worst,Supplier Availbility,Licensing Status,1.0,Feasibility,2
+best,Discharge Burnup,Load following Capabilities,46.5,Technical,4
+best,Discharge Burnup,Net Power Output,46.5,Technical,4
+best,Discharge Burnup,Thermal Efficiency,46.5,Technical,4
+worst,Thermal Efficiency,Load following Capabilities,0.21,Technical,4
+worst,Thermal Efficiency,Net Power Output,300.0,Technical,4
+best,GHGe Benefit,Electricity Market Benefit,0.53,Social,2
+best,GHGe Benefit,Nuclear Waste,0.53,Social,2
+best,GHGe Benefit,Percived Safety,0.53,Social,2
+worst,Percived Safety,Electricity Market Benefit,24.0,Social,2
+worst,Percived Safety,Nuclear Waste,27.71,Social,2
+best,Capital Investment Budgeted,Design Maturity,20000.0,Between-groups-B,2
+best,Capital Investment Budgeted,Discharge Burnup,20000.0,Between-groups-B,2
+best,Capital Investment Budgeted,GHGe Benefit,20000.0,Between-groups-B,2
+worst,GHGe Benefit,Design Maturity,1.0,Between-groups-B,2
+worst,GHGe Benefit,Discharge Burnup,46.5,Between-groups-B,3
+best,Operative + Fuel Costs,Supplier Availbility,72.0,Between-groups-W,4
+best,Operative + Fuel Costs,Thermal Efficiency,72.0,Between-groups-W,1
+best,Operative + Fuel Costs,Percived Safety,72.0,Between-groups-W,4
+worst,Percived Safety,Supplier Availbility,1.0,Between-groups-W,3
+worst,Percived Safety,Thermal Efficiency,30.8,Between-groups-W,2
