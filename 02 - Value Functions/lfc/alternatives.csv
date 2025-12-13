@@ -1,7 +1,0 @@
-name, Load following Capabilities
-APR1400, {'Discrete': [[0.21]]}
-EPR1750, {'Discrete': [[2.875]]}
-AP1000, {'Discrete': [[4.25]]}
-BWRX300, {'Discrete': [[0.25]]}
-RollsRoyceSMR, {'Discrete': [[2]]}
-NuScaleVOYGR6, {'Discrete': [[2]]}

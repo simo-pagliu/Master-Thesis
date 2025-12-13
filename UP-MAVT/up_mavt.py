@@ -51,7 +51,38 @@ def startup(file_path_criteria, file_path_weight_elicitations, file_path_value_f
         for gname, gdata in dict_data.items():
             for crit_name, crit in gdata['criteria'].items():
                 idx = crit_index[crit_name]
-                crit['value_function'] = vf_list[idx][i]
+                vf_raw = vf_list[idx][i]
+                # If the loaded VF only contains a single node, assume linear behaviour
+                # across the criterion min/max and wrap it accordingly.
+                try:
+                    xs_attr = getattr(vf_raw, '_xs', None)
+                    if xs_attr is not None and len(xs_attr) == 1:
+                        lo = crit.get('min', crit.get('min_value') or 0.0)
+                        hi = crit.get('max', crit.get('max_value') or (lo + 1.0))
+                        def make_linear(lo, hi):
+                            def vf(x):
+                                try:
+                                    xv = float(x)
+                                except Exception:
+                                    xv = lo
+                                if hi == lo:
+                                    val = 1.0
+                                else:
+                                    val = (xv - lo) / (hi - lo)
+                                import numpy as _np
+                                return float(_np.clip(max(val, 0.001), 0.001, 1.0))
+                            try:
+                                import numpy as _np
+                                vf._xs = _np.array([lo, hi], dtype=float)
+                                vf._ys = _np.array([0.001, 1.0], dtype=float)
+                            except Exception:
+                                pass
+                            return vf
+                        crit['value_function'] = make_linear(lo, hi)
+                    else:
+                        crit['value_function'] = vf_raw
+                except Exception:
+                    crit['value_function'] = vf_raw
         dict_data_list.append(dict_data)
 
     # Debugging: Verify final dict_data_list

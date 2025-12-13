@@ -38,6 +38,252 @@ class ElicitationProcess:
             raise ValueError(f"CSV must contain columns: {', '.join(required_columns)}")
         return self.df
 
+    def load_quantitative_folder(self, folder_path):
+        """Load the `quantitative` folder which contains `criteria.csv` and `guideline.txt`.
+
+        The guideline uses format B: for each criterion a line like
+          Criterion Name: [IT,FR,PO,CH]
+        or with explicit ranges
+          Criterion Name: [IT:10-20,CH:21-23,FR,PO]
+
+        This function builds a DataFrame where per-country criteria are expanded
+        into rows named 'Criterion Name - XX' and default criteria remain single-row.
+        """
+        folder = os.fspath(folder_path)
+        crit_path = os.path.join(folder, 'criteria.csv')
+        guide_path = os.path.join(folder, 'guideline.txt')
+        if not os.path.exists(crit_path):
+            raise FileNotFoundError(f"criteria.csv not found in {folder}")
+
+        base_df = pd.read_csv(crit_path)
+        # normalize name and group columns
+        if 'name' not in base_df.columns:
+            raise ValueError('criteria.csv must contain a name column')
+
+        # parse guideline if present (also read Specifics: [IT,CH,...])
+        guidelines = {}
+        country_codes = []
+        if os.path.exists(guide_path):
+            with open(guide_path, 'r', encoding='utf-8') as gf:
+                for ln in gf:
+                    ln = ln.strip()
+                    if not ln or ln.startswith('#'):
+                        continue
+                    low = ln.lower()
+                    if low.startswith('specifics:') or low.startswith('specifics>'):
+                        # accept 'Specifics: [IT,CH]' or 'Specifics> [IT,CH]'
+                        if ':' in ln:
+                            _, rhs = ln.split(':', 1)
+                        else:
+                            _, rhs = ln.split('>', 1)
+                        rhs = rhs.strip()
+                        if rhs.startswith('[') and rhs.endswith(']'):
+                            rhs = rhs[1:-1]
+                        country_codes = [p.strip() for p in rhs.split(',') if p.strip()]
+                        continue
+                    if ':' not in ln:
+                        continue
+                    key, rest = ln.split(':', 1)
+                    key = key.strip()
+                    rest = rest.strip()
+                    if rest.startswith('[') and rest.endswith(']'):
+                        inner = rest[1:-1]
+                        # support comma-separated tokens, or colon-separated where
+                        # a final numeric range follows country codes like
+                        #    IT:PO:FR:CH:0-4.25  -> expand to IT:0-4.25, PO:0-4.25, ...
+                        parts = []
+                        if ',' in inner:
+                            parts = [p.strip() for p in inner.split(',') if p.strip()]
+                        elif inner.count(':') >= 2:
+                            pieces = [p.strip() for p in inner.split(':') if p.strip()]
+                            last = pieces[-1]
+                            if '-' in last:
+                                rng = last
+                                codes = pieces[:-1]
+                                parts = [f"{c}:{rng}" for c in codes]
+                            else:
+                                parts = pieces
+                        else:
+                            parts = [inner.strip()]
+                        guidelines[key] = parts
+
+        # expand into rows
+        rows = []
+        # helper to get base row for a criterion
+        def get_base_row(name):
+            try:
+                r = base_df[base_df['name'].str.strip().str.lower() == name.strip().lower()]
+                if r.shape[0] > 0:
+                    return r.iloc[0].to_dict()
+            except Exception:
+                pass
+            return None
+
+        # If Specifics not provided, fall back to common set
+        if not country_codes:
+            country_codes = ['IT', 'CH', 'FR', 'PO']
+
+        seen = set()
+        for _, brow in base_df.iterrows():
+            cname = str(brow.get('name'))
+            # decide if this criterion has a guideline entry
+            parts = guidelines.get(cname)
+            if parts:
+                # expand per token
+                for token in parts:
+                    token = token.strip()
+                    if not token:
+                        continue
+                    if ':' in token:
+                        # explicit range CC:low-high OR default:low-high
+                        cc, rng = token.split(':', 1)
+                        cc = cc.strip()
+                        rng = rng.strip()
+                        # parse numeric range
+                        if '-' in rng:
+                            a, b = [s.strip() for s in rng.split('-', 1)]
+                            try:
+                                lo = float(a)
+                                hi = float(b)
+                            except Exception:
+                                lo = float(brow.get('min', 0))
+                                hi = float(brow.get('max', 1))
+                        else:
+                            lo = float(brow.get('min', 0))
+                            hi = float(brow.get('max', 1))
+
+                        if cc.lower() == 'default':
+                            # single folder-global entry using provided range
+                            row = {
+                                'name': cname,
+                                'group': brow.get('group'),
+                                'min': lo,
+                                'max': hi,
+                                'unit': brow.get('unit') if 'unit' in brow else ''
+                            }
+                            rows.append(row)
+                        else:
+                            # per-country explicit range
+                            row = {
+                                'name': f"{cname} - {cc}",
+                                'group': brow.get('group'),
+                                'min': lo,
+                                'max': hi,
+                                'unit': brow.get('unit') if 'unit' in brow else ''
+                            }
+                            rows.append(row)
+                            seen.add((cname, cc))
+                    else:
+                        # token without ':' could be a country code or a plain range
+                        if '-' in token:
+                            # treat as default numeric range (e.g. "10-20")
+                            try:
+                                a, b = [s.strip() for s in token.split('-', 1)]
+                                lo = float(a)
+                                hi = float(b)
+                                row = {
+                                    'name': cname,
+                                    'group': brow.get('group'),
+                                    'min': lo,
+                                    'max': hi,
+                                    'unit': brow.get('unit') if 'unit' in brow else ''
+                                }
+                                rows.append(row)
+                            except Exception:
+                                # not a numeric range; fall through
+                                pass
+                        else:
+                            cc = token.strip()
+                            if cc.upper() in country_codes:
+                                # use base min/max
+                                row = {
+                                    'name': f"{cname} - {cc}",
+                                    'group': brow.get('group'),
+                                    'min': float(brow.get('min', 0)),
+                                    'max': float(brow.get('max', 1)),
+                                    'unit': brow.get('unit') if 'unit' in brow else ''
+                                }
+                                rows.append(row)
+                                seen.add((cname, cc))
+                            else:
+                                # unknown token; ignore
+                                pass
+            else:
+                # not per-country -> keep single row
+                row = {
+                    'name': cname,
+                    'group': brow.get('group'),
+                    'min': float(brow.get('min', 0)),
+                    'max': float(brow.get('max', 1)),
+                    'unit': brow.get('unit') if 'unit' in brow else ''
+                }
+                rows.append(row)
+
+        # Some guideline tokens may reference criteria not present in base_df; add them if possible
+        for gname, parts in guidelines.items():
+            # if gname already handled continue
+            if any(r['name'].strip().lower() == gname.strip().lower() for r in rows):
+                continue
+            base = get_base_row(gname)
+            if base is None:
+                # create entries only for explicit ranges
+                for token in parts:
+                    if ':' in token:
+                        cc, rng = token.split(':', 1)
+                        cc = cc.strip()
+                        try:
+                            lo, hi = [float(x) for x in rng.split('-', 1)]
+                        except Exception:
+                            continue
+                        rows.append({'name': f"{gname} - {cc}", 'group': '', 'min': lo, 'max': hi, 'unit': ''})
+                continue
+
+        df_rows = pd.DataFrame(rows)
+        # ensure required columns
+        for c in ['name', 'min', 'max']:
+            if c not in df_rows.columns:
+                df_rows[c] = ''
+
+        # set process state
+        self.df = df_rows
+        self.file_path = folder
+        # choose a results_vf_path inside the folder (global file)
+        self.results_vf_path = os.path.join(folder, 'value_functions.csv')
+
+        # If a value_functions.csv exists in the quantitative folder, merge its
+        # elicited entries into the loaded dataframe so the UI shows saved defaults.
+        if os.path.exists(self.results_vf_path):
+            vf_df = pd.read_csv(self.results_vf_path)
+            if 'name' in vf_df.columns:
+                for _, vf_row in vf_df.iterrows():
+                    raw_name = str(vf_row.get('name', '')).strip()
+                    alt_name = raw_name.replace('/', ' - ')
+                    alt_name_rev = raw_name.replace(' - ', '/')
+
+                    # find matching index in self.df
+                    mask = (self.df['name'] == raw_name) | (self.df['name'] == alt_name) | (self.df['name'] == alt_name_rev)
+                    matches = self.df[mask]
+                    if matches.shape[0] == 0:
+                        # try case-insensitive match
+                        try:
+                            mask = (self.df['name'].str.lower() == raw_name.lower()) | (self.df['name'].str.lower() == alt_name.lower())
+                            matches = self.df[mask]
+                        except Exception:
+                            matches = self.df[[]]
+                    if matches.shape[0] > 0:
+                        idx = matches.index[0]
+                        if 'elicited_points' in vf_df.columns:
+                            self.df.at[idx, 'elicited_points'] = vf_row.get('elicited_points', '')
+                        if 'confidence' in vf_df.columns:
+                            self.df.at[idx, 'confidence'] = vf_row.get('confidence', '')
+                        if 'elicitation_meta' in vf_df.columns:
+                            self.df.at[idx, 'elicitation_meta'] = vf_row.get('elicitation_meta', '')
+
+        # Do not create per-country files here; saving will write a single
+        # `value_functions.csv` in the quantitative folder using `Base/CC`
+        # naming for country-specific rows.
+        return self.df
+
     def get_saved_state_for_current_attribute(self):
         """Return saved elicited points, function string and meta for the current attribute if present."""
         if self.df is None:
@@ -46,23 +292,48 @@ class ElicitationProcess:
         points = None
         func = None
         meta = None
-        # Prefer defaults from an external `value_functions.csv` in the same folder as
-        # the loaded CSV. If present, its rows (by name) override the per-row columns
-        # in the loaded attributes CSV for display only. Otherwise fall back to the
-        # values stored in the loaded dataframe.
+        # Prefer defaults from an external `value_functions.csv` or any
+        # `value_functions_*.csv` in the same folder as the loaded CSV. If
+        # present, its rows (by name) override the per-row columns in the
+        # loaded dataframe row for display only. Also respect the session
+        # `results_vf_path` if set. Otherwise fall back to the values stored
+        # in the loaded dataframe.
         try:
             out_dir = os.path.dirname(self.file_path) or '.'
-            ext_path = os.path.join(out_dir, 'value_functions.csv')
-            if os.path.exists(ext_path):
+            candidates = []
+            # canonical name
+            candidates.append(os.path.join(out_dir, 'value_functions.csv'))
+            # session results path (may be value_functions_1.csv etc.)
+            rv = getattr(self, 'results_vf_path', None)
+            if rv:
+                candidates.append(rv)
+            # also consider any value_functions_*.csv present (pick latest if multiple)
+            try:
+                import glob
+                patt = os.path.join(out_dir, 'value_functions_*.csv')
+                found = sorted(glob.glob(patt))
+                # add reversed so newer (lexicographically later) are preferred
+                for f in reversed(found):
+                    if f not in candidates:
+                        candidates.append(f)
+            except Exception:
+                pass
+
+            name = str(row.get('name')).strip()
+            for ext_path in candidates:
                 try:
+                    if not ext_path or not os.path.exists(ext_path):
+                        continue
                     vf_df = pd.read_csv(ext_path)
-                    name = str(row.get('name')).strip()
                     # try exact match then case-insensitive
                     match = None
                     if 'name' in vf_df.columns:
                         matches = vf_df[vf_df['name'] == name]
                         if matches.shape[0] == 0:
-                            matches = vf_df[vf_df['name'].str.lower() == name.lower()]
+                            try:
+                                matches = vf_df[vf_df['name'].str.lower() == name.lower()]
+                            except Exception:
+                                matches = pd.DataFrame()
                         if matches.shape[0] > 0:
                             match = matches.iloc[-1]
                     if match is not None:
@@ -78,10 +349,23 @@ class ElicitationProcess:
                                 meta = json.loads(match.get('elicitation_meta'))
                             except Exception:
                                 meta = None
+                        # top-level confidence column overrides meta.confidence
+                        try:
+                            if 'confidence' in match and pd.notna(match.get('confidence')):
+                                try:
+                                    confv = match.get('confidence')
+                                    meta = meta or {}
+                                    meta['confidence'] = int(confv)
+                                except Exception:
+                                    pass
+                        except Exception:
+                            pass
                         return {'points': points, 'value_function': func, 'meta': meta}
                 except Exception:
-                    # fall back to per-row values below
-                    pass
+                    # try next candidate
+                    continue
+        except Exception:
+            pass
 
         except Exception:
             pass
@@ -99,6 +383,19 @@ class ElicitationProcess:
                 meta = json.loads(row.get('elicitation_meta'))
             except Exception:
                 meta = None
+        # also read a top-level 'confidence' column if present
+        try:
+            if 'confidence' in self.df.columns and pd.notna(row.get('confidence')):
+                try:
+                    confv = row.get('confidence')
+                    # coerce to int if possible
+                    meta = meta or {}
+                    meta['confidence'] = int(confv)
+                except Exception:
+                    # ignore non-numeric confidence values
+                    pass
+        except Exception:
+            pass
         return {'points': points, 'value_function': func, 'meta': meta}
 
     def save_current_state(self, degree=2, meta=None):
@@ -112,45 +409,108 @@ class ElicitationProcess:
 
         idx = self.current_attribute_index
         # write points as JSON
-        try:
-            self.df.at[idx, 'elicited_points'] = json.dumps(self.points)
-        except Exception:
-            self.df.at[idx, 'elicited_points'] = ''
+        self.df.at[idx, 'elicited_points'] = json.dumps(self.points)
 
-        # compute value function string
-        vf = self.get_value_function_string(degree)
-        self.df.at[idx, 'value_function'] = vf if vf is not None else ''
+        # We no longer persist executable/lambda expressions to CSV for security and portability.
+        # Only save elicited points and elicitation_meta (as JSON).
+        self.df.at[idx, 'elicitation_meta'] = json.dumps(meta or {})
 
-        # meta
-        try:
-            self.df.at[idx, 'elicitation_meta'] = json.dumps(meta or {})
-        except Exception:
-            self.df.at[idx, 'elicitation_meta'] = ''
+        # persist confidence as a top-level column if provided in meta
+        conf_val = None
+        if isinstance(meta, dict) and 'confidence' in meta:
+            conf_val = int(meta.get('confidence'))
+        # leave blank if not provided
+        if conf_val is None:
+            self.df.at[idx, 'confidence'] = ''
+        else:
+            self.df.at[idx, 'confidence'] = int(conf_val)
 
         # persist a dedicated value_functions.csv containing only the requested columns
-        out_dir = os.path.dirname(self.file_path) or '.'
-        # Use preselected results path for this loaded dataset if present, otherwise pick one now
+        # Decide target folder: if the current attribute is country-specific ("Name - CC")
+        # attempt to save to the original per-folder CSV (e.g. `ghg/value_functions.csv`).
+        # Otherwise use the session results path or a new file in the loaded folder.
+        default_out_dir = os.path.dirname(self.file_path) or os.path.dirname(__file__) or '.'
+
+        # Read guideline to know which criteria are declared per-country and which country codes to accept
+        guideline_path = os.path.join(os.path.dirname(__file__), 'quantitative', 'guideline.txt')
+        per_country_criteria = set()
+        country_codes = set()
+        if os.path.exists(guideline_path):
+            with open(guideline_path, 'r', encoding='utf-8') as gf:
+                for ln in gf:
+                    ln = ln.strip()
+                    low = ln.lower()
+                    if low.startswith('percountrycriteria:'):
+                        _, rhs = ln.split(':', 1)
+                        per_country_criteria = set([p.strip() for p in rhs.split(',') if p.strip()])
+                    elif low.startswith('specifics:') or low.startswith('specifics>'):
+                        # accept formats like: Specifics: [IT,CH,FR,PO]
+                        try:
+                            _, rhs = ln.split(':', 1) if ':' in ln else ln.split('>', 1)
+                        except Exception:
+                            continue
+                        rhs = rhs.strip()
+                        # strip brackets if present
+                        if rhs.startswith('[') and rhs.endswith(']'):
+                            rhs = rhs[1:-1]
+                        country_codes = set([p.strip() for p in rhs.split(',') if p.strip()])
+
+        # determine if current attribute looks like a per-country specific entry
+        cur_row = self.df.iloc[self.current_attribute_index]
+        attr_name = str(cur_row.get('name', '')).strip()
+
+        qfolder = os.path.join(os.path.dirname(__file__), 'quantitative')
+
         out_path = getattr(self, 'results_vf_path', None)
+
+        # If attribute is of form 'Base - CC' and Base is declared per-country, save to quantitative/value_functions_{CC}.csv
+        if ' - ' in attr_name:
+            base_name, suffix = [p.strip() for p in attr_name.rsplit(' - ', 1)]
+            if base_name in per_country_criteria and suffix in country_codes:
+                out_path = os.path.join(qfolder, f'value_functions_{suffix}.csv')
+
+        # otherwise, if no explicit out_path, create a session file in the default output dir
         if not out_path:
             i = 1
             while True:
-                candidate = os.path.join(out_dir, f'value_functions_{i}.csv')
+                candidate = os.path.join(default_out_dir, f'value_functions_{i}.csv')
                 if not os.path.exists(candidate):
                     out_path = candidate
                     break
                 i += 1
 
-        # ensure the required columns exist in the dataframe (include group)
-        cols = ['name', 'group', 'elicited_points', 'value_function', 'elicitation_meta']
-        # create a new DataFrame with only the requested columns
-        export_df = self.df.reindex(columns=cols).copy()
-        # replace NaN with empty strings
-        export_df = export_df.fillna('')
+        # ensure the required columns exist in the dataframe (include group and confidence)
+        cols = ['name', 'group', 'elicited_points', 'confidence', 'elicitation_meta']
 
-        # write to CSV (create new results file for this session)
-        export_df.to_csv(out_path, index=False)
-        # return the path for caller information/debugging
-        return out_path
+        # Build a single output containing both global and country-specific rows.
+        # Country-specific rows are named as 'Base/CC'. Global rows are written once
+        # with their base name.
+        rows_out = []
+        for _, row in self.df.iterrows():
+            nm = str(row.get('name', '')).strip()
+            grp = row.get('group', '')
+            ep = row.get('elicited_points', '') if 'elicited_points' in row.index else ''
+            conf = row.get('confidence', '') if 'confidence' in row.index else ''
+            meta = row.get('elicitation_meta', '') if 'elicitation_meta' in row.index else ''
+
+            if ' - ' in nm:
+                base, suff = [p.strip() for p in nm.rsplit(' - ', 1)]
+                if suff in country_codes:
+                    out_name = f"{base}/{suff}"
+                else:
+                    # unknown suffix: skip
+                    continue
+            else:
+                out_name = nm
+
+            rows_out.append({'name': out_name, 'group': grp, 'elicited_points': ep, 'confidence': conf, 'elicitation_meta': meta})
+
+        out_file = os.path.join(qfolder, 'value_functions.csv')
+        df_out = pd.DataFrame(rows_out, columns=cols)
+        df_out = df_out.fillna('')
+        df_out.to_csv(out_file, index=False)
+        self.results_vf_path = out_file
+        return out_file
 
     def get_value_function_string(self, degree=2):
         """Return a string representation of the fitted polynomial inside thresholds, or empty string.

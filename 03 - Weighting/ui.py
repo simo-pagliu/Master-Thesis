@@ -100,7 +100,19 @@ class WBT_ui:
         ttk.Label(selection_frame, text="Worst Criterion:").grid(row=2, column=0)
         self.worst_dropdown = ttk.Combobox(selection_frame, textvariable=self.worst_criterion, values=group_vals)
         self.worst_dropdown.grid(row=2, column=1)
-        ttk.Button(selection_frame, text="Continue", command=self.start_comparisons).grid(row=3, columnspan=2)
+        # Expert confidence selector for this group (0..4)
+        conf_options = [
+            "0: Not confident at all (pure guess)",
+            "1: Low confidence",
+            "2: Moderately confident",
+            "3: High confidence",
+            "4: Extremely confident (certain)",
+        ]
+        self.group_confidence_var = tk.StringVar(value=conf_options[2])
+        ttk.Label(selection_frame, text="Group confidence:").grid(row=3, column=0)
+        self.group_confidence_cb = ttk.Combobox(selection_frame, textvariable=self.group_confidence_var, values=conf_options, width=40)
+        self.group_confidence_cb.grid(row=3, column=1)
+        ttk.Button(selection_frame, text="Continue", command=self.start_comparisons).grid(row=4, columnspan=2)
 
         # Show a single overview plot with all criteria at their max and their ranges
         try:
@@ -130,23 +142,37 @@ class WBT_ui:
             # should appear full regardless of underlying value functions.
             vals = [1.0] * n
 
-            fig = plt.Figure(figsize=(8, 5))
+            fig = plt.Figure(figsize=(10, 5))
+            # leave extra room at the bottom so rotated x-labels aren't clipped
+            try:
+                fig.subplots_adjust(bottom=0.4)
+            except Exception:
+                pass
             ax = fig.add_subplot(1, 1, 1)
 
-            bars = ax.bar(range(n), vals, tick_label=display_names, color='#9ecae1')
+            # space bars farther apart and make them thinner so x-labels don't overlap
+            bar_width = 0.4
+            spacing = 1.6
+            x = np.arange(n) * spacing
+            bars = ax.bar(x, vals, width=bar_width, color='#9ecae1')
+            ax.set_xticks(x)
+            ax.set_xticklabels(display_names, rotation=25, ha='right', fontsize=10)
             ax.set_ylim(0, 1)
             ax.set_title(f'Overview — {group_name} (value functions at max)')
             for j in range(n):
-                ax.text(j, 0.02, f"{mins[j]:.2f}", ha='center', va='bottom', fontsize=8, color='black')
-                ax.text(j, 0.98, f"{maxs[j]:.2f}", ha='center', va='top', fontsize=8, color='black')
+                low = min(mins[j], maxs[j])
+                high = max(mins[j], maxs[j])
+                ax.text(x[j], 0.02, f"{low:.2f}", ha='center', va='bottom', fontsize=10, color='black')
+                ax.text(x[j], 0.98, f"{high:.2f}", ha='center', va='top', fontsize=10, color='black')
 
             # Embed the overview plot inside the selection frame to the right
             selection_frame.grid_columnconfigure(2, weight=1)
             plot_frame = ttk.Frame(selection_frame)
-            plot_frame.grid(row=0, column=2, rowspan=4, sticky='nsew', padx=(8, 0))
+            # rowspan increased to cover the added confidence row
+            plot_frame.grid(row=0, column=2, rowspan=5, sticky='nsew', padx=(8, 0))
             canvas = FigureCanvasTkAgg(fig, master=plot_frame)
             canvas.draw()
-            canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+            canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True, pady=(0, 12))
         except Exception:
             # If plotting fails for any reason, silently continue (UI still usable)
             pass
@@ -177,7 +203,13 @@ class WBT_ui:
         group_names = [c['name'] for c in group_criteria]
 
         # remember the selected best/worst for this group
-        self.group_selected[group_name] = {'best': best, 'worst': worst}
+        # store group-level confidence chosen in selection screen (default to 2)
+        try:
+            conf_str = self.group_confidence_var.get()
+            conf_val = int(conf_str.split(':', 1)[0])
+        except Exception:
+            conf_val = 2
+        self.group_selected[group_name] = {'best': best, 'worst': worst, 'confidence': conf_val}
 
         # set current context for plotting/saving
         self._context_criteria = group_criteria
@@ -203,7 +235,7 @@ class WBT_ui:
         if not os.path.exists(self._results_fn):
             with open(self._results_fn, 'w', newline='') as f:
                 w = csv.writer(f)
-                w.writerow(['Type', 'Reference', 'Other', 'Value', 'Group'])
+                w.writerow(['Type', 'Reference', 'Other', 'Value', 'Group', 'Confidence'])
 
         self.show_next_comparison()
 
@@ -260,8 +292,6 @@ class WBT_ui:
                 mins.append(lo)
                 maxs.append(hi)
 
-            fig = plt.Figure(figsize=(4, 2.5))
-            ax = fig.add_subplot(1, 1, 1)
             # Represent value-function at max for each candidate (or fallback to linear)
             vals = []
             for i, c in enumerate(crit_list):
@@ -280,16 +310,31 @@ class WBT_ui:
                     else:
                         v = (val_at_max - lo) / (hi - lo)
                 vals.append(float(np.clip(v, 0.001, 1.0)))
-            bars = ax.bar(range(len(display_names)), vals, tick_label=display_names, color='#9ecae1')
+            fig = plt.Figure(figsize=(4, 2.5))
+            # leave extra bottom room for rotated x-labels in small overview
+            try:
+                fig.subplots_adjust(bottom=0.28)
+            except Exception:
+                pass
+            ax = fig.add_subplot(1, 1, 1)
+            # thinner bars and increased spacing for clarity of x-axis labels
+            bar_width = 0.4
+            spacing = 1.6
+            x = np.arange(len(display_names)) * spacing
+            bars = ax.bar(x, vals, width=bar_width, color='#9ecae1')
+            ax.set_xticks(x)
+            ax.set_xticklabels(display_names, rotation=25, ha='right', fontsize=10)
             ax.set_ylim(0, 1)
             ax.set_title('Candidate ranges (value functions at max)')
             for j in range(len(display_names)):
-                ax.text(j, 0.02, f"{mins[j]:.2f}", ha='center', va='bottom', fontsize=7, color='black')
-                ax.text(j, 0.98, f"{maxs[j]:.2f}", ha='center', va='top', fontsize=7, color='black')
+                low = min(mins[j], maxs[j])
+                high = max(mins[j], maxs[j])
+                ax.text(x[j], 0.02, f"{low:.2f}", ha='center', va='bottom', fontsize=9, color='black')
+                ax.text(x[j], 0.98, f"{high:.2f}", ha='center', va='top', fontsize=9, color='black')
 
             canvas = FigureCanvasTkAgg(fig, master=plot_frame)
             canvas.draw()
-            canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+            canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True, pady=(0, 12))
         except Exception:
             pass
 
@@ -304,7 +349,13 @@ class WBT_ui:
             context_criteria = [self.criteria_by_name[n] for n in candidates]
             group_label = f'Between-groups-{"B" if phase=="B" else "W"}'
             scope_label = f'between-groups-{"B" if phase=="B" else "W"}'
-            self.start_comparisons_for_context(b, w, context_criteria, group_label, scope_label)
+            # Start comparisons using the same flow as intra-group contexts so
+            # the updated comparison UI and CSV behavior are applied.
+            try:
+                self.start_comparisons_for_context(b, w, context_criteria, group_label, scope_label)
+            except Exception:
+                # If something goes wrong, show an error so the user is not stuck.
+                messagebox.showerror('Error', 'Failed to start between-groups comparisons')
 
         ttk.Button(sel_frame, text='Continue', command=on_continue).grid(row=3, column=0, columnspan=2, pady=6)
 
@@ -314,8 +365,8 @@ class WBT_ui:
         self._context_group_name = context_group_name
         self._context_scope = scope_label
         names = [c['name'] for c in context_criteria]
-        # store as a synthetic 'group' selection
-        self.group_selected[context_group_name] = {'best': best, 'worst': worst}
+        # store as a synthetic 'group' selection (use default confidence 2)
+        self.group_selected[context_group_name] = {'best': best, 'worst': worst, 'confidence': 2}
 
         # Build comparisons (best vs others, worst vs others) within the context
         self.comparisons = []
@@ -460,14 +511,23 @@ class WBT_ui:
         frm = ttk.Frame(self.root, padding=8)
         frm.pack(fill=tk.BOTH, expand=True)
         ttk.Label(frm, text=f"Comparison {self.current_comparison + 1} of {len(self.comparisons)}", font=(None, 12, 'bold')).pack(pady=(0, 6))
-        ttk.Label(frm, text=f"Type: {comparison_type}").pack()
-        ttk.Label(frm, text=f"Reference: {ref_criterion}").pack()
-        ttk.Label(frm, text=f"Other: {other_criterion}").pack(pady=(0, 6))
+
+        # per-comparison confidence combobox will be placed together with the
+        # slider/radio controls at the bottom (created later) so it appears
+        # to the right of the slider as requested.
 
         # Matplotlib figure with two side-by-side bar plots
-        fig = plt.Figure(figsize=(8, 5))
-        ax_left = fig.add_subplot(1, 2, 1)
-        ax_right = fig.add_subplot(1, 2, 2)
+        # Increase figure size so plots have more vertical space and are not cut off
+        fig = plt.Figure(figsize=(10, 6))
+        # leave extra room at the bottom so rotated x-labels aren't clipped
+        try:
+            fig.subplots_adjust(bottom=0.22)
+        except Exception:
+            pass
+        # three subplots: left (other/reference), middle (adjustable), right (value function)
+        ax_left = fig.add_subplot(1, 3, 1)
+        ax_right = fig.add_subplot(1, 3, 2)
+        ax_vf = fig.add_subplot(1, 3, 3)
 
         def vf_values(vals):
             """
@@ -498,13 +558,23 @@ class WBT_ui:
                 out.append(float(np.clip(v, 0.001, 1.0)))
             return out
 
-        # For elicitation display: left shows 'other' at vf=1 and others at vf=0;
-        # right starts with all criteria at vf=0 and the slider will change the target bar.
+        # For elicitation display: left shows the "maxed" criterion at vf=1
+        # (which is the OTHER for 'best' comparisons, and the REFERENCE for 'worst').
+        # Right starts with all criteria at vf=0 and the slider will change the target bar.
         n = len(base_names)
-        left_vf = [1.0 if i == other_idx else 0.0 for i in range(n)]
+        if comparison_type == 'best':
+            left_vf = [1.0 if i == other_idx else 0.0 for i in range(n)]
+        else:
+            left_vf = [1.0 if i == ref_idx else 0.0 for i in range(n)]
         right_vf = [0.0 for _ in range(n)]
 
-        bars_left = ax_left.bar(range(n), left_vf, tick_label=display_names, color='#9ecae1')
+        # thinner bars and more spacing so x-axis labels don't overlap
+        bar_width = 0.35
+        spacing = 1.6
+        x = np.arange(n) * spacing
+        bars_left = ax_left.bar(x, left_vf, width=bar_width, color='#9ecae1')
+        ax_left.set_xticks(x)
+        ax_left.set_xticklabels(display_names, rotation=25, ha='right', fontsize=10)
         ax_left.set_ylim(0, 1)
         # Clarify which criterion is maxed on the left
         if comparison_type == 'best':
@@ -512,17 +582,58 @@ class WBT_ui:
         else:
             ax_left.set_title(f"Reference left: {display_names[ref_idx]} maxed")
 
-        bars_right = ax_right.bar(range(n), right_vf, tick_label=display_names, color='#9ecae1')
+        bars_right = ax_right.bar(x, right_vf, width=bar_width, color='#9ecae1')
+        ax_right.set_xticks(x)
+        ax_right.set_xticklabels(display_names, rotation=25, ha='right', fontsize=10)
         ax_right.set_ylim(0, 1)
         # Clarify which criterion the user adjusts on the right
         ax_right.set_title(f"Adjustable right: {display_names[slider_target]}")
+
+        # --- Plot the value function for the slider target on the right subplot ---
+        try:
+            idx_vf = slider_target
+            c_vf = group_criteria[idx_vf]
+            lo_vf = min(mins[idx_vf], maxs[idx_vf])
+            hi_vf = max(mins[idx_vf], maxs[idx_vf])
+            xs_vf = np.linspace(lo_vf, hi_vf, 400)
+            vf_fn = c_vf.get('value_function')
+            if callable(vf_fn):
+                ys_vf = [float(vf_fn(x)) if (vf_fn is not None) else 0.001 for x in xs_vf]
+            else:
+                # linear fallback
+                if hi_vf == lo_vf:
+                    ys_vf = [1.0 for _ in xs_vf]
+                else:
+                    ys_vf = [(x - lo_vf) / (hi_vf - lo_vf) for x in xs_vf]
+            ys_vf = [float(np.clip(y, 0.001, 1.0)) for y in ys_vf]
+            ax_vf.plot(xs_vf, ys_vf, color='#1f77b4')
+            ax_vf.set_xlim(lo_vf, hi_vf)
+            ax_vf.set_ylim(0.0, 1.0)
+            ax_vf.set_title(f"Value function: {display_names[slider_target]}")
+            ax_vf.set_xlabel('Data')
+            ax_vf.set_ylabel('Value')
+            # initial marker for the current slider position; will be updated by slider
+            try:
+                start_x = lo_vf
+                if callable(vf_fn):
+                    init_y = float(vf_fn(float(start_x)))
+                else:
+                    init_y = 0.001 if hi_vf == lo_vf else ((float(start_x) - lo_vf) / (hi_vf - lo_vf))
+            except Exception:
+                init_y = 0.0
+            init_y = float(np.clip(init_y, 0.0, 1.0))
+            vf_marker, = ax_vf.plot([start_x], [init_y], marker='o', color='C3', markersize=6)
+        except Exception:
+            ax_vf = None
+            vf_marker = None
 
         # (old min/max labels removed) — we now draw value-based labels centered on bars below
 
         canvas = FigureCanvasTkAgg(fig, master=frm)
         canvas.draw()
-        # Pack the canvas without expanding so control widgets remain clickable below
-        canvas.get_tk_widget().pack(fill=tk.BOTH, expand=False, pady=(0, 6))
+        # Allow the canvas to expand so the plots get full available space
+        # add more bottom padding so the slider/radio controls don't overlap the labels
+        canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True, pady=(0, 12))
 
         # --- Draw value-function labels at increments 0.0,0.1,...,1.0 for each bar ---
         def invert_vf_for_criterion(c, y_target, lo, hi):
@@ -541,22 +652,36 @@ class WBT_ui:
                             return float(x0)
                         t = (y_target - y0) / (y1 - y0)
                         return float(x0 + t * (x1 - x0))
-                # If not in any segment, allow linear extrapolation using end segments
-                if y_target <= ys.min():
-                    # extrapolate left using first two nodes
-                    x0, x1 = xs[0], xs[1]
-                    y0, y1 = ys[0], ys[1]
-                    if abs(y1 - y0) < 1e-12:
-                        return float(x0)
-                    t = (y_target - y0) / (y1 - y0)
-                    return float(x0 + t * (x1 - x0))
-                if y_target >= ys.max():
-                    x0, x1 = xs[-2], xs[-1]
-                    y0, y1 = ys[-2], ys[-1]
-                    if abs(y1 - y0) < 1e-12:
-                        return float(x1)
-                    t = (y_target - y0) / (y1 - y0)
-                    return float(x0 + t * (x1 - x0))
+                # If not in any segment, clamp to the criterion domain extremes
+                # rather than extrapolating numerically. This ensures labels
+                # correspond to the actual data range (low/high) shown on plots.
+                    # Use VF node endpoints to decide which data-end corresponds
+                    # to the extreme VF values, taking the node monotonicity into account.
+                    try:
+                        x_start = float(xs[0])
+                        x_end = float(xs[-1])
+                        y_start = float(ys[0])
+                        y_end = float(ys[-1])
+                        # If VF increases with x (y_start < y_end), small y -> x_start
+                        if y_start <= y_end:
+                            if y_target <= float(ys.min()):
+                                return float(x_start)
+                            if y_target >= float(ys.max()):
+                                return float(x_end)
+                        else:
+                            # VF decreases with x: small y -> x_end
+                            if y_target <= float(ys.min()):
+                                return float(x_end)
+                            if y_target >= float(ys.max()):
+                                return float(x_start)
+                    except Exception:
+                        # fallback to domain extremes if anything goes wrong
+                        low_dom = float(min(lo, hi))
+                        high_dom = float(max(lo, hi))
+                        if y_target <= float(ys.min()):
+                            return float(low_dom)
+                        if y_target >= float(ys.max()):
+                            return float(high_dom)
             # fallback: sample within [lo,hi] and find closest
             try:
                 samples = np.linspace(lo, hi, 201)
@@ -618,21 +743,23 @@ class WBT_ui:
             for j in range(n):
                 # For each bar, place small labels at y=0.0..1.0 (step 0.1)
                 for ytick in np.linspace(0.0, 1.0, 11):
-                    xval = invert_vf_for_criterion(group_criteria[j], ytick, mins[j], maxs[j])
+                    low = min(mins[j], maxs[j])
+                    high = max(mins[j], maxs[j])
+                    xval = invert_vf_for_criterion(group_criteria[j], ytick, low, high)
                     # format label with 2 decimals
                     lbl = f"{xval:.2f}"
                     # Make first/last (0.0 and 1.0) a bit larger and nudge inward
                     if abs(ytick - 0.0) < 1e-8:
-                        fontsize = 8
+                        fontsize = 9
                         y_pos = min(ytick + 0.035, 0.05)
                     elif abs(ytick - 1.0) < 1e-8:
-                        fontsize = 8
+                        fontsize = 9
                         y_pos = max(ytick - 0.035, 0.95)
                     else:
-                        fontsize = 6
+                        fontsize = 8
                         y_pos = ytick
                     # center label horizontally with respect to the bar; ensure it's inside plot
-                    ax.text(j, y_pos, lbl, fontsize=fontsize, va='center', ha='center', color='black', clip_on=True)
+                    ax.text(x[j], y_pos, lbl, fontsize=fontsize, va='center', ha='center', color='black', clip_on=True)
 
         # Determine initial slider x such that vf(x)=0 (choose smallest if multiple)
         try:
@@ -640,13 +767,41 @@ class WBT_ui:
             if pre and len(pre) > 0 and pre[0] is not None:
                 initial_x_zero = float(pre[0])
             else:
-                initial_x_zero = float(compute_x_for_vf(group_criteria[slider_target], 0.0, mins[slider_target], maxs[slider_target]))
+                low = min(mins[slider_target], maxs[slider_target])
+                high = max(mins[slider_target], maxs[slider_target])
+                initial_x_zero = float(compute_x_for_vf(group_criteria[slider_target], 0.0, low, high))
         except Exception:
             initial_x_zero = float(mins[slider_target])
 
         # Slider to adjust the target criterion on the right plot
         resolution = max((maxs[slider_target] - mins[slider_target]) / 200.0, 1e-6)
-        slider = tk.Scale(frm, from_=mins[slider_target], to=maxs[slider_target], orient=tk.HORIZONTAL, resolution=resolution, length=500)
+        # Create a controls frame divided into three equal columns:
+        # left (info), center (slider & radios), right (confidence)
+        controls_frame = ttk.Frame(frm)
+        controls_frame.pack(fill=tk.X, pady=(6, 4))
+        # use grid to make three equal columns
+        left_col = ttk.Frame(controls_frame)
+        center_col = ttk.Frame(controls_frame)
+        right_col = ttk.Frame(controls_frame)
+        left_col.grid(row=0, column=0, sticky='nsew', padx=(8, 8))
+        center_col.grid(row=0, column=1, sticky='n', padx=(8, 8))
+        right_col.grid(row=0, column=2, sticky='nsew', padx=(8, 8))
+        controls_frame.grid_columnconfigure(0, weight=1)
+        controls_frame.grid_columnconfigure(1, weight=1)
+        controls_frame.grid_columnconfigure(2, weight=1)
+
+        # Move the info texts into the left column (center them vertically)
+        try:
+            info_frame = ttk.Frame(left_col)
+            info_frame.pack(expand=True)
+            ttk.Label(info_frame, text=f"Type: {comparison_type}").pack(anchor='w', pady=(6, 2))
+            ttk.Label(info_frame, text=f"Reference: {ref_criterion}").pack(anchor='w', pady=2)
+            ttk.Label(info_frame, text=f"Other: {other_criterion}").pack(anchor='w', pady=2)
+        except Exception:
+            pass
+
+        # center column gets the slider and radios; keep slider reasonably sized
+        slider = tk.Scale(center_col, from_=mins[slider_target], to=maxs[slider_target], orient=tk.HORIZONTAL, resolution=resolution, length=400)
         slider.pack(pady=(6, 8))
 
         def on_slide(val):
@@ -690,6 +845,12 @@ class WBT_ui:
                         rb_state['updating'] = False
                 except Exception:
                     pass
+            # update value-function marker if present
+            try:
+                if vf_marker is not None:
+                    vf_marker.set_data([v], [h])
+            except Exception:
+                pass
             canvas.draw_idle()
 
         slider.configure(command=on_slide)
@@ -723,7 +884,7 @@ class WBT_ui:
             # guard to avoid recursive updates between slider->radio and radio->slider
             rb_state = {'updating': False}
 
-            radiobtn_frame = ttk.Frame(frm)
+            radiobtn_frame = ttk.Frame(center_col)
             radiobtn_frame.pack(pady=(4, 6))
             # create radio buttons horizontally
             for i in range(11):
@@ -771,10 +932,46 @@ class WBT_ui:
             # don't fail the UI if radios can't be created
             pass
 
-        btn_frm = ttk.Frame(frm)
-        btn_frm.pack(pady=(6, 2))
-        ttk.Button(btn_frm, text='Next', command=self.save_and_next).pack(side=tk.LEFT, padx=6)
-        ttk.Button(btn_frm, text='Cancel', command=self.cancel).pack(side=tk.LEFT, padx=6)
+        # Create the per-comparison confidence selector on the right of the slider
+        try:
+            conf_options = [
+                "0: Not confident at all (pure guess)",
+                "1: Low confidence",
+                "2: Moderately confident",
+                "3: High confidence",
+                "4: Extremely confident (certain)",
+            ]
+            try:
+                default_conf = int(self.group_selected.get(group_name, {}).get('confidence', 2))
+            except Exception:
+                default_conf = 2
+            self._current_conf_var = tk.StringVar(value=conf_options[default_conf])
+            # add a top offset so the confidence selector sits aligned with the slider
+            ttk.Label(right_col, text='Confidence:').pack(anchor='w', pady=(18, 0))
+            conf_cb = ttk.Combobox(right_col, textvariable=self._current_conf_var, values=conf_options, width=40)
+            conf_cb.pack(pady=(8, 0))
+        except Exception:
+            self._current_conf_var = None
+
+        # Create a triangular Next button inline in the right column (beside confidence)
+        try:
+            tri_h = 56
+            tri_w = 48
+            tri_canvas = tk.Canvas(right_col, width=tri_w, height=tri_h, highlightthickness=0)
+            # draw a right-pointing triangle
+            tri_canvas.create_polygon(4, 4, 4, tri_h-4, tri_w-6, tri_h/2, fill='#2b78c8', outline='black')
+            tri_canvas.configure(cursor='hand2')
+            tri_canvas.pack(side=tk.RIGHT, padx=(8, 4), pady=(4, 4), fill=tk.Y)
+            def on_tri_click(event=None):
+                try:
+                    self.save_and_next()
+                except Exception:
+                    pass
+            tri_canvas.bind('<Button-1>', on_tri_click)
+        except Exception:
+            # fallback to a regular button if canvas creation fails
+            next_btn = ttk.Button(right_col, text='Next ', command=self.save_and_next)
+            next_btn.pack(side=tk.RIGHT, padx=10)
 
         # Save state
         self._current_comp = (comparison_type, ref_criterion, other_criterion)
@@ -803,13 +1000,23 @@ class WBT_ui:
             fn = os.path.join(ui_dir, 'wbt_results.csv')
             if not os.path.exists(fn):
                 with open(fn, 'w', newline='') as f:
-                    csv.writer(f).writerow(['Type', 'Reference', 'Other', 'Value', 'Group'])
+                    csv.writer(f).writerow(['Type', 'Reference', 'Other', 'Value', 'Group', 'Confidence'])
 
         # write row with Group (use current context)
         group_name = getattr(self, '_context_group_name', self.groups[self.current_group_idx] if self.groups else 'Ungrouped')
+        # determine confidence to write: prefer the per-screen selector, fall back to group default
+        try:
+            conf_val = None
+            if hasattr(self, '_current_conf_var') and self._current_conf_var is not None:
+                conf_val = int(self._current_conf_var.get().split(':', 1)[0])
+            if conf_val is None:
+                conf_val = int(self.group_selected.get(group_name, {}).get('confidence', 2))
+        except Exception:
+            conf_val = ''
+
         with open(fn, 'a', newline='') as f:
             w = csv.writer(f)
-            w.writerow([comp_type, ref, other, val, group_name])
+            w.writerow([comp_type, ref, other, val, group_name, conf_val])
 
         # keep an in-memory record (optional) keyed by criterion name
         if comp_type == 'best':
