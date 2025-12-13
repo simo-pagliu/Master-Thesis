@@ -575,8 +575,8 @@ class ValueFunctionWidget(QWidget):
             self._vf_conf_group = None
 
         btns = QHBoxLayout()
-        # Shape cycle button: cycles between Increasing, Decreasing, Triangular
-        self.shape_states = ['Linear Increasing', 'Linear Decreasing', 'Triangular']
+        # Shape cycle button: cycles between Increasing and Decreasing
+        self.shape_states = ['Linear Increasing', 'Linear Decreasing']
         self.shape_index = 0
         self.shape_btn = QPushButton(self.shape_states[self.shape_index])
         btns.addWidget(self.shape_btn)
@@ -613,52 +613,98 @@ class ValueFunctionWidget(QWidget):
             interior_count = n - 2
         # helper to set interior values between left and right endpoints
         def set_interior_values(f_left, f_right):
-            if interior_count <= 0:
-                return
-            if interior_count == 1:
-                v = int((f_left + f_right) / 2.0 * 100)
-                self.sliders[1].setValue(v)
-                return
-            for j in range(interior_count):
-                frac = j / (interior_count - 1)
-                val = f_left + frac * (f_right - f_left)
-                idx = j + (1 if self.has_endpoints else 0)
-                self.sliders[idx].setValue(int(val * 100))
+            # Compute interior slider values by interpolating over the actual X positions
+            # This ensures correct behaviour whether Xs are ascending or descending.
+            try:
+                n = self.points_count
+                xs = [float(x) for x in self.xs]
+                if self.has_endpoints and n >= 2 and len(xs) >= n:
+                    x0 = xs[0]
+                    xN = xs[-1]
+                    for idx in range(1, n - 1):
+                        x = xs[idx]
+                        t = 0.0 if xN == x0 else (x - x0) / (xN - x0)
+                        val = f_left + t * (f_right - f_left)
+                        self.sliders[idx].setValue(int(max(0.0, min(1.0, val)) * 100))
+                else:
+                    # fallback: distribute linearly across interior_count positions
+                    if interior_count <= 0:
+                        return
+                    if interior_count == 1:
+                        v = int((f_left + f_right) / 2.0 * 100)
+                        self.sliders[1 if self.has_endpoints else 0].setValue(v)
+                        return
+                    for j in range(interior_count):
+                        frac = j / (interior_count - 1)
+                        val = f_left + frac * (f_right - f_left)
+                        idx = j + (1 if self.has_endpoints else 0)
+                        self.sliders[idx].setValue(int(max(0.0, min(1.0, val)) * 100))
+            except Exception:
+                # on any error, fall back to uniform spacing
+                try:
+                    if interior_count <= 0:
+                        return
+                    if interior_count == 1:
+                        v = int((f_left + f_right) / 2.0 * 100)
+                        self.sliders[1 if self.has_endpoints else 0].setValue(v)
+                        return
+                    for j in range(interior_count):
+                        frac = j / (interior_count - 1)
+                        val = f_left + frac * (f_right - f_left)
+                        idx = j + (1 if self.has_endpoints else 0)
+                        self.sliders[idx].setValue(int(max(0.0, min(1.0, val)) * 100))
+                except Exception:
+                    pass
 
+        # determine left/right endpoint values
         # determine left/right endpoint values
         left_val = 0.0
         right_val = 1.0
         if self.has_endpoints:
             try:
-                left_val = 1.0 if self.left_toggle.isChecked() else 0.0
-                right_val = 1.0 if self.right_toggle.isChecked() else 0.0
-                # apply endpoint sliders (they are disabled but reflect state)
-                self.sliders[0].setValue(int(left_val * 100))
-                self.sliders[-1].setValue(int(right_val * 100))
+                # Determine desired endpoint states for this shape explicitly
+                if mode == 'Linear Increasing':
+                    desired_left = 0.0
+                    desired_right = 1.0
+                elif mode == 'Linear Decreasing':
+                    desired_left = 1.0
+                    desired_right = 0.0
+                else:
+                    # for triangular or other shapes, preserve current toggle states
+                    desired_left = 1.0 if self.left_toggle.isChecked() else 0.0
+                    desired_right = 1.0 if self.right_toggle.isChecked() else 0.0
+
+                # set toggles to reflect desired endpoint states (this will also emit toggled signals)
+                try:
+                    self.left_toggle.setChecked(bool(round(desired_left) == 1))
+                except Exception:
+                    pass
+                try:
+                    self.right_toggle.setChecked(bool(round(desired_right) == 1))
+                except Exception:
+                    pass
+
+                # explicitly set endpoint slider values and labels so they move immediately
+                left_val = desired_left
+                right_val = desired_right
+                try:
+                    self.sliders[0].setValue(int(left_val * 100))
+                    self.value_labels[0].setText(f"{left_val:.2f}")
+                except Exception:
+                    pass
+                try:
+                    self.sliders[-1].setValue(int(right_val * 100))
+                    self.value_labels[-1].setText(f"{right_val:.2f}")
+                except Exception:
+                    pass
             except Exception:
                 pass
 
         if mode == 'Linear Increasing':
             set_interior_values(left_val, right_val)
         elif mode == 'Linear Decreasing':
-            set_interior_values(right_val, left_val)
-        elif mode == 'Triangular':
-            # triangular peak at center between endpoints
-            if interior_count <= 0:
-                pass
-            else:
-                # build triangular values between left_val and right_val
-                center_idx = (interior_count - 1) / 2.0
-                for j in range(interior_count):
-                    dist = abs(j - center_idx)
-                    span = (interior_count - 1)
-                    peak = 1.0 - (2.0 * dist / span) if span > 0 else 1.0
-                    # map peak [0..1] into [min(left,right), max(left,right)]
-                    low = min(left_val, right_val)
-                    high = max(left_val, right_val)
-                    val = low + peak * (high - low)
-                    idx = j + (1 if self.has_endpoints else 0)
-                    self.sliders[idx].setValue(int(max(0.0, min(1.0, val)) * 100))
+            # use same left/right ordering but values will be 1->0 when left_val>right_val
+            set_interior_values(left_val, right_val)
         self.update_plot()
 
     def _apply_endpoint_toggle(self, idx, checked):
