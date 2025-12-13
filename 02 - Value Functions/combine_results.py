@@ -1,6 +1,9 @@
 # USER INPUT: Folders to look for partial results
-common_folders = ["simple"]
-specific_folders = ["eleprice", "ghg", "lfc", "netpower"]
+# We now only combine results from two folders: `quantitative` and `qualitative`.
+# `quantitative` holds numeric criteria/value-functions; `qualitative` holds
+# qualitative assessments. There are no 'common' folders in this simplified flow.
+common_folders = []
+specific_folders = ["quantitative"]
 qualitative_data = ["qualitative"]
 
 # FIRST PART: Combine results from common_folders
@@ -268,207 +271,36 @@ country_codes.discard('GLOBAL')
 # Ensure aggregated output dir exists
 os.makedirs(AGG_DIR, exist_ok=True)
 
-# Build and write an overall `aggregatedresults/criteria.csv` containing the union
-# of all criteria names. Use values from `combined_common_criteria_df` when
-# available (these are the defaults); for names that have no common/default
-# entry include a placeholder row keeping the name but leaving min/max empty.
+# Simple merge: concatenate `criteria.csv` from the two source folders
+# (`specific_folders` and `qualitative_data`) and write the combined file.
+# This follows the user's request: the aggregated `criteria.csv` should be
+# the straightforward merge of the criteria files found in those folders.
+wrote_agg_criteria = False
 try:
-    # gather all criterion names seen across common, specific and qualitative sources
-    all_names = set()
-    try:
-        if not combined_common_criteria_df.empty and 'name' in combined_common_criteria_df.columns:
-            all_names.update([str(x).strip() for x in combined_common_criteria_df['name'].astype(str).tolist() if str(x).strip()])
-    except Exception:
-        pass
-    try:
-        for country, rows in country_criteria.items():
-            for r in rows:
-                try:
-                    n = str(r.get('name','')).strip()
-                    if n:
-                        all_names.add(n)
-                except Exception:
-                    pass
-    except Exception:
-        pass
-    # also include qualitative criteria names if present
-    try:
-        for qfolder in qualitative_data:
-            qcrit = os.path.join(SCRIPT_DIR, qfolder, 'criteria.csv')
-            if os.path.exists(qcrit):
-                try:
-                    qdfc = pd.read_csv(qcrit)
-                    if 'name' in qdfc.columns:
-                        for n in qdfc['name'].astype(str).tolist():
-                            if n and str(n).strip():
-                                # sanitize E-series suffixes
-                                parts = [p.strip() for p in str(n).split(' - ')]
-                                if parts:
-                                    all_names.add(parts[0])
-                except Exception:
-                    pass
-    except Exception:
-        pass
+    folders_to_merge = list(dict.fromkeys(specific_folders + qualitative_data))
+    dfs = []
+    for fld in folders_to_merge:
+        p = os.path.join(SCRIPT_DIR, fld, 'criteria.csv')
+        if os.path.exists(p):
+            try:
+                d = pd.read_csv(p, dtype=str)
+                # normalize column names
+                d.columns = [str(c).strip() for c in d.columns]
+                dfs.append(d)
+            except Exception:
+                pass
 
-    # Build rows for overall file: prefer the full row from combined_common_criteria_df
-    overall_rows = []
-    try:
-        # index combined_common_criteria_df by name for quick lookup (these are the intended defaults)
-        common_map = {}
-        if not combined_common_criteria_df.empty and 'name' in combined_common_criteria_df.columns:
-            for _, r in combined_common_criteria_df.iterrows():
-                try:
-                    common_map[str(r.get('name','')).strip()] = r
-                except Exception:
-                    pass
-
-        # index GLOBAL criteria rows (if any) as a secondary source of defaults
-        global_map = {}
+    if dfs:
         try:
-            for r in country_criteria.get('GLOBAL', []):
-                try:
-                    n = str(r.get('name','')).strip()
-                    if n:
-                        global_map[n] = r
-                except Exception:
-                    pass
-        except Exception:
-            pass
-
-        # prepare a first-found country-specific fallback map (used only if neither common nor GLOBAL provide a row)
-        first_country_map = {}
-        try:
-            for ccode, rows in country_criteria.items():
-                if ccode == 'GLOBAL':
-                    continue
-                for r in rows:
-                    try:
-                        n = str(r.get('name','')).strip()
-                        if n and n not in first_country_map:
-                            first_country_map[n] = r
-                    except Exception:
-                        pass
-        except Exception:
-            pass
-
-        for name in sorted(all_names):
-            if name in common_map:
-                overall_rows.append(common_map[name].to_dict())
-            elif name in global_map:
-                overall_rows.append(global_map[name].to_dict())
-            elif name in first_country_map:
-                # fallback to any country-specific entry to avoid blanks
-                overall_rows.append(first_country_map[name])
+            merged_df = pd.concat(dfs, ignore_index=True, sort=False)
+            if 'name' in merged_df.columns:
+                merged_df['name'] = merged_df['name'].astype(str).str.strip()
+                merged_df = merged_df.drop_duplicates(subset=['name'], keep='first', ignore_index=True)
             else:
-                # placeholder row with empty/default fields
-                overall_rows.append({'name': name, 'group': '', 'min': '', 'max': '', 'unit': ''})
-    except Exception:
-        overall_rows = []
+                merged_df = merged_df.drop_duplicates(keep='first', ignore_index=True)
 
-    # Write overall criteria CSV (if we have at least some names)
-    if overall_rows:
-        try:
-            out_df = pd.DataFrame(overall_rows)
-            # Ensure consistent column ordering if possible
-            cols = ['name', 'group', 'min', 'max', 'unit']
-            cols_present = [c for c in cols if c in out_df.columns]
-            out_df = out_df[cols_present]
-            # sanitize group column: remove trailing country suffixes like '-IT' or ' - FR'
+            # Determine polarity ('type') for each criterion by inspecting value functions
             try:
-                if 'group' in out_df.columns:
-                    out_df['group'] = out_df['group'].astype(str).apply(lambda g: re.sub(r"\s*-\s*[A-Za-z]{2,3}$", '', g).strip())
-            except Exception:
-                pass
-            # Compute aggregated min/max across all specific country entries and common defaults.
-            try:
-                minmax_map = {}
-                # country_criteria contains lists of rows (dict-like) per country
-                try:
-                    for ccode, rows in country_criteria.items():
-                        for r in rows:
-                            try:
-                                n = str(r.get('name','')).strip()
-                                if not n:
-                                    continue
-                                mn = None
-                                mx = None
-                                try:
-                                    if r.get('min') not in (None, ''):
-                                        mn = float(r.get('min'))
-                                except Exception:
-                                    mn = None
-                                try:
-                                    if r.get('max') not in (None, ''):
-                                        mx = float(r.get('max'))
-                                except Exception:
-                                    mx = None
-                                cur = minmax_map.get(n)
-                                if cur is None:
-                                    minmax_map[n] = [mn, mx]
-                                else:
-                                    if mn is not None and (cur[0] is None or mn < cur[0]):
-                                        cur[0] = mn
-                                    if mx is not None and (cur[1] is None or mx > cur[1]):
-                                        cur[1] = mx
-                            except Exception:
-                                continue
-                except Exception:
-                    pass
-
-                # include common/default criteria if they carry min/max
-                try:
-                    if not combined_common_criteria_df.empty and 'name' in combined_common_criteria_df.columns:
-                        for _, r in combined_common_criteria_df.iterrows():
-                            try:
-                                n = str(r.get('name','')).strip()
-                                if not n:
-                                    continue
-                                mn = None
-                                mx = None
-                                try:
-                                    if r.get('min') not in (None, ''):
-                                        mn = float(r.get('min'))
-                                except Exception:
-                                    mn = None
-                                try:
-                                    if r.get('max') not in (None, ''):
-                                        mx = float(r.get('max'))
-                                except Exception:
-                                    mx = None
-                                cur = minmax_map.get(n)
-                                if cur is None:
-                                    minmax_map[n] = [mn, mx]
-                                else:
-                                    if mn is not None and (cur[0] is None or mn < cur[0]):
-                                        cur[0] = mn
-                                    if mx is not None and (cur[1] is None or mx > cur[1]):
-                                        cur[1] = mx
-                            except Exception:
-                                continue
-                except Exception:
-                    pass
-
-                # apply aggregated min/max to overall DataFrame rows when available
-                try:
-                    for i, r in out_df.iterrows():
-                        name = str(r.get('name','')).strip()
-                        if not name:
-                            continue
-                        mm = minmax_map.get(name)
-                        if not mm:
-                            continue
-                        mn, mx = mm
-                        if mn is not None:
-                            out_df.at[i, 'min'] = mn
-                        if mx is not None:
-                            out_df.at[i, 'max'] = mx
-                except Exception:
-                    pass
-            except Exception:
-                pass
-            # Determine 'type' (positive/negative) based on value functions
-            try:
-                # build a map of criterion -> list of elicited point sets found in source folders
                 vf_points = defaultdict(list)
                 src_folders = list(set(common_folders + specific_folders + qualitative_data))
                 for sf in src_folders:
@@ -486,26 +318,25 @@ try:
                             continue
                         for _, r in df_vf.iterrows():
                             name = str(r.get('name', '')).strip() if 'name' in df_vf.columns else ''
-                            # sanitize trailing country suffix ' - XX' so country-specific
-                            # VF rows map to the base criterion name
+                            # sanitize trailing country suffix ' - XX'
                             try:
                                 mname = re.match(r'^(?P<base>.+?)\s*-\s*(?P<ctry>[A-Za-z]{2,3})$', name)
                                 if mname:
                                     name = mname.group('base').strip()
                             except Exception:
                                 pass
+                            if not name:
+                                continue
                             pts = None
-                            # prefer explicit elicited_points column (JSON list of [x,y])
                             if 'elicited_points' in df_vf.columns:
                                 pts = r.get('elicited_points')
                             elif 'points' in df_vf.columns:
                                 pts = r.get('points')
-                            # as a fallback, metadata may carry shape info
                             meta = None
                             if 'elicitation_meta' in df_vf.columns:
                                 meta = r.get('elicitation_meta')
+
                             if pts is None or str(pts).strip() == '':
-                                # try to infer from meta if present
                                 if meta:
                                     try:
                                         meta_obj = json.loads(meta)
@@ -515,7 +346,6 @@ try:
                                     except Exception:
                                         pass
                                 continue
-                            # parse points (JSON preferred, eval fallback)
                             parsed = None
                             try:
                                 parsed = json.loads(pts)
@@ -527,75 +357,90 @@ try:
                             if parsed and name:
                                 vf_points[name].append(parsed)
 
-                def points_are_nonincreasing(ptlist, tol=1e-9):
+                def interpret_endpoint_relation(item):
+                    # returns 1 if max endpoint y > min endpoint y (positive),
+                    # -1 if min > max (negative), 0 if unknown/cannot decide
                     try:
-                        # ptlist: list of [x,y] pairs (or nested structures)
-                        pts = sorted(ptlist, key=lambda p: float(p[0]))
-                        ys = [float(p[1]) for p in pts]
-                        # allow equal y-values (non-increasing sequence)
-                        for i in range(len(ys) - 1):
-                            if not (ys[i+1] <= ys[i] + tol):
-                                return False
-                        return True
+                        if isinstance(item, dict):
+                            shape = item.get('shape')
+                            if isinstance(shape, str):
+                                s = shape.strip().lower()
+                                if s.startswith('decre') or s.startswith('down'):
+                                    return -1
+                                if s.startswith('incre') or s.startswith('up'):
+                                    return 1
+                            return 0
+                        # expect list of [x,y]
+                        if isinstance(item, list) and item:
+                            pts = []
+                            for p in item:
+                                if isinstance(p, (list, tuple)) and len(p) >= 2:
+                                    try:
+                                        x = float(p[0])
+                                        y = float(p[1])
+                                        pts.append((x, y))
+                                    except Exception:
+                                        # try parse numbers from strings
+                                        try:
+                                            x = float(str(p[0]).strip())
+                                            y = float(str(p[1]).strip())
+                                            pts.append((x, y))
+                                        except Exception:
+                                            continue
+                            if not pts:
+                                return 0
+                            pts_sorted = sorted(pts, key=lambda t: t[0])
+                            y_min = pts_sorted[0][1]
+                            y_max = pts_sorted[-1][1]
+                            if y_max > y_min:
+                                return 1
+                            if y_min > y_max:
+                                return -1
+                            return 0
                     except Exception:
-                        return False
+                        return 0
 
                 types = []
-                for _, row in out_df.iterrows():
+                for _, row in merged_df.iterrows():
                     cname = str(row.get('name', '')).strip()
                     exprs = vf_points.get(cname, [])
                     if not exprs:
-                        # if no value functions found, default to 'positive'
                         types.append('positive')
                         continue
                     evaluable = 0
-                    decreasing_count = 0
+                    positive_count = 0
+                    negative_count = 0
                     for item in exprs:
-                        # item may be either a parsed point-list or a dict with metadata
-                        if isinstance(item, dict):
-                            shape = item.get('shape')
-                            if isinstance(shape, str) and shape.lower().startswith('decre'):
-                                evaluable += 1
-                                decreasing_count += 1
-                            elif isinstance(shape, str) and shape.lower().startswith('incre'):
-                                evaluable += 1
-                        else:
-                            # expect list of [x,y]
-                            try:
-                                if isinstance(item, list) and item:
-                                    # ensure inner items have length>=2
-                                    cleaned = []
-                                    for p in item:
-                                        if isinstance(p, (list, tuple)) and len(p) >= 2:
-                                            cleaned.append([p[0], p[1]])
-                                    if not cleaned:
-                                        continue
-                                    evaluable += 1
-                                    if points_are_nonincreasing(cleaned):
-                                        decreasing_count += 1
-                            except Exception:
-                                continue
-                    if evaluable > 0 and decreasing_count == evaluable:
+                        res = interpret_endpoint_relation(item)
+                        if res == 1:
+                            positive_count += 1
+                            evaluable += 1
+                        elif res == -1:
+                            negative_count += 1
+                            evaluable += 1
+                    if evaluable > 0 and negative_count == evaluable:
                         types.append('negative')
                     else:
                         types.append('positive')
-                out_df['type'] = types
+                merged_df['type'] = types
             except Exception:
-                # on any error, default to positive for all
-                out_df['type'] = ['positive'] * len(out_df)
+                merged_df['type'] = ['positive'] * len(merged_df)
 
-            out_df.to_csv(os.path.join(AGG_DIR, 'criteria.csv'), index=False)
+            merged_df.to_csv(os.path.join(AGG_DIR, 'criteria.csv'), index=False)
+            wrote_agg_criteria = True
         except Exception:
-            pass
+            wrote_agg_criteria = False
     else:
-        # fallback: if combined_common_criteria_df exists, write it
+        # no criteria files found in the two folders: write a default header
         try:
-            if not combined_common_criteria_df.empty:
-                combined_common_criteria_df.to_csv(os.path.join(AGG_DIR, 'criteria.csv'), index=False)
+            header_cols = ['name', 'group', 'min', 'max', 'unit', 'type']
+            with open(os.path.join(AGG_DIR, 'criteria.csv'), 'w', encoding='utf-8', newline='') as _f:
+                _f.write(','.join(header_cols) + '\n')
+            wrote_agg_criteria = True
         except Exception:
-            pass
+            wrote_agg_criteria = False
 except Exception:
-    pass
+    wrote_agg_criteria = False
 
 if not country_codes:
     # No specific country codes found: write common aggregated criteria and any numbered value_functions
@@ -608,7 +453,21 @@ if not country_codes:
             combined_common_criteria_df = combined_common_criteria_df.drop_duplicates(keep='first', ignore_index=True)
     except Exception:
         pass
-    combined_common_criteria_df.to_csv(os.path.join(AGG_DIR, 'criteria.csv'), index=False)
+    if not wrote_agg_criteria:
+        try:
+            if combined_common_criteria_df.empty:
+                header_cols = ['name', 'group', 'min', 'max', 'unit', 'type']
+                with open(os.path.join(AGG_DIR, 'criteria.csv'), 'w', encoding='utf-8', newline='') as _f:
+                    _f.write(','.join(header_cols) + '\n')
+            else:
+                combined_common_criteria_df.to_csv(os.path.join(AGG_DIR, 'criteria.csv'), index=False)
+        except Exception:
+            try:
+                header_cols = ['name', 'group', 'min', 'max', 'unit', 'type']
+                with open(os.path.join(AGG_DIR, 'criteria.csv'), 'w', encoding='utf-8', newline='') as _f:
+                    _f.write(','.join(header_cols) + '\n')
+            except Exception:
+                pass
     # write each numbered common value_functions_N if present
     for idx, df_list in combined_common_value_functions_by_idx.items():
         try:
