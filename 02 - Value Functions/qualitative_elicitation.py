@@ -146,11 +146,20 @@ class RankingWindow(QWidget):
         # expand to fill available space so items are visible
         self.listw.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         layout.addWidget(self.listw)
+        # push the controls (buttons / confidence radios) to the bottom
+        layout.addStretch(1)
 
-        btns = QHBoxLayout()
+        # Create a bottom panel that will host confidence radios above the action buttons
+        self.bottom_panel = QWidget()
+        bp_layout = QVBoxLayout()
+        bp_layout.setContentsMargins(0, 0, 0, 0)
+        self.bottom_panel.setLayout(bp_layout)
+
+        # inner horizontal layout for action buttons (will sit below the confidence radios)
+        buttons_h = QHBoxLayout()
         # mode toggle: ranking (vertical) vs spectrum (horizontal)
         self.mode_btn = QPushButton('Switch to Spectrum')
-        btns.addWidget(self.mode_btn)
+        buttons_h.addWidget(self.mode_btn)
         self.mode_btn.clicked.connect(self.toggle_mode)
         self.mode = mode
         tie_btn = QPushButton('Tie Selected')
@@ -158,12 +167,13 @@ class RankingWindow(QWidget):
         up_btn = QPushButton('Move Up')
         down_btn = QPushButton('Move Down')
         next_btn = QPushButton('Next (Value functions)')
-        btns.addWidget(tie_btn)
-        btns.addWidget(untie_btn)
-        btns.addWidget(up_btn)
-        btns.addWidget(down_btn)
-        btns.addWidget(next_btn)
-        layout.addLayout(btns)
+        buttons_h.addWidget(tie_btn)
+        buttons_h.addWidget(untie_btn)
+        buttons_h.addWidget(up_btn)
+        buttons_h.addWidget(down_btn)
+        buttons_h.addWidget(next_btn)
+        # add buttons_h to the vertical bottom panel (confidence radios will be inserted above later)
+        bp_layout.addLayout(buttons_h)
 
         tie_btn.clicked.connect(self.tie_selected)
         untie_btn.clicked.connect(self.untie_selected)
@@ -196,7 +206,11 @@ class RankingWindow(QWidget):
                 self._conf_buttons[3].setChecked(True)
             except Exception:
                 self._conf_buttons[2].setChecked(True)
-            layout.addLayout(conf_layout)
+            # place confidence controls into the bottom panel above the action buttons
+            try:
+                bp_layout.insertLayout(0, conf_layout)
+            except Exception:
+                bp_layout.addLayout(conf_layout)
         except Exception:
             # non-critical; continue without confidence selector
             self._conf_group = None
@@ -589,6 +603,16 @@ class ValueFunctionWidget(QWidget):
         except Exception:
             pass
 
+        # ensure the plot/canvas expands and push the following controls to the bottom
+        layout.addStretch(1)
+
+        # Build a bottom panel containing the VF confidence selector and action buttons.
+        # This panel will be reparented into MainApp's bottom bar when the view is shown.
+        self.bottom_panel = QWidget()
+        bp_layout = QVBoxLayout()
+        bp_layout.setContentsMargins(0, 0, 0, 0)
+        self.bottom_panel.setLayout(bp_layout)
+
         # Confidence selector for this value function (0..4, default 3)
         try:
             conf_row = QHBoxLayout()
@@ -604,7 +628,7 @@ class ValueFunctionWidget(QWidget):
                 self._vf_conf_buttons[3].setChecked(True)
             except Exception:
                 self._vf_conf_buttons[2].setChecked(True)
-            layout.addLayout(conf_row)
+            bp_layout.addLayout(conf_row)
         except Exception:
             self._vf_conf_group = None
 
@@ -614,16 +638,15 @@ class ValueFunctionWidget(QWidget):
         self.shape_index = 0
         self.shape_btn = QPushButton(self.shape_states[self.shape_index])
         btns.addWidget(self.shape_btn)
-        # Save / Cancel
+        # Save
         save_btn = QPushButton('Save')
-        cancel_btn = QPushButton('Cancel')
         btns.addWidget(save_btn)
-        btns.addWidget(cancel_btn)
-        layout.addLayout(btns)
+        bp_layout.addLayout(btns)
         self.shape_btn.clicked.connect(self.cycle_shape)
         save_btn.clicked.connect(self.save)
-        cancel_btn.clicked.connect(self.cancel)
+        
 
+        # do not add bottom_panel to the main layout here; MainApp will place it in its bottom bar
         self.setLayout(layout)
 
     def on_slider_changed(self, idx):
@@ -864,6 +887,12 @@ class MainApp(QWidget):
         self.container.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.container_layout.setContentsMargins(20, 12, 20, 12)
         layout.addWidget(self.container, 1)
+        # bottom bar where per-view controls (confidence, action buttons) are shown
+        self.bottom_bar = QWidget()
+        self.bottom_bar_layout = QHBoxLayout()
+        self.bottom_bar_layout.setContentsMargins(10, 6, 10, 6)
+        self.bottom_bar.setLayout(self.bottom_bar_layout)
+        layout.addWidget(self.bottom_bar)
 
         # status label at bottom to show messages (avoid popups)
         self.status_label = QLabel('')
@@ -1177,6 +1206,28 @@ class MainApp(QWidget):
                 self.setWindowTitle(full)
             except Exception:
                 pass
+            # manage main bottom bar: clear previous per-view controls and show new ones
+            try:
+                # remove existing widgets from bottom bar
+                while self.bottom_bar_layout.count():
+                    it = self.bottom_bar_layout.takeAt(0)
+                    w = it.widget()
+                    if w is not None:
+                        try:
+                            w.setParent(None)
+                        except Exception:
+                            pass
+                # if the widget exposes a bottom_panel, reparent and add it to the bottom bar
+                if hasattr(widget, 'bottom_panel') and getattr(widget, 'bottom_panel') is not None:
+                    try:
+                        bp = widget.bottom_panel
+                        bp.setParent(self.bottom_bar)
+                        self.bottom_bar_layout.addWidget(bp)
+                    except Exception:
+                        pass
+            except Exception:
+                pass
+
             # force layout and repaint
             self.container.updateGeometry()
             self.container.repaint()
