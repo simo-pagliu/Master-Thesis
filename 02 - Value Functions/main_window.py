@@ -311,6 +311,21 @@ class MainWindow(QMainWindow):
         # Initial UI state
         self.update_ui()
 
+        # Attempt to auto-load the `quantitative` dataset folder if present
+        try:
+            quant_folder = os.path.join(os.path.dirname(__file__), 'quantitative')
+            if os.path.exists(quant_folder):
+                try:
+                    self.process.load_quantitative_folder(quant_folder)
+                    self.file_label.setText(f"Loaded quantitative dataset: {quant_folder}")
+                    # refresh UI now that df is populated
+                    self.update_ui()
+                except Exception as _e:
+                    # keep UI usable; report the loader error in the label
+                    self.file_label.setText(f"Quantitative load error: {_e}")
+        except Exception:
+            pass
+
     def upload_csv(self):
         """Open a file dialog to upload a CSV."""
         file_path, _ = QFileDialog.getOpenFileName(self, "Open CSV", "", "CSV Files (*.csv)")

@@ -1,7 +1,0 @@
-name, Net Power Output
-APR1400, {'Discrete': [[1340]]}
-EPR1750, {'Discrete': [[1630]]}
-AP1000, {'Discrete': [[1120]]}
-BWRX300, {'Discrete': [[300]]}
-RollsRoyceSMR, {'Discrete': [[470]]}
-NuScaleVOYGR6, {'Discrete': [[462]]}
