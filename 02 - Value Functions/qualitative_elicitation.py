@@ -146,11 +146,20 @@ class RankingWindow(QWidget):
         # expand to fill available space so items are visible
         self.listw.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         layout.addWidget(self.listw)
+        # push the controls (buttons / confidence radios) to the bottom
+        layout.addStretch(1)
 
-        btns = QHBoxLayout()
+        # Create a bottom panel that will host confidence radios above the action buttons
+        self.bottom_panel = QWidget()
+        bp_layout = QVBoxLayout()
+        bp_layout.setContentsMargins(0, 0, 0, 0)
+        self.bottom_panel.setLayout(bp_layout)
+
+        # inner horizontal layout for action buttons (will sit below the confidence radios)
+        buttons_h = QHBoxLayout()
         # mode toggle: ranking (vertical) vs spectrum (horizontal)
         self.mode_btn = QPushButton('Switch to Spectrum')
-        btns.addWidget(self.mode_btn)
+        buttons_h.addWidget(self.mode_btn)
         self.mode_btn.clicked.connect(self.toggle_mode)
         self.mode = mode
         tie_btn = QPushButton('Tie Selected')
@@ -158,12 +167,13 @@ class RankingWindow(QWidget):
         up_btn = QPushButton('Move Up')
         down_btn = QPushButton('Move Down')
         next_btn = QPushButton('Next (Value functions)')
-        btns.addWidget(tie_btn)
-        btns.addWidget(untie_btn)
-        btns.addWidget(up_btn)
-        btns.addWidget(down_btn)
-        btns.addWidget(next_btn)
-        layout.addLayout(btns)
+        buttons_h.addWidget(tie_btn)
+        buttons_h.addWidget(untie_btn)
+        buttons_h.addWidget(up_btn)
+        buttons_h.addWidget(down_btn)
+        buttons_h.addWidget(next_btn)
+        # add buttons_h to the vertical bottom panel (confidence radios will be inserted above later)
+        bp_layout.addLayout(buttons_h)
 
         tie_btn.clicked.connect(self.tie_selected)
         untie_btn.clicked.connect(self.untie_selected)
@@ -196,7 +206,11 @@ class RankingWindow(QWidget):
                 self._conf_buttons[3].setChecked(True)
             except Exception:
                 self._conf_buttons[2].setChecked(True)
-            layout.addLayout(conf_layout)
+            # place confidence controls into the bottom panel above the action buttons
+            try:
+                bp_layout.insertLayout(0, conf_layout)
+            except Exception:
+                bp_layout.addLayout(conf_layout)
         except Exception:
             # non-critical; continue without confidence selector
             self._conf_group = None
@@ -509,7 +523,14 @@ class ValueFunctionWidget(QWidget):
             slider.setValue(int(self.ys[i] * 100))
             # endpoints are controlled by toggles and locked (disabled)
             if self.has_endpoints and (i == 0 or i == points_count - 1):
-                slider.setEnabled(False)
+                # hide sliders for endpoints while keeping them in the logic
+                try:
+                    slider.setVisible(False)
+                except Exception:
+                    try:
+                        slider.hide()
+                    except Exception:
+                        pass
             # otherwise editable
             self.sliders.append(slider)
             val_label = QLabel(f"{self.ys[i]:.2f}")
@@ -517,25 +538,57 @@ class ValueFunctionWidget(QWidget):
             h = QHBoxLayout()
             h.addWidget(slider)
             h.addWidget(val_label)
+            # hide the numeric label for endpoints as well to reduce visual clutter
+            if self.has_endpoints and (i == 0 or i == points_count - 1):
+                try:
+                    val_label.setVisible(False)
+                except Exception:
+                    try:
+                        val_label.hide()
+                    except Exception:
+                        pass
             form.addRow(label, h)
-        layout.addLayout(form)
+        # wrap the form into a widget so we can control vertical stretch separately
+        slider_container = QWidget()
+        slider_container.setLayout(form)
+        # add slider area with minimal stretch so the plot can take most vertical space
+        layout.addWidget(slider_container, 0)
 
         # Add a matplotlib canvas to show the current value function
-        self.fig, self.ax = plt.subplots(figsize=(6, 3))
+        # Use a shorter figure height but give the canvas more layout stretch
+        self.fig, self.ax = plt.subplots(figsize=(6, 4))
         self.canvas = FigureCanvas(self.fig)
         # ensure the canvas expands to fill the container and is drawn immediately
         self.canvas.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        layout.addWidget(self.canvas)
+        # add canvas with higher stretch factor so it receives more vertical space
+        layout.addWidget(self.canvas, 5)
         self._plot_line, = self.ax.plot(self.xs, self.ys, marker='o')
         self.ax.set_ylim(-0.05, 1.05)
+        self.ax.grid(True)
         try:
             self.ax.set_xlim(min(self.xs), max(self.xs))
         except Exception:
             pass
         self.ax.set_ylabel('Value')
         self.ax.set_xlabel('Criterion')
-        self.fig.tight_layout()
+        # store labels for each plotted X so ticks can show alternative names
+        try:
+            self.point_labels = point_labels if point_labels is not None else [None] * len(self.xs)
+        except Exception:
+            self.point_labels = [None] * len(self.xs)
 
+        # set tick labels using provided point labels (replace commas with newline)
+        try:
+            pairs = list(zip(self.xs, self.point_labels))
+            pairs_sorted = sorted(pairs, key=lambda t: float(t[0]))
+            xs_sorted, labels_sorted = zip(*pairs_sorted)
+            proc_labels = [ (str(l).replace(',', '\n') if l is not None else '') for l in labels_sorted ]
+            self.ax.set_xticks(xs_sorted)
+            self.ax.set_xticklabels(proc_labels, rotation=0, ha='center')
+        except Exception:
+            pass
+
+        self.fig.tight_layout()
         # Connect sliders to update plot and value labels
         for idx, s in enumerate(self.sliders):
             s.valueChanged.connect(lambda _v, i=idx: self.on_slider_changed(i))
@@ -555,6 +608,15 @@ class ValueFunctionWidget(QWidget):
         except Exception:
             pass
 
+        # ensure the plot/canvas expands; bottom controls will be placed in MainApp.bottom_bar
+
+        # Build a bottom panel containing the VF confidence selector and action buttons.
+        # This panel will be reparented into MainApp's bottom bar when the view is shown.
+        self.bottom_panel = QWidget()
+        bp_layout = QVBoxLayout()
+        bp_layout.setContentsMargins(0, 0, 0, 0)
+        self.bottom_panel.setLayout(bp_layout)
+
         # Confidence selector for this value function (0..4, default 3)
         try:
             conf_row = QHBoxLayout()
@@ -570,7 +632,7 @@ class ValueFunctionWidget(QWidget):
                 self._vf_conf_buttons[3].setChecked(True)
             except Exception:
                 self._vf_conf_buttons[2].setChecked(True)
-            layout.addLayout(conf_row)
+            bp_layout.addLayout(conf_row)
         except Exception:
             self._vf_conf_group = None
 
@@ -580,16 +642,15 @@ class ValueFunctionWidget(QWidget):
         self.shape_index = 0
         self.shape_btn = QPushButton(self.shape_states[self.shape_index])
         btns.addWidget(self.shape_btn)
-        # Save / Cancel
+        # Save
         save_btn = QPushButton('Save')
-        cancel_btn = QPushButton('Cancel')
         btns.addWidget(save_btn)
-        btns.addWidget(cancel_btn)
-        layout.addLayout(btns)
+        bp_layout.addLayout(btns)
         self.shape_btn.clicked.connect(self.cycle_shape)
         save_btn.clicked.connect(self.save)
-        cancel_btn.clicked.connect(self.cancel)
+        
 
+        # do not add bottom_panel to the main layout here; MainApp will place it in its bottom bar
         self.setLayout(layout)
 
     def on_slider_changed(self, idx):
@@ -737,6 +798,30 @@ class ValueFunctionWidget(QWidget):
                 self.ax.set_xlim(min(xs_sorted), max(xs_sorted))
             except Exception:
                 pass
+            # update x-tick labels to show alternative names (replace commas with newline)
+            try:
+                if hasattr(self, 'point_labels') and self.point_labels:
+                    # build labels in the same order as xs_sorted, handling possible duplicate Xs
+                    labels_sorted = []
+                    used = set()
+                    for xval in xs_sorted:
+                        found = None
+                        for idx, xv in enumerate(self.xs):
+                            if idx in used:
+                                continue
+                            try:
+                                if math.isclose(float(xv), float(xval), rel_tol=1e-9, abs_tol=1e-12):
+                                    found = self.point_labels[idx]
+                                    used.add(idx)
+                                    break
+                            except Exception:
+                                continue
+                        labels_sorted.append(found if found is not None else '')
+                    proc_labels = [(str(l).replace(',', '\n') if l is not None else '') for l in labels_sorted]
+                    self.ax.set_xticks(xs_sorted)
+                    self.ax.set_xticklabels(proc_labels, rotation=0, ha='center')
+            except Exception:
+                pass
         except Exception:
             # fallback: preserve original order
             try:
@@ -806,6 +891,12 @@ class MainApp(QWidget):
         self.container.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.container_layout.setContentsMargins(20, 12, 20, 12)
         layout.addWidget(self.container, 1)
+        # bottom bar where per-view controls (confidence, action buttons) are shown
+        self.bottom_bar = QWidget()
+        self.bottom_bar_layout = QHBoxLayout()
+        self.bottom_bar_layout.setContentsMargins(10, 6, 10, 6)
+        self.bottom_bar.setLayout(self.bottom_bar_layout)
+        layout.addWidget(self.bottom_bar)
 
         # status label at bottom to show messages (avoid popups)
         self.status_label = QLabel('')
@@ -1119,6 +1210,28 @@ class MainApp(QWidget):
                 self.setWindowTitle(full)
             except Exception:
                 pass
+            # manage main bottom bar: clear previous per-view controls and show new ones
+            try:
+                # remove existing widgets from bottom bar
+                while self.bottom_bar_layout.count():
+                    it = self.bottom_bar_layout.takeAt(0)
+                    w = it.widget()
+                    if w is not None:
+                        try:
+                            w.setParent(None)
+                        except Exception:
+                            pass
+                # if the widget exposes a bottom_panel, reparent and add it to the bottom bar
+                if hasattr(widget, 'bottom_panel') and getattr(widget, 'bottom_panel') is not None:
+                    try:
+                        bp = widget.bottom_panel
+                        bp.setParent(self.bottom_bar)
+                        self.bottom_bar_layout.addWidget(bp)
+                    except Exception:
+                        pass
+            except Exception:
+                pass
+
             # force layout and repaint
             self.container.updateGeometry()
             self.container.repaint()
