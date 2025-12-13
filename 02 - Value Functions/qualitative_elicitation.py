@@ -509,7 +509,14 @@ class ValueFunctionWidget(QWidget):
             slider.setValue(int(self.ys[i] * 100))
             # endpoints are controlled by toggles and locked (disabled)
             if self.has_endpoints and (i == 0 or i == points_count - 1):
-                slider.setEnabled(False)
+                # hide sliders for endpoints while keeping them in the logic
+                try:
+                    slider.setVisible(False)
+                except Exception:
+                    try:
+                        slider.hide()
+                    except Exception:
+                        pass
             # otherwise editable
             self.sliders.append(slider)
             val_label = QLabel(f"{self.ys[i]:.2f}")
@@ -517,23 +524,50 @@ class ValueFunctionWidget(QWidget):
             h = QHBoxLayout()
             h.addWidget(slider)
             h.addWidget(val_label)
+            # hide the numeric label for endpoints as well to reduce visual clutter
+            if self.has_endpoints and (i == 0 or i == points_count - 1):
+                try:
+                    val_label.setVisible(False)
+                except Exception:
+                    try:
+                        val_label.hide()
+                    except Exception:
+                        pass
             form.addRow(label, h)
         layout.addLayout(form)
 
         # Add a matplotlib canvas to show the current value function
-        self.fig, self.ax = plt.subplots(figsize=(6, 3))
+        self.fig, self.ax = plt.subplots(figsize=(6, 6))
         self.canvas = FigureCanvas(self.fig)
         # ensure the canvas expands to fill the container and is drawn immediately
         self.canvas.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         layout.addWidget(self.canvas)
         self._plot_line, = self.ax.plot(self.xs, self.ys, marker='o')
         self.ax.set_ylim(-0.05, 1.05)
+        self.ax.grid(True)
         try:
             self.ax.set_xlim(min(self.xs), max(self.xs))
         except Exception:
             pass
         self.ax.set_ylabel('Value')
         self.ax.set_xlabel('Criterion')
+        # store labels for each plotted X so ticks can show alternative names
+        try:
+            self.point_labels = point_labels if point_labels is not None else [None] * len(self.xs)
+        except Exception:
+            self.point_labels = [None] * len(self.xs)
+
+        # set tick labels using provided point labels (replace commas with newline)
+        try:
+            pairs = list(zip(self.xs, self.point_labels))
+            pairs_sorted = sorted(pairs, key=lambda t: float(t[0]))
+            xs_sorted, labels_sorted = zip(*pairs_sorted)
+            proc_labels = [ (str(l).replace(',', '\n') if l is not None else '') for l in labels_sorted ]
+            self.ax.set_xticks(xs_sorted)
+            self.ax.set_xticklabels(proc_labels, rotation=0, ha='center')
+        except Exception:
+            pass
+
         self.fig.tight_layout()
 
         # Connect sliders to update plot and value labels
@@ -735,6 +769,30 @@ class ValueFunctionWidget(QWidget):
             # update x-limits to encompass sorted Xs
             try:
                 self.ax.set_xlim(min(xs_sorted), max(xs_sorted))
+            except Exception:
+                pass
+            # update x-tick labels to show alternative names (replace commas with newline)
+            try:
+                if hasattr(self, 'point_labels') and self.point_labels:
+                    # build labels in the same order as xs_sorted, handling possible duplicate Xs
+                    labels_sorted = []
+                    used = set()
+                    for xval in xs_sorted:
+                        found = None
+                        for idx, xv in enumerate(self.xs):
+                            if idx in used:
+                                continue
+                            try:
+                                if math.isclose(float(xv), float(xval), rel_tol=1e-9, abs_tol=1e-12):
+                                    found = self.point_labels[idx]
+                                    used.add(idx)
+                                    break
+                            except Exception:
+                                continue
+                        labels_sorted.append(found if found is not None else '')
+                    proc_labels = [(str(l).replace(',', '\n') if l is not None else '') for l in labels_sorted]
+                    self.ax.set_xticks(xs_sorted)
+                    self.ax.set_xticklabels(proc_labels, rotation=0, ha='center')
             except Exception:
                 pass
         except Exception:
