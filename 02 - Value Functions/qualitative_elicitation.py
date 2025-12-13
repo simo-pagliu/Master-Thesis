@@ -548,14 +548,20 @@ class ValueFunctionWidget(QWidget):
                     except Exception:
                         pass
             form.addRow(label, h)
-        layout.addLayout(form)
+        # wrap the form into a widget so we can control vertical stretch separately
+        slider_container = QWidget()
+        slider_container.setLayout(form)
+        # add slider area with minimal stretch so the plot can take most vertical space
+        layout.addWidget(slider_container, 0)
 
         # Add a matplotlib canvas to show the current value function
-        self.fig, self.ax = plt.subplots(figsize=(6, 6))
+        # Use a shorter figure height but give the canvas more layout stretch
+        self.fig, self.ax = plt.subplots(figsize=(6, 4))
         self.canvas = FigureCanvas(self.fig)
         # ensure the canvas expands to fill the container and is drawn immediately
         self.canvas.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        layout.addWidget(self.canvas)
+        # add canvas with higher stretch factor so it receives more vertical space
+        layout.addWidget(self.canvas, 5)
         self._plot_line, = self.ax.plot(self.xs, self.ys, marker='o')
         self.ax.set_ylim(-0.05, 1.05)
         self.ax.grid(True)
@@ -583,7 +589,6 @@ class ValueFunctionWidget(QWidget):
             pass
 
         self.fig.tight_layout()
-
         # Connect sliders to update plot and value labels
         for idx, s in enumerate(self.sliders):
             s.valueChanged.connect(lambda _v, i=idx: self.on_slider_changed(i))
@@ -603,8 +608,7 @@ class ValueFunctionWidget(QWidget):
         except Exception:
             pass
 
-        # ensure the plot/canvas expands and push the following controls to the bottom
-        layout.addStretch(1)
+        # ensure the plot/canvas expands; bottom controls will be placed in MainApp.bottom_bar
 
         # Build a bottom panel containing the VF confidence selector and action buttons.
         # This panel will be reparented into MainApp's bottom bar when the view is shown.
