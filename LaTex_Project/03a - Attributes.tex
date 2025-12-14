@@ -1,6 +1,6 @@
 \section{Indicators}
 \label{sec:brainstorming_indicators}
-The initial phase of this \gls{mcda} study focuses on indicator selection and hierarchical structuring. The following sections outline the methodological process employed to develop the final indicator set. It should be noted that this study primarily evaluates the feasibility of the proposed approach rather than generating definitive results. Accordingly, this study serves more to identify which indicators may require further detailed development in future iterations as the weighting process will naturally reveal priority areas. Indicators receiving minimal weights may not justify further refinement, while those with substantial weights could benefit from more granular analysis. For reference, Section \textcolor{red}{PLACEHOLDER} provides an example on how an indicator might be detailed comprehensively. With this context established, the subsequent sections present the process that resulted in the final indicator set used in this study.
+The initial phase of this \gls{mcda} study focuses on indicator selection and hierarchical structuring. The following sections outline the methodological process employed to develop the final indicator set. It should be noted that this study primarily evaluates the feasibility of the proposed approach rather than generating definitive results. Accordingly, this study serves more to identify which indicators may require further detailed development in future iterations as the weighting process will naturally reveal priority areas. Indicators receiving minimal weights may not justify further refinement, while those with substantial weights could benefit from more granular analysis. With this context established, the subsequent sections present the process that resulted in the final indicator set used in this study.
 
 
 Following the bottom-up approach outlined in Section \ref{sec:mavt_presentation}, the initial analytical step involved identifying all potential differentiating factors among the six reactor alternatives. The process began with a series of personal brainstorming sessions by the author, followed by a preliminary selection phase. The resulting comprehensive list of 35 potential indicators\footnote{The complete list is available as a CSV file in the repository, with an example Python script provided for navigation (see Section \ref{sec:appendix_code} for details)} was then extensively reviewed by three domain experts to evaluate:
@@ -11,14 +11,14 @@ Following the bottom-up approach outlined in Section \ref{sec:mavt_presentation}
     \item Granularity (balancing overly specific or aggregate measures)
 \end{itemize}
 
-Further discussion with several experts from different background was helpful to identigy other possible aspects as well as to collect feedback that helped improving the justifications. On this regard it is really important to not theat the analyst shall always take into serious consideration every suggestion provided by others, and, whenever these have to be discarted, it is important to report it and properly justify the reasons to ensure full transparency.
+Further discussion with several experts from different background was helpful to identigy other possible aspects as well as to collect feedback that helped improving the justifications. On this regard it is really important that the analyst takes into serious consideration every suggestion provided by others, and, whenever these have to be discarted, it is important to report it and properly justify the reasons to ensure full transparency.
 
 
 As anticipated, the extensive indicator list required systematic screening for several reasons:
 \begin{itemize}
-    \item Double counting: The same aspcets might be represented by multiple indicators, leading to biased weights
+    \item Double counting: The same aspects might be represented by multiple indicators, leading to biased weights
     \item Scope: Some aspects might be valid but not relevant for the point of view of the study, in this case European governmental agencies
-    \item Data availability: This wouldn't be the case for a professional application but for the purpose of this thesis obtaining data outside of the public domain was deemed unfeasible.
+    \item Data availability: This wouldn't be the case for a field application but for the purpose of this thesis obtaining data outside of the public domain was deemed unfeasible.
 \end{itemize}
 
 Table \ref{tab:screening-indicators} provides examples of excluded indicators. The most significant exclusions are justified in Section \ref{sec:indicators_removed} while possible improvements for future studies are documented in Section \ref{sec:suggestions}.
@@ -79,9 +79,11 @@ Following this systematic screening process, twelve indicators remained and were
         \midrule
         E1 & Capital Investment Budgeted & Overnight, budgeted construction costs (estimates include decomissioning etc) \\
         \cmidrule(lr){1-3}
-        E2 & Risk of Construction Delays & Based on the complexity of the design and the construction process (see Intermediate Computations) \\
+        E2 & Design Complexity & From which delays in the manufacturing processes might arise \\
+        \cmidrule{lr}{1-3}
+        E3 & Construction Complexity & From which delays in the building processes might arise \\
         \cmidrule(lr){1-3}
-        E3 & Operative and Fuel Costs & Ongoing costs \\
+        E4 & Operative and Fuel Costs & Ongoing costs \\
         \midrule
         \multicolumn{3}{c}{\textbf{Social Indicators}} \\
         \midrule

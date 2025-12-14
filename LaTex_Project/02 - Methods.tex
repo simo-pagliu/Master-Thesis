@@ -231,6 +231,9 @@ For this reason the analyst should balance sticking with reality and intuitivene
 
 On a different note, several challenges emerge as soon as qualitative elements come into play, which for the case of this study are qualitative indicators, weights, and value functions. These inherently contain subjective components likely to vary among \glspl{dm}. While statistical approaches using multiple experts can quantify uncertainty, the substantial time requirements and difficulties in maintaining consistency across elicitation sessions can make the approach impractical. Some \gls{mcda} practitioners recommend workshop formats where multiple experts work simultaneously, though these present significant organizational challenges.
 
+\subsection{Efficient Expert Elicitation for Qualitative Information}
+\label{sec:qi}
+
 For qualitative indicators and value functions, this study, instead of relaying on multiple opinions from the start, employs a single expert to carry the "first elicitation" of all qualitative information. Subsequent experts then review the results rather than replicate the complete elicitation process. These reviewers indicate their agreement or disagreement with the initial results and provide alternative perspectives when discrepancies exist. The resulting diversity of opinions forms the basis for quantifying uncertainty around the first elicitation.
 
 Consider a simplified example where the main expert provides a qualitative judgment on a 1-to-5 scale, selecting a value of 4. Five additional experts then review this initial assessment, either confirming the original evaluation or proposing alternatives (Table \ref{tab:example_elicitiation_qualitative} provides an example). In this hypothetical scenario, two experts agree with the initial judgment while three suggest different values. From this information it is possible to construct a distribution (Table \ref{tab:example_elicitiation_qualitative_proability}) that can be propagated through the rest of the analysis. 
@@ -274,6 +277,11 @@ Expert 5                & 3             \\
 \end{tabular}
 \end{minipage}
 \end{table}
+
+The charaterization of \glspl{qi} is defined as a two step process. First the ranking of all alternatives is defined, then teh value function shape is elciited to convey the relative differences between alternatives. To speed up the process and to ensure that everye xpert share the same reference point, the author starts by creating a \textbf{starting point} for the evaluation: based on available information the analyst creates a ranking of the alternatives and assumes a linear value function. The reasoning behind the starting point is then presented to each expert whom are then asked to adjust the ranking if they disagree. 
+The value functions make use of textit{hypotetical best} and \textit{hypotetical worst} values to anchor the function to its extremes, this is particularly useful whenever the experts deem that none of the availble alternatives is worth of the maximum or minimum value of the criterion.
+
+As an additional tool to evaluate uncertanty in qualittative information, at every elicited information the excpert can adjust a \textbf{confidence level}, defined on a point scale from 0 (not confident at all, pure guess) to 5 (completely confident, no doubt). For value functions this can be used to add a deviation from the elicited points while for qualiative indicator it is used to assign sampling probability to each judgment.
 
 \section{Uncertanty Propagated MCDA}
 \label{sec:uncertanty_propagation_mcda}

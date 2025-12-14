@@ -4,10 +4,24 @@ The economic consequences are always part of \gls{mcda} studies, common metrics 
 For solar and wind technologies, commissioning time estimates were sourced from Gumber et al. (2024) \cite{GUMBER2024122563}, which notes that reported average values significantly exceed median values. This analysis utilizes average figures as they more accurately represent the time requirements for large-scale installations.
 
 \subsubsection{Capital Costs}
-Capital costs represent the initial investment required for nuclear power plant construction. Both \gls{foak} and \gls{noak} cost estimates are presented. As Rothwell (2022) demonstrates \cite{ROTHWELL2022112905}, recent European and U.S. nuclear installations have consistently exceeded initial cost projections. For instance, the EPR-1600's announced cost for Flamanville-3 was 1886 $USD_{2020}/kW_e$, but actual expenditures reached 8600 $USD_{2020}/kW_e$ \cite{NEA2020}. It would be, in principle, possible to model these discrepancies, however it could as well be a dedicated study on its own. For this reason this thesis will consider only the \gls{noak} estimates and then introduce another indicator to account for the risk of encountering problems in the construction process. \\
+Capital costs represent the initial investment required for nuclear power plant construction. Both \gls{foak} and \gls{noak} cost estimates are presented. As Rothwell (2022) demonstrates \cite{ROTHWELL2022112905}, recent European and U.S. nuclear installations have consistently exceeded initial cost projections. Given the broad range of possible costs and the intrinsic uncertanty of cost estimates, this analysis employs a trapezoidal distribution to model all the possible costs outcomes. To create the distribution four points are needed: minimum, low most likely, high most likely and maximum. Unfortunatly data in this regard is scarce, but by collecting the availble information, most importatnly that from \gls{apr} and \gls{epr}, it si possible to determine ratios between points in the curve (See figure \ref{fig:capex-distribution}). The ratios between the low most likely and minimum and that between the high most likely and maximum are both close to 22\%, the low most likely point is also 22\% of the value of the high most likely point. Based on this information it is possible to reconstruct the curve for any other reactor even when only one estimate point is available. 
 
-All financial data has been standardized to 2020 USD to maintain consistency with the primary data sources \cite{STEIGERWALD2023128204,NEA2020}, which report costs exclusively in this currency and reference year.
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{/img/capex_eval.png}
+    \caption{Available data on capital costs from existing \glspl{npp}}
+    \label{fig:capex-distribution}
+\end{figure}
 
+Based on these ratios and some available data points (See Table \ref{tab:capex-data-sources}) the trapezoidal distributions for each reactor model were constructed (See Table \ref{tab:capex-distributions}).
+
+
+
+
+
+All financial data has been standardized to 2024 EUR.
+
+---------
 
 \subsubsection{Risk of construction delays}
 \label{sec:risk}
