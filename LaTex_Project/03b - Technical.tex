@@ -8,14 +8,14 @@ $$
 \eta = \frac{P_{el,net}}{P_{th}}
 $$
 
-\subsubsection{Discharge Burnup}
+\paragraph{Discharge Burnup}
 Discharge burnup quantifies the energy extracted per unit of heavy metal from nuclear fuel, measured in $MWd/tonHM$. The analysis utilizes \gls{apr} and \gls{ap} data from the \gls{iaea} \gls{aris} database \cite{iaea2025aris}, while \gls{epr} values were obtained from \gls{nrc} documentation \cite{NRC_ML052280170}. For \gls{smr} designs, burnup ranges are reported to account for design variability across different configurations. This parameter serves as a key indicator of the core design and neutron economy of the reactor.
 
 
-\subsubsection{Net Power Output}
+\paragraph{Net Power Output}
 Net power output represents a critical selection criterion that won't be judged in absolute terms but rather in realation to each country's energy needs. For instance, countries facing persistent energy import dependencies may favour large-capacity reactors, while nations with renewable-dominated energy mixes might prioritize smaller, more flexible power sources. The difference between countries will be considered during value function elicitation. Technical specifications for the three large reactors were sourced from the \gls{iaea} \gls{pris} database \cite{IAEA_PRIS_2025}, whereas \gls{smr} performance data was obtained from the \gls{aris} database \cite{iaea2025aris}.
 
-\subsubsection{Load-Following Capabilities}
+\paragraph{Load-Following Capabilities}
 \gls{lfc} are quantitatively evaluated using characteristic curves that illustrate ramp-up and ramp-down rates, expressed as a percentage of nominal power ($\%P_{nom}$), as functions of load, as a fraction $x \in [0,1]$ as shown in Figure \ref{fig:load-following-curve}. To enable direct comparison between designs, these performance curves are synthesized into scalar values by calculating the area under each curve. For the same reason of the previous indicator, \gls{lfc} will be evaluated differently depending on the country electric demand by means of value functions. The indicator \gls{lfc} considers both the rates as well as the minimum power level achivable by each design.
 
 \begin{figure}[!hb]

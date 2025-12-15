@@ -107,6 +107,7 @@ More sophisticated methods like swing elicitation \cite{Goodwin_Wright_2004}, pr
 Rezaei (2015) proposed the \gls{bwm} which first identifies the most and the least important criteria to then perform pairwise comparisons between these two reference criteria against all others \cite{REZAEI201549}. This method reduces the number of evaluation required: given $n$ criteria to evaluate, only $2n-3$ pairwise comparisons are needed, against the $\frac{n(n-1)}{2}$ available unique pairs. Another significant advantage is that by employing two reference criteria rather than one, the method mitigates anchoring bias which is the tendency for importance judgments to be influenced by the chosen reference point. Moreover, \gls{bwm} allows for consistency checks to verify the results of the elicitation process.
 
 \section{Best Worst Tradeoff Method}
+\label{sec:bwt}
 Liang et al. (2022) proposed the \gls{bwt} which combines the range sensitivity of swing elicitation with the consistency verification offered by the \gls{bwm} \cite{LIANG2022957}. \textcolor{red}{River's study ref} 2025 extended this methodology to hierarchical structures. It is important to note that to implement this methodology the knowledge of value functions for each criterion is required beforehand.
 
 The weighting process begins by identifying the most and least important criteria through comparative evaluation of hypothetical consequence vectors $\vec{h}$. Each vector component represents a criterion's value in a hypothetical scenario. For an illustrative case with four criteria ($C_1$, $C_2$, $C_3$, and $C_4$), the vector $(1,0,0,0)$ indicates that $C_1$ achieves its maximum value while all other criteria remain at their minimum. Decision-makers are asked to rank four $\vec{h}$ vectors: $(1,0,0,0)$, $(0,1,0,0)$, $(0,0,1,0)$, and $(0,0,0,1)$. This ranking identifies the best ($C_b$) and worst ($C_w$) performing criteria, which then serve as dual reference points throughout the weighting process. 
@@ -312,6 +313,18 @@ These methods present several constraints for the current application. SMAA fund
 
 The \gls{upmavt} methodology addresses these limitations by (i) systematically handling uncertainties across all decision components, (ii) providing decision-makers with complete control over uncertainty characterization and (iii) delivering transparent results that fully preserve propagated uncertainties
 
-Within this framework, the \gls{smc} approach serves as a consensus diagnostic tool, visually presenting expert or stakeholder agreement. This enables decision-makers to identify the need for additional research, elicitation or discussion. When consensus proves satisfactory, the \gls{nsmc} method generates conservative aggregate results, providing final evaluations while maintaining uncertainty bounds.
+Within this framework, the \gls{smc} approach serves as a consensus diagnostic tool, visually presenting expert or stakeholder agreement. This enables decision-makers to identify the need for additional research, elicitation or discussion. When consensus proves satisfactory, the \gls{nsmc} method generates conservative aggregate results, providing final evaluations while maintaining uncertainty bounds. A detailed workflow of the \gls{upmavt} process is illustrated in Figure \ref{fig:uncertainty_propagation_workflow}. In the next chapter the presented methodology is applied to a case study, which workflow is summarized in Figure \ref{fig:case_study_workflow}. For the full algortihm of the \gls{upmavt} method refer to Appendix \ref{sec:appendix_code}.
 
-For the full algortihm refer to Appendix \ref{sec:appendix_code}.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{./imgs/placeholder.png}
+\caption{Uncertainty Propagation Workflow in UP-MAVT}
+\label{fig:uncertainty_propagation_workflow}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{./imgs/placeholder.png}
+\caption{Case Study Workflow}
+\label{fig:case_study_workflow}
+\end{figure}

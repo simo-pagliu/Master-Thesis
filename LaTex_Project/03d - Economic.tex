@@ -1,14 +1,14 @@
-\subsection{Economic Indicators}
+\paragraph{Economic Indicators}
 The economic consequences are always part of \gls{mcda} studies, common metrics provide essential insights into the financial implications associated with technology deployment and long-term operation. Table \ref{tab:economic-indicators} summarizes the selected economic indicators for nuclear technologies, with corresponding values included for three renewable energy benchmarks: onshore wind, solar photovoltaic with battery storage, and hydroelectric power \cite{EIA_Capital_Costs_AEO2024}.
 
 For solar and wind technologies, commissioning time estimates were sourced from Gumber et al. (2024) \cite{GUMBER2024122563}, which notes that reported average values significantly exceed median values. This analysis utilizes average figures as they more accurately represent the time requirements for large-scale installations.
 
-\subsubsection{Capital Costs}
+\paragraph{Capital Costs}
 Capital costs represent the initial investment required for nuclear power plant construction. Both \gls{foak} and \gls{noak} cost estimates are presented. As Rothwell (2022) demonstrates \cite{ROTHWELL2022112905}, recent European and U.S. nuclear installations have consistently exceeded initial cost projections. Given the broad range of possible costs and the intrinsic uncertanty of cost estimates, this analysis employs a trapezoidal distribution to model all the possible costs outcomes. To create the distribution four points are needed: minimum, low most likely, high most likely and maximum. Unfortunatly data in this regard is scarce, but by collecting the availble information, most importatnly that from \gls{apr} and \gls{epr}, it si possible to determine ratios between points in the curve (See figure \ref{fig:capex-distribution}). The ratios between the low most likely and minimum and that between the high most likely and maximum are both close to 22\%, the low most likely point is also 22\% of the value of the high most likely point. Based on this information it is possible to reconstruct the curve for any other reactor even when only one estimate point is available. (All data is reported in 2024 EUR/kWe).
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.8\textwidth]{/img/capex_eval.png}
+    \includegraphics[width=0.8\textwidth]{./imgs/capex_eval.png}
     \caption{Available data on capital costs from existing \glspl{npp}}
     \label{fig:capex-distribution}
 \end{figure}
@@ -36,51 +36,29 @@ Based on these ratios and some available data points (See Table \ref{tab:capex-d
 \textcolor{red}{PLACEHOLDER : qui potresti aggiungere commenti sui prezzi che conosciamo con le relative fonti... vedi file che mi ha mandato vinh}
 
 
-\subsubsection{Risk of construction delays}
+\paragraph{Risk of delays}
 \label{sec:risk}
-Risk evaluation is an important aspect of any project evaluation. For this analysis a qualitative risk indicator correlates the project complexity with the associated risk. It combines two primary complexity factors: design complexity and construction complexity. The following outlines the simplified methodology used to develop this indicator for the current study, while a more comprehensive approach is proposed in \textcolor{red}{Section PLACEHOLDER}.
+While comprehensive risk assessment falls beyond this study's scope, two fundamental qualitative indicators were developed to capture the risk related to potential commissioning delays: design complexity and construction complexity.
 
-\textbf{Design complexity} was evaluated using the number of cooling loops as a proxy variable. This parameter directly correlates with system complexity, as increased cooling loops necessitate additional piping, junctions, valves, pumps, and welds. The cooling loop count—ranging from 0 for integrated designs to 4 for the EPR—was normalized on a 0-to-1 scale for comparative analysis.
+\textbf{Design complexity} serves as a proxy for manufacturing and procurement risks, where greater component counts increase management burden and error potential. Cooling loop quantity was considered a simple and practical complexity metric, with the \gls{epr} (4 loops) representing the most complex design, followed by \gls{apr}, \gls{ap} and Rolls-Royce SMR (3 loops each). The integrated designs of NuScale and \gls{bwrx} demonstrate the simplest configurations.
 
-\textbf{Construction complexity} was evaluated by classifying each reactor design according to its construction approach. The analysis distinguishes between on-site construction and various degrees of off-site manufacturing:
+\textbf{Construction complexity} evaluates the preffered strategy for the construciton process. Traditional reactors rely primarily on on-site construction, Rolls-Royce employs extensive off-site fabrication but still maintains significant on-site assembly requirements due to the large capacity and the mutli-loop configuration. The \gls{bwrx} reduces on-site work through its integrated design, and NuScale represents the most modular approach with sequential deployment of, smaller, fully manufactured units. The author recognized that neither construction paradigm demonstrates clear superiority: even if on-site methods face well-documented challenges \cite{nea2020unlocking}, modular approaches introduce supply chain coordination complexities. The evaluation of this \gls{qi} presents construction approaches as a spectrum (Table \ref{tab:construction-spectrum}) rather than imposing an initial ranking to avoid impling that one approach is better then the other. After the expert judgment on the spectrum, they are asked to determined the value function for this criterion, starting from a neutral linear baseline. In this second step they will be able to express and quantify the preference towards one of the two approaches.
 
-Traditional reactors rely predominantly on on-site construction. The Rolls-Royce design employs extensive off-site component manufacturing but still requires on-site cooling loop assembly. The BWRX-300 adopts a similar off-site approach to Rolls-Royce but eliminates on-site assembly requirements through its integrated design. NuScale represents the most innovative approach with sequential deployment of fully manufactured modules.
-
-The author recognized difficulties trying to determine the optimal construction methodology: On-site construction presents significant project management challenges that frequently result in delays and cost overruns \cite{nea2020unlocking}. On the other hand, modular approaches introduce complex coordination requirements for geographically dispersed suppliers, along with transportation and scheduling challenges.
-
-Numerical values, later  then normalized on a 0-to-1 scale, were assigned to reflect each design's construction approach: 
-\begin{itemize}
-    \item 0 for traditional on-site-focused construction (large NPPs)
-    \item 1 for the Rolls-Royce design with its partial on-site assembly requirements
-    \item 2 for the BWRX-300's fully off-site approach
-    \item 3 for NuScale's novel modular construction
-\end{itemize}
-
-Given the absence of definitive evidence favouring either approach—and considering that optimal construction methods may vary depending on local industrial capabilities and specific siting conditions (factors beyond this study's scope), an adjustment factor $\alpha$ was introduced. By  using the formula $|\alpha - CC|$, where CC represents the normalized construction complexity score and $\alpha$ serves as a preference modulator, it can adjusts the final construction complexity score based on industry preferences for on-site versus off-site construction. When $\alpha$ equals 0, the formula favours on-site construction and traditional designs; if $\alpha$ is 1, it privileges off-site and innovative approaches. To evaluate the expected value of $\alpha$ experts were consulted. \textcolor{red}{CONTINUE...}
-
-The final composite indicator combines design and construction complexity by averaging them, therefore assuming an equal weight of these two aspects. The resulting index can be interpreted as the difficulty of commissioning or better, the likelihood of encountering problems during commissioning which will lead to delays and cost overruns. Table \ref{tab:complexity_indices} presents both the final results, intermediate calculations can be found in the accompaning spreadsheet (See Appendix \ref{sec:appendix_code}).
-
-Final and intermediate results are shown in table \ref{tab:complexity_indices}.
-\textcolor{red}{SISTEMA I DATI E I RISULTATI}\\
 \begin{table}[!hb]
     \centering
-    \begin{tabularx}{0.9\textwidth}{Xcccccc}
+    \begin{tabularx}{0.9\textwidth}{XccccX}
         \toprule
-        & \textbf{APR} & \textbf{EPR} & \textbf{AP} & \textbf{BWRX} & \textbf{Rolls Royce} & \textbf{NuScale} \\
-        \midrule
-        \multicolumn{7}{c}{\textit{Construction Trend, if $\alpha$ is 1: benefit from off-site - 0: benefit from on-site}} \\
-        $\alpha = 0$ ($\mathbf{P}= $)& 0.250 & 0.500 & 0.250 & 0.250 & 0.500 & 0.375\\
-        $\alpha = 1$ ($\mathbf{P}= $) & 0.750 & 1.000 & 0.750 & 0.250 & 0.750 & 0.125 \\
+        \textbf{On-site} & \gls{ap}, \gls{epr}, \gls{apr} & Rolls Royce & BWRX-300 & NuScale & \textbf{Off-site} \\
         \bottomrule
     \end{tabularx}
-    \caption{Design complexity (DC) and construction complexity (CC) indices.}
-    \label{tab:complexity_indices}
+    \caption{Construction complexity spectrum: reactor models from on-site to off-site manufacturing approaches.}
+    \label{tab:construction-spectrum}
 \end{table}
 
 \subsubsection{Operational Costs}
 Operational costs represent the recurring expenditures associated with nuclear power plant operation and maintenance, including fuel expenses and routine maintenance activities. Steigerwald et al. (2023) \cite{STEIGERWALD2023128204} provides detailed cost projections for future nuclear installations, reporting both capital and operational expenditures for \glspl{smr} and large reactors. The study presents operational costs in $USD_{2020}/MWh_e$ for \gls{epr} and \gls{apr} designs, while the "Long-Term US" category was utilized as a proxy for \gls{ap} operational costs.
 
-For \gls{smr} designs where operational costs were originally reported in power-based units ($USD_{2020}/MW_e$), conversion to energy-based measurements ($USD_{2020}/MWh_e$) was performed using a Gaussian distribution of capacity factors ($\mu = 90\%, \sigma = 5\%$) through the following relationship:
+For \gls{smr} designs where operational costs were originally reported in power-based units ($USD_{2020}/MW_e$), conversion to energy-based measurements ($USD_{2020}/MWh_e$) was performed applying the \gls{cf} distribution presented in Section \ref{sec:capacity_factor} to the following relationship:
 
 $$
 \frac{USD_{2020}}{MWh_e} = \frac{USD_{2020}}{MW_e} \cdot \frac{1}{CF \cdot 8760 \frac{h}{year}}
@@ -88,26 +66,24 @@ $$
 
 The analysis incorporates fuel cost estimates of $6.23 USD_{2020}/MWh_e$ for \gls{pwr}-based technologies, with two exceptions: NuScale at $7.15 USD_{2020}/MWh_e$ and the \gls{bwrx} at $29.55 USD_{2020}/MWh_e$. The original BWRX estimate of $29.55 USD_{2020}/MWh_e$ appeared inconsistent given the order of magnitude difference from other \gls{lwr} designs, a discrepancy also noted by Hjelmeland (2024) \cite{HJELMELAND2024133827}. Consequently, an alternative estimate of $7.19 USD_{2020}/MWh_e$ was selected, aligning more closely with both Hjelmeland's critique and Zubair et al. (2026) \cite{ZUBAIR2026111989}. For comparative benchmarking, operational cost data for utility-scale onshore wind, hydroelectric, and solar \gls{pv} (with single-axis tracking and DC battery storage) were sourced from the US Energy Information Administration \cite{EIA_Capital_Costs_AEO2024}. All financial data has been standardized to 2020 USD to ensure consistency with the primary reference sources \cite{STEIGERWALD2023128204,NEA2020}.
 
-
-% if data to be used for E2 was with alpha=1 it would be:   0.75	1	0.75	0.25	0.75	0.125
 \begin{table}[!hb]
     \centering
     \begin{tabularx}{\textwidth}{X c c c c}
         \toprule
-        \textbf{Reactor Model} & \textbf{Ref} & \textbf{E1} & \textbf{E2} & \textbf{E3} \\
+        \textbf{Reactor Model} & \textbf{E1} & \textbf{E2} \\
         \midrule
-        APR-1400         & 2410 & 1828 & 0.250-0.750 & 18.44 \\
-        EPR-1750        & 8600 & 2150 & 0.500-1.000 & 14.26 \\
-        AP-1000          & 8600 & 2000 & 0.250-0.750 & 18.69 \\
-        BWRX-300        & 3467 & 2318 & 0.250-0.250 & $18.30 \pm 0.82$ \\
-        Rolls Royce SMR & 7408 & 6050 & 0.500-0.750 & $65.68 \pm 2.94$ \\
-        NuScale         & 8600 & 3466 & 0.375-0.125 & $22.76 \pm 1.02$ \\
+        APR-1400         & 1828 & 18.44 \\
+        EPR-1750        & 2150 & 14.26 \\
+        AP-1000          & 2000 & 18.69 \\
+        BWRX-300        & 2318 & $18.30 \pm 0.82$ \\
+        Rolls Royce SMR & 6050 & $65.68 \pm 2.94$ \\
+        NuScale         & 3466 & $22.76 \pm 1.02$ \\
         \textbf{Other Power Plants} & & & & \\
-        Onshore Wind   & NA & 1265 & NA & 28.08 \\
-        Solar PV + Battery & NA & 2175 & NA & 33.33 \\
-        Hydroelectric  & NA & 6007 & NA & 28.49 \\
+        Onshore Wind   & 1265 & 28.08 \\
+        Solar PV + Battery & 2175 & 33.33 \\
+        Hydroelectric  & 6007 & 28.49 \\
         \bottomrule
     \end{tabularx}
-    \caption{Ref: Capital costs for FOAK installations [\$/kWe], E1: Capital costs for NOAK installations [\$/kWe], E2: Risk of construction delay at $\alpha$ 0 and 1, E3: Operative and fuel costs [\$/MWh].}
+    \caption{Data for economic indicators, E1: Range of Capital costs [EUR2024/kWe], E2: Operative and fuel costs [USD2020/MWh].}
     \label{tab:economic-indicators}
 \end{table}
