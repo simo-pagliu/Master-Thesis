@@ -280,7 +280,7 @@ class ElicitationProcess:
                             self.df.at[idx, 'elicitation_meta'] = vf_row.get('elicitation_meta', '')
 
         # Do not create per-country files here; saving will write a single
-        # `value_functions.csv` in the quantitative folder using `Base/CC`
+        # `value_functions.csv` in the quantitative folder using `Base - CC`
         # naming for country-specific rows.
         return self.df
 
@@ -483,7 +483,7 @@ class ElicitationProcess:
         cols = ['name', 'group', 'elicited_points', 'confidence', 'elicitation_meta']
 
         # Build a single output containing both global and country-specific rows.
-        # Country-specific rows are named as 'Base/CC'. Global rows are written once
+        # Country-specific rows are named as 'Base - CC'. Global rows are written once
         # with their base name.
         rows_out = []
         for _, row in self.df.iterrows():
@@ -496,7 +496,7 @@ class ElicitationProcess:
             if ' - ' in nm:
                 base, suff = [p.strip() for p in nm.rsplit(' - ', 1)]
                 if suff in country_codes:
-                    out_name = f"{base}/{suff}"
+                    out_name = f"{base} - {suff}"
                 else:
                     # unknown suffix: skip
                     continue
