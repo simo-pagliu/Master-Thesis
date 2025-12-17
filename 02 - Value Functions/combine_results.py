@@ -230,9 +230,6 @@ if specific_folders:
                                 if not m:
                                     continue
                                 idx = m.group(1)
-                                # ignore unnumbered base files
-                                if not idx:
-                                    continue
                                 vf_path = os.path.join(folderp, fn)
                                 try:
                                     df_vf = pd.read_csv(vf_path)
@@ -243,7 +240,10 @@ if specific_folders:
                                     assigned = False
                                     if group and '-' in group:
                                         country_code = group.split('-')[-1].strip()
-                                        country_value_functions_by_idx[int(idx)][country_code].append(row)
+                                        if idx:
+                                            country_value_functions_by_idx[int(idx)][country_code].append(row)
+                                        else:
+                                            country_value_functions_unumbered[country_code].append(row)
                                         assigned = True
                                     if not assigned:
                                         raw_name = str(row.get('name', '')).strip()
@@ -253,10 +253,16 @@ if specific_folders:
                                             ctry = mname.group('ctry').upper()
                                             row_copy = row.copy()
                                             row_copy['name'] = base
-                                            country_value_functions_by_idx[int(idx)][ctry].append(row_copy)
+                                            if idx:
+                                                country_value_functions_by_idx[int(idx)][ctry].append(row_copy)
+                                            else:
+                                                country_value_functions_unumbered[ctry].append(row_copy)
                                             assigned = True
                                     if not assigned:
-                                        country_value_functions_by_idx[int(idx)]['GLOBAL'].append(row)
+                                        if idx:
+                                            country_value_functions_by_idx[int(idx)]['GLOBAL'].append(row)
+                                        else:
+                                            country_value_functions_unumbered['GLOBAL'].append(row)
                 except Exception:
                     pass
 
@@ -266,7 +272,17 @@ country_codes = set(country_criteria.keys())
 for idx, by_country in country_value_functions_by_idx.items():
     for c in by_country.keys():
         country_codes.add(c)
+# include country codes discovered in unnumbered value_functions rows
+for c in country_value_functions_unumbered.keys():
+    country_codes.add(c)
 country_codes.discard('GLOBAL')
+
+# DEBUG: Print what we found
+import sys
+print(f"DEBUG: country_criteria keys: {list(country_criteria.keys())}", file=sys.stderr)
+print(f"DEBUG: country_value_functions_by_idx keys: {list(country_value_functions_by_idx.keys())}", file=sys.stderr)
+print(f"DEBUG: country_value_functions_unumbered keys: {list(country_value_functions_unumbered.keys())}", file=sys.stderr)
+print(f"DEBUG: Final country_codes: {sorted(country_codes)}", file=sys.stderr)
 
 # Ensure aggregated output dir exists
 os.makedirs(AGG_DIR, exist_ok=True)
@@ -996,6 +1012,49 @@ else:
             try:
                 with open(alt_out_path, 'w', encoding='utf-8', newline='') as f:
                     f.write('name\n')
+            except Exception:
+                pass
+
+        # First, write unnumbered value_functions if they exist for this country
+        unnumbered_rows = country_value_functions_unumbered.get(country_code, [])
+        global_unnumbered_rows = country_value_functions_unumbered.get('GLOBAL', [])
+        if unnumbered_rows or global_unnumbered_rows:
+            try:
+                vf_unnumbered = []
+                if unnumbered_rows:
+                    vf_unnumbered.append(pd.DataFrame(unnumbered_rows))
+                if global_unnumbered_rows and 'name' in country_criteria_df.columns:
+                    try:
+                        df_global = pd.DataFrame(global_unnumbered_rows)
+                        names_set = set(country_criteria_df['name'].astype(str).tolist())
+                        if 'name' in df_global.columns:
+                            matched = df_global[df_global['name'].astype(str).isin(names_set)]
+                            if not matched.empty:
+                                vf_unnumbered.append(matched)
+                    except Exception:
+                        pass
+                if vf_unnumbered:
+                    try:
+                        vf_out = pd.concat(vf_unnumbered, ignore_index=True)
+                    except Exception:
+                        vf_out = pd.concat([pd.DataFrame(x) if not isinstance(x, pd.DataFrame) else x for x in vf_unnumbered], ignore_index=True)
+                    if vf_out is not None and not vf_out.empty:
+                        # strip group suffixes if present
+                        if 'group' in vf_out.columns:
+                            vf_out['group'] = vf_out['group'].astype(str).apply(lambda g: suffix_pattern.sub('', g))
+                        # normalize name and deduplicate
+                        try:
+                            if 'name' in vf_out.columns:
+                                vf_out['name'] = vf_out['name'].astype(str).str.strip()
+                                vf_out = vf_out.drop_duplicates(subset=['name'], keep='first', ignore_index=True)
+                            else:
+                                vf_out = vf_out.drop_duplicates(keep='first', ignore_index=True)
+                        except Exception:
+                            pass
+                        try:
+                            vf_out.to_csv(os.path.join(out_dir, 'value_functions.csv'), index=False)
+                        except Exception:
+                            pass
             except Exception:
                 pass
 
