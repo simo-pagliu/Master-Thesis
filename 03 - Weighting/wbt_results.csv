@@ -1,1 +1,29 @@
 Type,Reference,Other,Value,Group,Confidence
+best,Thermal Efficiency,Discharge Burnup,33.48,Technical,2
+best,Thermal Efficiency,Load following Capabilities,32.09,Technical,2
+best,Thermal Efficiency,Net Power Output,36.17,Technical,2
+worst,Load following Capabilities,Discharge Burnup,48.67,Technical,2
+worst,Load following Capabilities,Net Power Output,626.0,Technical,2
+best,Capital Investment Budgeted,Operative + Fuel Costs,12000.0,Economic,2
+best,Capital Investment Budgeted,Design Complexity,10000.0,Economic,2
+best,Capital Investment Budgeted,Construction Complexity,11956.521739,Economic,2
+worst,Operative + Fuel Costs,Design Complexity,4.464674,Economic,2
+worst,Operative + Fuel Costs,Construction Complexity,6.0,Economic,2
+best,Electricity Market Benefit,Percived Safety,49.0,Social,2
+best,Electricity Market Benefit,Nuclear Waste,36.5,Social,2
+best,Electricity Market Benefit,GHGe Benefit,36.5,Social,2
+worst,Nuclear Waste,Percived Safety,2.0,Social,2
+worst,Nuclear Waste,GHGe Benefit,2.92,Social,2
+best,Design Maturity,Licensing Status,2.53,Feasibility,2
+best,Design Maturity,Supplier Availbility,3.5,Feasibility,2
+worst,Supplier Availbility,Licensing Status,2.23,Feasibility,2
+best,Design Maturity,Thermal Efficiency,2.5,Between-groups-B,2
+best,Design Maturity,Capital Investment Budgeted,6.0,Between-groups-B,2
+best,Design Maturity,Electricity Market Benefit,3.5,Between-groups-B,2
+worst,Thermal Efficiency,Capital Investment Budgeted,11956.521739,Between-groups-B,2
+worst,Thermal Efficiency,Electricity Market Benefit,36.5,Between-groups-B,2
+best,Nuclear Waste,Load following Capabilities,16.795,Between-groups-W,2
+best,Nuclear Waste,Operative + Fuel Costs,16.795,Between-groups-W,2
+best,Nuclear Waste,Supplier Availbility,22.371141,Between-groups-W,2
+worst,Supplier Availbility,Load following Capabilities,0.98,Between-groups-W,2
+worst,Supplier Availbility,Operative + Fuel Costs,20.0,Between-groups-W,2
