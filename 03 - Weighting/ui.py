@@ -228,14 +228,14 @@ class WBT_ui:
             if name != worst and name != best:
                 self.comparisons.append(("worst", worst, name))
         self.current_comparison = 0
-        # Use a single persistent results file for all groups: 'wbt_results.csv'
+        # Use a single persistent results file for all groups: 'BWT_results.csv'
         ui_dir = os.path.dirname(os.path.abspath(__file__))
-        self._results_fn = os.path.join(ui_dir, 'wbt_results.csv')
+        self._results_fn = os.path.join(ui_dir, 'BWT_results.csv')
         # Create the file with header if it doesn't exist
         if not os.path.exists(self._results_fn):
             with open(self._results_fn, 'w', newline='') as f:
                 w = csv.writer(f)
-                w.writerow(['Type', 'Reference', 'Other', 'Value', 'Group', 'Confidence'])
+                w.writerow(['Type', 'Reference', 'Other', 'Value', 'Group', 'Confidence', 'a'])
 
         self.show_next_comparison()
 
@@ -382,7 +382,7 @@ class WBT_ui:
 
     def show_next_comparison(self):
         # Minimal elicitation UI: simple labels and a Tk slider. Each comparison
-        # is immediately appended to `wbt_results.csv` when the user presses Next.
+        # is immediately appended to `BWT_results.csv` when the user presses Next.
         for widget in self.root.winfo_children():
             widget.destroy()
         if self.current_comparison >= len(self.comparisons):
@@ -981,6 +981,8 @@ class WBT_ui:
         self._right_vals = right_vals
         self._mins = mins
         self._maxs = maxs
+        self._group_criteria = group_criteria
+        self._slider_target = slider_target
 
 
 
@@ -997,10 +999,10 @@ class WBT_ui:
         if fn is None:
             # Fallback: use the canonical file in the module dir
             ui_dir = os.path.dirname(os.path.abspath(__file__))
-            fn = os.path.join(ui_dir, 'wbt_results.csv')
+            fn = os.path.join(ui_dir, 'BWT_results.csv')
             if not os.path.exists(fn):
                 with open(fn, 'w', newline='') as f:
-                    csv.writer(f).writerow(['Type', 'Reference', 'Other', 'Value', 'Group', 'Confidence'])
+                    csv.writer(f).writerow(['Type', 'Reference', 'Other', 'Value', 'Group', 'Confidence', 'a'])
 
         # write row with Group (use current context)
         group_name = getattr(self, '_context_group_name', self.groups[self.current_group_idx] if self.groups else 'Ungrouped')
@@ -1014,9 +1016,27 @@ class WBT_ui:
         except Exception:
             conf_val = ''
 
+        # Compute a = 1/vf(value)
+        a_val = ''
+        try:
+            # Get the criterion that was adjusted (slider_target)
+            slider_target = getattr(self, '_slider_target', None)
+            group_criteria = getattr(self, '_group_criteria', None)
+            if slider_target is not None and group_criteria is not None:
+                criterion = group_criteria[slider_target]
+                vf = criterion.get('value_function')
+                if callable(vf):
+                    vf_val = float(vf(val))
+                    # Avoid division by zero
+                    if vf_val != 0:
+                        a_val = 1.0 / vf_val
+        except Exception:
+            # If anything fails, leave a_val empty
+            pass
+
         with open(fn, 'a', newline='') as f:
             w = csv.writer(f)
-            w.writerow([comp_type, ref, other, val, group_name, conf_val])
+            w.writerow([comp_type, ref, other, val, group_name, conf_val, a_val])
 
         # keep an in-memory record (optional) keyed by criterion name
         if comp_type == 'best':
@@ -1066,19 +1086,19 @@ class WBT_ui:
         self.show_next_comparison()
 
     def save_results_to_file(self):
-        fn = getattr(self, '_results_fn', None) or os.path.join(os.path.dirname(os.path.abspath(__file__)), 'wbt_results.csv')
+        fn = getattr(self, '_results_fn', None) or os.path.join(os.path.dirname(os.path.abspath(__file__)), 'BWT_results.csv')
         messagebox.showinfo('Info', f'Results are saved automatically during elicitation to {os.path.basename(fn)}')
 
     def finalize_results(self):
         # Finalize: inform the user and close the window. Individual comparisons
-        # were appended to `wbt_results.csv` as they were entered.
-        fn = getattr(self, '_results_fn', None) or os.path.join(os.path.dirname(os.path.abspath(__file__)), 'wbt_results.csv')
+        # were appended to `BWT_results.csv` as they were entered.
+        fn = getattr(self, '_results_fn', None) or os.path.join(os.path.dirname(os.path.abspath(__file__)), 'BWT_results.csv')
         messagebox.showinfo('Completed', f'Elicitation completed. Results appended to {os.path.basename(fn)}')
         self.root.quit()
         self.root.destroy()
 
     def cancel(self):
-        fn = getattr(self, '_results_fn', None) or os.path.join(os.path.dirname(os.path.abspath(__file__)), 'wbt_results.csv')
+        fn = getattr(self, '_results_fn', None) or os.path.join(os.path.dirname(os.path.abspath(__file__)), 'BWT_results.csv')
         if messagebox.askyesno('Cancel', f'Abort elicitation? Already-saved comparisons will stay in {os.path.basename(fn)}'):
             self.root.quit()
             self.root.destroy()
