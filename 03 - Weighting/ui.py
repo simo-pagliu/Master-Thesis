@@ -761,17 +761,54 @@ class WBT_ui:
                     # center label horizontally with respect to the bar; ensure it's inside plot
                     ax.text(x[j], y_pos, lbl, fontsize=fontsize, va='center', ha='center', color='black', clip_on=True)
 
-        # Determine initial slider x such that vf(x)=0 (choose smallest if multiple)
+        # Always check CSV for existing data for this comparison
+        # This ensures that navigating back and forth preserves previously entered values
+        restored_value = None
+        restored_conf = None
+        fn = getattr(self, '_results_fn', None)
+        if fn is None:
+            ui_dir = os.path.dirname(os.path.abspath(__file__))
+            fn = os.path.join(ui_dir, 'BWT_results.csv')
+        
+        # Try to find existing data for this comparison in the CSV
         try:
-            pre = group_criteria[slider_target].get('_precomputed_x_for_y')
-            if pre and len(pre) > 0 and pre[0] is not None:
-                initial_x_zero = float(pre[0])
-            else:
-                low = min(mins[slider_target], maxs[slider_target])
-                high = max(mins[slider_target], maxs[slider_target])
-                initial_x_zero = float(compute_x_for_vf(group_criteria[slider_target], 0.0, low, high))
+            if os.path.exists(fn):
+                with open(fn, 'r', newline='') as f:
+                    reader = csv.DictReader(f)
+                    for row in reader:
+                        if (row.get('Type') == comparison_type and row.get('Reference') == ref_criterion and 
+                            row.get('Other') == other_criterion and row.get('Group') == group_name):
+                            try:
+                                restored_value = float(row.get('Value', 0.0))
+                            except Exception:
+                                pass
+                            try:
+                                restored_conf = int(row.get('Confidence', 2))
+                            except Exception:
+                                pass
+                            break
         except Exception:
-            initial_x_zero = float(mins[slider_target])
+            pass
+        
+        # Determine initial slider value: use CSV data if available, otherwise start at vf(x)=0
+        if restored_value is not None:
+            # Use the value from CSV
+            initial_x_zero = float(restored_value)
+        else:
+            # Determine initial slider x such that vf(x)=0 (choose smallest if multiple)
+            try:
+                pre = group_criteria[slider_target].get('_precomputed_x_for_y')
+                if pre and len(pre) > 0 and pre[0] is not None:
+                    initial_x_zero = float(pre[0])
+                else:
+                    low = min(mins[slider_target], maxs[slider_target])
+                    high = max(mins[slider_target], maxs[slider_target])
+                    initial_x_zero = float(compute_x_for_vf(group_criteria[slider_target], 0.0, low, high))
+            except Exception:
+                initial_x_zero = float(mins[slider_target])
+        
+        # Store restored confidence for later use
+        self._current_restored_conf = restored_conf
 
         # Slider to adjust the target criterion on the right plot
         resolution = max((maxs[slider_target] - mins[slider_target]) / 200.0, 1e-6)
@@ -941,10 +978,16 @@ class WBT_ui:
                 "3: High confidence",
                 "4: Extremely confident (certain)",
             ]
-            try:
-                default_conf = int(self.group_selected.get(group_name, {}).get('confidence', 2))
-            except Exception:
-                default_conf = 2
+            # Check if we have a restored confidence value from CSV
+            restored_conf = getattr(self, '_current_restored_conf', None)
+            if restored_conf is not None:
+                default_conf = int(restored_conf)
+                self._current_restored_conf = None
+            else:
+                try:
+                    default_conf = int(self.group_selected.get(group_name, {}).get('confidence', 2))
+                except Exception:
+                    default_conf = 2
             self._current_conf_var = tk.StringVar(value=conf_options[default_conf])
             # add a top offset so the confidence selector sits aligned with the slider
             ttk.Label(right_col, text='Confidence:').pack(anchor='w', pady=(18, 0))
@@ -953,15 +996,40 @@ class WBT_ui:
         except Exception:
             self._current_conf_var = None
 
-        # Create a triangular Next button inline in the right column (beside confidence)
+        # Create navigation buttons: Back and Next (triangular) inline in the right column
+        nav_frame = ttk.Frame(right_col)
+        nav_frame.pack(side=tk.RIGHT, padx=(8, 4), pady=(4, 4))
+        
+        # Back button (only show if not on first comparison)
+        if self.current_comparison > 0:
+            try:
+                back_h = 56
+                back_w = 48
+                back_canvas = tk.Canvas(nav_frame, width=back_w, height=back_h, highlightthickness=0)
+                # draw a left-pointing triangle
+                back_canvas.create_polygon(back_w-4, 4, back_w-4, back_h-4, 6, back_h/2, fill='#c8782b', outline='black')
+                back_canvas.configure(cursor='hand2')
+                back_canvas.pack(side=tk.LEFT, padx=(4, 4))
+                def on_back_click(event=None):
+                    try:
+                        self.go_back()
+                    except Exception:
+                        pass
+                back_canvas.bind('<Button-1>', on_back_click)
+            except Exception:
+                # fallback to a regular button if canvas creation fails
+                back_btn = ttk.Button(nav_frame, text='Back', command=self.go_back)
+                back_btn.pack(side=tk.LEFT, padx=(4, 4))
+        
+        # Next button (triangular)
         try:
             tri_h = 56
             tri_w = 48
-            tri_canvas = tk.Canvas(right_col, width=tri_w, height=tri_h, highlightthickness=0)
+            tri_canvas = tk.Canvas(nav_frame, width=tri_w, height=tri_h, highlightthickness=0)
             # draw a right-pointing triangle
             tri_canvas.create_polygon(4, 4, 4, tri_h-4, tri_w-6, tri_h/2, fill='#2b78c8', outline='black')
             tri_canvas.configure(cursor='hand2')
-            tri_canvas.pack(side=tk.RIGHT, padx=(8, 4), pady=(4, 4), fill=tk.Y)
+            tri_canvas.pack(side=tk.LEFT, padx=(4, 4))
             def on_tri_click(event=None):
                 try:
                     self.save_and_next()
@@ -970,8 +1038,8 @@ class WBT_ui:
             tri_canvas.bind('<Button-1>', on_tri_click)
         except Exception:
             # fallback to a regular button if canvas creation fails
-            next_btn = ttk.Button(right_col, text='Next ', command=self.save_and_next)
-            next_btn.pack(side=tk.RIGHT, padx=10)
+            next_btn = ttk.Button(nav_frame, text='Next', command=self.save_and_next)
+            next_btn.pack(side=tk.LEFT, padx=(4, 4))
 
         # Save state
         self._current_comp = (comparison_type, ref_criterion, other_criterion)
@@ -986,15 +1054,15 @@ class WBT_ui:
 
 
 
-    def save_and_next(self):
-        # Read slider value and append to CSV immediately.
+    def save_current_comparison(self):
+        """Save the current comparison value to CSV (either append or update)"""
         comp_type, ref, other = self._current_comp
         try:
             val = float(self._slider.get())
         except Exception:
             val = 0.0
 
-        # Append to the pre-created results file
+        # Get the results file
         fn = getattr(self, '_results_fn', None)
         if fn is None:
             # Fallback: use the canonical file in the module dir
@@ -1034,9 +1102,43 @@ class WBT_ui:
             # If anything fails, leave a_val empty
             pass
 
-        with open(fn, 'a', newline='') as f:
+        # Read the entire CSV
+        rows = []
+        header = ['Type', 'Reference', 'Other', 'Value', 'Group', 'Confidence', 'a']
+        try:
+            if os.path.exists(fn):
+                with open(fn, 'r', newline='') as f:
+                    reader = csv.reader(f)
+                    rows = list(reader)
+                    if not rows or rows[0] != header:
+                        rows = [header]
+            else:
+                rows = [header]
+        except Exception:
+            rows = [header]
+
+        # Find if this comparison already exists
+        existing_row_idx = None
+        for i, row in enumerate(rows):
+            if i == 0:  # skip header
+                continue
+            if (len(row) >= 5 and row[0] == comp_type and row[1] == ref and 
+                row[2] == other and row[4] == group_name):
+                existing_row_idx = i
+                break
+
+        # Update or add the row
+        new_row = [comp_type, ref, other, val, group_name, conf_val, a_val]
+        if existing_row_idx is not None:
+            rows[existing_row_idx] = new_row
+        else:
+            rows.append(new_row)
+
+        # Write the complete CSV
+        with open(fn, 'w', newline='') as f:
             w = csv.writer(f)
-            w.writerow([comp_type, ref, other, val, group_name, conf_val, a_val])
+            for row in rows:
+                w.writerow(row)
 
         # keep an in-memory record (optional) keyed by criterion name
         if comp_type == 'best':
@@ -1044,47 +1146,225 @@ class WBT_ui:
         else:
             self.worst_comparison_results[other] = val
 
-        self.current_comparison += 1
-        # If we've exhausted comparisons for this group, move to next group or finish
+    def save_and_next(self):
+        # Save the current comparison and move to the next one
+        # Only save if we're not on a summary screen
+        if self.current_comparison < len(self.comparisons):
+            self.save_current_comparison()
+            self.current_comparison += 1
+        else:
+            # We're on a summary screen, proceed with next action
+            self.current_comparison += 1
+        
+        # Check if we've exhausted all comparisons
         if self.current_comparison >= len(self.comparisons):
-            # Advance to next group if available
-            if self.current_group_idx < len(self.groups) - 1:
-                messagebox.showinfo('Group completed', f'Completed group: {self.groups[self.current_group_idx]}\nMoving to next group')
+            # Show summary/confirmation screen
+            self.show_summary_screen()
+        else:
+            # Show next comparison
+            self.show_next_comparison()
+    
+    def show_summary_screen(self):
+        # Show a summary screen when group comparisons are complete
+        for widget in self.root.winfo_children():
+            widget.destroy()
+        
+        frm = ttk.Frame(self.root, padding=8)
+        frm.pack(fill=tk.BOTH, expand=True)
+        
+        # Use the context group name from comparisons, not the current_group_idx
+        # This ensures we're showing data for the group we actually just finished
+        group_name = getattr(self, '_context_group_name', 
+                            self.groups[self.current_group_idx] if self.groups else 'Ungrouped')
+        ttk.Label(frm, text=f"Group '{group_name}' Elicitation Complete", font=(None, 14, 'bold')).pack(pady=(20, 10))
+        ttk.Label(frm, text="All comparisons for this group have been completed.", font=(None, 11)).pack(pady=5)
+        ttk.Label(frm, text="You can modify comparisons by clicking Back.", font=(None, 10), foreground='gray').pack(pady=5)
+        
+        # Create consistency check plot
+        try:
+            self.create_consistency_plot(frm, group_name)
+        except Exception as e:
+            ttk.Label(frm, text=f"Could not generate plot: {str(e)}", foreground='red').pack(pady=10)
+        
+        # Navigation buttons
+        btn_frame = ttk.Frame(frm)
+        btn_frame.pack(pady=(30, 10))
+        
+        ttk.Button(btn_frame, text='Back to Comparisons', command=self.go_back_to_comparisons).pack(side=tk.LEFT, padx=5)
+        ttk.Button(btn_frame, text='Continue', command=self.proceed_from_summary).pack(side=tk.LEFT, padx=5)
+    
+    def create_consistency_plot(self, parent_frame, group_name):
+        """Create a horizontal bar plot showing 'a' values for consistency checking"""
+        fn = getattr(self, '_results_fn', None)
+        if fn is None:
+            ui_dir = os.path.dirname(os.path.abspath(__file__))
+            fn = os.path.join(ui_dir, 'BWT_results.csv')
+        
+        if not os.path.exists(fn):
+            return
+        
+        # Get best and worst criteria for this group
+        group_selected = self.group_selected.get(group_name, {})
+        best_criterion = group_selected.get('best', None)
+        worst_criterion = group_selected.get('worst', None)
+        
+        # Read CSV and filter data for current group
+        comparisons = []
+        a_values = []
+        labels = []
+        
+        try:
+            with open(fn, 'r', newline='') as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    # Only include rows from current group
+                    if row.get('Group') != group_name:
+                        continue
+                    
+                    comp_type = row.get('Type', '')
+                    ref = row.get('Reference', '')
+                    other = row.get('Other', '')
+                    
+                    try:
+                        a_val = float(row.get('a', 0))
+                    except Exception:
+                        a_val = 0
+                    
+                    comparisons.append((comp_type, ref, other))
+                    a_values.append(a_val)
+                    
+                    # Create label with best/worst highlighted
+                    # Format: "best/worst: Reference ← → Other"
+                    ref_label = f"**{ref}**" if ref in [best_criterion, worst_criterion] else ref
+                    other_label = f"**{other}**" if other in [best_criterion, worst_criterion] else other
+                    label = f"{comp_type}: {ref_label} ← → {other_label}"
+                    labels.append(label)
+        except Exception:
+            return
+        
+        if not a_values:
+            return
+        
+        # Create matplotlib figure: slightly narrower width, more left padding
+        fig = plt.Figure(figsize=(7, max(3, len(a_values) * 0.5)))
+        ax = fig.add_subplot(111)
+        # Ensure plenty of space for long y-axis labels
+        try:
+            fig.subplots_adjust(left=0.35, right=0.98, top=0.9, bottom=0.12)
+        except Exception:
+            pass
+        
+        # Create horizontal bar chart with colors for best/worst
+        colors = []
+        for comp_type, ref, other in comparisons:
+            if ref in [best_criterion, worst_criterion]:
+                colors.append('#2b78c8' if comp_type == 'best' else '#c8782b')  # Blue for best, orange for worst
+            else:
+                colors.append('#cccccc')
+        
+        y_pos = np.arange(len(labels))
+        ax.barh(y_pos, a_values, color=colors, alpha=0.7, edgecolor='black')
+        
+        # Set labels with best/worst in bold using mathtext ($\\bf{...}$)
+        def bold_name(name):
+            if name in [best_criterion, worst_criterion]:
+                # escape backslashes and replace spaces for mathtext
+                safe = str(name).replace('\\', '\\\\').replace(' ', '\\ ')
+                return f'$\\bf{{{safe}}}$'
+            return name
+        y_labels = []
+        for comp_type, ref, other in comparisons:
+            ref_fmt = bold_name(ref)
+            other_fmt = bold_name(other)
+            label = f"{comp_type}: {ref_fmt} ← → {other_fmt}"
+            y_labels.append(label)
+        
+        ax.set_yticks(y_pos)
+        ax.set_yticklabels(y_labels, fontsize=9)
+        # Align y tick labels to the right so they are fully visible
+        try:
+            for tick in ax.get_yticklabels():
+                tick.set_horizontalalignment('right')
+        except Exception:
+            pass
+        ax.set_xlabel('Inverse Value Function (a = 1/vf)', fontsize=10)
+        ax.set_title(f'Consistency Check - Group: {group_name}\n(Best/Worst highlighted)', fontsize=11, fontweight='bold')
+        ax.grid(axis='x', alpha=0.3)
+        
+        # Embed the plot in Tkinter
+        canvas = FigureCanvasTkAgg(fig, master=parent_frame)
+        canvas.draw()
+        canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True, pady=(10, 20))
+    
+    def go_back_to_comparisons(self):
+        # Go back to the last comparison
+        self.current_comparison = len(self.comparisons) - 1
+        self.show_next_comparison()
+    
+    def proceed_from_summary(self):
+        # Proceed to next group or finalize
+        if self.current_group_idx < len(self.groups) - 1:
+            # Ask if user wants to continue to next group
+            group_name = self.groups[self.current_group_idx]
+            next_group = self.groups[self.current_group_idx + 1]
+            proceed = messagebox.askyesno('Continue to Next Group', 
+                f'Completed group: {group_name}\n\nContinue with group: {next_group}?')
+            if proceed:
                 self.current_group_idx += 1
                 # Show selection UI for next group so user may choose best/worst
                 self.setup_selection_ui()
                 return
             else:
-                # We've finished all comparisons in the current context.
-                scope = getattr(self, '_context_scope', 'intra-group')
-                # If we finished intra-group phase for all groups, ask about between-groups Best
-                if scope.startswith('intra-group'):
-                    proceed_B = messagebox.askyesno('Between-groups Best', 'All intra-group elicitation completed. Proceed with between-groups BEST comparisons?')
-                    if proceed_B:
-                        self.prepare_intergroup_phase('B')
-                        return
-                    # If user declines B, ask about between-groups W
-                    proceed_W = messagebox.askyesno('Between-groups Worst', 'Proceed with between-groups WORST comparisons?')
-                    if proceed_W:
-                        self.prepare_intergroup_phase('W')
-                        return
-                    self.finalize_results()
+                # User wants to stay, go back to comparisons
+                self.current_comparison = len(self.comparisons) - 1
+                self.show_next_comparison()
+                return
+        else:
+            # We've finished all comparisons in the current context.
+            scope = getattr(self, '_context_scope', 'intra-group')
+            # If we finished intra-group phase for all groups, ask about between-groups Best
+            if scope.startswith('intra-group'):
+                proceed_B = messagebox.askyesno('Between-groups Best', 'All intra-group elicitation completed. Proceed with between-groups BEST comparisons?')
+                if proceed_B:
+                    self.prepare_intergroup_phase('B')
                     return
-                elif scope.startswith('between-groups-B'):
-                    # After between-groups B, ask about between-groups W
-                    proceed_W = messagebox.askyesno('Between-groups Worst', 'Between-groups BEST completed. Proceed with between-groups WORST comparisons?')
-                    if proceed_W:
-                        self.prepare_intergroup_phase('W')
-                        return
-                    self.finalize_results()
+                # If user declines B, ask about between-groups W
+                proceed_W = messagebox.askyesno('Between-groups Worst', 'Proceed with between-groups WORST comparisons?')
+                if proceed_W:
+                    self.prepare_intergroup_phase('W')
                     return
-                else:
-                    # between-groups-W or unknown scope: finalize
-                    self.finalize_results()
+                self.finalize_results()
+                return
+            elif scope.startswith('between-groups-B'):
+                # After between-groups B, ask about between-groups W
+                proceed_W = messagebox.askyesno('Between-groups Worst', 'Between-groups BEST completed. Proceed with between-groups WORST comparisons?')
+                if proceed_W:
+                    self.prepare_intergroup_phase('W')
                     return
+                self.finalize_results()
+                return
+            else:
+                # between-groups-W or unknown scope: finalize
+                self.finalize_results()
 
+    def go_back(self):
+        # Save the current comparison before going back
+        # The value restoration is handled by show_next_comparison which always checks CSV
+        if self.current_comparison <= 0:
+            return
+        
+        # Save current comparison first
+        self.save_current_comparison()
+        
+        # Decrement comparison index
+        self.current_comparison -= 1
+        
+        # Clear the revisit flag since we're navigating normally
+        self._is_revisit = False
+        
+        # Show the comparison (which will automatically restore values from CSV)
         self.show_next_comparison()
-
+    
     def save_results_to_file(self):
         fn = getattr(self, '_results_fn', None) or os.path.join(os.path.dirname(os.path.abspath(__file__)), 'BWT_results.csv')
         messagebox.showinfo('Info', f'Results are saved automatically during elicitation to {os.path.basename(fn)}')
