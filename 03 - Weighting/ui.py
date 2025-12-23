@@ -216,15 +216,17 @@ class WBT_ui:
         self._context_group_name = group_name
         self._context_scope = 'intra-group'
 
-        # Generate best comparisons (best vs each other criterion in group)
+        # Generate comparisons with ordering:
+        # 1) explicit Best vs Worst
+        # 2) remaining Best vs others (excluding Worst)
+        # 3) Worst vs others (excluding Best)
         self.comparisons = []
+        if worst in group_names and best in group_names:
+            self.comparisons.append(("best", best, worst))
         for name in group_names:
-            if name != best:
+            if name != best and name != worst:
                 self.comparisons.append(("best", best, name))
-        # Generate worst comparisons (worst vs each other criterion in group)
         for name in group_names:
-            # skip the worst itself and also skip the best to avoid duplicating
-            # the inverse comparison (best vs worst) which was already added
             if name != worst and name != best:
                 self.comparisons.append(("worst", worst, name))
         self.current_comparison = 0
@@ -368,10 +370,12 @@ class WBT_ui:
         # store as a synthetic 'group' selection (use default confidence 2)
         self.group_selected[context_group_name] = {'best': best, 'worst': worst, 'confidence': 2}
 
-        # Build comparisons (best vs others, worst vs others) within the context
+        # Build comparisons (Best vs Worst first, then other bests, then other worsts)
         self.comparisons = []
+        if worst in names and best in names:
+            self.comparisons.append(('best', best, worst))
         for name in names:
-            if name != best:
+            if name != best and name != worst:
                 self.comparisons.append(('best', best, name))
         for name in names:
             if name != worst and name != best:
