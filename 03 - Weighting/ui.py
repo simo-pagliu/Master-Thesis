@@ -448,17 +448,16 @@ class WBT_ui:
         """For a worst-comparison (worst vs worst_other_name), check if any previously
         completed worst comparison can provide an ordinal constraint.
         
-        If in best comparisons: worst_ref_rank < worst_other_rank (lower rank = more important),
-        then in worst comparisons: worst_ref_vf >= worst_other_vf
-        
-        Returns the minimum VF that worst_other must exceed (if such a constraint exists), or None.
+        Returns (lower_bound, upper_bound) where:
+        - lower_bound: max VF from more-important criteria (require current >= this)
+        - upper_bound: min VF from less-important criteria (require current <= this)
         """
         fn = getattr(self, '_results_fn', None)
         if fn is None:
             ui_dir = os.path.dirname(os.path.abspath(__file__))
             fn = os.path.join(ui_dir, 'BWT_results.csv')
         if not os.path.exists(fn):
-            return None
+            return None, None
 
         # First, build best-phase ranking: criterion -> vf_value (lower = more important)
         best_ranks = {}  # criterion_name -> vf_value from best comparisons
@@ -492,17 +491,16 @@ class WBT_ui:
                     # Store: other's rank is y (lower y = higher importance)
                     best_ranks[other] = y
         except Exception:
-            return None
+            return None, None
 
         # Get the rank of the current worst_other from best phase
         if worst_other_name not in best_ranks:
-            return None
+            return None, None
         other_rank = best_ranks[worst_other_name]
 
-        # Now check already-completed worst comparisons to find constraints
-        # If there's a completed worst comparison with a criterion that's MORE important (lower rank),
-        # we need to be >= that value
-        max_lower_rank_vf = None  # max VF assigned to more-important criteria
+        # Now check already-completed worst comparisons
+        lower_bound = None  # max VF from more-important criteria
+        upper_bound = None  # min VF from less-important criteria
         try:
             with open(fn, 'r', newline='') as f:
                 reader = csv.DictReader(f)
@@ -519,18 +517,12 @@ class WBT_ui:
                     except Exception:
                         continue
                     
-                    # Check if 'other' is more important than worst_other_name
-                    # (i.e., has a lower rank value in best comparisons)
+                    # Check if 'other' exists in best rankings
                     if other not in best_ranks:
                         continue
                     other_rank_val = best_ranks[other]
-                    if not (other_rank_val < other_rank):
-                        # 'other' is NOT more important, skip
-                        continue
                     
-                    # 'other' IS more important than worst_other_name
-                    # The constraint is: current worst_other must have VF >= VF of this 'other'
-                    # Compute VF of the 'other' criterion at the value that was assigned to it
+                    # Compute VF of the 'other' criterion at the value assigned to it
                     crit = self.criteria_by_name.get(other)
                     if not crit:
                         continue
@@ -546,13 +538,19 @@ class WBT_ui:
                         continue
                     y = float(np.clip(y, 0.0, 1.0))
                     
-                    # Update max VF among more-important criteria
-                    if max_lower_rank_vf is None or y > max_lower_rank_vf:
-                        max_lower_rank_vf = y
+                    # Check ordering relationship
+                    if other_rank_val < other_rank:
+                        # 'other' IS more important, creates a lower bound
+                        if lower_bound is None or y > lower_bound:
+                            lower_bound = y
+                    elif other_rank_val > other_rank:
+                        # 'other' IS less important, creates an upper bound
+                        if upper_bound is None or y < upper_bound:
+                            upper_bound = y
         except Exception:
             pass
 
-        return max_lower_rank_vf
+        return lower_bound, upper_bound
 
     def _compute_worst_consistency_bounds(self, group_name, worst_other_name):
         """DEPRECATED: Use _compute_worst_ordinal_constraint instead.
@@ -1028,9 +1026,9 @@ class WBT_ui:
         y_thresh = self._bw_vf_thresholds.get(group_name, None)
         
         # For worst comparisons, also check ordinal constraint from already-completed worst comparisons
-        y_min_ordinal = None
+        y_min_ordinal, y_max_ordinal = None, None
         if comparison_type == 'worst':
-            y_min_ordinal = self._compute_worst_ordinal_constraint(group_name, other_criterion)
+            y_min_ordinal, y_max_ordinal = self._compute_worst_ordinal_constraint(group_name, other_criterion)
 
         def on_slide(val):
             try:
@@ -1072,12 +1070,15 @@ class WBT_ui:
                     violation = (h + 1e-9) < y_thresh  # require h >= y_thresh (equal allowed)
                 else:
                     violation = (h - 1e-9) > y_thresh  # require h <= y_thresh (equal allowed)
-            # Also check ordinal constraint for worst phase (from completed worst comparisons)
-            if comparison_type == 'worst' and y_min_ordinal is not None:
-                violation = violation or ((h + 1e-9) < y_min_ordinal)  # require h >= y_min_ordinal
+            # Also check ordinal constraints for worst phase (from completed worst comparisons)
+            if comparison_type == 'worst':
+                if y_min_ordinal is not None:
+                    violation = violation or ((h + 1e-9) < y_min_ordinal)  # require h >= lower bound
+                if y_max_ordinal is not None:
+                    violation = violation or ((h - 1e-9) > y_max_ordinal)  # require h <= upper bound
             # Update slider accent color (may vary by Tk theme)
             try:
-                if y_thresh is not None or y_min_ordinal is not None:
+                if y_thresh is not None or y_min_ordinal is not None or y_max_ordinal is not None:
                     slider.configure(activebackground=('#d62728' if violation else '#2b78c8'))
             except Exception:
                 pass
@@ -1187,7 +1188,11 @@ class WBT_ui:
             # Fetch the B-W threshold
             y_thresh = self._bw_vf_thresholds.get(group_name, None)
             # Fetch the ordinal constraint (worst phase only)
-            y_ordinal = self._compute_worst_ordinal_constraint(group_name, other_criterion) if comparison_type == 'worst' else None
+            y_ordinal_lower, y_ordinal_upper = (None, None)
+            if comparison_type == 'worst':
+                y_ordinal_lower, y_ordinal_upper = self._compute_worst_ordinal_constraint(group_name, other_criterion)
+            # Use whichever ordinal bound exists (prefer lower if both exist)
+            y_ordinal = y_ordinal_lower if y_ordinal_lower is not None else y_ordinal_upper
             
             # Draw both markers if available
             threshold_canvas.delete('all')
@@ -1485,11 +1490,37 @@ class WBT_ui:
         ttk.Label(frm, text="All comparisons for this group have been completed.", font=(None, 11)).pack(pady=5)
         ttk.Label(frm, text="You can modify comparisons by clicking Back.", font=(None, 10), foreground='gray').pack(pady=5)
         
-        # Create consistency check plot
-        try:
-            self.create_consistency_plot(frm, group_name)
-        except Exception as e:
-            ttk.Label(frm, text=f"Could not generate plot: {str(e)}", foreground='red').pack(pady=10)
+        # Toggle button to show/hide consistency plot (hidden by default)
+        plot_frame = ttk.Frame(frm)
+        plot_frame.pack(pady=(10, 10))
+        
+        # State holder for the plot
+        plot_state = {'visible': False, 'widget': None}
+        
+        def toggle_plot():
+            if plot_state['visible']:
+                # Hide the plot
+                if plot_state['widget'] is not None:
+                    plot_state['widget'].pack_forget()
+                plot_state['visible'] = False
+                toggle_btn.configure(text='Show Consistency Check')
+            else:
+                # Show the plot
+                if plot_state['widget'] is None:
+                    # Create the plot widget
+                    try:
+                        plot_state['widget'] = ttk.Frame(frm)
+                        self.create_consistency_plot(plot_state['widget'], group_name)
+                    except Exception as e:
+                        ttk.Label(plot_state['widget'], text=f"Could not generate plot: {str(e)}", foreground='red').pack(pady=10)
+                else:
+                    # Just show the existing widget
+                    plot_state['widget'].pack(pady=(10, 20), fill=tk.BOTH, expand=True)
+                plot_state['visible'] = True
+                toggle_btn.configure(text='Hide Consistency Check')
+        
+        toggle_btn = ttk.Button(plot_frame, text='Show Consistency Check', command=toggle_plot)
+        toggle_btn.pack(pady=(10, 0))
         
         # Navigation buttons
         btn_frame = ttk.Frame(frm)
