@@ -60,6 +60,10 @@ class WBT_ui:
         self.best_comparison_results = None
         self.worst_comparison_results = None
         self.reordered_criteria_names = None
+        # Track per-context Best-vs-Worst VF thresholds (y in [0,1])
+        self._bw_vf_thresholds = {}
+        # Track per-context cross-comparison rankings from best phase (criterion_name -> rank_value)
+        self._best_rankings = {}
         # Set style for larger fonts
         plt.rcParams.update({'font.size': 12})
         # Build groups (preserve order of appearance)
@@ -239,6 +243,11 @@ class WBT_ui:
                 w = csv.writer(f)
                 w.writerow(['Type', 'Reference', 'Other', 'Value', 'Group', 'Confidence', 'a'])
 
+        # Try to restore BW threshold for this group from CSV (if exists)
+        try:
+            self._restore_bw_threshold_from_csv(group_name, best, worst)
+        except Exception:
+            pass
         self.show_next_comparison()
 
     def prepare_intergroup_phase(self, phase):
@@ -382,7 +391,173 @@ class WBT_ui:
                 self.comparisons.append(('worst', worst, name))
 
         self.current_comparison = 0
+        # Try to restore BW threshold for this synthetic context as well
+        try:
+            self._restore_bw_threshold_from_csv(context_group_name, best, worst)
+        except Exception:
+            pass
         self.show_next_comparison()
+
+    def _restore_bw_threshold_from_csv(self, group_name, best, worst):
+        """If a Best-vs-Worst comparison exists in CSV for the given group,
+        compute its VF value and store as threshold for consistency guidance."""
+        fn = getattr(self, '_results_fn', None)
+        if fn is None:
+            ui_dir = os.path.dirname(os.path.abspath(__file__))
+            fn = os.path.join(ui_dir, 'BWT_results.csv')
+        if not os.path.exists(fn):
+            return
+        # find BW row: Type='best', Reference=best, Other=worst, Group=group_name
+        try:
+            with open(fn, 'r', newline='') as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    if row.get('Group') != group_name:
+                        continue
+                    if row.get('Type') == 'best' and row.get('Reference') == best and row.get('Other') == worst:
+                        try:
+                            x_val = float(row.get('Value', 'nan'))
+                        except Exception:
+                            continue
+                        # compute VF on the Best criterion
+                        crit = self.criteria_by_name.get(best)
+                        if not crit:
+                            continue
+                        vf = crit.get('value_function')
+                        y = None
+                        try:
+                            if callable(vf):
+                                y = float(vf(x_val))
+                            else:
+                                # fallback linear between min..max of the Best criterion
+                                lo = float(crit.get('min', 0.0))
+                                hi = float(crit.get('max', lo + 1.0))
+                                if hi == lo:
+                                    y = 1.0
+                                else:
+                                    y = (x_val - lo) / (hi - lo)
+                        except Exception:
+                            pass
+                        if y is not None:
+                            self._bw_vf_thresholds[group_name] = float(np.clip(y, 0.0, 1.0))
+                        break
+        except Exception:
+            pass
+
+    def _compute_worst_ordinal_constraint(self, group_name, worst_other_name):
+        """For a worst-comparison (worst vs worst_other_name), check if any previously
+        completed worst comparison can provide an ordinal constraint.
+        
+        If in best comparisons: worst_ref_rank < worst_other_rank (lower rank = more important),
+        then in worst comparisons: worst_ref_vf >= worst_other_vf
+        
+        Returns the minimum VF that worst_other must exceed (if such a constraint exists), or None.
+        """
+        fn = getattr(self, '_results_fn', None)
+        if fn is None:
+            ui_dir = os.path.dirname(os.path.abspath(__file__))
+            fn = os.path.join(ui_dir, 'BWT_results.csv')
+        if not os.path.exists(fn):
+            return None
+
+        # First, build best-phase ranking: criterion -> vf_value (lower = more important)
+        best_ranks = {}  # criterion_name -> vf_value from best comparisons
+        try:
+            with open(fn, 'r', newline='') as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    if row.get('Group') != group_name or row.get('Type') != 'best':
+                        continue
+                    ref = row.get('Reference')
+                    other = row.get('Other')
+                    try:
+                        x_val = float(row.get('Value', 'nan'))
+                    except Exception:
+                        continue
+                    # Compute VF on the reference (best) criterion
+                    crit = self.criteria_by_name.get(ref)
+                    if not crit:
+                        continue
+                    vf = crit.get('value_function')
+                    try:
+                        if callable(vf):
+                            y = float(vf(x_val))
+                        else:
+                            lo = float(crit.get('min', 0.0))
+                            hi = float(crit.get('max', lo + 1.0))
+                            y = 1.0 if hi == lo else (x_val - lo) / (hi - lo)
+                    except Exception:
+                        continue
+                    y = float(np.clip(y, 0.0, 1.0))
+                    # Store: other's rank is y (lower y = higher importance)
+                    best_ranks[other] = y
+        except Exception:
+            return None
+
+        # Get the rank of the current worst_other from best phase
+        if worst_other_name not in best_ranks:
+            return None
+        other_rank = best_ranks[worst_other_name]
+
+        # Now check already-completed worst comparisons to find constraints
+        # If there's a completed worst comparison with a criterion that's MORE important (lower rank),
+        # we need to be >= that value
+        max_lower_rank_vf = None  # max VF assigned to more-important criteria
+        try:
+            with open(fn, 'r', newline='') as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    if row.get('Group') != group_name or row.get('Type') != 'worst':
+                        continue
+                    ref = row.get('Reference')  # This is the Worst criterion (always same)
+                    other = row.get('Other')    # The "other" criterion in this comparison
+                    if other == worst_other_name:
+                        # Skip self-comparisons
+                        continue
+                    try:
+                        x_val = float(row.get('Value', 'nan'))
+                    except Exception:
+                        continue
+                    
+                    # Check if 'other' is more important than worst_other_name
+                    # (i.e., has a lower rank value in best comparisons)
+                    if other not in best_ranks:
+                        continue
+                    other_rank_val = best_ranks[other]
+                    if not (other_rank_val < other_rank):
+                        # 'other' is NOT more important, skip
+                        continue
+                    
+                    # 'other' IS more important than worst_other_name
+                    # The constraint is: current worst_other must have VF >= VF of this 'other'
+                    # Compute VF of the 'other' criterion at the value that was assigned to it
+                    crit = self.criteria_by_name.get(other)
+                    if not crit:
+                        continue
+                    vf = crit.get('value_function')
+                    try:
+                        if callable(vf):
+                            y = float(vf(x_val))
+                        else:
+                            lo = float(crit.get('min', 0.0))
+                            hi = float(crit.get('max', lo + 1.0))
+                            y = 1.0 if hi == lo else (x_val - lo) / (hi - lo)
+                    except Exception:
+                        continue
+                    y = float(np.clip(y, 0.0, 1.0))
+                    
+                    # Update max VF among more-important criteria
+                    if max_lower_rank_vf is None or y > max_lower_rank_vf:
+                        max_lower_rank_vf = y
+        except Exception:
+            pass
+
+        return max_lower_rank_vf
+
+    def _compute_worst_consistency_bounds(self, group_name, worst_other_name):
+        """DEPRECATED: Use _compute_worst_ordinal_constraint instead.
+        Kept for backward compatibility."""
+        return None, None
 
     def show_next_comparison(self):
         # Minimal elicitation UI: simple labels and a Tk slider. Each comparison
@@ -842,8 +1017,20 @@ class WBT_ui:
             pass
 
         # center column gets the slider and radios; keep slider reasonably sized
-        slider = tk.Scale(center_col, from_=mins[slider_target], to=maxs[slider_target], orient=tk.HORIZONTAL, resolution=resolution, length=400)
-        slider.pack(pady=(6, 8))
+        slider_length = 400
+        slider = tk.Scale(center_col, from_=mins[slider_target], to=maxs[slider_target], orient=tk.HORIZONTAL, resolution=resolution, length=slider_length)
+        # Add a small canvas above the slider to show the consistency threshold marker
+        threshold_canvas = tk.Canvas(center_col, width=slider_length, height=14, highlightthickness=0)
+        threshold_canvas.pack(pady=(4, 0))
+        slider.pack(pady=(2, 8))
+
+        # Fetch the VF threshold for consistency guidance if available
+        y_thresh = self._bw_vf_thresholds.get(group_name, None)
+        
+        # For worst comparisons, also check ordinal constraint from already-completed worst comparisons
+        y_min_ordinal = None
+        if comparison_type == 'worst':
+            y_min_ordinal = self._compute_worst_ordinal_constraint(group_name, other_criterion)
 
         def on_slide(val):
             try:
@@ -872,6 +1059,28 @@ class WBT_ui:
             h = float(np.clip(h, 0.001, 1.0))
             for i, rect in enumerate(bars_right):
                 rect.set_height(h if i == idx else 0.0)
+                # Reset non-target bar color; target colored below based on consistency
+                if i != idx:
+                    try:
+                        rect.set_facecolor('#9ecae1')
+                    except Exception:
+                        pass
+            # Check consistency against threshold and update slider accent color
+            violation = False
+            if y_thresh is not None:
+                if comparison_type == 'best':
+                    violation = (h + 1e-9) < y_thresh  # require h >= y_thresh (equal allowed)
+                else:
+                    violation = (h - 1e-9) > y_thresh  # require h <= y_thresh (equal allowed)
+            # Also check ordinal constraint for worst phase (from completed worst comparisons)
+            if comparison_type == 'worst' and y_min_ordinal is not None:
+                violation = violation or ((h + 1e-9) < y_min_ordinal)  # require h >= y_min_ordinal
+            # Update slider accent color (may vary by Tk theme)
+            try:
+                if y_thresh is not None or y_min_ordinal is not None:
+                    slider.configure(activebackground=('#d62728' if violation else '#2b78c8'))
+            except Exception:
+                pass
             # keep radio buttons in sync (if present)
             try:
                 # indicate we're updating radios programmatically so the trace ignores it
@@ -971,6 +1180,68 @@ class WBT_ui:
                 pass
         except Exception:
             # don't fail the UI if radios can't be created
+            pass
+
+        # --- Consistency threshold markers ---
+        try:
+            # Fetch the B-W threshold
+            y_thresh = self._bw_vf_thresholds.get(group_name, None)
+            # Fetch the ordinal constraint (worst phase only)
+            y_ordinal = self._compute_worst_ordinal_constraint(group_name, other_criterion) if comparison_type == 'worst' else None
+            
+            # Draw both markers if available
+            threshold_canvas.delete('all')
+            low = float(min(mins[slider_target], maxs[slider_target]))
+            high = float(max(mins[slider_target], maxs[slider_target]))
+            
+            # Helper to convert VF value to pixel position
+            def y_to_px(y_vf):
+                try:
+                    pre = group_criteria[slider_target].get('_precomputed_x_for_y')
+                    ix = int(round(float(np.clip(y_vf, 0.0, 1.0)) * 10))
+                    if pre and 0 <= ix < len(pre) and pre[ix] is not None:
+                        x_val = float(pre[ix])
+                    else:
+                        x_val = compute_x_for_vf(group_criteria[slider_target], float(y_vf), mins[slider_target], maxs[slider_target])
+                except Exception:
+                    x_val = compute_x_for_vf(group_criteria[slider_target], float(y_vf), mins[slider_target], maxs[slider_target])
+                if high == low:
+                    return slider_length / 2.0
+                else:
+                    frac = float(np.clip((x_val - low) / (high - low), 0.0, 1.0))
+                    return 2 + frac * (slider_length - 4)
+            
+            # Draw B-W threshold marker (if available)
+            if y_thresh is not None:
+                px_bw = y_to_px(y_thresh)
+                threshold_canvas.create_polygon(px_bw-5, 2, px_bw+5, 2, px_bw, 12, fill='red', outline='black')
+                threshold_canvas.create_text(px_bw, 1, text='A', font=('Helvetica', 8, 'bold'), fill='white', anchor='s')
+                # Also mark on VF plot
+                try:
+                    if ax_vf is not None:
+                        ax_vf.plot([compute_x_for_vf(group_criteria[slider_target], y_thresh, mins[slider_target], maxs[slider_target])], [y_thresh], marker='o', color='red', markersize=5)
+                except Exception:
+                    pass
+            
+            # Draw ordinal constraint marker (worst phase only, if available)
+            if comparison_type == 'worst' and y_ordinal is not None:
+                px_ord = y_to_px(y_ordinal)
+                threshold_canvas.create_polygon(px_ord-5, 2, px_ord+5, 2, px_ord, 12, fill='orange', outline='black')
+                threshold_canvas.create_text(px_ord, 1, text='B', font=('Helvetica', 8, 'bold'), fill='white', anchor='s')
+                # Also mark on VF plot
+                try:
+                    if ax_vf is not None:
+                        ax_vf.plot([compute_x_for_vf(group_criteria[slider_target], y_ordinal, mins[slider_target], maxs[slider_target])], [y_ordinal], marker='s', color='orange', markersize=5)
+                except Exception:
+                    pass
+            
+            # Redraw canvas if either marker was added
+            try:
+                canvas.draw_idle()
+            except Exception:
+                pass
+        except Exception:
+            # non-fatal if marker cannot be drawn
             pass
 
         # Create the per-comparison confidence selector on the right of the slider
@@ -1149,6 +1420,36 @@ class WBT_ui:
             self.best_comparison_results[other] = val
         else:
             self.worst_comparison_results[other] = val
+
+        # If this saved comparison is the Best-vs-Worst for the current context,
+        # compute and store the VF threshold so following screens can show guidance.
+        try:
+            group_name = getattr(self, '_context_group_name', self.groups[self.current_group_idx] if self.groups else 'Ungrouped')
+            sel = self.group_selected.get(group_name, {})
+            worst_name = sel.get('worst')
+            best_name = sel.get('best')
+            slider_target = getattr(self, '_slider_target', None)
+            group_criteria = getattr(self, '_group_criteria', None)
+            if comp_type == 'best' and best_name and worst_name and ref == best_name and other == worst_name and slider_target is not None and group_criteria is not None:
+                criterion = group_criteria[slider_target]
+                vf = criterion.get('value_function')
+                # compute VF value (y in [0,1]) for current saved raw x 'val'
+                try:
+                    if callable(vf):
+                        y = float(vf(val))
+                    else:
+                        lo = float(criterion.get('min', 0.0))
+                        hi = float(criterion.get('max', lo + 1.0))
+                        if hi == lo:
+                            y = 1.0
+                        else:
+                            y = (val - lo) / (hi - lo)
+                except Exception:
+                    y = None
+                if y is not None:
+                    self._bw_vf_thresholds[group_name] = float(np.clip(y, 0.0, 1.0))
+        except Exception:
+            pass
 
     def save_and_next(self):
         # Save the current comparison and move to the next one
