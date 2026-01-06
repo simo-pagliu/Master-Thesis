@@ -13,7 +13,9 @@ Capital costs represent the initial investment required for nuclear power plant 
     \label{fig:capex-distribution}
 \end{figure}
 
-Based on these ratios and some available data points (See Table \ref{tab:capex-distributions}) the trapezoidal distributions for each reactor model were constructed (See Table \ref{tab:capex-distributions}), known data points are highlighted in bold.
+Consultations with nuclear economics experts provided critical perspective on cost assumptions. Manufacturer estimates were uniformly regarded as overly optimistic. The discussion also challenged learning curve assumptions, noting the absence of recent cost reduction evidence in nuclear construction. Conservative deployment cost estimates converged near 9000 USD2022/kWe, significantly exceeding all vendor claims. The U.S. Energy Information Administration's 2024 report \cite{EIA_Capital_Costs_AEO2024} offers relevant benchmarks, documenting \gls{smr} costs at 8936 USD2023/kWe and large reactor costs at 7861 USD2023/kWe.
+
+The capital cost distributions (Table \ref{tab:capex-distributions}) were constructed using the previously established cost ratios and expert-sourced reference points (shown in bold). While these specialist inputs remain unpublished for the time being, their preliminary nature aligns with the study's focus on uncertainty quantification, providing an opportunity to incorporate a highly uncertain indicator into the analysis framework.
 
 \begin{table}[!hb]
     \centering
@@ -32,8 +34,6 @@ Based on these ratios and some available data points (See Table \ref{tab:capex-d
     \caption{Trapezoidal capital cost distributions [\$/kWe] for each reactor model, rounded up to the nearest hundred. Known points in bold.}
     \label{tab:capex-distributions}
 \end{table}
-
-\textcolor{red}{PLACEHOLDER : qui potresti aggiungere commenti sui prezzi che conosciamo con le relative fonti... vedi file che mi ha mandato vinh}
 
 
 \paragraph{Risk of delays}
@@ -64,7 +64,7 @@ $$
 \frac{USD_{2020}}{MWh_e} = \frac{USD_{2020}}{MW_e} \cdot \frac{1}{CF \cdot 8760 \frac{h}{year}}
 $$
 
-The analysis incorporates fuel cost estimates of $6.23 USD_{2020}/MWh_e$ for \gls{pwr}-based technologies, with two exceptions: NuScale at $7.15 USD_{2020}/MWh_e$ and the \gls{bwrx} at $29.55 USD_{2020}/MWh_e$. The original BWRX estimate of $29.55 USD_{2020}/MWh_e$ appeared inconsistent given the order of magnitude difference from other \gls{lwr} designs, a discrepancy also noted by Hjelmeland (2024) \cite{HJELMELAND2024133827}. Consequently, an alternative estimate of $7.19 USD_{2020}/MWh_e$ was selected, aligning more closely with both Hjelmeland's critique and Zubair et al. (2026) \cite{ZUBAIR2026111989}. For comparative benchmarking, operational cost data for utility-scale onshore wind, hydroelectric, and solar \gls{pv} (with single-axis tracking and DC battery storage) were sourced from the US Energy Information Administration \cite{EIA_Capital_Costs_AEO2024}. All financial data has been standardized to 2020 USD to ensure consistency with the primary reference sources \cite{STEIGERWALD2023128204,NEA2020}.
+The analysis from \cite{STEIGERWALD2023128204} incorporates fuel cost estimates of $6.23 USD_{2020}/MWh_e$ for \gls{pwr}-based technologies, with two exceptions: NuScale at $7.15 USD_{2020}/MWh_e$ and the \gls{bwrx} at $29.55 USD_{2020}/MWh_e$. The original BWRX estimate of $29.55 USD_{2020}/MWh_e$ appeared inconsistent given the order of magnitude difference from other \gls{lwr} designs, a discrepancy also noted by Hjelmeland (2024) \cite{HJELMELAND2024133827}. Consequently, an alternative estimate of $7.19 USD_{2020}/MWh_e$ was selected, aligning more closely with both Hjelmeland's critique and Zubair et al. (2026) \cite{ZUBAIR2026111989}. For comparative benchmarking, operational cost data for utility-scale onshore wind, hydroelectric, and solar \gls{pv} (with single-axis tracking and DC battery storage) were sourced from the US Energy Information Administration \cite{EIA_Capital_Costs_AEO2024}. All financial data has been standardized to 2020 USD to ensure consistency with the primary reference sources \cite{STEIGERWALD2023128204,NEA2020}.
 
 \begin{table}[!hb]
     \centering
