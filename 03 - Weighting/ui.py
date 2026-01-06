@@ -1563,6 +1563,9 @@ class WBT_ui:
                     
                     try:
                         a_val = float(row.get('a', 0))
+                        # Invert a_val for worst comparisons
+                        if comp_type == 'worst' and a_val != 0:
+                            a_val = 1.0 / a_val
                     except Exception:
                         a_val = 0
                     
@@ -1623,7 +1626,7 @@ class WBT_ui:
                 tick.set_horizontalalignment('right')
         except Exception:
             pass
-        ax.set_xlabel('Inverse Value Function (a = 1/vf)', fontsize=10)
+        ax.set_xlabel('a values', fontsize=10)
         ax.set_title(f'Consistency Check - Group: {group_name}\n(Best/Worst highlighted)', fontsize=11, fontweight='bold')
         ax.grid(axis='x', alpha=0.3)
         
