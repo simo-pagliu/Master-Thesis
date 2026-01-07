@@ -62,6 +62,8 @@ class WBT_ui:
         self.reordered_criteria_names = None
         # Track per-context Best-vs-Worst VF thresholds (y in [0,1])
         self._bw_vf_thresholds = {}
+        # Track per-context Best-vs-Worst data values (x in data range)
+        self._bw_data_values = {}
         # Track per-context cross-comparison rankings from best phase (criterion_name -> rank_value)
         self._best_rankings = {}
         # Set style for larger fonts
@@ -440,6 +442,7 @@ class WBT_ui:
                             pass
                         if y is not None:
                             self._bw_vf_thresholds[group_name] = float(np.clip(y, 0.0, 1.0))
+                            self._bw_data_values[group_name] = float(x_val)
                         break
         except Exception:
             pass
@@ -448,16 +451,17 @@ class WBT_ui:
         """For a worst-comparison (worst vs worst_other_name), check if any previously
         completed worst comparison can provide an ordinal constraint.
         
-        Returns (lower_bound, upper_bound) where:
+        Returns ((lower_bound_vf, lower_bound_data), (upper_bound_vf, upper_bound_data)) where:
         - lower_bound: max VF from more-important criteria (require current >= this)
         - upper_bound: min VF from less-important criteria (require current <= this)
+        Both VF values and data values are returned for consistency checking and arrow positioning.
         """
         fn = getattr(self, '_results_fn', None)
         if fn is None:
             ui_dir = os.path.dirname(os.path.abspath(__file__))
             fn = os.path.join(ui_dir, 'BWT_results.csv')
         if not os.path.exists(fn):
-            return None, None
+            return (None, None), (None, None)
 
         # First, build best-phase ranking: criterion -> vf_value (lower = more important)
         best_ranks = {}  # criterion_name -> vf_value from best comparisons
@@ -491,16 +495,18 @@ class WBT_ui:
                     # Store: other's rank is y (lower y = higher importance)
                     best_ranks[other] = y
         except Exception:
-            return None, None
+            return (None, None), (None, None)
 
         # Get the rank of the current worst_other from best phase
         if worst_other_name not in best_ranks:
-            return None, None
+            return (None, None), (None, None)
         other_rank = best_ranks[worst_other_name]
 
         # Now check already-completed worst comparisons
-        lower_bound = None  # max VF from more-important criteria
-        upper_bound = None  # min VF from less-important criteria
+        lower_bound_vf = None  # max VF from more-important criteria
+        lower_bound_data = None  # corresponding data value
+        upper_bound_vf = None  # min VF from less-important criteria
+        upper_bound_data = None  # corresponding data value
         try:
             with open(fn, 'r', newline='') as f:
                 reader = csv.DictReader(f)
@@ -541,16 +547,18 @@ class WBT_ui:
                     # Check ordering relationship
                     if other_rank_val < other_rank:
                         # 'other' IS more important, creates a lower bound
-                        if lower_bound is None or y > lower_bound:
-                            lower_bound = y
+                        if lower_bound_vf is None or y > lower_bound_vf:
+                            lower_bound_vf = y
+                            lower_bound_data = x_val
                     elif other_rank_val > other_rank:
                         # 'other' IS less important, creates an upper bound
-                        if upper_bound is None or y < upper_bound:
-                            upper_bound = y
+                        if upper_bound_vf is None or y < upper_bound_vf:
+                            upper_bound_vf = y
+                            upper_bound_data = x_val
         except Exception:
             pass
 
-        return lower_bound, upper_bound
+        return (lower_bound_vf, lower_bound_data), (upper_bound_vf, upper_bound_data)
 
     def _compute_worst_consistency_bounds(self, group_name, worst_other_name):
         """DEPRECATED: Use _compute_worst_ordinal_constraint instead.
@@ -575,6 +583,16 @@ class WBT_ui:
         else:
             group_name = self.groups[self.current_group_idx] if self.groups else 'Ungrouped'
             group_criteria = self.group_map.get(group_name, [])
+        
+        # Restore B-W threshold from CSV to ensure red arrow is shown
+        # (needed for all comparisons after the first B-W comparison is saved)
+        try:
+            best = self.best if hasattr(self, 'best') else None
+            worst = self.worst if hasattr(self, 'worst') else None
+            if best and worst:
+                self._restore_bw_threshold_from_csv(group_name, best, worst)
+        except Exception:
+            pass
 
         # Prepare base and display names (display includes units when available)
         base_names = [c.get('name') for c in group_criteria]
@@ -1027,8 +1045,9 @@ class WBT_ui:
         
         # For worst comparisons, also check ordinal constraint from already-completed worst comparisons
         y_min_ordinal, y_max_ordinal = None, None
+        x_min_ordinal, x_max_ordinal = None, None
         if comparison_type == 'worst':
-            y_min_ordinal, y_max_ordinal = self._compute_worst_ordinal_constraint(group_name, other_criterion)
+            (y_min_ordinal, x_min_ordinal), (y_max_ordinal, x_max_ordinal) = self._compute_worst_ordinal_constraint(group_name, other_criterion)
 
         def on_slide(val):
             try:
@@ -1185,60 +1204,68 @@ class WBT_ui:
 
         # --- Consistency threshold markers ---
         try:
-            # Fetch the B-W threshold
+            # Fetch the B-W threshold (VF value only - we'll convert to current criterion's data range)
             y_thresh = self._bw_vf_thresholds.get(group_name, None)
-            # Fetch the ordinal constraint (worst phase only)
-            y_ordinal_lower, y_ordinal_upper = (None, None)
+            
+            # Fetch the ordinal constraint (worst phase only - VF value)
+            y_ordinal_lower, y_ordinal_upper = None, None
             if comparison_type == 'worst':
-                y_ordinal_lower, y_ordinal_upper = self._compute_worst_ordinal_constraint(group_name, other_criterion)
-            # Use whichever ordinal bound exists (prefer lower if both exist)
-            y_ordinal = y_ordinal_lower if y_ordinal_lower is not None else y_ordinal_upper
+                (y_ordinal_lower, x_ordinal_lower), (y_ordinal_upper, x_ordinal_upper) = self._compute_worst_ordinal_constraint(group_name, other_criterion)
             
             # Draw both markers if available
             threshold_canvas.delete('all')
-            low = float(min(mins[slider_target], maxs[slider_target]))
-            high = float(max(mins[slider_target], maxs[slider_target]))
+            slider_min = mins[slider_target]
+            slider_max = maxs[slider_target]
             
-            # Helper to convert VF value to pixel position
-            def y_to_px(y_vf):
-                try:
-                    pre = group_criteria[slider_target].get('_precomputed_x_for_y')
-                    ix = int(round(float(np.clip(y_vf, 0.0, 1.0)) * 10))
-                    if pre and 0 <= ix < len(pre) and pre[ix] is not None:
-                        x_val = float(pre[ix])
-                    else:
-                        x_val = compute_x_for_vf(group_criteria[slider_target], float(y_vf), mins[slider_target], maxs[slider_target])
-                except Exception:
-                    x_val = compute_x_for_vf(group_criteria[slider_target], float(y_vf), mins[slider_target], maxs[slider_target])
-                if high == low:
+            # Helper to convert data value to pixel position (linear mapping matching slider geometry)
+            def data_to_px(x_data):
+                if slider_max == slider_min:
                     return slider_length / 2.0
                 else:
-                    frac = float(np.clip((x_val - low) / (high - low), 0.0, 1.0))
+                    frac = float(np.clip((x_data - slider_min) / (slider_max - slider_min), 0.0, 1.0))
                     return 2 + frac * (slider_length - 4)
             
-            # Draw B-W threshold marker (if available)
+            # Draw B-W threshold marker (if available) - convert VF to current criterion's data range
             if y_thresh is not None:
-                px_bw = y_to_px(y_thresh)
-                threshold_canvas.create_polygon(px_bw-5, 2, px_bw+5, 2, px_bw, 12, fill='red', outline='black')
-                threshold_canvas.create_text(px_bw, 1, text='A', font=('Helvetica', 8, 'bold'), fill='white', anchor='s')
-                # Also mark on VF plot
+                # Convert the VF threshold to a data value for the current slider target
                 try:
-                    if ax_vf is not None:
-                        ax_vf.plot([compute_x_for_vf(group_criteria[slider_target], y_thresh, mins[slider_target], maxs[slider_target])], [y_thresh], marker='o', color='red', markersize=5)
+                    x_thresh_on_current = compute_x_for_vf(group_criteria[slider_target], y_thresh, slider_min, slider_max)
+                    px_bw = data_to_px(x_thresh_on_current)
+                    threshold_canvas.create_polygon(px_bw-5, 2, px_bw+5, 2, px_bw, 12, fill='red', outline='black')
+                    threshold_canvas.create_text(px_bw, 1, text='A', font=('Helvetica', 8, 'bold'), fill='white', anchor='s')
+                    # Also mark on VF plot
+                    try:
+                        if ax_vf is not None:
+                            ax_vf.plot([x_thresh_on_current], [y_thresh], marker='o', color='red', markersize=5)
+                    except Exception:
+                        pass
                 except Exception:
                     pass
             
             # Draw ordinal constraint marker (worst phase only, if available)
-            if comparison_type == 'worst' and y_ordinal is not None:
-                px_ord = y_to_px(y_ordinal)
-                threshold_canvas.create_polygon(px_ord-5, 2, px_ord+5, 2, px_ord, 12, fill='orange', outline='black')
-                threshold_canvas.create_text(px_ord, 1, text='B', font=('Helvetica', 8, 'bold'), fill='white', anchor='s')
-                # Also mark on VF plot
-                try:
-                    if ax_vf is not None:
-                        ax_vf.plot([compute_x_for_vf(group_criteria[slider_target], y_ordinal, mins[slider_target], maxs[slider_target])], [y_ordinal], marker='s', color='orange', markersize=5)
-                except Exception:
-                    pass
+            if comparison_type == 'worst':
+                # Use whichever ordinal bound exists (prefer lower if both exist)
+                y_ordinal = None
+                if y_ordinal_lower is not None:
+                    y_ordinal = y_ordinal_lower
+                elif y_ordinal_upper is not None:
+                    y_ordinal = y_ordinal_upper
+                
+                if y_ordinal is not None:
+                    # Convert the VF constraint to a data value for the current slider target
+                    try:
+                        x_ordinal_on_current = compute_x_for_vf(group_criteria[slider_target], y_ordinal, slider_min, slider_max)
+                        px_ord = data_to_px(x_ordinal_on_current)
+                        threshold_canvas.create_polygon(px_ord-5, 2, px_ord+5, 2, px_ord, 12, fill='orange', outline='black')
+                        threshold_canvas.create_text(px_ord, 1, text='B', font=('Helvetica', 8, 'bold'), fill='white', anchor='s')
+                        # Also mark on VF plot
+                        try:
+                            if ax_vf is not None:
+                                ax_vf.plot([x_ordinal_on_current], [y_ordinal], marker='s', color='orange', markersize=5)
+                        except Exception:
+                            pass
+                    except Exception:
+                        pass
             
             # Redraw canvas if either marker was added
             try:
@@ -1453,6 +1480,7 @@ class WBT_ui:
                     y = None
                 if y is not None:
                     self._bw_vf_thresholds[group_name] = float(np.clip(y, 0.0, 1.0))
+                    self._bw_data_values[group_name] = float(val)
         except Exception:
             pass
 

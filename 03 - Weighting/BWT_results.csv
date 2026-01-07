@@ -1,1 +1,11 @@
 Type,Reference,Other,Value,Group,Confidence,a
+best,Thermal Efficiency,Net Power Output,33.51,Technical,2,1.9796067328747453
+best,Thermal Efficiency,Discharge Burnup,35.15,Technical,2,1.2341933615566014
+best,Thermal Efficiency,Load following Capabilities,34.53,Technical,2,1.4390455670965046
+worst,Net Power Output,Discharge Burnup,48.97,Technical,2,3.4329147869775425
+worst,Net Power Output,Load following Capabilities,0.71,Technical,2,5.95621829189674
+best,Capital Investment Budgeted,Construction Complexity,9217.391304,Economic,2,2.8749999996406252
+best,Capital Investment Budgeted,Operative + Fuel Costs,6869.565217,Economic,2,1.5593220337793736
+best,Capital Investment Budgeted,Design Complexity,5130.434783,Economic,2,1.164556962091652
+worst,Construction Complexity,Operative + Fuel Costs,22.429348,Economic,2,6.988493892070327
+worst,Construction Complexity,Design Complexity,4.804348,Economic,2,4.32737603668784
