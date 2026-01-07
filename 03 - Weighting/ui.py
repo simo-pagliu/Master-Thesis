@@ -1671,21 +1671,11 @@ class WBT_ui:
     def proceed_from_summary(self):
         # Proceed to next group or finalize
         if self.current_group_idx < len(self.groups) - 1:
-            # Ask if user wants to continue to next group
-            group_name = self.groups[self.current_group_idx]
-            next_group = self.groups[self.current_group_idx + 1]
-            proceed = messagebox.askyesno('Continue to Next Group', 
-                f'Completed group: {group_name}\n\nContinue with group: {next_group}?')
-            if proceed:
-                self.current_group_idx += 1
-                # Show selection UI for next group so user may choose best/worst
-                self.setup_selection_ui()
-                return
-            else:
-                # User wants to stay, go back to comparisons
-                self.current_comparison = len(self.comparisons) - 1
-                self.show_next_comparison()
-                return
+            # Automatically continue to next group
+            self.current_group_idx += 1
+            # Show selection UI for next group so user may choose best/worst
+            self.setup_selection_ui()
+            return
         else:
             # We've finished all comparisons in the current context.
             scope = getattr(self, '_context_scope', 'intra-group')
