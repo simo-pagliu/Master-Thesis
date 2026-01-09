@@ -59,20 +59,20 @@ $$
 \frac{USD_{2020}}{MWh_e} = \frac{USD_{2020}}{MW_e} \cdot \frac{1}{CF \cdot 8760 \frac{h}{year}}
 $$
 
-The analysis from \cite{STEIGERWALD2023128204} incorporates fuel cost estimates of $6.23 USD_{2020}/MWh_e$ for \gls{pwr}-based technologies, with two exceptions: NuScale at $7.15 USD_{2020}/MWh_e$ and the \gls{bwrx} at $29.55 USD_{2020}/MWh_e$. The latter appeared inconsistent given the order of magnitude difference from other \gls{lwr} designs, a discrepancy also noted by Hjelmeland (2024) \cite{HJELMELAND2024133827}. Consequently, an alternative estimate of $7.19 USD_{2020}/MWh_e$ was selected, aligning more closely with both Hjelmeland's critique and Zubair et al. (2026) \cite{ZUBAIR2026111989}. For comparative benchmarking, operational cost data for utility-scale onshore wind, hydroelectric, and solar \gls{pv} (with single-axis tracking and DC battery storage) were sourced from the US Energy Information Administration \cite{EIA_Capital_Costs_AEO2024}. All financial data has been standardized to 2020 USD to ensure consistency with the primary reference sources \cite{STEIGERWALD2023128204,NEA2020}.
+The analysis from \cite{STEIGERWALD2023128204} incorporates fuel cost estimates of $6.23 USD_{2020}/MWh_e$ for \gls{pwr}-based technologies, with two exceptions: NuScale at $7.15 USD_{2020}/MWh_e$ and the \gls{bwrx} at $29.55 USD_{2020}/MWh_e$. The latter appeared inconsistent given the order of magnitude difference from other \gls{lwr} designs, a discrepancy also noted by Hjelmeland (2024) \cite{HJELMELAND2024133827}. Consequently, an alternative estimate of $7.19 USD_{2020}/MWh_e$ was selected, aligning more closely with both Hjelmeland's critique and Zubair et al. (2026) \cite{ZUBAIR2026111989}. The estimates for Rolls-Royce was originally sourced from \cite{PowerTechnology2022}, but the figure of $68$ $USD_{2022}/MWh_e$ was deemed unrealistic and undocumented by domain experts. For this reason a conservative $25 \pm 5$ $USD_{2020}/MWh_e$ was adopted in this study. Moreover, operational cost data for utility-scale onshore wind, hydroelectric, and solar \gls{pv} (with single-axis tracking and DC battery storage) were sourced from the US Energy Information Administration \cite{EIA_Capital_Costs_AEO2024} to provide a comparison benchmark to the reader. All financial data has been standardized to 2020 USD to ensure consistency with the primary reference sources \cite{STEIGERWALD2023128204,NEA2020}.
 
 \begin{table}[!hb]
     \centering
     \begin{tabularx}{\textwidth}{X c}
         \toprule
-        \textbf{Reactor Model} & \textbf{OPEX} \\
+        \textbf{Reactor Model} & \textbf{OPEX (includes fuel costs) [USD2020/MWh]} \\
         \midrule
-        APR-1400         & 18.44 \\
-        EPR-1750        & 14.26 \\
-        AP-1000          & 18.69 \\
-        BWRX-300        & $18.30 \pm 0.82$ \\
-        Rolls Royce SMR & $20.00 \pm 2.00$ \\
-        NuScale         & $22.76 \pm 1.02$ \\
+        APR-1400         & $24.67 \pm 1.65$ \\
+        EPR-1750        & $20.49 \pm 1.37$ \\
+        AP-1000          & $24.92 \pm 1.67$ \\
+        BWRX-300        & $25.49 \pm 1.71$ \\
+        Rolls Royce SMR & $25.00 \pm 5.00$ \\
+        NuScale         & $29.91 \pm 2.00$ \\
         \textbf{Other Power Plants} & \\
         Onshore Wind   & 28.08 \\
         Solar PV + Battery & 33.33 \\
