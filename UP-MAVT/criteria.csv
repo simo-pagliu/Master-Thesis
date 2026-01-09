@@ -2,7 +2,7 @@ name,group,min,max,unit,type
 Thermal Efficiency,Technical,30.8,36.17,%,positive
 Discharge Burnup,Technical,46.5,55,MWD/kgHM,positive
 Capital Investment Budgeted,Economic,4000,20000,USD2020/kWe,negative
-Operative + Fuel Costs,Economic,18,23,USD2020/MW_h,negative
+Operative + Fuel Costs,Economic,18,35,USD2020/MW_h,negative
 Percived Safety,Social,0,2,Score,positive
 Nuclear Waste,Social,5.88,27.71,tons/yr,negative
 GHGe Benefit,Social,0.021,9.07,MtonCO2-eq/yr,positive
