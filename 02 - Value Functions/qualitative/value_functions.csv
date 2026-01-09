@@ -1,9 +1,9 @@
 name,group,elicited_points,confidence,elicitation_meta
 Design Complexity,Economic,"[[1.0, 1.0], [5.0, 0.19], [4.0, 0.4], [3.0, 0.6], [2.0, 0.8], [6.0, 0.0]]",3,"{""mode"": ""Manual"", ""notes"": ""elicited via ranking_value_ui""}"
-Construction Complexity - IT,Economic,"[[1.0, 1.0], [5.0, 1.0], [4.0, 1.0], [3.0, 1.0], [2.0, 1.0], [6.0, 1.0]]",3,"{""mode"": ""Manual"", ""notes"": ""elicited via ranking_value_ui""}"
-Construction Complexity - CH,Economic,"[[1.0, 1.0], [5.0, 1.0], [4.0, 1.0], [3.0, 1.0], [2.0, 1.0], [6.0, 1.0]]",3,"{""mode"": ""Manual"", ""notes"": ""elicited via ranking_value_ui""}"
-Construction Complexity - FR,Economic,"[[1.0, 1.0], [5.0, 1.0], [4.0, 1.0], [3.0, 1.0], [2.0, 1.0], [6.0, 1.0]]",3,"{""mode"": ""Manual"", ""notes"": ""elicited via ranking_value_ui""}"
-Construction Complexity - PO,Economic,"[[1.0, 1.0], [5.0, 1.0], [4.0, 1.0], [3.0, 1.0], [2.0, 1.0], [6.0, 1.0]]",3,"{""mode"": ""Manual"", ""notes"": ""elicited via ranking_value_ui""}"
+Construction Complexity - IT,Economic,"[[1.0, 0.0], [5.0, 1.0], [4.0, 1.0], [3.0, 1.0], [2.0, 1.0], [6.0, 1.0]]",3,"{""mode"": ""Manual"", ""notes"": ""elicited via ranking_value_ui""}"
+Construction Complexity - CH,Economic,"[[1.0, 0.0], [5.0, 1.0], [4.0, 1.0], [3.0, 1.0], [2.0, 1.0], [6.0, 1.0]]",3,"{""mode"": ""Manual"", ""notes"": ""elicited via ranking_value_ui""}"
+Construction Complexity - FR,Economic,"[[1.0, 0.0], [5.0, 1.0], [4.0, 1.0], [3.0, 1.0], [2.0, 1.0], [6.0, 1.0]]",3,"{""mode"": ""Manual"", ""notes"": ""elicited via ranking_value_ui""}"
+Construction Complexity - PO,Economic,"[[1.0, 0.0], [5.0, 1.0], [4.0, 1.0], [3.0, 1.0], [2.0, 1.0], [6.0, 1.0]]",3,"{""mode"": ""Manual"", ""notes"": ""elicited via ranking_value_ui""}"
 Supplier Availbility - IT,Feasibility,"[[1.0, 0.0], [4.75, 0.75], [3.5, 0.5], [2.25, 0.25], [6.0, 1.0]]",3,"{""mode"": ""Manual"", ""notes"": ""elicited via ranking_value_ui""}"
 Supplier Availbility - CH,Feasibility,"[[1.0, 0.0], [4.75, 0.75], [3.5, 0.5], [2.25, 0.25], [6.0, 1.0]]",3,"{""mode"": ""Manual"", ""notes"": ""elicited via ranking_value_ui""}"
 Supplier Availbility - FR,Feasibility,"[[1.0, 0.0], [4.75, 0.75], [3.5, 0.5], [2.25, 0.25], [6.0, 1.0]]",3,"{""mode"": ""Manual"", ""notes"": ""elicited via ranking_value_ui""}"
