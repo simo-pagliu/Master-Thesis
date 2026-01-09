@@ -59,117 +59,110 @@ def import_criteria(file_path):
                 "group": row.get("group"),
                 "type": type_str,
             }
-    # Attempt to load value functions from a neighboring value_functions*.csv
-    try:
-        base_dir = os.path.dirname(os.path.abspath(file_path))
-        candidates = glob.glob(os.path.join(base_dir, 'value_functions*.csv'))
-        if candidates:
-            vf_path = candidates[0]
-            vfs = import_value_functions(vf_path)
-            # Attach to criteria if names match; provide a default linear mapping otherwise
-            for name, meta in criteria.items():
-                if name in vfs:
-                        vf_raw = vfs[name]
-                        # If only a single elicited node was present, assume linear behaviour
-                        # between criterion min and max (0.001..1.0)
-                        try:
-                            xs_attr = getattr(vf_raw, '_xs', None)
-                            # If only a single node is present, wrap into a linear mapping
-                            if xs_attr is not None and len(xs_attr) == 1:
-                                lo = meta.get('min', 0.0)
-                                hi = meta.get('max', lo + 1.0)
-                                def make_linear(lo, hi):
-                                    def vf(x):
+    # Load value functions from value_functions.csv in the same directory
+    base_dir = os.path.dirname(os.path.abspath(file_path))
+    vf_path = os.path.join(base_dir, 'value_functions.csv')
+    vfs = import_value_functions(vf_path)
+    # Attach to criteria if names match; provide a default linear mapping otherwise
+    for name, meta in criteria.items():
+        if name in vfs:
+                vf_raw = vfs[name]
+                # If only a single elicited node was present, assume linear behaviour
+                # between criterion min and max (0.001..1.0)
+                try:
+                    xs_attr = getattr(vf_raw, '_xs', None)
+                    # If only a single node is present, wrap into a linear mapping
+                    if xs_attr is not None and len(xs_attr) == 1:
+                        lo = meta.get('min', 0.0)
+                        hi = meta.get('max', lo + 1.0)
+                        def make_linear(lo, hi):
+                            def vf(x):
+                                try:
+                                    xv = float(x)
+                                except Exception:
+                                    xv = lo
+                                if hi == lo:
+                                    val = 1.0
+                                else:
+                                    val = (xv - lo) / (hi - lo)
+                                return float(np.clip(max(val, 0.001), 0.001, 1.0))
+                            try:
+                                vf._xs = np.array([lo, hi], dtype=float)
+                                vf._ys = np.array([0.001, 1.0], dtype=float)
+                            except Exception:
+                                pass
+                            return vf
+                        meta['value_function'] = make_linear(lo, hi)
+                    else:
+                        # If the loaded VF exposes node arrays that look like
+                        # normalized coordinates (within [0,1]), wrap the
+                        # original callable so it receives normalized input and
+                        # attach scaled node arrays in criterion units.
+                        if xs_attr is not None:
+                            try:
+                                xs_arr = np.array(xs_attr, dtype=float)
+                                if xs_arr.size > 1 and xs_arr.min() >= -1e-9 and xs_arr.max() <= 1.0000001:
+                                    lo = meta.get('min', 0.0)
+                                    hi = meta.get('max', lo + 1.0)
+                                    orig_vf = vf_raw
+                                    def make_wrapped(orig_vf, lo, hi, xs_arr):
+                                        def vf_wrapped(x):
+                                            try:
+                                                xv = float(x)
+                                            except Exception:
+                                                xv = lo
+                                            # normalize to 0..1 domain relative to criterion
+                                            if hi == lo:
+                                                xn = 0.0
+                                            else:
+                                                xn = (xv - lo) / (hi - lo)
+                                            # Map normalized xn into original node domain
+                                            xs_min = float(xs_arr.min())
+                                            xs_max = float(xs_arr.max())
+                                            if xs_max > xs_min:
+                                                x_for_orig = xs_min + xn * (xs_max - xs_min)
+                                            else:
+                                                x_for_orig = xn
+                                            try:
+                                                val = float(orig_vf(x_for_orig))
+                                            except Exception:
+                                                val = 0.001
+                                            return float(np.clip(val, 0.001, 1.0))
+                                        # attach scaled node arrays for callers that inspect them
                                         try:
-                                            xv = float(x)
+                                            # scale original normalized nodes to criterion units
+                                            scaled_xs = np.array(xs_arr * (hi - lo) + lo, dtype=float)
+                                            vf_wrapped._xs = scaled_xs
+                                            vf_wrapped._ys = np.array(getattr(orig_vf, '_ys', None) or [], dtype=float)
                                         except Exception:
-                                            xv = lo
-                                        if hi == lo:
-                                            val = 1.0
-                                        else:
-                                            val = (xv - lo) / (hi - lo)
-                                        return float(np.clip(max(val, 0.001), 0.001, 1.0))
-                                    try:
-                                        vf._xs = np.array([lo, hi], dtype=float)
-                                        vf._ys = np.array([0.001, 1.0], dtype=float)
-                                    except Exception:
-                                        pass
-                                    return vf
-                                meta['value_function'] = make_linear(lo, hi)
-                            else:
-                                # If the loaded VF exposes node arrays that look like
-                                # normalized coordinates (within [0,1]), wrap the
-                                # original callable so it receives normalized input and
-                                # attach scaled node arrays in criterion units.
-                                if xs_attr is not None:
-                                    try:
-                                        xs_arr = np.array(xs_attr, dtype=float)
-                                        if xs_arr.size > 1 and xs_arr.min() >= -1e-9 and xs_arr.max() <= 1.0000001:
-                                            lo = meta.get('min', 0.0)
-                                            hi = meta.get('max', lo + 1.0)
-                                            orig_vf = vf_raw
-                                            def make_wrapped(orig_vf, lo, hi, xs_arr):
-                                                def vf_wrapped(x):
-                                                    try:
-                                                        xv = float(x)
-                                                    except Exception:
-                                                        xv = lo
-                                                    # normalize to 0..1 domain relative to criterion
-                                                    if hi == lo:
-                                                        xn = 0.0
-                                                    else:
-                                                        xn = (xv - lo) / (hi - lo)
-                                                    # Map normalized xn into original node domain
-                                                    xs_min = float(xs_arr.min())
-                                                    xs_max = float(xs_arr.max())
-                                                    if xs_max > xs_min:
-                                                        x_for_orig = xs_min + xn * (xs_max - xs_min)
-                                                    else:
-                                                        x_for_orig = xn
-                                                    try:
-                                                        val = float(orig_vf(x_for_orig))
-                                                    except Exception:
-                                                        val = 0.001
-                                                    return float(np.clip(val, 0.001, 1.0))
-                                                # attach scaled node arrays for callers that inspect them
-                                                try:
-                                                    # scale original normalized nodes to criterion units
-                                                    scaled_xs = np.array(xs_arr * (hi - lo) + lo, dtype=float)
-                                                    vf_wrapped._xs = scaled_xs
-                                                    vf_wrapped._ys = np.array(getattr(orig_vf, '_ys', None) or [], dtype=float)
-                                                except Exception:
-                                                    pass
-                                                return vf_wrapped
-                                            meta['value_function'] = make_wrapped(orig_vf, lo, hi, xs_arr)
-                                        else:
-                                            meta['value_function'] = vf_raw
-                                    except Exception:
-                                        meta['value_function'] = vf_raw
+                                            pass
+                                        return vf_wrapped
+                                    meta['value_function'] = make_wrapped(orig_vf, lo, hi, xs_arr)
                                 else:
                                     meta['value_function'] = vf_raw
-                        except Exception:
-                            meta['value_function'] = vfs[name]
-                else:
-                    # Default linear mapping between min -> 0.001 and max -> 1.0
-                    lo = meta.get('min', 0.0)
-                    hi = meta.get('max', lo + 1.0)
-                    def make_default(lo, hi):
-                        def vf(x):
-                            try:
-                                xv = float(x)
                             except Exception:
-                                xv = lo
-                            if hi == lo:
-                                val = 1.0
-                            else:
-                                val = (xv - lo) / (hi - lo)
-                            return float(np.clip(max(val, 0.001), 0.001, 1.0))
-                        return vf
-                    meta['value_function'] = make_default(lo, hi)
-    except Exception:
-        # On any error while attaching value functions, continue silently
-        pass
-
+                                meta['value_function'] = vf_raw
+                        else:
+                            meta['value_function'] = vf_raw
+                except Exception:
+                    meta['value_function'] = vfs[name]
+        else:
+            # Default linear mapping between min -> 0.001 and max -> 1.0
+            lo = meta.get('min', 0.0)
+            hi = meta.get('max', lo + 1.0)
+            def make_default(lo, hi):
+                def vf(x):
+                    try:
+                        xv = float(x)
+                    except Exception:
+                        xv = lo
+                    if hi == lo:
+                        val = 1.0
+                    else:
+                        val = (xv - lo) / (hi - lo)
+                    return float(np.clip(max(val, 0.001), 0.001, 1.0))
+                return vf
+            meta['value_function'] = make_default(lo, hi)
     return criteria
 
 

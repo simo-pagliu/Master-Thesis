@@ -45,7 +45,7 @@ file_path_criteria = "criteria.csv"
 n_runs = 10000
 PLOTS = True  # Toggle plots
 plot_bins = 50  # Number of bins for histograms
-STRICT = False  # Toggle strict mode
+STRICT = True  # Toggle strict mode
 UPDATE_EVERY = 100  # Update plots every N runs
 opinion_weights = np.ones(len(file_path_weight_elicitations))/len(file_path_weight_elicitations)  # Equal weights for each elicitation
 #################################################################################

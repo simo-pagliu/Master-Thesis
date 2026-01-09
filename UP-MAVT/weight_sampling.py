@@ -162,7 +162,7 @@ def weight_sampler(dict_data, weight_space):
             # Check if they satisfy the constraints
             x_temp = np.concatenate((weight_set_candidate, [0]))
             constraints_satisfied = constraints_func(x_temp, dict_data)
-            print(f"Sampled weights: {weight_set_candidate}, sum: {total_weight}, constraints satisfied: {constraints_satisfied}")
+            # print(f"Sampled weights: {weight_set_candidate}, sum: {total_weight}, constraints satisfied: {constraints_satisfied}")
             if not constraints_satisfied:
                 continue
             else:
