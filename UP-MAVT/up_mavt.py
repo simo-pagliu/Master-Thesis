@@ -9,7 +9,7 @@ import numpy as np
 
 #################################################################################
 # Import internal modules
-from auxiliary import load_alternatives, load_criteria, load_criteria_definitions, load_value_functions
+from auxiliary import load_alternatives, load_criteria, load_criteria_definitions, load_value_functions, load_value_functions_with_confidence
 from weight_space_definition import weight_sampler
 #################################################################################
 
@@ -32,10 +32,12 @@ def startup(file_path_criteria, file_path_weight_elicitations, file_path_value_f
     # Initialize list of lists: each index corresponds to a criterion in `crit_names`
     # And built it by reading the separate value function CSVs (one per elicitation)
     vf_list = [[] for _ in range(num_criteria)]
+    conf_list = [[] for _ in range(num_criteria)]
     for vp in file_path_value_functions:
-        vf_map = load_value_functions(vp)
+        vf_map, conf_map = load_value_functions_with_confidence(vp)
         for idx, crit_name in enumerate(crit_names):
-            vf_list[idx].append(vf_map[crit_name])    
+            vf_list[idx].append(vf_map[crit_name])
+            conf_list[idx].append(conf_map[crit_name])    
             
     # Construct list of dict_data for each elicitation
     # Load criteria.csv which contains criteria definitions
@@ -90,7 +92,7 @@ def startup(file_path_criteria, file_path_weight_elicitations, file_path_value_f
 
     # Load data for alternatives
     alternatives = load_alternatives(file_path_alternatives)
-    return dict_data_list, crit_index, vf_list, alternatives
+    return dict_data_list, crit_index, vf_list, conf_list, alternatives
 #################################################################################
 
 #################################################################################
@@ -158,7 +160,7 @@ def sample_to_values(data, value_function):
 #################################################################################
 
 #################################################################################
-def evaluation_func(elicitation_idx, alternatives, opinion_weights, vf_list, list_of_weight_space_points, dict_data_list, aggregation_method, strict, crit_index):
+def evaluation_func(elicitation_idx, alternatives, opinion_weights, vf_list, conf_list, list_of_weight_space_points, dict_data_list, aggregation_method, strict, crit_index):
     run_results = []
     # Select the weight space for this elicitation
     weight_space_points = list_of_weight_space_points[elicitation_idx]
@@ -177,11 +179,17 @@ def evaluation_func(elicitation_idx, alternatives, opinion_weights, vf_list, lis
             # determine the index into vf_list for this criterion
             idx = crit_index.get(crit_name, None)
 
-            # choose the value function: strict -> same expert index, otherwise random
+            # choose the value function: strict -> same expert index, otherwise confidence-weighted
             if strict:
                 v_f = vf_list[idx][elicitation_idx]
             else:
-                v_f = np.random.choice(vf_list[idx], p=opinion_weights)
+                # In non-strict mode, weight VF selection by confidence level
+                # Confidence levels range from 0-4, with 4 being most probable
+                # Add baseline of 1 to ensure even confidence 0 has non-zero probability
+                confidences = conf_list[idx]
+                conf_array = np.array(confidences) + 1.0
+                conf_weights = conf_array / np.sum(conf_array)
+                v_f = np.random.choice(vf_list[idx], p=conf_weights)
 
             # compute the value of the criterion by sampling from its distribution
             sampled_value = sample_to_values(criterion_data, v_f)
@@ -197,17 +205,17 @@ def evaluation_func(elicitation_idx, alternatives, opinion_weights, vf_list, lis
     # Return the list of alternative values for this evaluation
     return run_results
 # Montecarlo generator function
-def mc_simulation(alternatives,opinion_weights, vf_list, list_of_weight_space_points, dict_data_list, aggregation_method, sim_runs, strict, crit_index):
+def mc_simulation(alternatives, opinion_weights, vf_list, conf_list, list_of_weight_space_points, dict_data_list, aggregation_method, sim_runs, strict, crit_index):
     # weight_list = np.array(weight_list)
     possible_idxs = [i for i in range(len(list_of_weight_space_points))]
     for mc_run in range(sim_runs):
         # For each montecarlo run we iterate over all experts
         if strict:
             for elicitation_idx in range(len(list_of_weight_space_points)):
-                run_results = evaluation_func(elicitation_idx, alternatives, None, vf_list, list_of_weight_space_points, dict_data_list, aggregation_method, strict, crit_index)
+                run_results = evaluation_func(elicitation_idx, alternatives, None, vf_list, conf_list, list_of_weight_space_points, dict_data_list, aggregation_method, strict, crit_index)
                 yield elicitation_idx, run_results
         else:
             elicitation_idx = np.random.choice(possible_idxs, p=opinion_weights)
-            run_results = evaluation_func(elicitation_idx, alternatives, opinion_weights, vf_list, list_of_weight_space_points, dict_data_list, aggregation_method, strict, crit_index)
+            run_results = evaluation_func(elicitation_idx, alternatives, opinion_weights, vf_list, conf_list, list_of_weight_space_points, dict_data_list, aggregation_method, strict, crit_index)
             yield run_results
     return

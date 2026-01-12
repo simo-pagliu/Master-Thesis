@@ -116,7 +116,7 @@ if not os.path.exists(file_path_alternatives):
     raise FileNotFoundError(f"Combined alternatives file not found: {file_path_alternatives}")
 
 # Startup: Load all data
-dict_data_list, crit_index, vf_list, alternatives = startup(file_path_criteria, weight_elicitations, value_functions, file_path_alternatives)
+dict_data_list, crit_index, vf_list, conf_list, alternatives = startup(file_path_criteria, weight_elicitations, value_functions, file_path_alternatives)
 n_alternatives = len(alternatives)
 print(f"Loaded {len(dict_data_list)} elicitation(s) with {n_alternatives} alternatives.")
 
@@ -221,7 +221,7 @@ def update_plots(rank_probs, distributions, i, n_runs, n_alternatives, strict=Fa
 # Preparation for the Montecarlo Simulation
 print("Starting Monte Carlo simulation...")
 # Call the generator (yields results one by one)
-mc_code = mc_simulation(alternatives,opinion_weights, vf_list, list_of_weight_space_points, dict_data_list, weighted_sum, sim_runs=n_runs, strict=STRICT, crit_index=crit_index)
+mc_code = mc_simulation(alternatives, opinion_weights, vf_list, conf_list, list_of_weight_space_points, dict_data_list, weighted_sum, sim_runs=n_runs, strict=STRICT, crit_index=crit_index)
 # Number of elicitation files
 n_elicitations = len(dict_data_list)
 # Setup plots if enabled
