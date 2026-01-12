@@ -1,0 +1,7 @@
+name,Design Maturity,Licensing Status,Design Complexity,Construction Complexity,Supplier Availbility
+APR1400,"{""Discrete"": [[""1.0""]]}","{""Discrete"": [[""0.6666666666666667""]]}","{""Discrete"": [[""0.33000000000000007""]]}","{""Discrete"": [[""0.0""]]}","{""Discrete"": [[""0.0""]]}"
+EPR1750,"{""Discrete"": [[""0.8966666666666666""]]}","{""Discrete"": [[""1.0""]]}","{""Discrete"": [[""0.0""]]}","{""Discrete"": [[""0.0""]]}","{""Discrete"": [[""1.0""]]}"
+AP1000,"{""Discrete"": [[""1.0""]]}","{""Discrete"": [[""0.6666666666666667""]]}","{""Discrete"": [[""0.33000000000000007""]]}","{""Discrete"": [[""0.0""]]}","{""Discrete"": [[""0.75""]]}"
+BWRX300,"{""Discrete"": [[""0.26666666666666666""]]}","{""Discrete"": [[""0.33333333333333337""]]}","{""Discrete"": [[""1.0""]]}","{""Discrete"": [[""0.6666666666666667""]]}","{""Discrete"": [[""0.5""]]}"
+RollsRoyceSMR,"{""Discrete"": [[""0.0""]]}","{""Discrete"": [[""0.0""]]}","{""Discrete"": [[""0.6333333333333333""]]}","{""Discrete"": [[""0.33333333333333337""]]}","{""Discrete"": [[""0.25""]]}"
+NuScaleVOYGR6,"{""Discrete"": [[""0.0""]]}","{""Discrete"": [[""0.0""]]}","{""Discrete"": [[""1.0""]]}","{""Discrete"": [[""1.0""]]}","{""Discrete"": [[""0.25""]]}"

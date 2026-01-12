@@ -6,6 +6,8 @@ import csv
 import ast
 import math
 import json
+import os
+import pandas as pd
 
 def load_alternatives(file_path):
     """Load alternatives from a CSV file and parse distributions as dictionaries."""
@@ -304,23 +306,26 @@ def load_value_functions(file_path_value_functions):
                 continue
     return vfs
 
-def combine_alternatives_by_country(elicitation_dirs, selected_country, output_dir):
+def combine_alternatives_by_country(elicitation_dirs, selected_country, output_dir, qi_elicitation_dirs=None):
     """
     Combine alternatives from multiple elicitations for a specific country.
     
     For quantitative indicators (same values across all elicitations), keep value as is.
     For qualitative indicators (different values), create a discrete distribution.
+    Also includes qualitative indicators from dedicated folders (qi_elicitation_dirs).
     
     Args:
         elicitation_dirs: List of paths to elicitation result directories (e.g., ["elicitation_results/1", "elicitation_results/2"])
         selected_country: Country code (e.g., "IT", "FR")
         output_dir: Directory to save the combined alternatives file
+        qi_elicitation_dirs: List of paths to QI-only elicitation directories (default: None)
     """
     import json
     import os
     import pandas as pd
     
     all_alternatives = []
+    qi_alternatives_dfs = []
     
     # Load alternatives from each elicitation
     for elicit_dir in elicitation_dirs:
@@ -331,6 +336,14 @@ def combine_alternatives_by_country(elicitation_dirs, selected_country, output_d
         df = pd.read_csv(alt_path)
         all_alternatives.append(df)
     
+    # Load qualitative indicators from dedicated folders if provided
+    if qi_elicitation_dirs:
+        for qi_dir in qi_elicitation_dirs:
+            qi_path = os.path.join(qi_dir, selected_country, "alternatives.csv")
+            if os.path.exists(qi_path):
+                qi_df = pd.read_csv(qi_path)
+                qi_alternatives_dfs.append(qi_df)
+    
     if not all_alternatives:
         raise ValueError("No alternatives files loaded")
     
@@ -340,6 +353,15 @@ def combine_alternatives_by_country(elicitation_dirs, selected_country, output_d
     
     # Build combined alternatives
     combined_data = []
+    
+    # Known qualitative indicators that should be merged from folder 3
+    qualitative_indicators = [
+        'Design Maturity',
+        'Licensing Status', 
+        'Design Complexity',
+        'Construction Complexity',
+        'Supplier Availbility'
+    ]
     
     for alt_name in alt_names:
         row_data = {'name': alt_name}
@@ -372,6 +394,23 @@ def combine_alternatives_by_country(elicitation_dirs, selected_country, output_d
                     except (json.JSONDecodeError, TypeError):
                         # If it's not JSON, keep the raw value
                         parsed_values.append(cell_value)
+            
+            # If this is a qualitative indicator and QI data exists, add those values too
+            if criterion in qualitative_indicators and qi_alternatives_dfs:
+                for qi_df in qi_alternatives_dfs:
+                    if alt_name in qi_df['name'].values:
+                        qi_value = qi_df[qi_df['name'] == alt_name][criterion].iloc[0]
+                        if not pd.isna(qi_value) and str(qi_value).strip() != '':
+                            values.append(qi_value)
+                            try:
+                                parsed_qi = json.loads(qi_value)
+                                if isinstance(parsed_qi, dict) and 'Discrete' in parsed_qi:
+                                    discrete_vals = parsed_qi['Discrete'][0] if parsed_qi['Discrete'] else []
+                                    parsed_values.extend(discrete_vals)
+                                else:
+                                    parsed_values.append(qi_value)
+                            except (json.JSONDecodeError, TypeError):
+                                parsed_values.append(qi_value)
             
             if not values:
                 # No values found for this criterion
@@ -421,3 +460,189 @@ def combine_alternatives_by_country(elicitation_dirs, selected_country, output_d
     
     print(f"✓ Combined alternatives for {selected_country} saved to {output_file}")
     return combined_df
+
+
+# ============================================================================
+# Data Conversion and Normalization Functions
+# ============================================================================
+
+def interpolate_value_function(vf_points, x):
+    """Piecewise linear interpolation of value function points."""
+    vf_points = sorted(vf_points, key=lambda p: p[0])
+    
+    if x <= vf_points[0][0]:
+        return vf_points[0][1]
+    if x >= vf_points[-1][0]:
+        return vf_points[-1][1]
+    
+    for i in range(len(vf_points) - 1):
+        x1, v1 = vf_points[i]
+        x2, v2 = vf_points[i + 1]
+        if x1 <= x <= x2:
+            if x2 == x1:
+                return v1
+            t = (x - x1) / (x2 - x1)
+            return v1 + t * (v2 - v1)
+    
+    return vf_points[-1][1]
+
+def detect_raw_scale_in_data(alt_rows, fieldnames):
+    """
+    Detect which qualitative indicators have raw 1-6 scale data by examining
+    actual values in alternatives (values > 1 indicate 1-6 scale).
+    """
+    qualitative_indicators = [
+        'Design Maturity',
+        'Licensing Status',
+        'Supplier Availbility',
+        'Design Complexity',
+        'Construction Complexity'
+    ]
+    
+    raw_scale = []
+    for indicator in qualitative_indicators:
+        if indicator not in fieldnames:
+            continue
+        
+        max_val = 0
+        for row in alt_rows:
+            try:
+                dist = ast.literal_eval(row[indicator])
+                if 'Discrete' in dist:
+                    val = float(dist['Discrete'][0][0])
+                    max_val = max(max_val, val)
+            except:
+                pass
+        
+        if max_val > 1.0:
+            raw_scale.append(indicator)
+    
+    return raw_scale
+
+
+def convert_qualitative_indicators_in_folders(folder_numbers):
+    """
+    Convert qualitative indicators in folders to 0-1 values.
+    - Converts values on 1-6 scale using their value functions
+    - Replaces all qualitative VFs with linear ones [[0,0],[1,1]]
+    
+    Args:
+        folder_numbers: List of folder numbers to process (e.g., [1, 2])
+    """
+    from pathlib import Path
+    
+    qualitative_indicators = [
+        'Design Maturity',
+        'Licensing Status',
+        'Supplier Availbility',
+        'Design Complexity',
+        'Construction Complexity'
+    ]
+    
+    for folder_num in folder_numbers:
+        base_dir = Path(__file__).parent / 'elicitation_results' / str(folder_num)
+        
+        for country in ['IT', 'CH', 'FR', 'PO']:
+            country_folder = base_dir / country
+            if not country_folder.exists():
+                continue
+            
+            vf_file = country_folder / 'value_functions.csv'
+            alt_file = country_folder / 'alternatives.csv'
+            
+            if not vf_file.exists() or not alt_file.exists():
+                continue
+            
+            # Load value functions
+            vf_dict = {}
+            with open(vf_file, 'r') as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    name = row['name']
+                    points = json.loads(row['elicited_points'])
+                    vf_dict[name] = points
+            
+            # Read alternatives
+            with open(alt_file, 'r') as f:
+                reader = csv.DictReader(f)
+                fieldnames = reader.fieldnames
+                alt_rows = list(reader)
+            
+            # Detect which qualitative indicators are on 1-6 scale
+            raw_scale_indicators = detect_raw_scale_in_data(alt_rows, fieldnames)
+            
+            # Convert qualitative indicators
+            for indicator in qualitative_indicators:
+                if indicator not in fieldnames:
+                    continue
+                if indicator not in vf_dict:
+                    continue
+                
+                if indicator not in raw_scale_indicators:
+                    continue
+                
+                vf_points = vf_dict[indicator]
+                
+                for row in alt_rows:
+                    try:
+                        dist_dict = ast.literal_eval(row[indicator])
+                        
+                        if 'Discrete' in dist_dict:
+                            discrete_list = dist_dict['Discrete']
+                            converted_list = []
+                            
+                            for item in discrete_list:
+                                if isinstance(item, list):
+                                    converted_item = []
+                                    for val_str in item:
+                                        raw_val = float(val_str)
+                                        converted_val = interpolate_value_function(vf_points, raw_val)
+                                        converted_item.append(str(converted_val))
+                                    converted_list.append(converted_item)
+                                else:
+                                    raw_val = float(item)
+                                    converted_val = interpolate_value_function(vf_points, raw_val)
+                                    converted_list.append(str(converted_val))
+                            
+                            row[indicator] = json.dumps({"Discrete": converted_list})
+                    except:
+                        pass
+            
+            # Write converted alternatives
+            with open(alt_file, 'w', newline='') as f:
+                writer = csv.DictWriter(f, fieldnames=fieldnames)
+                writer.writeheader()
+                writer.writerows(alt_rows)
+            
+            # Replace qualitative VFs with linear ones
+            with open(vf_file, 'r') as f:
+                reader = csv.DictReader(f)
+                vf_fieldnames = reader.fieldnames
+                vf_rows = list(reader)
+            
+            for vf_row in vf_rows:
+                if vf_row['name'] in qualitative_indicators:
+                    vf_row['elicited_points'] = json.dumps([[0.0, 0.0], [1.0, 1.0]])
+            
+            with open(vf_file, 'w', newline='') as f:
+                writer = csv.DictWriter(f, fieldnames=vf_fieldnames)
+                writer.writeheader()
+                writer.writerows(vf_rows)
+
+
+def load_criteria_file(path):
+    """Load a criteria CSV file."""
+    return pd.read_csv(path)
+
+
+def verify_criteria_consistency(criteria_list):
+    """Verify that all criteria dataframes are identical."""
+    if not criteria_list:
+        raise ValueError("No criteria files provided")
+    
+    first_crit = criteria_list[0]
+    for i, crit in enumerate(criteria_list[1:], start=1):
+        if not first_crit.equals(crit):
+            raise ValueError(f"Criteria file {i} differs from the first. All elicitations must have identical criteria.")
+    
+    return first_crit

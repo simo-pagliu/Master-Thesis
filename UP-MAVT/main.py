@@ -24,7 +24,11 @@ import csv
 from pile_bwt import bwt, constraints_func
 from up_mavt import startup, mc_simulation
 from aggregation_methods import weighted_sum
-from auxiliary import combine_alternatives_by_country
+from auxiliary import (
+    combine_alternatives_by_country,
+    load_criteria_file,
+    verify_criteria_consistency
+)
 from weight_space_definition import define_weight_spaces
 #################################################################################
 
@@ -39,6 +43,9 @@ selected_country = "IT"
 
 # Elicitation run numbers (folders containing results)
 elicitation_numbers = [1, 2]
+
+# Folders Containing quick elicitation results (only QIs)
+QI_elicitation_numbers = [3]
 
 # Weight space generation parameters
 required_weight_solutions = 1  # Target number of unique weight combinations
@@ -55,22 +62,6 @@ opinion_weights = np.ones(len(elicitation_numbers))/len(elicitation_numbers)  # 
 
 #################################################################################
 # Load and verify criteria from elicitation results
-def load_criteria_file(path):
-    """Load a criteria CSV file."""
-    return pd.read_csv(path)
-
-def verify_criteria_consistency(criteria_list):
-    """Verify that all criteria dataframes are identical."""
-    if not criteria_list:
-        raise ValueError("No criteria files provided")
-    
-    first_crit = criteria_list[0]
-    for i, crit in enumerate(criteria_list[1:], start=1):
-        if not first_crit.equals(crit):
-            raise ValueError(f"Criteria file {i} differs from the first criteria file. All elicitations must have identical criteria.")
-    
-    return first_crit
-
 # Build paths for elicitation results
 elicitation_criteria_paths = []
 weight_elicitations = []
@@ -116,7 +107,8 @@ criteria_verified.to_csv(file_path_criteria, index=False)
 # Combine alternatives from multiple elicitations for the selected country
 print(f"Combining alternatives for {selected_country} from {len(elicitation_numbers)} elicitation(s)...")
 elicitation_dirs = [os.path.join(SCRIPT_DIR, "elicitation_results", str(num)) for num in elicitation_numbers]
-combine_alternatives_by_country(elicitation_dirs, selected_country, SCRIPT_DIR)
+qi_elicitation_dirs = [os.path.join(SCRIPT_DIR, "elicitation_results", str(num)) for num in QI_elicitation_numbers] if QI_elicitation_numbers else None
+combine_alternatives_by_country(elicitation_dirs, selected_country, SCRIPT_DIR, qi_elicitation_dirs=qi_elicitation_dirs)
 
 # Use country-specific combined alternatives file
 file_path_alternatives = os.path.join(SCRIPT_DIR, f"alternatives_{selected_country}.csv")
@@ -267,13 +259,14 @@ if PLOTS:
 
     # Histogram setup: only create histogram figures when running in strict mode
     if STRICT:
-        fig_hist, axes = plt.subplots(n_alternatives, 1, figsize=(8, 4 * n_alternatives))
+        # Use 3 rows x 2 columns layout for better A4 paper compatibility
+        fig_hist, axes = plt.subplots(3, 2, figsize=(12, 10))
         axes = axes.reshape(-1)  # Ensure axes is iterable
         # Prevent overlapping text between stacked histograms and ensure margins
         try:
             fig_hist.tight_layout()
-            # slightly reduce vertical spacing and set bottom/top margins
-            fig_hist.subplots_adjust(hspace=0.35, top=0.95, bottom=0.08)
+            # Increase vertical and horizontal spacing to prevent text overlap
+            fig_hist.subplots_adjust(hspace=0.40, wspace=0.30, top=0.95, bottom=0.05, left=0.08, right=0.95)
         except Exception:
             pass
     else:
@@ -369,7 +362,7 @@ if PLOTS:
             fig.subplots_adjust(top=0.95, bottom=0.08)
         if 'fig_hist' in globals() and fig_hist is not None:
             fig_hist.tight_layout()
-            fig_hist.subplots_adjust(hspace=0.35, top=0.95, bottom=0.08)
+            fig_hist.subplots_adjust(hspace=0.40, wspace=0.30, top=0.95, bottom=0.05, left=0.08, right=0.95)
     except Exception:
         pass
     plt.ioff()
