@@ -1391,7 +1391,7 @@ class WBT_ui:
         except Exception:
             conf_val = ''
 
-        # Compute a = 1/vf(value)
+        # Compute a = 1/vf(value) for best, or vf(value) for worst
         a_val = ''
         try:
             # Get the criterion that was adjusted (slider_target)
@@ -1404,7 +1404,12 @@ class WBT_ui:
                     vf_val = float(vf(val))
                     # Avoid division by zero
                     if vf_val != 0:
-                        a_val = 1.0 / vf_val
+                        # For best comparisons: a = 1/vf(value)
+                        # For worst comparisons: a = vf(value) (i.e., 1/a where a was the inverse)
+                        if comp_type == 'worst':
+                            a_val = vf_val
+                        else:
+                            a_val = 1.0 / vf_val
         except Exception:
             # If anything fails, leave a_val empty
             pass
@@ -1591,9 +1596,6 @@ class WBT_ui:
                     
                     try:
                         a_val = float(row.get('a', 0))
-                        # Invert a_val for worst comparisons
-                        if comp_type == 'worst' and a_val != 0:
-                            a_val = 1.0 / a_val
                     except Exception:
                         a_val = 0
                     
