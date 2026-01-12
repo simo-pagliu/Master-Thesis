@@ -49,51 +49,110 @@ if combined_common_alternatives:
 else:
     combined_common_alternatives_df = pd.DataFrame()
 
-# Parse qualitative folder(s) early so we can apply their -E# series both in GLOBAL and per-country outputs
+# Parse qualitative folder(s) early to extract alternative values
+# Structure: indicators as rows, alternatives as columns, with optional country suffixes
+# Values are discrete and should be saved as {'Discrete': [[value]]}
 qual_bucket = {}
 qual_alt_names = set()
 from collections import defaultdict as _dd
 qual_bucket = _dd(lambda: _dd(lambda: _dd(dict)))
+
 for qfolder in qualitative_data:
     qpath = os.path.join(SCRIPT_DIR, qfolder, 'alternatives.csv')
     if not os.path.exists(qpath):
         continue
     qdf = pd.read_csv(qpath, dtype=str)
     qdf.columns = [str(c).strip() for c in qdf.columns]
+    
+    if qdf.empty:
+        continue
+    
     first_col = qdf.columns[0]
-    # collect alternative names present in qualitative file headers
-    for alt_col in qdf.columns[1:]:
+    # Collect alternative names from headers (skip 'indicator', 'confidence', etc.)
+    skip_cols = {'indicator', 'confidence', ''}
+    alt_cols = [col for col in qdf.columns[1:] if str(col).strip().lower() not in skip_cols]
+    
+    for alt_col in alt_cols:
         an = str(alt_col).strip()
-        if an:
+        if an and an.lower() not in skip_cols:
             qual_alt_names.add(an)
+    
+    # Process each row (indicator)
     for _, r in qdf.iterrows():
-        label = str(r[first_col]).strip()
-        if not label:
+        indicator_label = str(r[first_col]).strip()
+        if not indicator_label:
             continue
-        if label.lower().endswith('starting point') or 'starting point' in label.lower():
+        
+        # Skip "starting point" rows
+        if 'starting point' in indicator_label.lower():
             continue
-        parts = [p.strip() for p in label.split(' - ')]
-        if not parts:
-            continue
-        last = parts[-1]
-        m = re.match(r'^E\s*(\d+)$', last, flags=re.IGNORECASE)
-        if not m:
-            continue
-        eidx = int(m.group(1))
+        
+        # Parse indicator label to extract base name and country (if any)
+        # Format: "Indicator Name" or "Indicator Name - COUNTRY"
+        parts = [p.strip() for p in indicator_label.split(' - ')]
+        
         row_country = 'GLOBAL'
+        base_indicator = indicator_label
+        
         if len(parts) >= 2:
-            maybe = parts[-2]
-            if re.match(r'^[A-Za-z]{2,3}$', maybe):
-                row_country = maybe.upper()
-        base_indicator = parts[0]
-        for alt_col in qdf.columns[1:]:
+            # Check if last part is a country code
+            maybe_country = parts[-1]
+            if re.match(r'^[A-Za-z]{2,3}$', maybe_country):
+                row_country = maybe_country.upper()
+                # Base indicator is everything except the country suffix
+                base_indicator = ' - '.join(parts[:-1])
+            else:
+                base_indicator = indicator_label
+        
+        # Extract values for each alternative (as discrete values)
+        for alt_col in alt_cols:
             alt_name = str(alt_col).strip()
             if not alt_name:
                 continue
-            val = r.get(alt_col)
-            if pd.isna(val) or str(val).strip() == '':
+            
+            val_str = str(r.get(alt_col, '')).strip()
+            if not val_str or val_str.lower() == 'nan':
                 continue
-            qual_bucket[row_country][base_indicator].setdefault(alt_name, {})[eidx] = val
+            
+            try:
+                val_num = float(val_str)
+                # Store as discrete value: {'Discrete': [[value]]}
+                qual_bucket[row_country][base_indicator][alt_name] = {'Discrete': [[val_num]]}
+            except (ValueError, TypeError):
+                # Skip non-numeric values
+                continue
+
+# COUNTRY-DEPENDENT ALTERNATIVES: Load country-specific indicator values
+# This file contains indicators that differ by country (e.g., GHGe Benefit - IT vs GHGe Benefit - FR)
+country_dep_alt_data = {}
+country_dep_alt_path = os.path.join(SCRIPT_DIR, 'quantitative', 'country-dep-alt.csv')
+if os.path.exists(country_dep_alt_path):
+    try:
+        country_dep_df = pd.read_csv(country_dep_alt_path)
+        # Parse data structure: alternative name -> country -> indicator -> value
+        for _, row in country_dep_df.iterrows():
+            alt_name = str(row.get('name', '')).strip()
+            if not alt_name:
+                continue
+            if alt_name not in country_dep_alt_data:
+                country_dep_alt_data[alt_name] = {}
+            
+            for col in country_dep_df.columns:
+                if col != 'name':
+                    # Parse column format: "Indicator - COUNTRY"
+                    if ' - ' in col:
+                        parts = col.rsplit(' - ', 1)
+                        if len(parts) == 2:
+                            indicator = parts[0].strip()
+                            country = parts[1].strip()
+                            if country and len(country) <= 3:  # Assume country codes are 2-3 chars
+                                value = row.get(col)
+                                if not pd.isna(value) and str(value).strip() != '':
+                                    if country not in country_dep_alt_data[alt_name]:
+                                        country_dep_alt_data[alt_name][country] = {}
+                                    country_dep_alt_data[alt_name][country][indicator] = value
+    except Exception as e:
+        print(f"Warning: Could not load country-dependent alternatives: {e}")
 
 # (qualitative criteria and value_functions scanning is handled later, after specific_folders processing)
 
@@ -482,10 +541,10 @@ else:
                 cur = final['df']
                 if base_ind not in cur.columns:
                     cur[base_ind] = ''
-                for alt_name, emap in alt_map.items():
+                for alt_name, qual_value in alt_map.items():
                     ensure_row(alt_name)
-                    values = [emap[k] for k in sorted(emap.keys())]
-                    cell = json.dumps({'Discrete': [values]})
+                    # qual_value is already in the form {'Discrete': [[value]]}
+                    cell = json.dumps(qual_value)
                     cur.loc[cur['name'] == alt_name, base_ind] = cell
                     final['df'] = cur
 
@@ -534,7 +593,8 @@ else:
 
         # write final alternatives.csv
         alt_out_path = os.path.join(out_dir, 'alternatives.csv')
-        # If our assembled frame is empty (some heuristics failed), synthesize a minimal frame
+        
+        # Always ensure we have a complete alternatives frame
         if final_df.empty:
             all_alts = sorted(set(list(alt_name_set) + list(qual_alt_names)))
             from collections import defaultdict as __dd
@@ -601,19 +661,20 @@ else:
                             val = v2
                         else:
                             kb_country = qual_bucket.get(country_code.upper(), {})
-                            emap = kb_country.get(base_ind, {}).get(alt)
-                            if emap:
-                                values = [emap[k] for k in sorted(emap.keys())]
-                                val = json.dumps({'Discrete': [values]})
+                            qual_value = kb_country.get(base_ind, {}).get(alt)
+                            if qual_value:
+                                # qual_value is already in {'Discrete': [[value]]} format
+                                val = json.dumps(qual_value)
                             else:
                                 kb_global = qual_bucket.get('GLOBAL', {})
-                                emap_g = kb_global.get(base_ind, {}).get(alt)
-                                if emap_g:
-                                    values = [emap_g[k] for k in sorted(emap_g.keys())]
-                                    val = json.dumps({'Discrete': [values]})
+                                qual_value_g = kb_global.get(base_ind, {}).get(alt)
+                                if qual_value_g:
+                                    val = json.dumps(qual_value_g)
                     row[base_ind] = val
                 synth.append(row)
             final_df = pd.DataFrame(synth, columns=['name'] + merged_inds)
+            # Write synthesized alternatives.csv immediately after creation
+            final_df.to_csv(alt_out_path, index=False)
             # Before writing alternatives, update per-country criteria min/max using
             # actual assembled alternative values so case-specific ranges (including
             # constant-zero cases) are preserved.
@@ -682,7 +743,22 @@ else:
                 country_criteria_df = country_criteria_df.drop_duplicates(subset=['name'], keep='first', ignore_index=True)
             country_criteria_df.to_csv(os.path.join(out_dir, 'criteria.csv'), index=False)
 
+        # Ensure alternatives.csv is always written
+        if not final_df.empty:
+            # Merge country-dependent alternatives if available
+            if country_dep_alt_data:
+                for idx, row in final_df.iterrows():
+                    alt_name = row['name']
+                    if alt_name in country_dep_alt_data and country_code.upper() in country_dep_alt_data[alt_name]:
+                        country_deps = country_dep_alt_data[alt_name][country_code.upper()]
+                        for indicator, value in country_deps.items():
+                            if indicator not in final_df.columns:
+                                final_df[indicator] = ''
+                            final_df.loc[idx, indicator] = value
             final_df.to_csv(alt_out_path, index=False)
+        else:
+            # Synthesized dataframe already saved above
+            pass
 
         # Write unnumbered value_functions if they exist for this country
         unnumbered_rows = country_value_functions_unumbered.get(country_code, [])
