@@ -21,15 +21,16 @@ import csv
 
 #################################################################################
 # Import internal modules
-from pile_bwt import bwt, constraints_func
-from up_mavt import startup, mc_simulation
+from pile_bwt import bwt, constraints_func, define_weight_spaces
+from up_mavt import mc_simulation
 from aggregation_methods import weighted_sum
 from auxiliary import (
+    startup,
     combine_alternatives_by_country,
     load_criteria_file,
-    verify_criteria_consistency
+    verify_criteria_consistency,
+    convert_qualitative_indicators_in_folders
 )
-from weight_space_definition import define_weight_spaces
 #################################################################################
 
 # Ensure all relative file accesses resolve relative to this script location
@@ -72,23 +73,14 @@ for elicit_num in elicitation_numbers:
     
     # Criteria file path
     crit_path = os.path.join(elicit_dir, "criteria.csv")
-    if not os.path.exists(crit_path):
-        raise FileNotFoundError(f"Criteria file not found: {crit_path}")
     elicitation_criteria_paths.append(crit_path)
     
     # Weight elicitation file (BWT results) - in weight_spaces folder
     weight_file = os.path.join(SCRIPT_DIR, "weight_spaces", f"BWT_results_{elicit_num}.csv")
-    if not os.path.exists(weight_file):
-        # Try alternative naming
-        weight_file = os.path.join(SCRIPT_DIR, "weight_spaces", f"wbt_results_{elicit_num}.csv")
-    if not os.path.exists(weight_file):
-        raise FileNotFoundError(f"Weight elicitation file not found for elicitation {elicit_num} in weight_spaces folder")
     weight_elicitations.append(weight_file)
     
     # Value functions file for selected country
     vf_file = os.path.join(elicit_dir, selected_country, "value_functions.csv")
-    if not os.path.exists(vf_file):
-        raise FileNotFoundError(f"Value functions file not found for {selected_country} in elicitation {elicit_num}: {vf_file}")
     value_functions.append(vf_file)
 
 print(f"Loading elicitation results for country: {selected_country}")
@@ -110,10 +102,13 @@ elicitation_dirs = [os.path.join(SCRIPT_DIR, "elicitation_results", str(num)) fo
 qi_elicitation_dirs = [os.path.join(SCRIPT_DIR, "elicitation_results", str(num)) for num in QI_elicitation_numbers] if QI_elicitation_numbers else None
 combine_alternatives_by_country(elicitation_dirs, selected_country, SCRIPT_DIR, qi_elicitation_dirs=qi_elicitation_dirs)
 
+# Convert qualitative indicators in QI elicitation folders to 0-1 scale with linear value functions
+if QI_elicitation_numbers:
+    print("Converting qualitative indicators to 0-1 scale with linear value functions...")
+    convert_qualitative_indicators_in_folders(QI_elicitation_numbers)
+
 # Use country-specific combined alternatives file
 file_path_alternatives = os.path.join(SCRIPT_DIR, f"alternatives_{selected_country}.csv")
-if not os.path.exists(file_path_alternatives):
-    raise FileNotFoundError(f"Combined alternatives file not found: {file_path_alternatives}")
 
 # Startup: Load all data
 dict_data_list, crit_index, vf_list, conf_list, alternatives = startup(file_path_criteria, weight_elicitations, value_functions, file_path_alternatives)

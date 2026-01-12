@@ -142,184 +142,6 @@ def load_criteria_definitions(file_path_criteria):
     return grouped_criteria
 
 
-def load_value_functions(file_path_value_functions):
-    """Load value functions from CSV by parsing `elicited_points` and building
-    safe piecewise-linear interpolators. The CSV may contain a `value_function`
-    column in older files, but we no longer rely on evaluating executable strings.
-    Returns a dict mapping criterion name -> callable(x) in [0.001, 1.0]."""
-    import csv
-    import ast
-    vfs = {}
-    with open(file_path_value_functions, mode='r') as infile:
-        reader = csv.DictReader(infile)
-        for row in reader:
-            if not row:
-                continue
-            crit_name = (row.get('name') or '').strip()
-            # Prefer an explicit `elicited_points` column (JSON or Python list literal)
-            pts_raw = row.get('elicited_points') or ''
-            pts = None
-            if pts_raw:
-                try:
-                    pts = ast.literal_eval(pts_raw)
-                except Exception:
-                    try:
-                        pts = json.loads(pts_raw)
-                    except Exception:
-                        pts = None
-
-            # If no elicited_points, skip this row (we no longer evaluate executable strings)
-            if not pts:
-                # do not attempt to eval legacy `value_function` strings; skip
-                continue
-            # Build interpolator/fit from pts (list of [x,y]) when available
-            if pts and isinstance(pts, (list, tuple)) and len(pts) > 0:
-                # parse metadata to choose fit type
-                meta_raw = row.get('elicitation_meta') or ''
-                meta = {}
-                if meta_raw:
-                    try:
-                        meta = json.loads(meta_raw)
-                    except Exception:
-                        try:
-                            meta = ast.literal_eval(meta_raw)
-                        except Exception:
-                            meta = {}
-
-                fit_type = str(meta.get('fit_type') or meta.get('type') or '').strip()
-                if fit_type.lower() in ('piecewise linear', 'piecewise-linear', 'piecewise', 'linear'):
-                    fit_type = 'piecewise'
-                elif fit_type.lower() in ('pchip', 'pchipinterpolator'):
-                    fit_type = 'pchip'
-                elif fit_type.lower() in ('gaussian', 'normal'):
-                    fit_type = 'gaussian'
-                elif fit_type.lower() in ('sigmoid', 'logistic'):
-                    fit_type = 'sigmoid'
-                else:
-                    if not fit_type:
-                        fit_type = 'piecewise'
-
-                try:
-                    xs = [float(p[0]) for p in pts]
-                    ys = [0.001 if float(p[1]) == 0.0 else float(p[1]) for p in pts]
-                except Exception:
-                    xs, ys = None, None
-                if xs is None or ys is None or len(xs) == 0:
-                    continue
-
-                import numpy as _np
-
-                # PCHIP (preferred when available)
-                if fit_type == 'pchip':
-                    try:
-                        from scipy.interpolate import PchipInterpolator
-                        pchip = PchipInterpolator(xs, ys, extrapolate=True)
-                        def vf_pchip(x, _p=pchip):
-                            try:
-                                val = float(_p(float(x)))
-                            except Exception:
-                                val = 0.001
-                            return float(_np.clip(val, 0.001, 1.0))
-                        try:
-                            vf_pchip._xs = _np.array(xs, dtype=float)
-                            vf_pchip._ys = _np.array(ys, dtype=float)
-                        except Exception:
-                            pass
-                        vfs[crit_name] = vf_pchip
-                    except Exception:
-                        # fallback to piecewise
-                        fit_type = 'piecewise'
-
-                if fit_type == 'piecewise':
-                    xs_arr = _np.array(xs, dtype=float)
-                    ys_arr = _np.array(ys, dtype=float)
-                    def make_piecewise_from_arrays(xs_arr, ys_arr):
-                        def vf(x):
-                            try:
-                                xv = float(x)
-                            except Exception:
-                                xv = float(xs_arr[0])
-                            if xv <= xs_arr[0]:
-                                x0, x1 = xs_arr[0], xs_arr[1] if xs_arr.size > 1 else xs_arr[0]
-                                y0, y1 = ys_arr[0], ys_arr[1] if ys_arr.size > 1 else ys_arr[0]
-                                slope = (y1 - y0) / (x1 - x0) if (x1 != x0) else 0.0
-                                val = y0 + slope * (xv - x0)
-                            elif xv >= xs_arr[-1]:
-                                x0, x1 = xs_arr[-2] if xs_arr.size > 1 else xs_arr[-1], xs_arr[-1]
-                                y0, y1 = ys_arr[-2] if ys_arr.size > 1 else ys_arr[-1], ys_arr[-1]
-                                slope = (y1 - y0) / (x1 - x0) if (x1 != x0) else 0.0
-                                val = y1 + slope * (xv - xs_arr[-1])
-                            else:
-                                idx = int(_np.searchsorted(xs_arr, xv) - 1)
-                                x0, x1 = xs_arr[idx], xs_arr[idx+1]
-                                y0, y1 = ys_arr[idx], ys_arr[idx+1]
-                                slope = (y1 - y0) / (x1 - x0) if (x1 != x0) else 0.0
-                                val = y0 + slope * (xv - x0)
-                            if _np.isnan(val):
-                                val = 0.001
-                            return float(_np.clip(val, 0.001, 1.0))
-                        try:
-                            vf._xs = xs_arr
-                            vf._ys = ys_arr
-                        except Exception:
-                            pass
-                        return vf
-                    # return a fresh closure with nodes attached
-                    def build_pw():
-                        return make_piecewise_from_arrays(xs_arr, ys_arr)
-                    vfs[crit_name] = build_pw()
-
-                if fit_type == 'gaussian':
-                    try:
-                        mu = float(meta.get('mu'))
-                    except Exception:
-                        mu = float(_np.mean(xs))
-                    try:
-                        sigma = float(meta.get('sigma'))
-                    except Exception:
-                        sigma = float((max(xs) - min(xs)) / 6.0) if max(xs) != min(xs) else 1.0
-                    amplitude = float(meta.get('amplitude', 1.0))
-                    def make_gaussian(mu, sigma, amplitude):
-                        def vf(x):
-                            try:
-                                xv = float(x)
-                                val = amplitude * math.exp(-0.5 * ((xv - mu) / sigma) ** 2)
-                            except Exception:
-                                val = 0.001
-                            return float(_np.clip(val, 0.001, 1.0))
-                        return vf
-                    vfs[crit_name] = make_gaussian(mu, sigma, amplitude)
-
-                if fit_type == 'sigmoid':
-                    try:
-                        k = float(meta.get('k'))
-                    except Exception:
-                        k = float(meta.get('slope', 1.0))
-                    try:
-                        x0 = float(meta.get('x0'))
-                    except Exception:
-                        x0 = float(_np.median(xs))
-                    direction = str(meta.get('direction') or meta.get('shape') or '').lower()
-                    inc = True
-                    if 'dec' in direction or 'decrease' in direction or 'negative' in direction:
-                        inc = False
-                    def make_sigmoid(k, x0, inc=True):
-                        def vf(x):
-                            try:
-                                xv = float(x)
-                                s = 1.0 / (1.0 + math.exp(-k * (xv - x0)))
-                                val = s if inc else (1.0 - s)
-                            except Exception:
-                                val = 0.001
-                            return float(_np.clip(val, 0.001, 1.0))
-                        return vf
-                    vfs[crit_name] = make_sigmoid(k, x0, inc)
-            else:
-                # no pts and no usable expr: skip
-                continue
-    return vfs
-
-
 def load_value_functions_with_confidence(file_path_value_functions):
     """Load value functions from CSV and extract confidence levels.
     Returns two dicts:
@@ -509,13 +331,129 @@ def load_value_functions_with_confidence(file_path_value_functions):
                 continue
     return vfs, confidences
 
+def setup_qi_country_folders(qi_elicitation_dirs):
+    """
+    Create country subfolders in QI elicitation directories with filtered data.
+    
+    For each QI elicitation folder:
+    - Create country subfolders (IT, CH, FR, PO)
+    - Filter alternatives data to only include columns for that country
+    - Remove columns tagged with 'CC' (cross-country/not country-specific)
+    - Convert from indicator-format to alternative-format
+    
+    Note: Value functions are not copied as they become linear after conversion.
+    
+    Args:
+        qi_elicitation_dirs: List of paths to QI-only elicitation directories
+    """
+    import os
+    from pathlib import Path
+    
+    if not qi_elicitation_dirs:
+        return
+    
+    for qi_dir in qi_elicitation_dirs:
+        qi_dir_path = Path(qi_dir)
+        
+        # Check if alternatives.csv exists at root level
+        root_alt_file = qi_dir_path / 'alternatives.csv'
+        
+        if not root_alt_file.exists():
+            print(f"ℹ No alternatives.csv at root of {qi_dir}, skipping folder setup")
+            continue
+        
+        # Load root alternatives file (QI format: indicator x alternative)
+        import pandas as pd
+        root_alt_df = pd.read_csv(root_alt_file)
+        
+        # Extract all alternative columns (exclude 'indicator' and 'confidence')
+        all_alt_cols = [col for col in root_alt_df.columns 
+                       if col not in ['indicator', 'confidence']]
+        
+        # Detect country codes dynamically from folder structure
+        # Check if country folders already exist
+        existing_countries = [d.name for d in qi_dir_path.iterdir() if d.is_dir() and d.name in ['IT', 'CH', 'FR', 'PO']]
+        countries_to_create = existing_countries if existing_countries else ['IT', 'CH', 'FR', 'PO']
+        
+        # Create country subfolders with filtered data
+        for country in countries_to_create:
+            country_dir = qi_dir_path / country
+            country_dir.mkdir(exist_ok=True)
+            
+            # Filter columns: keep indicator and non-CC alternatives
+            cols_to_keep = ['indicator']
+            for col in all_alt_cols:
+                if 'CC' not in col:
+                    cols_to_keep.append(col)
+            
+            country_alt_df = root_alt_df[cols_to_keep].copy()
+            
+            # Filter rows: remove starting points and keep only country-specific data
+            # Keep rows that either:
+            # 1. Don't have a country tag (generic indicators)
+            # 2. Have the country tag (-IT, -FR, etc.) without "starting point"
+            # 3. Remove all "starting point" rows
+            mask = ~country_alt_df['indicator'].str.contains('starting point', case=False, na=False)
+            
+            # Additionally, for country-specific rows, only keep those matching this country
+            for idx, row in country_alt_df[mask].iterrows():
+                indicator = str(row['indicator'])
+                # If indicator has a country tag (e.g., "- IT", "- FR"), check if it matches
+                if ' - ' in indicator:
+                    parts = indicator.rsplit(' - ', 1)
+                    if len(parts) == 2:
+                        tag = parts[1].strip()
+                        # If tag is a known country code, only keep if it matches our country
+                        if tag in ['IT', 'CH', 'FR', 'PO']:
+                            if tag != country:
+                                mask[idx] = False
+            
+            country_alt_df = country_alt_df[mask].copy()
+            
+            # Save filtered alternatives.csv
+            country_alt_file = country_dir / 'alternatives.csv'
+            country_alt_df.to_csv(country_alt_file, index=False)
+            print(f"✓ Created {qi_dir}/{country}/alternatives.csv ({len(country_alt_df)} rows)")
+
+
+def transform_qi_format_to_alternative_format(qi_df):
+    """
+    Transform QI data from indicator format (indicators x alternatives) 
+    to alternative format (alternatives x criteria).
+    Also strips country tags from column names and cleans whitespace.
+    """
+    # Rename 'indicator' column to 'name' for consistency
+    if 'indicator' in qi_df.columns:
+        # Transpose: make alternatives into rows, indicators into columns
+        transformed_df = qi_df.set_index('indicator').T.reset_index()
+        transformed_df.rename(columns={'index': 'name'}, inplace=True)
+        
+        # Strip whitespace from 'name' column (alternatives)
+        transformed_df['name'] = transformed_df['name'].str.strip()
+        
+        # Strip country tags from column names (e.g., "Licensing Status - IT" -> "Licensing Status")
+        new_columns = {}
+        for col in transformed_df.columns:
+            if col == 'name':
+                new_columns[col] = col
+            else:
+                # Remove country tags like " - IT", " - FR", etc.
+                import re
+                cleaned = re.sub(r'\s*-\s*(IT|CH|FR|PO)\s*$', '', col)
+                new_columns[col] = cleaned
+        
+        transformed_df.rename(columns=new_columns, inplace=True)
+        return transformed_df
+    return qi_df
+
+
 def combine_alternatives_by_country(elicitation_dirs, selected_country, output_dir, qi_elicitation_dirs=None):
     """
     Combine alternatives from multiple elicitations for a specific country.
     
-    For quantitative indicators (same values across all elicitations), keep value as is.
-    For qualitative indicators (different values), create a discrete distribution.
-    Also includes qualitative indicators from dedicated folders (qi_elicitation_dirs).
+    For quantitative indicators: keep value as is (assumed identical across elicitations).
+    For qualitative indicators (QI): create a QI_dist with one entry per elicitation source.
+    QI indicators are automatically detected from qi_elicitation_dirs folders.
     
     Args:
         elicitation_dirs: List of paths to elicitation result directories (e.g., ["elicitation_results/1", "elicitation_results/2"])
@@ -526,6 +464,10 @@ def combine_alternatives_by_country(elicitation_dirs, selected_country, output_d
     import json
     import os
     import pandas as pd
+    
+    # Setup country folders in QI elicitation directories if needed
+    if qi_elicitation_dirs:
+        setup_qi_country_folders(qi_elicitation_dirs)
     
     all_alternatives = []
     qi_alternatives_dfs = []
@@ -540,12 +482,18 @@ def combine_alternatives_by_country(elicitation_dirs, selected_country, output_d
         all_alternatives.append(df)
     
     # Load qualitative indicators from dedicated folders if provided
+    qi_alternatives_dfs = []
+    qi_columns_set = set()  # Track which columns appear in QI folders
     if qi_elicitation_dirs:
         for qi_dir in qi_elicitation_dirs:
             qi_path = os.path.join(qi_dir, selected_country, "alternatives.csv")
             if os.path.exists(qi_path):
                 qi_df = pd.read_csv(qi_path)
+                # Transform QI format to alternative format
+                qi_df = transform_qi_format_to_alternative_format(qi_df)
                 qi_alternatives_dfs.append(qi_df)
+                # Track columns that appear in QI folders
+                qi_columns_set.update(col for col in qi_df.columns if col != 'name')
     
     if not all_alternatives:
         raise ValueError("No alternatives files loaded")
@@ -554,17 +502,24 @@ def combine_alternatives_by_country(elicitation_dirs, selected_country, output_d
     alt_names = all_alternatives[0]['name'].tolist()
     criteria_columns = [col for col in all_alternatives[0].columns if col != 'name']
     
+    # Dynamically determine QI indicators: detect from regular elicitations too
+    # Known QI indicators that might appear in the data
+    known_qi_indicators = {'Design Maturity', 'Licensing Status', 'Supplier Availbility', 
+                          'Design Complexity', 'Construction Complexity'}
+    
+    # Combine QI columns from both QI folders and regular elicitations
+    for col in criteria_columns:
+        if col in known_qi_indicators:
+            qi_columns_set.add(col)
+    
+    qualitative_indicators = list(qi_columns_set)
+    if qualitative_indicators:
+        print(f"ℹ Detected QI indicators: {qualitative_indicators}")
+    else:
+        print("ℹ No QI indicators detected")
+    
     # Build combined alternatives
     combined_data = []
-    
-    # Known qualitative indicators that should be merged from folder 3
-    qualitative_indicators = [
-        'Design Maturity',
-        'Licensing Status', 
-        'Design Complexity',
-        'Construction Complexity',
-        'Supplier Availbility'
-    ]
     
     for alt_name in alt_names:
         row_data = {'name': alt_name}
@@ -587,18 +542,20 @@ def combine_alternatives_by_country(elicitation_dirs, selected_country, output_d
             
             # If this is a qualitative indicator and QI data exists, add those values too
             if is_qi and qi_alternatives_dfs:
-                for qi_df in qi_alternatives_dfs:
+                for qi_idx, qi_df in enumerate(qi_alternatives_dfs):
                     if alt_name in qi_df['name'].values:
                         qi_value = qi_df[qi_df['name'] == alt_name][criterion].iloc[0]
                         if not pd.isna(qi_value) and str(qi_value).strip() != '':
-                            values_list.append((qi_value, -1))  # -1 indicates QI folder
+                            # Use a special index to indicate QI folder (e.g., len(all_alternatives) + qi_idx)
+                            qi_elicit_idx = len(all_alternatives) + qi_idx
+                            values_list.append((qi_value, qi_elicit_idx))
             
             if not values_list:
                 # No values found for this criterion
                 continue
             
             if is_qi:
-                # For qualitative indicators, ALWAYS create QI_dist with one entry per elicitation
+                # For qualitative indicators, ALWAYS create QI_dist with one entry per elicitation source
                 # Each entry is [value, confidence] where confidence defaults to 2.0
                 qi_dist_entries = []
                 
@@ -607,10 +564,15 @@ def combine_alternatives_by_country(elicitation_dirs, selected_country, output_d
                         # Try to parse as JSON first (for Discrete distributions)
                         parsed_val = json.loads(val_str)
                         if isinstance(parsed_val, dict) and 'Discrete' in parsed_val:
-                            # Extract the numeric value from Discrete
+                            # Extract the numeric value from Discrete - take the first value only
                             numeric_vals = parsed_val['Discrete'][0]
-                            for num_val in numeric_vals:
-                                qi_dist_entries.append([float(num_val), 2.0])  # Default confidence 2.0
+                            if isinstance(numeric_vals, list) and len(numeric_vals) > 0:
+                                # If it's a list, take first element
+                                num_val = float(numeric_vals[0])
+                            else:
+                                # If it's a single value, use it
+                                num_val = float(numeric_vals)
+                            qi_dist_entries.append([num_val, 2.0])  # One entry per source
                         else:
                             # Try to convert to float
                             qi_dist_entries.append([float(val_str), 2.0])
@@ -622,7 +584,7 @@ def combine_alternatives_by_country(elicitation_dirs, selected_country, output_d
                             pass  # Skip non-numeric values
                 
                 if qi_dist_entries:
-                    # Keep all entries in order (one per elicitation), don't deduplicate
+                    # Keep all entries in order (one per elicitation source), don't deduplicate
                     row_data[criterion] = json.dumps({'QI_dist': qi_dist_entries})
                 else:
                     # If we couldn't parse anything, keep first value
@@ -667,9 +629,109 @@ def combine_alternatives_by_country(elicitation_dirs, selected_country, output_d
     return combined_df
 
 
-# ============================================================================
+def load_criteria_file(path):
+    """Load a criteria CSV file."""
+    return pd.read_csv(path)
+
+
+def verify_criteria_consistency(criteria_list):
+    """Verify that all criteria dataframes are identical."""
+    if not criteria_list:
+        raise ValueError("No criteria files provided")
+    
+    first_crit = criteria_list[0]
+    for i, crit in enumerate(criteria_list[1:], start=1):
+        if not first_crit.equals(crit):
+            raise ValueError(f"Criteria file {i} differs from the first. All elicitations must have identical criteria.")
+    
+    return first_crit
+
+
+#################################################################################
+# Data Loading and Preprocessing
+def startup(file_path_criteria, file_path_weight_elicitations, file_path_value_functions, file_path_alternatives="alternatives.csv"):
+    # Load value functions and criteria and establish canonical ordering
+    # This is done to ensure that criteria are consistently ordered across different elicitation files
+    # And that we do not mix up value functions in other steps
+    first_dict = load_criteria_definitions(file_path_criteria)
+    crit_names = [crit_name for group_data in first_dict.values() for crit_name in group_data['criteria'].keys()]
+
+    # Number of criteria is saved as a variable since we are going to use it multiple times
+    num_criteria = len(crit_names)
+    print(f"Number of criteria identified: {num_criteria}")
+
+    # mapping from criterion name to its index in crit_names
+    crit_index = {name: idx for idx, name in enumerate(crit_names)}
+
+    # Initialize list of lists: each index corresponds to a criterion in `crit_names`
+    # And built it by reading the separate value function CSVs (one per elicitation)
+    vf_list = [[] for _ in range(num_criteria)]
+    conf_list = [[] for _ in range(num_criteria)]
+    for vp in file_path_value_functions:
+        vf_map, conf_map = load_value_functions_with_confidence(vp)
+        for idx, crit_name in enumerate(crit_names):
+            vf_list[idx].append(vf_map[crit_name])
+            conf_list[idx].append(conf_map[crit_name])    
+            
+    # Construct list of dict_data for each elicitation
+    # Load criteria.csv which contains criteria definitions
+    # Adds info about value functions from vf_list for each elicitation
+    print("Loading criteria definitions and attaching value functions...")
+    dict_data_list = []
+    print("Starting loop over weight elicitation files...")
+    for i, fp in enumerate(file_path_weight_elicitations):
+        print(f"Processing file {i+1}/{len(file_path_weight_elicitations)}: {fp}")  # Debugging: Track loop progress
+        dict_data = load_criteria(file_path_criteria, fp)
+        
+        # Attach value functions
+        for gname, gdata in dict_data.items():
+            for crit_name, crit in gdata['criteria'].items():
+                idx = crit_index[crit_name]
+                vf_raw = vf_list[idx][i]
+                # If the loaded VF only contains a single node, assume linear behaviour
+                # across the criterion min/max and wrap it accordingly.
+                try:
+                    xs_attr = getattr(vf_raw, '_xs', None)
+                    if xs_attr is not None and len(xs_attr) == 1:
+                        lo = crit.get('min', crit.get('min_value') or 0.0)
+                        hi = crit.get('max', crit.get('max_value') or (lo + 1.0))
+                        def make_linear(lo, hi):
+                            def vf(x):
+                                try:
+                                    xv = float(x)
+                                except Exception:
+                                    xv = lo
+                                if hi == lo:
+                                    val = 1.0
+                                else:
+                                    val = (xv - lo) / (hi - lo)
+                                import numpy as _np
+                                return float(_np.clip(max(val, 0.001), 0.001, 1.0))
+                            try:
+                                import numpy as _np
+                                vf._xs = _np.array([lo, hi], dtype=float)
+                                vf._ys = _np.array([0.001, 1.0], dtype=float)
+                            except Exception:
+                                pass
+                            return vf
+                        crit['value_function'] = make_linear(lo, hi)
+                    else:
+                        crit['value_function'] = vf_raw
+                except Exception:
+                    crit['value_function'] = vf_raw
+        dict_data_list.append(dict_data)
+
+    # Debugging: Verify final dict_data_list
+    # print("Final dict_data_list contains:", len(dict_data_list), "entries")
+
+    # Load data for alternatives
+    alternatives = load_alternatives(file_path_alternatives)
+    return dict_data_list, crit_index, vf_list, conf_list, alternatives
+#################################################################################
+
+#################################################################################
 # Data Conversion and Normalization Functions
-# ============================================================================
+#################################################################################
 
 def interpolate_value_function(vf_points, x):
     """Piecewise linear interpolation of value function points."""
@@ -747,7 +809,12 @@ def convert_qualitative_indicators_in_folders(folder_numbers):
     for folder_num in folder_numbers:
         base_dir = Path(__file__).parent / 'elicitation_results' / str(folder_num)
         
-        for country in ['IT', 'CH', 'FR', 'PO']:
+        # Detect available country folders dynamically
+        countries = [d.name for d in base_dir.iterdir() if d.is_dir() and len(d.name) == 2 and d.name.isupper()]
+        if not countries:
+            countries = ['IT', 'CH', 'FR', 'PO']  # Fallback
+        
+        for country in countries:
             country_folder = base_dir / country
             if not country_folder.exists():
                 continue
@@ -834,20 +901,4 @@ def convert_qualitative_indicators_in_folders(folder_numbers):
                 writer.writeheader()
                 writer.writerows(vf_rows)
 
-
-def load_criteria_file(path):
-    """Load a criteria CSV file."""
-    return pd.read_csv(path)
-
-
-def verify_criteria_consistency(criteria_list):
-    """Verify that all criteria dataframes are identical."""
-    if not criteria_list:
-        raise ValueError("No criteria files provided")
-    
-    first_crit = criteria_list[0]
-    for i, crit in enumerate(criteria_list[1:], start=1):
-        if not first_crit.equals(crit):
-            raise ValueError(f"Criteria file {i} differs from the first. All elicitations must have identical criteria.")
-    
-    return first_crit
+#################################################################################
