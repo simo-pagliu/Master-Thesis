@@ -10,7 +10,7 @@ import numpy as np
 #################################################################################
 # Import internal modules
 from auxiliary import load_alternatives, load_criteria, load_criteria_definitions, load_value_functions
-from weight_sampling import weight_sampler
+from weight_space_definition import weight_sampler
 #################################################################################
 
 #################################################################################

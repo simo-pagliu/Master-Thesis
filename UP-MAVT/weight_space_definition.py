@@ -11,6 +11,28 @@ import csv
 import scipy.optimize as opt
 from constraints import constraints_func
 
+def weight_sampler(dict_data, weight_space):
+    weight_set_found = False
+    while weight_set_found is False:
+        weight_set_candidate = []
+        for criteria_weight in weight_space:
+            # Randomly sample a weight
+            w = np.random.choice(criteria_weight)
+            weight_set_candidate.append(w)
+        # Check if they sum to 1
+        total_weight = sum(weight_set_candidate)
+        if not np.isclose(total_weight, 1.0, atol=1e-3):
+            continue
+        else:
+            # Check if they satisfy the constraints
+            x_temp = np.concatenate((weight_set_candidate, [0]))
+            constraints_satisfied = constraints_func(x_temp, dict_data)
+            # print(f"Sampled weights: {weight_set_candidate}, sum: {total_weight}, constraints satisfied: {constraints_satisfied}")
+            if not constraints_satisfied:
+                continue
+            else:
+                weight_set_found = True
+    return weight_set_candidate
 
 def max_constraint_violation(x, dict_data, z_star=None):
     """Calculate maximum constraint violation for a solution."""
