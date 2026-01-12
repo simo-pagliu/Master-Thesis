@@ -24,8 +24,8 @@ import csv
 from pile_bwt import bwt, constraints_func
 from up_mavt import startup, mc_simulation
 from aggregation_methods import weighted_sum
-from weight_sampling import obtain_weight_space_description
 from auxiliary import combine_alternatives_by_country
+from weight_space_definition import define_weight_spaces
 #################################################################################
 
 # Ensure all relative file accesses resolve relative to this script location
@@ -39,6 +39,9 @@ selected_country = "IT"
 
 # Elicitation run numbers (folders containing results)
 elicitation_numbers = [1, 2]
+
+# Weight space generation parameters
+required_weight_solutions = 1  # Target number of unique weight combinations
 
 # Montecarlo Parameters
 n_runs = 1000  # Number of Montecarlo simulation runs
@@ -130,30 +133,29 @@ alternative_names = pd.read_csv(file_path_alternatives)['name'].tolist()
 #################################################################################
 
 #################################################################################
-# PILE-BWT Method
+# PILE-BWT Method + Weight Space Definition
 # 
-# Work in progress while we try to fix issues with constraints and solver
-# For now it runs the BWT optimization and then tries to sample more values from the space
-print("Running BWT for each elicitation...")
+# Runs BWT optimization for each elicitation and generates/loads weight spaces
+print("Running BWT for each elicitation and defining weight spaces...")
 bwt_results = []
 
 for i, dict_data in enumerate(dict_data_list):
-    print(f"Running BWT for elicitation {i+1}...")  # Debugging: Print elicitation index
+    print(f"Running BWT for elicitation {i+1}...")
     bwt_result = bwt(dict_data)
     bwt_results.append(bwt_result)
-    
-print(bwt_result["solver_result"]["x"])
 
+print(f"BWT solver result: {bwt_results[-1]['solver_result']['x']}")
+constraint_value = constraints_func(bwt_results[-1]["solver_result"]["x"], dict_data_list[-1])
+print(f"Constraint values for last BWT result: {constraint_value}")
 
-constraint_value = constraints_func(bwt_result["solver_result"]["x"], dict_data)
-print(f"\033[91mConstraint values for last BWT result: {constraint_value}\033[0m")  # Debugging
-# Create files of valid sets of weights
-# We have a list of errors, one per each eliciation
-# We have to create tables of possible weights to sample from in the MC simulation
-list_of_weight_space_points = obtain_weight_space_description(bwt_results, dict_data_list, weight_elicitations, crit_index)
-# print(np.shape(weight_list))
+# Define or load weight spaces using constraint-based optimization
+list_of_weight_space_points = define_weight_spaces(
+    dict_data_list, 
+    elicitation_numbers, 
+    SCRIPT_DIR, 
+    required_solutions=required_weight_solutions
+)
 
-# Debugging: Inspect weight_list before passing to mc_simulation
 print(f"Imported weight spaces for {len(list_of_weight_space_points)} elicitations.")
 #################################################################################
 
