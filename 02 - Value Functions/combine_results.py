@@ -122,6 +122,38 @@ for qfolder in qualitative_data:
                 # Skip non-numeric values
                 continue
 
+# COUNTRY-DEPENDENT ALTERNATIVES: Load country-specific indicator values
+# This file contains indicators that differ by country (e.g., GHGe Benefit - IT vs GHGe Benefit - FR)
+country_dep_alt_data = {}
+country_dep_alt_path = os.path.join(SCRIPT_DIR, 'quantitative', 'country-dep-alt.csv')
+if os.path.exists(country_dep_alt_path):
+    try:
+        country_dep_df = pd.read_csv(country_dep_alt_path)
+        # Parse data structure: alternative name -> country -> indicator -> value
+        for _, row in country_dep_df.iterrows():
+            alt_name = str(row.get('name', '')).strip()
+            if not alt_name:
+                continue
+            if alt_name not in country_dep_alt_data:
+                country_dep_alt_data[alt_name] = {}
+            
+            for col in country_dep_df.columns:
+                if col != 'name':
+                    # Parse column format: "Indicator - COUNTRY"
+                    if ' - ' in col:
+                        parts = col.rsplit(' - ', 1)
+                        if len(parts) == 2:
+                            indicator = parts[0].strip()
+                            country = parts[1].strip()
+                            if country and len(country) <= 3:  # Assume country codes are 2-3 chars
+                                value = row.get(col)
+                                if not pd.isna(value) and str(value).strip() != '':
+                                    if country not in country_dep_alt_data[alt_name]:
+                                        country_dep_alt_data[alt_name][country] = {}
+                                    country_dep_alt_data[alt_name][country][indicator] = value
+    except Exception as e:
+        print(f"Warning: Could not load country-dependent alternatives: {e}")
+
 # (qualitative criteria and value_functions scanning is handled later, after specific_folders processing)
 
 # SECOND PART: Read results from all specific_folders and aggregate per country
@@ -713,6 +745,16 @@ else:
 
         # Ensure alternatives.csv is always written
         if not final_df.empty:
+            # Merge country-dependent alternatives if available
+            if country_dep_alt_data:
+                for idx, row in final_df.iterrows():
+                    alt_name = row['name']
+                    if alt_name in country_dep_alt_data and country_code.upper() in country_dep_alt_data[alt_name]:
+                        country_deps = country_dep_alt_data[alt_name][country_code.upper()]
+                        for indicator, value in country_deps.items():
+                            if indicator not in final_df.columns:
+                                final_df[indicator] = ''
+                            final_df.loc[idx, indicator] = value
             final_df.to_csv(alt_out_path, index=False)
         else:
             # Synthesized dataframe already saved above

@@ -15,7 +15,7 @@ from weight_sampling import weight_sampler
 
 #################################################################################
 # Data Loading and Preprocessing
-def startup(file_path_criteria, file_path_weight_elicitations, file_path_value_functions):
+def startup(file_path_criteria, file_path_weight_elicitations, file_path_value_functions, file_path_alternatives="alternatives.csv"):
     # Load value functions and criteria and establish canonical ordering
     # This is done to ensure that criteria are consistently ordered across different elicitation files
     # And that we do not mix up value functions in other steps
@@ -89,7 +89,7 @@ def startup(file_path_criteria, file_path_weight_elicitations, file_path_value_f
     # print("Final dict_data_list contains:", len(dict_data_list), "entries")
 
     # Load data for alternatives
-    alternatives = load_alternatives("alternatives.csv")
+    alternatives = load_alternatives(file_path_alternatives)
     return dict_data_list, crit_index, vf_list, alternatives
 #################################################################################
 

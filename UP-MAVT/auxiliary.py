@@ -4,6 +4,9 @@
 #
 import csv
 import ast
+import math
+import json
+
 def load_alternatives(file_path):
     """Load alternatives from a CSV file and parse distributions as dictionaries."""
     alternatives = []
@@ -300,3 +303,121 @@ def load_value_functions(file_path_value_functions):
                 # no pts and no usable expr: skip
                 continue
     return vfs
+
+def combine_alternatives_by_country(elicitation_dirs, selected_country, output_dir):
+    """
+    Combine alternatives from multiple elicitations for a specific country.
+    
+    For quantitative indicators (same values across all elicitations), keep value as is.
+    For qualitative indicators (different values), create a discrete distribution.
+    
+    Args:
+        elicitation_dirs: List of paths to elicitation result directories (e.g., ["elicitation_results/1", "elicitation_results/2"])
+        selected_country: Country code (e.g., "IT", "FR")
+        output_dir: Directory to save the combined alternatives file
+    """
+    import json
+    import os
+    import pandas as pd
+    
+    all_alternatives = []
+    
+    # Load alternatives from each elicitation
+    for elicit_dir in elicitation_dirs:
+        alt_path = os.path.join(elicit_dir, selected_country, "alternatives.csv")
+        if not os.path.exists(alt_path):
+            raise FileNotFoundError(f"Alternatives file not found: {alt_path}")
+        
+        df = pd.read_csv(alt_path)
+        all_alternatives.append(df)
+    
+    if not all_alternatives:
+        raise ValueError("No alternatives files loaded")
+    
+    # Get list of alternative names from first file
+    alt_names = all_alternatives[0]['name'].tolist()
+    criteria_columns = [col for col in all_alternatives[0].columns if col != 'name']
+    
+    # Build combined alternatives
+    combined_data = []
+    
+    for alt_name in alt_names:
+        row_data = {'name': alt_name}
+        
+        for criterion in criteria_columns:
+            # Collect values for this criterion across all elicitations
+            values = []
+            parsed_values = []
+            
+            for df in all_alternatives:
+                if alt_name in df['name'].values:
+                    cell_value = df[df['name'] == alt_name][criterion].iloc[0]
+                    
+                    # Handle NaN and empty values
+                    if pd.isna(cell_value) or str(cell_value).strip() == '':
+                        continue
+                    
+                    values.append(cell_value)
+                    
+                    # Parse the value to extract numeric values
+                    try:
+                        parsed = json.loads(cell_value)
+                        if isinstance(parsed, dict) and 'Discrete' in parsed:
+                            # Extract values from Discrete distribution
+                            discrete_vals = parsed['Discrete'][0] if parsed['Discrete'] else []
+                            parsed_values.extend(discrete_vals)
+                        elif isinstance(parsed, dict):
+                            # For other distributions, just keep the original
+                            parsed_values.append(cell_value)
+                    except (json.JSONDecodeError, TypeError):
+                        # If it's not JSON, keep the raw value
+                        parsed_values.append(cell_value)
+            
+            if not values:
+                # No values found for this criterion
+                row_data[criterion] = ''
+                continue
+            
+            if len(values) == 1:
+                # Only one elicitation has a value, keep it as is
+                row_data[criterion] = values[0]
+            else:
+                # Multiple values - check if they're all the same
+                if len(set(str(v) for v in values)) == 1:
+                    # All values are the same, keep as is
+                    row_data[criterion] = values[0]
+                else:
+                    # Values differ - need to create a discrete distribution
+                    # Extract numeric values from parsed_values
+                    numeric_values = []
+                    for pv in parsed_values:
+                        try:
+                            if isinstance(pv, (int, float)):
+                                numeric_values.append(float(pv))
+                            elif isinstance(pv, str):
+                                numeric_values.append(float(pv))
+                        except (ValueError, TypeError):
+                            pass
+                    
+                    if numeric_values:
+                        # Sort and remove duplicates
+                        numeric_values = sorted(list(set(numeric_values)))
+                        row_data[criterion] = json.dumps({'Discrete': [numeric_values]})
+                    else:
+                        # If no numeric values extracted, keep the first value
+                        row_data[criterion] = values[0]
+        
+        combined_data.append(row_data)
+    
+    # Create combined dataframe
+    combined_df = pd.DataFrame(combined_data)
+    
+    # Ensure output directory exists
+    os.makedirs(output_dir, exist_ok=True)
+    
+    # Save combined alternatives
+    output_file = os.path.join(output_dir, f"alternatives_{selected_country}.csv")
+    combined_df.to_csv(output_file, index=False)
+    
+    print(f"✓ Combined alternatives for {selected_country} saved to {output_file}")
+    return combined_df

@@ -15,6 +15,7 @@ matplotlib.use('TkAgg')  # Set backend before importing pyplot
 import matplotlib.pyplot as plt
 import seaborn as sns
 import os
+import pandas as pd
 import csv
 #################################################################################
 
@@ -24,6 +25,7 @@ from pile_bwt import bwt, constraints_func
 from up_mavt import startup, mc_simulation
 from aggregation_methods import weighted_sum
 from weight_sampling import obtain_weight_space_description
+from auxiliary import combine_alternatives_by_country
 #################################################################################
 
 # Ensure all relative file accesses resolve relative to this script location
@@ -32,47 +34,99 @@ os.chdir(SCRIPT_DIR)
 
 #################################################################################
 # USER INPUTS
-# Weight elicitation files (one per elicitation / run)
-file_path_weight_elicitations = ["wbt_results_1.csv"]
+# Country selection (IT, FR, CH, PO)
+selected_country = "IT"
 
-# Value function files (one per elicitation / run)
-file_path_value_functions = ["value_functions_1.csv"]
-
-# Criteria definitions file
-file_path_criteria = "criteria.csv"
+# Elicitation run numbers (folders containing results)
+elicitation_numbers = [1, 2]
 
 # Montecarlo Parameters
-n_runs = 10000
+n_runs = 1000  # Number of Montecarlo simulation runs
 PLOTS = True  # Toggle plots
 plot_bins = 50  # Number of bins for histograms
 STRICT = True  # Toggle strict mode
 UPDATE_EVERY = 100  # Update plots every N runs
-opinion_weights = np.ones(len(file_path_weight_elicitations))/len(file_path_weight_elicitations)  # Equal weights for each elicitation
+opinion_weights = np.ones(len(elicitation_numbers))/len(elicitation_numbers)  # Equal weights for each elicitation
 #################################################################################
 
 
 #################################################################################
+# Load and verify criteria from elicitation results
+def load_criteria_file(path):
+    """Load a criteria CSV file."""
+    return pd.read_csv(path)
+
+def verify_criteria_consistency(criteria_list):
+    """Verify that all criteria dataframes are identical."""
+    if not criteria_list:
+        raise ValueError("No criteria files provided")
+    
+    first_crit = criteria_list[0]
+    for i, crit in enumerate(criteria_list[1:], start=1):
+        if not first_crit.equals(crit):
+            raise ValueError(f"Criteria file {i} differs from the first criteria file. All elicitations must have identical criteria.")
+    
+    return first_crit
+
+# Build paths for elicitation results
+elicitation_criteria_paths = []
+weight_elicitations = []
+value_functions = []
+
+for elicit_num in elicitation_numbers:
+    elicit_dir = os.path.join(SCRIPT_DIR, "elicitation_results", str(elicit_num))
+    
+    # Criteria file path
+    crit_path = os.path.join(elicit_dir, "criteria.csv")
+    if not os.path.exists(crit_path):
+        raise FileNotFoundError(f"Criteria file not found: {crit_path}")
+    elicitation_criteria_paths.append(crit_path)
+    
+    # Weight elicitation file (BWT results) - in weight_spaces folder
+    weight_file = os.path.join(SCRIPT_DIR, "weight_spaces", f"BWT_results_{elicit_num}.csv")
+    if not os.path.exists(weight_file):
+        # Try alternative naming
+        weight_file = os.path.join(SCRIPT_DIR, "weight_spaces", f"wbt_results_{elicit_num}.csv")
+    if not os.path.exists(weight_file):
+        raise FileNotFoundError(f"Weight elicitation file not found for elicitation {elicit_num} in weight_spaces folder")
+    weight_elicitations.append(weight_file)
+    
+    # Value functions file for selected country
+    vf_file = os.path.join(elicit_dir, selected_country, "value_functions.csv")
+    if not os.path.exists(vf_file):
+        raise FileNotFoundError(f"Value functions file not found for {selected_country} in elicitation {elicit_num}: {vf_file}")
+    value_functions.append(vf_file)
+
+print(f"Loading elicitation results for country: {selected_country}")
+print(f"Elicitations: {elicitation_numbers}")
+
+# Load and verify all criteria are the same
+print("Loading and verifying criteria files...")
+criteria_dfs = [load_criteria_file(path) for path in elicitation_criteria_paths]
+criteria_verified = verify_criteria_consistency(criteria_dfs)
+print(f"✓ All criteria files are consistent. Using common criteria with {len(criteria_verified)} criteria.")
+
+# Create a temporary criteria.csv file in SCRIPT_DIR for the startup function
+file_path_criteria = os.path.join(SCRIPT_DIR, "criteria.csv")
+criteria_verified.to_csv(file_path_criteria, index=False)
+
+# Combine alternatives from multiple elicitations for the selected country
+print(f"Combining alternatives for {selected_country} from {len(elicitation_numbers)} elicitation(s)...")
+elicitation_dirs = [os.path.join(SCRIPT_DIR, "elicitation_results", str(num)) for num in elicitation_numbers]
+combine_alternatives_by_country(elicitation_dirs, selected_country, SCRIPT_DIR)
+
+# Use country-specific combined alternatives file
+file_path_alternatives = os.path.join(SCRIPT_DIR, f"alternatives_{selected_country}.csv")
+if not os.path.exists(file_path_alternatives):
+    raise FileNotFoundError(f"Combined alternatives file not found: {file_path_alternatives}")
+
 # Startup: Load all data
-dict_data_list, crit_index, vf_list, alternatives = startup(file_path_criteria, file_path_weight_elicitations, file_path_value_functions)
+dict_data_list, crit_index, vf_list, alternatives = startup(file_path_criteria, weight_elicitations, value_functions, file_path_alternatives)
 n_alternatives = len(alternatives)
 print(f"Loaded {len(dict_data_list)} elicitation(s) with {n_alternatives} alternatives.")
 
-# Extract alternative names for plotting (the CSV contains a `name` column)
-alternative_names = []
-try:
-    alt_path = os.path.join(SCRIPT_DIR, "alternatives.csv")
-    with open(alt_path, mode='r') as altf:
-        reader = csv.DictReader(altf)
-        for idx, row in enumerate(reader):
-            name = row.get('name') if row is not None else None
-            if name is None or name == '':
-                name = f"Alt {idx}"
-            alternative_names.append(name)
-    # Fallback to generic names if the file didn't contain names or had fewer rows
-    if len(alternative_names) < n_alternatives:
-        alternative_names = [f"Alt {i+1}" for i in range(n_alternatives)]
-except Exception:
-    alternative_names = [f"Alt {i+1}" for i in range(n_alternatives)]
+# Extract alternative names from the combined alternatives file
+alternative_names = pd.read_csv(file_path_alternatives)['name'].tolist()
 #################################################################################
 
 #################################################################################
@@ -96,7 +150,7 @@ print(f"\033[91mConstraint values for last BWT result: {constraint_value}\033[0m
 # Create files of valid sets of weights
 # We have a list of errors, one per each eliciation
 # We have to create tables of possible weights to sample from in the MC simulation
-list_of_weight_space_points = obtain_weight_space_description(bwt_results, dict_data_list, file_path_weight_elicitations, crit_index)
+list_of_weight_space_points = obtain_weight_space_description(bwt_results, dict_data_list, weight_elicitations, crit_index)
 # print(np.shape(weight_list))
 
 # Debugging: Inspect weight_list before passing to mc_simulation
@@ -153,7 +207,7 @@ def update_plots(rank_probs, distributions, i, n_runs, n_alternatives, strict=Fa
                 else:
                     axes[alt_idx].legend(title='Elicitation')
                 axes[alt_idx].set_xlim(0, 1)
-            axes[alt_idx].set_title(f"Distribution of Values for Alternative {alt_idx}")
+            axes[alt_idx].set_title(f"Distribution of Values for {alternative_names[alt_idx]}")
             axes[alt_idx].set_xlabel("Value")
             axes[alt_idx].set_ylabel("Probability")
             # Format y-axis as percentage
