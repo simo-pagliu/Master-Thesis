@@ -140,7 +140,35 @@ def sample_to_values(data, value_function):
             prob_1 = a * x + (1-a)*(1-x)
             prob_2 = (1-a)*x
             sample = np.random.choice([0,1,2], p=[prob_0, prob_1, prob_2])
-            
+
+        elif list(data.keys())[0] == "QI_dist":
+            # Qualitative Indicator distribution with confidence levels
+            # Format: [(value1, confidence1), (value2, confidence2), ...]
+
+            # Step 1: Randomly select one opinion
+            selected_idx = np.random.choice(len(data_values))
+            value, confidence = data_values[selected_idx]
+
+            # Step 2: Map confidence to percentage error and compute range
+            # Example mapping (customize as needed):
+            if confidence >= 4:
+                error_percent = 5   # 5% error for very high confidence
+            elif confidence >= 3:
+                error_percent = 10  # 10% error for high confidence
+            elif confidence >= 2:
+                error_percent = 20  # 20% error for medium confidence
+            elif confidence >= 1:
+                error_percent = 30  # 30% error for low confidence
+            else:
+                error_percent = 50  # 50% error for very low confidence
+
+            dist_range = value * (error_percent / 100)
+            a = max(value - dist_range, 0)  # Clamp to non-negative
+            b = value + dist_range
+
+            # Step 3: Sample from the uniform distribution
+            sample = np.random.uniform(a, b)
+   
         else:
             raise ValueError(f"Unsupported distribution type in dictionary.{data.keys()}")
     else:

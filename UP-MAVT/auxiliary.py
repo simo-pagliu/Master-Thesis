@@ -18,7 +18,20 @@ def load_alternatives(file_path):
             alternative = {}
             for key, value in row.items():
                 if key != 'name':
-                    alternative[key] = ast.literal_eval(value)  # Parse the string as a dictionary
+                    # Skip empty values
+                    if value is None or str(value).strip() == '':
+                        continue
+                    
+                    # Try to parse as JSON first (for QI_dist and other distributions)
+                    try:
+                        alternative[key] = json.loads(value)
+                    except (json.JSONDecodeError, TypeError):
+                        # Fall back to literal_eval for backward compatibility
+                        try:
+                            alternative[key] = ast.literal_eval(value)
+                        except (ValueError, SyntaxError):
+                            # If both fail, keep as string
+                            alternative[key] = value
             alternatives.append(alternative)
             # print(f"Loaded alternative: {row['name']} with data: {alternative}")
     return alternatives
@@ -557,11 +570,12 @@ def combine_alternatives_by_country(elicitation_dirs, selected_country, output_d
         row_data = {'name': alt_name}
         
         for criterion in criteria_columns:
-            # Collect values for this criterion across all elicitations
-            values = []
-            parsed_values = []
+            is_qi = criterion in qualitative_indicators
             
-            for df in all_alternatives:
+            # Collect values from main elicitations with their elicitation index
+            values_list = []  # List of (value_str, elicit_idx) tuples for QI
+            
+            for elicit_idx, df in enumerate(all_alternatives):
                 if alt_name in df['name'].values:
                     cell_value = df[df['name'] == alt_name][criterion].iloc[0]
                     
@@ -569,72 +583,73 @@ def combine_alternatives_by_country(elicitation_dirs, selected_country, output_d
                     if pd.isna(cell_value) or str(cell_value).strip() == '':
                         continue
                     
-                    values.append(cell_value)
-                    
-                    # Parse the value to extract numeric values
-                    try:
-                        parsed = json.loads(cell_value)
-                        if isinstance(parsed, dict) and 'Discrete' in parsed:
-                            # Extract values from Discrete distribution
-                            discrete_vals = parsed['Discrete'][0] if parsed['Discrete'] else []
-                            parsed_values.extend(discrete_vals)
-                        elif isinstance(parsed, dict):
-                            # For other distributions, just keep the original
-                            parsed_values.append(cell_value)
-                    except (json.JSONDecodeError, TypeError):
-                        # If it's not JSON, keep the raw value
-                        parsed_values.append(cell_value)
+                    values_list.append((cell_value, elicit_idx))
             
             # If this is a qualitative indicator and QI data exists, add those values too
-            if criterion in qualitative_indicators and qi_alternatives_dfs:
+            if is_qi and qi_alternatives_dfs:
                 for qi_df in qi_alternatives_dfs:
                     if alt_name in qi_df['name'].values:
                         qi_value = qi_df[qi_df['name'] == alt_name][criterion].iloc[0]
                         if not pd.isna(qi_value) and str(qi_value).strip() != '':
-                            values.append(qi_value)
-                            try:
-                                parsed_qi = json.loads(qi_value)
-                                if isinstance(parsed_qi, dict) and 'Discrete' in parsed_qi:
-                                    discrete_vals = parsed_qi['Discrete'][0] if parsed_qi['Discrete'] else []
-                                    parsed_values.extend(discrete_vals)
-                                else:
-                                    parsed_values.append(qi_value)
-                            except (json.JSONDecodeError, TypeError):
-                                parsed_values.append(qi_value)
+                            values_list.append((qi_value, -1))  # -1 indicates QI folder
             
-            if not values:
+            if not values_list:
                 # No values found for this criterion
-                row_data[criterion] = ''
                 continue
             
-            if len(values) == 1:
-                # Only one elicitation has a value, keep it as is
-                row_data[criterion] = values[0]
-            else:
-                # Multiple values - check if they're all the same
-                if len(set(str(v) for v in values)) == 1:
-                    # All values are the same, keep as is
-                    row_data[criterion] = values[0]
-                else:
-                    # Values differ - need to create a discrete distribution
-                    # Extract numeric values from parsed_values
-                    numeric_values = []
-                    for pv in parsed_values:
+            if is_qi:
+                # For qualitative indicators, ALWAYS create QI_dist with one entry per elicitation
+                # Each entry is [value, confidence] where confidence defaults to 2.0
+                qi_dist_entries = []
+                
+                for val_str, elicit_idx in values_list:
+                    try:
+                        # Try to parse as JSON first (for Discrete distributions)
+                        parsed_val = json.loads(val_str)
+                        if isinstance(parsed_val, dict) and 'Discrete' in parsed_val:
+                            # Extract the numeric value from Discrete
+                            numeric_vals = parsed_val['Discrete'][0]
+                            for num_val in numeric_vals:
+                                qi_dist_entries.append([float(num_val), 2.0])  # Default confidence 2.0
+                        else:
+                            # Try to convert to float
+                            qi_dist_entries.append([float(val_str), 2.0])
+                    except (json.JSONDecodeError, ValueError, TypeError):
+                        # Try direct float conversion
                         try:
-                            if isinstance(pv, (int, float)):
-                                numeric_values.append(float(pv))
-                            elif isinstance(pv, str):
-                                numeric_values.append(float(pv))
-                        except (ValueError, TypeError):
+                            qi_dist_entries.append([float(val_str), 2.0])
+                        except ValueError:
+                            pass  # Skip non-numeric values
+                
+                if qi_dist_entries:
+                    # Keep all entries in order (one per elicitation), don't deduplicate
+                    row_data[criterion] = json.dumps({'QI_dist': qi_dist_entries})
+                else:
+                    # If we couldn't parse anything, keep first value
+                    row_data[criterion] = values_list[0][0]
+            else:
+                # For quantitative indicators, use Discrete distribution with unique values
+                numeric_values = []
+                for val_str, _ in values_list:
+                    try:
+                        parsed_val = json.loads(val_str)
+                        if isinstance(parsed_val, dict) and 'Discrete' in parsed_val:
+                            # Extract numeric values from Discrete
+                            numeric_vals = parsed_val['Discrete'][0]
+                            numeric_values.extend([float(v) for v in numeric_vals])
+                        else:
+                            numeric_values.append(float(val_str))
+                    except (json.JSONDecodeError, ValueError, TypeError):
+                        try:
+                            numeric_values.append(float(val_str))
+                        except ValueError:
                             pass
-                    
-                    if numeric_values:
-                        # Sort and remove duplicates
-                        numeric_values = sorted(list(set(numeric_values)))
-                        row_data[criterion] = json.dumps({'Discrete': [numeric_values]})
-                    else:
-                        # If no numeric values extracted, keep the first value
-                        row_data[criterion] = values[0]
+                
+                if numeric_values:
+                    numeric_values = sorted(list(set(numeric_values)))
+                    row_data[criterion] = json.dumps({'Discrete': [numeric_values]})
+                else:
+                    row_data[criterion] = values_list[0][0]
         
         combined_data.append(row_data)
     
