@@ -1085,10 +1085,7 @@ class WBT_ui:
             # Check consistency against threshold and update slider accent color
             violation = False
             if y_thresh is not None:
-                if comparison_type == 'best':
-                    violation = (h + 1e-9) < y_thresh  # require h >= y_thresh (equal allowed)
-                else:
-                    violation = (h - 1e-9) > y_thresh  # require h <= y_thresh (equal allowed)
+                violation = (h + 1e-9) < y_thresh  # require h >= y_thresh (equal allowed)
             # Also check ordinal constraints for worst phase (from completed worst comparisons)
             if comparison_type == 'worst':
                 if y_min_ordinal is not None:
@@ -1404,12 +1401,8 @@ class WBT_ui:
                     vf_val = float(vf(val))
                     # Avoid division by zero
                     if vf_val != 0:
-                        # For best comparisons: a = 1/vf(value)
-                        # For worst comparisons: a = vf(value) (i.e., 1/a where a was the inverse)
-                        if comp_type == 'worst':
-                            a_val = vf_val
-                        else:
-                            a_val = 1.0 / vf_val
+                        # For both best and worst comparisons: a = 1/vf(value)
+                        a_val = 1.0 / vf_val
         except Exception:
             # If anything fails, leave a_val empty
             pass

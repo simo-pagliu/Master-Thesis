@@ -1,6 +1,6 @@
 Type,Reference,Other,Value,Group,Confidence,a
 best,Thermal Efficiency,Load following Capabilities,32.95,Technical,2,2.4939393094992597
-best,Thermal Efficiency,Discharge Burnup,33.86,Technical,2,1.7535781811769557
+best,Thermal Efficiency,Discharge Burnup,34.02,Technical,2,1.6665890787207291
 best,Thermal Efficiency,Net Power Output,35.1,Technical,2,1.2485265294449985
-worst,Load following Capabilities,Discharge Burnup,50.79,Technical,2,0.5052011764705882
-worst,Load following Capabilities,Net Power Output,898.0,Technical,2,0.64086
+worst,Load following Capabilities,Discharge Burnup,50.75,Technical,2,1.9980019980019983
+worst,Load following Capabilities,Net Power Output,859.0,Technical,2,1.66908684258842
