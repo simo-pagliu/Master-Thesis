@@ -54,7 +54,7 @@ def trust_constr_run(objective_func, x0, bounds, num_criteria, dict_data, z_star
         method='trust-constr',
         constraints=nonlinear_constraints,
         bounds=bounds,
-        options={'maxiter': int(2e3), 'gtol': 1e-3, 'xtol': 1e-6}
+        options={'maxiter': int(1e5), 'gtol': 1e-3, 'xtol': 1e-6}
     )
     return result_trust  
   
@@ -213,7 +213,7 @@ def find_all_solutions(dict_data, z_star=None, num_restarts=150, eps=0.001, rng_
     result_de = opt.differential_evolution(
         objective_for_de,
         bounds,
-        maxiter=1000,
+        maxiter=5000,
         popsize=20,
         tol=1e-3,
         polish=True,
@@ -247,7 +247,7 @@ def find_all_solutions(dict_data, z_star=None, num_restarts=150, eps=0.001, rng_
     return solutions
 
 
-def define_weight_spaces(dict_data_list, elicitation_numbers, script_dir, required_solutions=100):
+def define_weight_spaces(dict_data_list, elicitation_numbers, script_dir, required_solutions=500):
     """
     Define weight spaces for each elicitation.
     

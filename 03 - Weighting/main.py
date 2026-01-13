@@ -3,6 +3,8 @@
 ################################################
 import tkinter as tk
 import os
+import matplotlib.pyplot as plt
+import numpy as np
 ################################################
 # Import local modules
 ################################################
@@ -23,9 +25,52 @@ criteria = import_criteria(os.path.join(working_directory, "criteria.csv"))
 criteria_count = len(criteria)
 
 ################################################
-# Use of auxiliary functions
+# Show all value functions before starting UI
 ################################################
-#value_function_plot(os.path.join(working_directory, "criteria.csv"))
+# Group criteria by their 'group' attribute
+groups = {}
+for key, values in criteria.items():
+    group_name = values.get('group', 'Ungrouped')
+    if group_name not in groups:
+        groups[group_name] = []
+    groups[group_name].append((key, values))
+
+# Create one figure per group
+for group_name, group_criteria in groups.items():
+    n_criteria = len(group_criteria)
+    n_cols = min(3, n_criteria)
+    n_rows = (n_criteria + n_cols - 1) // n_cols
+    
+    # Create figure with subplots for this group
+    fig, axes = plt.subplots(n_rows, n_cols, figsize=(6*n_cols, 4*n_rows))
+    fig.suptitle(f'Value Functions - Group: {group_name}', fontsize=16, fontweight='bold')
+    
+    # Flatten axes array for easier iteration
+    if n_criteria == 1:
+        axes = [axes]
+    elif n_rows == 1 or n_cols == 1:
+        axes = axes.flatten()
+    else:
+        axes = axes.flatten()
+    
+    # Plot each value function in this group
+    for idx, (key, values) in enumerate(group_criteria):
+        ax = axes[idx]
+        x_values = np.linspace(values['min'], values['max'], 100)
+        y_values = [values['value_function'](x) for x in x_values]
+        ax.plot(x_values, y_values, linewidth=2, color='#2b78c8')
+        ax.set_title(f'{key}', fontweight='bold')
+        ax.set_xlabel(f'Data Range ({values.get("unit", "")})')
+        ax.set_ylabel('Value')
+        ax.grid(True, alpha=0.3)
+        ax.set_ylim(-0.05, 1.05)
+    
+    # Hide any unused subplots
+    for idx in range(n_criteria, len(axes)):
+        axes[idx].set_visible(False)
+    
+    plt.tight_layout()
+    plt.show()
 
 ################################################
 # Run the UI

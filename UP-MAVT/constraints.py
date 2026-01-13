@@ -1,4 +1,4 @@
-def constraints_func(x, dict_data, z_star=None, eps=0.001):
+def constraints_func(x, dict_data, z_star=None, eps=0):
     cons = []
     group_indices = {}
     current_index = 0
