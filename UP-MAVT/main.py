@@ -43,7 +43,7 @@ os.chdir(SCRIPT_DIR)
 selected_country = "IT"
 
 # Elicitation run numbers (folders containing results)
-elicitation_numbers = [1, 2]
+elicitation_numbers = [1, 2, 4]
 
 # Folders Containing quick elicitation results (only QIs)
 QI_elicitation_numbers = [3]
