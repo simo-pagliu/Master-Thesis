@@ -247,7 +247,7 @@ def find_all_solutions(dict_data, z_star=None, num_restarts=150, eps=0.001, rng_
     return solutions
 
 
-def define_weight_spaces(dict_data_list, elicitation_numbers, script_dir, required_solutions=500):
+def define_weight_spaces(dict_data_list, elicitation_numbers, script_dir, required_solutions=500, country=None):
     """
     Define weight spaces for each elicitation.
     
@@ -268,9 +268,16 @@ def define_weight_spaces(dict_data_list, elicitation_numbers, script_dir, requir
     list_of_weight_space_points = []
     weight_spaces_dir = os.path.join(script_dir, "weight_spaces")
     
+    country_tag = None
+    if country is not None and str(country).strip() != '':
+        country_tag = str(country).strip().upper()
+
     for i, dict_data in enumerate(dict_data_list):
         elicit_num = elicitation_numbers[i]
-        output_file = os.path.join(weight_spaces_dir, f"BWT_results_{elicit_num}_weights.csv")
+        if country_tag:
+            output_file = os.path.join(weight_spaces_dir, f"BWT_results_{elicit_num}_weights_{country_tag}.csv")
+        else:
+            output_file = os.path.join(weight_spaces_dir, f"BWT_results_{elicit_num}_weights.csv")
         
         if os.path.exists(output_file):
             # Load existing weights file
