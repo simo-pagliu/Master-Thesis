@@ -162,21 +162,27 @@ def remap_bwt_results_for_country(
     script_dir=None,
     output_dir=None,
 ):
-    """Create a country-adjusted BWT results CSV by remapping the comparison `Value` field.
+    """Create a country-adjusted BWT results CSV.
 
     The BWT CSV stores a single `Value` for each comparison. In this codebase, that `Value`
     is interpreted as:
       - if Type == 'best'  -> value is on the Reference criterion scale
       - if Type == 'worst' -> value is on the Other criterion scale
 
-    We remap that value into the country-specific domain inferred from that country's
-    value-function points, preserving the implied utility level.
+    Requested policy:
+    - Compare the general (folder-level) `criteria.csv` with the country-specific
+      `<country>/criteria.csv` for the same elicitation.
+    - When the range differs, linearly rescale `Value` from the global domain into
+      the country domain.
 
-    IMPORTANT: We do NOT assume a linear value->utility conversion. When available, we
-    use the stored comparison parameter `a` (which is generated as a = 1 / vf(Value)
-    in the weighting UI), so utility is u = 1/a. Only if `a` is missing/unparseable
-    do we fall back to evaluating the piecewise points at the stored Value.
+    Compatibility note:
+    - Qualitative criteria may be stored in a raw 1–6 scale in BWT elicitation, while the
+      country value functions may have been converted to a 0–1 domain. For these, we still
+      remap from [1,6] into the country value-function x-range.
+
+    After any remap, we recompute `a` as: a = 1 / vf_country(Value_new).
     """
+
     if script_dir is None:
         script_dir = os.path.dirname(os.path.abspath(__file__))
     if output_dir is None:
@@ -187,17 +193,20 @@ def remap_bwt_results_for_country(
 
     bwt_in = os.path.join(script_dir, 'weight_spaces', f'BWT_results_{elicit_num}.csv')
     bwt_out = os.path.join(output_dir, f'BWT_results_{elicit_num}_{country}.csv')
+
     criteria_csv = os.path.join(script_dir, 'elicitation_results', str(elicit_num), 'criteria.csv')
+    country_criteria_csv = os.path.join(script_dir, 'elicitation_results', str(elicit_num), country, 'criteria.csv')
     vf_csv = os.path.join(script_dir, 'elicitation_results', str(elicit_num), country, 'value_functions.csv')
 
-    ranges = _load_criteria_ranges(criteria_csv)
+    ranges_global = _load_criteria_ranges(criteria_csv)
+    ranges_country = _load_criteria_ranges(country_criteria_csv) if os.path.exists(country_criteria_csv) else {}
     vf_points = _load_vf_points(vf_csv)
 
     qualitative_indicators = {
         'Design Maturity': 'positive',
         'Licensing Status': 'positive',
         'Supplier Availbility': 'positive',
-        'Design Complexity': 'negative',  # raw (pre-conversion) interpretation
+        'Design Complexity': 'negative',
         'Construction Complexity': 'positive',
     }
 
@@ -218,7 +227,6 @@ def remap_bwt_results_for_country(
         if not crit_for_value:
             continue
         if crit_for_value not in vf_points:
-            # If we don't have the VF, we cannot remap safely.
             continue
 
         try:
@@ -226,41 +234,58 @@ def remap_bwt_results_for_country(
         except Exception:
             continue
 
-        # Determine whether the criteria.csv range differs from the VF-point x-range.
-        # Only in that case do we remap Value.
-        if crit_for_value in qualitative_indicators:
-            lo, hi = 1.0, 6.0
-        else:
-            lo, hi, _crit_type = ranges.get(crit_for_value, (None, None, None))
-            if lo is None or hi is None:
-                continue
-
         pts = vf_points[crit_for_value]
         xs = [float(p[0]) for p in pts]
         vf_lo = min(xs)
         vf_hi = max(xs)
 
-        # Compare endpoints with a small tolerance.
-        if np.isclose(float(lo), vf_lo, atol=1e-9) and np.isclose(float(hi), vf_hi, atol=1e-9):
-            continue
-
-        # Preserve implied utility level. Prefer using `a` (u = 1/a).
-        u = None
-        try:
-            a_val = float(row.get('a'))
-            if a_val > 0:
-                u = 1.0 / a_val
-        except Exception:
-            u = None
-
-        if u is None:
-            try:
-                u = _eval_piecewise(pts, x_old)
-            except Exception:
+        # Source range: what `Value` is expressed in.
+        if crit_for_value in qualitative_indicators:
+            src_lo, src_hi = 1.0, 6.0
+        else:
+            src_lo, src_hi, _crit_type = ranges_global.get(crit_for_value, (None, None, None))
+            if src_lo is None or src_hi is None:
                 continue
 
-        x_new = _invert_piecewise(pts, u)
+        # Target range:
+        # - qualitative: always remap into the country VF x-domain (typically [0,1])
+        # - quantitative: ONLY remap when country criteria ranges differ from global criteria ranges
+        do_remap = False
+        if crit_for_value in qualitative_indicators:
+            tgt_lo, tgt_hi = vf_lo, vf_hi
+            do_remap = True
+        else:
+            c_lo, c_hi, _c_type = ranges_country.get(crit_for_value, (None, None, None))
+            if c_lo is not None and c_hi is not None:
+                if not (np.isclose(float(src_lo), float(c_lo), atol=1e-9) and np.isclose(float(src_hi), float(c_hi), atol=1e-9)):
+                    tgt_lo, tgt_hi = float(c_lo), float(c_hi)
+                    do_remap = True
+
+        if not do_remap:
+            continue
+
+        src_span = float(src_hi) - float(src_lo)
+        tgt_span = float(tgt_hi) - float(tgt_lo)
+        if abs(src_span) <= 1e-12 or abs(tgt_span) <= 1e-12:
+            continue
+
+        t = (x_old - float(src_lo)) / src_span
+        if t < 0.0:
+            t = 0.0
+        if t > 1.0:
+            t = 1.0
+
+        x_new = float(tgt_lo + t * tgt_span)
         row['Value'] = str(float(x_new))
+
+        try:
+            vf_val = float(_eval_piecewise(pts, x_new))
+        except Exception:
+            vf_val = None
+        if vf_val is not None:
+            if vf_val <= 0.0:
+                vf_val = 0.001
+            row['a'] = str(float(1.0 / vf_val))
 
     with open(bwt_out, 'w', newline='') as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)

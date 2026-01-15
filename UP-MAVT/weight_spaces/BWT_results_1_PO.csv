@@ -15,8 +15,8 @@ worst,Discharge Burnup,Thermal Efficiency,32.52,Technical,2,3.115481681315808
 best,Percived Safety,Electricity Market Benefit,1.59,Social,2,1.1142061281337048
 best,Percived Safety,GHGe Benefit,1.56,Social,2,1.1235955056179776
 best,Percived Safety,Nuclear Waste,0.76,Social,2,1.7536475869809205
-worst,Nuclear Waste,Electricity Market Benefit,49.0,Social,2,1.0
-worst,Nuclear Waste,GHGe Benefit,1.2054591667587582,Social,2,3.5087243117487383
+worst,Nuclear Waste,Electricity Market Benefit,38.0,Social,2,1.0
+worst,Nuclear Waste,GHGe Benefit,3.779028621947177,Social,2,3.508724311748739
 best,Percived Safety,Capital Investment Budgeted,1.61,Between-groups-B,2,1.1080332409972298
 best,Percived Safety,Design Maturity,1.56,Between-groups-B,2,1.1235955056179776
 best,Percived Safety,Load following Capabilities,0.78,Between-groups-B,2,1.7087590991422028

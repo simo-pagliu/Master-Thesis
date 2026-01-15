@@ -9,11 +9,11 @@ best,Capital Investment Budgeted,Design Complexity,5600.0,Economic,2,1.25
 best,Capital Investment Budgeted,Construction Complexity,7200.0,Economic,2,1.6666666666666667
 worst,Operative + Fuel Costs,Design Complexity,0.71,Economic,2,1.4084507042253522
 worst,Operative + Fuel Costs,Construction Complexity,0.6,Economic,2,1.6666666666666667
-best,Electricity Market Benefit,Percived Safety,49.0,Social,2,1.0
-best,Electricity Market Benefit,Nuclear Waste,42.62244897959184,Social,2,1.3424657534246573
-best,Electricity Market Benefit,GHGe Benefit,42.62244897959184,Social,2,1.3424657534246573
+best,Electricity Market Benefit,Percived Safety,38.0,Social,2,1.0
+best,Electricity Market Benefit,Nuclear Waste,31.622448979591837,Social,2,1.3424657534246573
+best,Electricity Market Benefit,GHGe Benefit,31.622448979591837,Social,2,1.3424657534246573
 worst,Nuclear Waste,Percived Safety,2.0,Social,2,1.0
-worst,Nuclear Waste,GHGe Benefit,1.0980771355950933,Social,2,4.171968649147073
+worst,Nuclear Waste,GHGe Benefit,3.4437429550226546,Social,2,4.171968649147072
 best,Design Maturity,Licensing Status,0.724,Feasibility,2,1.3812154696132597
 best,Design Maturity,Supplier Availbility,0.5,Feasibility,2,2.0
 worst,Supplier Availbility,Licensing Status,0.866,Feasibility,2,1.1547344110854503
@@ -21,7 +21,7 @@ best,Design Maturity,Thermal Efficiency,0.3,Between-groups-B,2,3.333333333333333
 best,Design Maturity,Capital Investment Budgeted,1.0,Between-groups-B,2,1.0
 best,Design Maturity,Electricity Market Benefit,0.5,Between-groups-B,2,2.0
 worst,Thermal Efficiency,Capital Investment Budgeted,5000.0,Between-groups-B,2,1.1428571428571428
-worst,Thermal Efficiency,Electricity Market Benefit,42.36734693877551,Between-groups-B,2,1.361111111111111
+worst,Thermal Efficiency,Electricity Market Benefit,31.367346938775512,Between-groups-B,2,1.361111111111111
 best,Nuclear Waste,Load following Capabilities,14.612,Between-groups-W,2,1.665556295802798
 best,Nuclear Waste,Operative + Fuel Costs,18.978,Between-groups-W,2,2.4962556165751377
 best,Nuclear Waste,Supplier Availbility,22.133859,Between-groups-W,2,3.903515497456043
