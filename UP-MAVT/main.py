@@ -54,7 +54,7 @@ required_weight_solutions = 1  # Target number of unique weight combinations
 
 # Montecarlo Parameters
 n_runs = 1000  # Number of Montecarlo simulation runs
-PLOTS = True  # Toggle plots
+PLOTS = False  # Toggle plots
 plot_bins = 50  # Number of bins for histograms
 STRICT = True  # Toggle strict mode
 UPDATE_EVERY = 100  # Update plots every N runs
@@ -119,6 +119,23 @@ print(f"Loaded {len(dict_data_list)} elicitation(s) with {n_alternatives} altern
 # Extract alternative names from the combined alternatives file
 alternative_names = pd.read_csv(file_path_alternatives)['name'].tolist()
 #################################################################################
+
+
+def _make_unique_column_names(names):
+    """Make a list of CSV column names unique while preserving order."""
+    seen = {}
+    unique = []
+    for idx, raw in enumerate(names):
+        name = str(raw).strip()
+        if name == "":
+            name = f"Alternative_{idx+1}"
+        if name in seen:
+            seen[name] += 1
+            name = f"{name}_{seen[name]}"
+        else:
+            seen[name] = 1
+        unique.append(name)
+    return unique
 
 #################################################################################
 # PILE-BWT Method + Weight Space Definition
@@ -283,9 +300,17 @@ if os.path.exists(output_file):
         candidate = f"{base}_{idx}{ext}"
     output_file = candidate
 if STRICT:
-    header = ["Run", "Elicitation"] + [f"Alternative_{i+1}" for i in range(n_alternatives)]
+    if len(alternative_names) != n_alternatives:
+        raise ValueError(
+            f"Mismatch between loaded alternatives ({n_alternatives}) and names in CSV ({len(alternative_names)})."
+        )
+    header = ["Run", "Elicitation"] + _make_unique_column_names(alternative_names)
 else:
-    header = ["Run"] + [f"Alternative_{i+1}" for i in range(n_alternatives)]
+    if len(alternative_names) != n_alternatives:
+        raise ValueError(
+            f"Mismatch between loaded alternatives ({n_alternatives}) and names in CSV ({len(alternative_names)})."
+        )
+    header = ["Run"] + _make_unique_column_names(alternative_names)
 with open(output_file, mode='w', newline='') as csvfile:
     writer = csv.writer(csvfile)
     writer.writerow(header)
@@ -349,7 +374,10 @@ for i, r in enumerate(mc_code):
         update_plots(rank_probs, distributions, i, n_runs, n_alternatives, strict=STRICT, n_elicitations=n_elicitations, lists_of_full_sets=lists_of_full_sets, rank_counts_per_el=rank_counts_per_el)
 
     # Print progress to console
-    print(f"[RUNNING] {i+1}/{n_runs}", end='\r', flush=True)
+    if STRICT:
+        print(f"[RUNNING] {i+1}/{n_runs*n_elicitations}", end='\r', flush=True)
+    else:
+        print(f"[RUNNING] {i+1}/{n_runs}", end='\r', flush=True)
 
 if PLOTS:
     # Final layout adjustments to ensure nothing is clipped, applied for both modes
