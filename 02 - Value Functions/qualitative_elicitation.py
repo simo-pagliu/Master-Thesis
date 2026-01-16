@@ -214,12 +214,11 @@ class RankingWindow(QWidget):
         untie_btn = QPushButton('Untie Selected')
         up_btn = QPushButton('Move Up')
         down_btn = QPushButton('Move Down')
-        next_btn = QPushButton('Next (Value functions)')
         buttons_h.addWidget(tie_btn)
         buttons_h.addWidget(untie_btn)
         buttons_h.addWidget(up_btn)
         buttons_h.addWidget(down_btn)
-        buttons_h.addWidget(next_btn)
+        # Navigation is handled by MainApp's persistent Back/Next buttons.
         # add buttons_h to the vertical bottom panel (confidence radios will be inserted above later)
         bp_layout.addLayout(buttons_h)
 
@@ -227,7 +226,6 @@ class RankingWindow(QWidget):
         untie_btn.clicked.connect(self.untie_selected)
         up_btn.clicked.connect(self.move_up)
         down_btn.clicked.connect(self.move_down)
-        next_btn.clicked.connect(self.on_next)
 
         # store refs for mode-dependent enabling/disabling
         self._tie_btn = tie_btn
@@ -428,45 +426,11 @@ class RankingWindow(QWidget):
             ranks.append(parts)
         return ranks
 
-    def on_next(self):
-        ranks = self.get_ranks()
-        if not ranks:
-            # report via status label on parent instead of a popup
-            try:
-                # try top-level window (MainApp) first
-                top = self.window()
-                if hasattr(top, 'set_status'):
-                    top.set_status('No alternatives to rank')
-                else:
-                    self.parent().set_status('No alternatives to rank')
-            except Exception:
-                pass
-            return
-        self.close()
-        # pass along indicator name if present
+    def get_confidence(self):
         try:
-            top = self.window()
-            if hasattr(top, 'open_value_editor'):
-                # pass selected confidence to the value editor
-                try:
-                    conf = self._conf_group.checkedId() if self._conf_group is not None else None
-                except Exception:
-                    conf = None
-                top.open_value_editor(ranks, indicator_name=self.indicator_name, confidence=conf)
-            else:
-                # fallback to parent if it exposes the method
-                p = self.parent()
-                if hasattr(p, 'open_value_editor'):
-                    try:
-                        conf = self._conf_group.checkedId() if self._conf_group is not None else None
-                    except Exception:
-                        conf = None
-                    p.open_value_editor(ranks, indicator_name=self.indicator_name, confidence=conf)
-                else:
-                    if hasattr(top, 'set_status'):
-                        top.set_status('Cannot open value editor: parent does not expose the method')
+            return self._conf_group.checkedId() if self._conf_group is not None else None
         except Exception:
-            pass
+            return None
 
     def toggle_mode(self):
         # switch between 'ranking' and 'spectrum'
@@ -717,12 +681,9 @@ class ValueFunctionWidget(QWidget):
         self.copy_from_btn.setVisible(show_copy)
         self.copy_from_btn.setEnabled(show_copy)
         btns.addWidget(self.copy_from_btn)
-        # Save
-        save_btn = QPushButton('Save')
-        btns.addWidget(save_btn)
+        # Navigation is handled by MainApp's persistent Back/Next buttons.
         bp_layout.addLayout(btns)
         self.shape_btn.clicked.connect(self.cycle_shape)
-        save_btn.clicked.connect(self.save)
         
 
         # do not add bottom_panel to the main layout here; MainApp will place it in its bottom bar
@@ -788,7 +749,16 @@ class ValueFunctionWidget(QWidget):
                     self.sliders[i].setValue(int(round(v * 100)))
                 finally:
                     self.sliders[i].blockSignals(False)
+                # keep the numeric labels in sync (signals were blocked)
+                try:
+                    self.value_labels[i].setText(f"{v:.2f}")
+                except Exception:
+                    pass
             self.update_plot()
+            try:
+                self.canvas.draw_idle()
+            except Exception:
+                pass
         except Exception:
             pass
 
@@ -1046,6 +1016,12 @@ class MainApp(QWidget):
         self.bottom_bar_layout.setContentsMargins(_scale_px(10), _scale_px(6), _scale_px(10), _scale_px(6))
         self.bottom_bar.setLayout(self.bottom_bar_layout)
         layout.addWidget(self.bottom_bar)
+
+        # persistent navigation controls for qualitative multi-entry runs
+        self._nav_prev_btn = QPushButton('Back')
+        self._nav_next_btn = QPushButton('Next')
+        self._nav_prev_btn.clicked.connect(self.nav_back)
+        self._nav_next_btn.clicked.connect(self.nav_forward)
 
         # status label at bottom to show messages (avoid popups)
         self.status_label = QLabel('')
@@ -1339,7 +1315,7 @@ class MainApp(QWidget):
                 # ValueFunctionWidget: show criterion name as title
                 elif hasattr(widget, 'criterion') and isinstance(widget.criterion, dict):
                     self.title_label.setText(str(widget.criterion.get('name', '')))
-                    self.set_status('Adjust the value function using the sliders. Click Save when done.')
+                    self.set_status('Adjust the value function using the sliders. Click Next to save and continue.')
                 else:
                     # default: clear title
                     self.title_label.setText('')
@@ -1378,6 +1354,24 @@ class MainApp(QWidget):
                         self.bottom_bar_layout.addWidget(bp)
                     except Exception:
                         pass
+
+                # add qualitative navigation buttons (Back/Next) on the right
+                if self._qual_entries is not None:
+                    try:
+                        self.bottom_bar_layout.addStretch(1)
+                    except Exception:
+                        pass
+                    try:
+                        self._nav_prev_btn.setParent(self.bottom_bar)
+                        self._nav_next_btn.setParent(self.bottom_bar)
+                        self.bottom_bar_layout.addWidget(self._nav_prev_btn)
+                        self.bottom_bar_layout.addWidget(self._nav_next_btn)
+                    except Exception:
+                        pass
+                    try:
+                        self._update_nav_buttons_state()
+                    except Exception:
+                        pass
             except Exception:
                 pass
 
@@ -1388,6 +1382,154 @@ class MainApp(QWidget):
             QApplication.processEvents()
         except Exception:
             pass
+
+    def _get_vf_paths_for_lookup(self):
+        paths = []
+        try:
+            session_path = getattr(self, '_vf_session_outpath', None)
+            if session_path:
+                paths.append(Path(session_path))
+        except Exception:
+            pass
+        try:
+            paths.append(Path(self.criteria_path).parent / 'value_functions.csv')
+        except Exception:
+            pass
+        # de-duplicate
+        out = []
+        seen = set()
+        for p in paths:
+            try:
+                ps = str(p)
+            except Exception:
+                continue
+            if ps in seen:
+                continue
+            seen.add(ps)
+            out.append(p)
+        return out
+
+    def _refresh_entry_from_files(self, ent: dict):
+        """Refresh start_points and vf_points for an entry from saved files if possible."""
+        if not ent:
+            return
+        label = str(ent.get('indicator') or '').strip()
+        if not label:
+            return
+        # ranking/scoring
+        try:
+            sp = self.get_start_points_for_label(self.alts_path, label, self.alt_names)
+            if sp is not None:
+                ent['start_points'] = sp
+        except Exception:
+            pass
+        # value function points + confidence
+        for pth in self._get_vf_paths_for_lookup():
+            try:
+                if not pth or not pth.exists():
+                    continue
+                pts = self.get_value_function_points_for_label(pth, label)
+                if pts is not None:
+                    ent['vf_points'] = pts
+                conf = self.get_value_function_confidence_for_label(pth, label)
+                if conf is not None:
+                    ent['vf_confidence'] = conf
+                if pts is not None or conf is not None:
+                    break
+            except Exception:
+                continue
+
+    def _update_nav_buttons_state(self):
+        try:
+            if self._qual_entries is None:
+                self._nav_prev_btn.setVisible(False)
+                self._nav_next_btn.setVisible(False)
+                return
+            self._nav_prev_btn.setVisible(True)
+            self._nav_next_btn.setVisible(True)
+            # Back is enabled if we can go to previous indicator or if we are on VF and can go back to ranking
+            can_prev = bool(self._qual_index > 0)
+            # if currently in VF editor, allow Back even at index 0 (back to ranking)
+            if not can_prev and isinstance(self.current_view, ValueFunctionWidget):
+                can_prev = True
+            self._nav_prev_btn.setEnabled(can_prev)
+            # Next is always available during a qualitative run:
+            # - on ranking: Next saves scoring + opens VF
+            # - on VF: Next saves VF + advances (or finishes)
+            self._nav_next_btn.setEnabled(True)
+        except Exception:
+            pass
+
+    def _show_indicator_index(self, idx: int):
+        if self._qual_entries is None:
+            return
+        if idx < 0 or idx >= len(self._qual_entries):
+            return
+        self._qual_index = idx
+        ent = self._qual_entries[self._qual_index]
+        try:
+            self._refresh_entry_from_files(ent)
+        except Exception:
+            pass
+        sp = ent.get('start_points')
+        # if None, try reading from file now
+        if sp is None:
+            try:
+                sp = self.get_start_points_for_label(self.alts_path, ent.get('indicator'), self.alt_names)
+            except Exception:
+                sp = None
+        rw = RankingWindow(self.alt_names, sp, indicator_name=ent.get('indicator'), mode=ent.get('mode', 'ranking'))
+        rw.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.show_view(rw)
+
+    def nav_back(self):
+        """Back: if currently editing VF, go back to ranking for the same indicator; otherwise go to previous indicator."""
+        if self._qual_entries is None:
+            return
+        try:
+            if isinstance(self.current_view, ValueFunctionWidget):
+                # back to ranking of current indicator
+                self._show_indicator_index(self._qual_index)
+                return
+        except Exception:
+            pass
+        if self._qual_index > 0:
+            self._show_indicator_index(self._qual_index - 1)
+
+    def nav_forward(self):
+        """Next: always saves something.
+
+        - From ranking: saves scoring and opens the VF editor.
+        - From VF: saves the VF and advances to the next indicator (or finishes).
+        """
+        if self._qual_entries is None:
+            return
+        # If we are in the VF editor, saving it also advances the index.
+        try:
+            if isinstance(self.current_view, ValueFunctionWidget):
+                self.current_view.save()
+                return
+        except Exception:
+            pass
+
+        # Otherwise, we are in the ranking view: save scoring and open the VF editor.
+        try:
+            if isinstance(self.current_view, RankingWindow):
+                ranks = self.current_view.get_ranks()
+                conf = None
+                try:
+                    conf = self.current_view.get_confidence()
+                except Exception:
+                    conf = None
+                indicator_name = getattr(self.current_view, 'indicator_name', None)
+                self.open_value_editor(ranks, indicator_name=indicator_name, confidence=conf)
+                return
+        except Exception:
+            pass
+
+        # Fallback: if view is unexpected, advance without saving.
+        if self._qual_index < len(self._qual_entries) - 1:
+            self._show_indicator_index(self._qual_index + 1)
 
     def choose_and_load_folder(self, initial: bool = False):
         folder = QFileDialog.getExistingDirectory(self, 'Select folder containing criteria.csv and alternatives.csv', str(Path(__file__).parent))
@@ -1449,11 +1591,15 @@ class MainApp(QWidget):
                 continue
             if u in seen:
                 continue
-            # must share same base when it is country-suffixed
+            # only allow siblings of the same base indicator
             ub, _us = self._split_base_suffix(u)
-            if ub is not None and ub.lower() != base.lower():
-                continue
-            # base name passes
+            if ub is not None:
+                if ub.lower() != base.lower():
+                    continue
+            else:
+                # non-suffixed labels must be exactly the base (avoid other indicators)
+                if str(u).strip().lower() != base.lower():
+                    continue
             seen.add(u)
             uniq.append(u)
 
@@ -1652,14 +1798,10 @@ class MainApp(QWidget):
                 suffixes = cfg.get('suffixes')
                 if suffixes:
                     # create one entry per suffix; first uses original start_points,
-                    # others will fetch start_points after previous elicitation
+                    # others should default to the same guideline start_points (copying is manual via "Copy from...")
                     for i, suf in enumerate(suffixes):
                         lbl = f"{base} - {suf}"
-                        if i == 0:
-                            expanded.append({'indicator': lbl, 'raw_label': ent.get('raw_label'), 'start_points': ent.get('start_points'), 'mode': mode})
-                        else:
-                            # start_points will be fetched from alternatives.csv after previous elicitation
-                            expanded.append({'indicator': lbl, 'raw_label': ent.get('raw_label'), 'start_points': None, 'mode': mode})
+                        expanded.append({'indicator': lbl, 'raw_label': ent.get('raw_label'), 'start_points': ent.get('start_points'), 'mode': mode})
                 else:
                     expanded.append({'indicator': base, 'raw_label': ent.get('raw_label'), 'start_points': ent.get('start_points'), 'mode': mode})
 
@@ -1829,100 +1971,12 @@ class MainApp(QWidget):
             except Exception:
                 display_path = str(out_path)
             self.set_status(f'Value functions saved to {display_path}; scoring appended to {self.alts_path}')
-            # If there are subsequent qualitative entries that share the same base indicator
-            # and were intended as repeats (e.g., QI2 - CH, QI2 - FR), copy the saved VF and
-            # the scoring row to those entries so the user doesn't have to re-elicit identical VFs.
-            try:
-                if self._qual_entries is not None:
-                    # base name (without suffix)
-                    base = (indicator_name or '').split('-')[0].strip()
-                    if base:
-                        # if this base hasn't had a first elicitation recorded, record it now
-                        first_label_exists = base.lower() in (k.lower() for k in self._first_elicitation_label_per_base.keys())
-                        if not first_label_exists:
-                            # record the first elicitation label for this base so subsequent saves won't re-seed from later edits
-                            try:
-                                self._first_elicitation_label_per_base[base] = getattr(self, '_last_elicitation_label', None)
-                            except Exception:
-                                pass
-                        # fetch the scoring values we just appended (use the first elicitation label for this base if present)
-                        seed_label = None
-                        if base in self._first_elicitation_label_per_base:
-                            seed_label = self._first_elicitation_label_per_base.get(base)
-                        if not seed_label:
-                            seed_label = getattr(self, '_last_elicitation_label', None)
-                        seed_vals = None
-                        if seed_label:
-                            seed_vals = self.get_start_points_for_label(self.alts_path, seed_label, self.alt_names)
-                        # if not found, attempt to build from pts ordering (pts correspond to ranks)
-                        if seed_vals is None:
-                            # default fallback: create a descending score sequence
-                            n = len(self.alt_names)
-                            seed_vals = [n - i for i in range(n)]
-
-                        # now iterate remaining entries and seed where base matches
-                        i = self._qual_index + 1
-                        while i < len(self._qual_entries):
-                            ent_i = self._qual_entries[i]
-                            ent_base = (ent_i.get('indicator') or '').split('-')[0].strip()
-                            if ent_base.lower() != base.lower():
-                                break
-                            # store seeded start points and VF points in-memory so the UI shows them
-                            ent_i['start_points'] = seed_vals
-                            try:
-                                # only seed VF points from the first elicitation (do not overwrite if already seeded)
-                                if not ent_i.get('vf_points'):
-                                    ent_i['vf_points'] = pts
-                            except Exception:
-                                ent_i['vf_points'] = None
-                            # also write the duplicated value function to the file for traceability, inheriting base group
-                            try:
-                                # prefer using the session outpath if set so all VFs end up in the same file
-                                session_path = getattr(self, '_vf_session_outpath', None)
-                                if session_path is None:
-                                    write_value_functions(out_path, [(ent_i.get('indicator'), pts, base_group, vf_confidence)])
-                                else:
-                                    write_value_functions(session_path, [(ent_i.get('indicator'), pts, base_group, vf_confidence)])
-                            except Exception:
-                                pass
-                            i += 1
-            except Exception:
-                pass
             # proceed to next qualitative entry if present
             if self._qual_entries is not None:
                 self._qual_index += 1
                 if self._qual_index < len(self._qual_entries):
                     ent = self._qual_entries[self._qual_index]
-                    # If start_points is None it means we should fetch the last elicited scoring
                     sp = ent.get('start_points')
-                    if sp is None:
-                        # prefer using the most recent appended elicitation row as seed
-                        seed_label = getattr(self, '_last_elicitation_label', None)
-                        if seed_label:
-                            try:
-                                sp = self.get_start_points_for_label(self.alts_path, seed_label, self.alt_names)
-                            except Exception:
-                                sp = None
-                        else:
-                            try:
-                                # fallback: try to locate any prior row for the same base indicator
-                                base = (ent.get('indicator') or '').split('-')[0].strip()
-                                if base:
-                                    # scan alternatives for a row starting with base
-                                    with self.alts_path.open(newline='', encoding='utf-8') as f:
-                                        rd = csv.reader(f)
-                                        for r in rd:
-                                            if not r:
-                                                continue
-                                            first = r[0].strip()
-                                            if first.lower().startswith(base.lower() + ' -') or first.lower().startswith(base.lower() + ' - '):
-                                                try:
-                                                    sp = self.get_start_points_for_label(self.alts_path, first, self.alt_names)
-                                                    break
-                                                except Exception:
-                                                    sp = None
-                            except Exception:
-                                sp = None
                     # replace container contents with next ranking, respecting the mode from guideline
                     rw = RankingWindow(self.alt_names, sp, indicator_name=ent.get('indicator'), mode=ent.get('mode', 'ranking'))
                     rw.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
