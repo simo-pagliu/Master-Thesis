@@ -23,8 +23,10 @@ from PyQt5.QtWidgets import (
     QCheckBox,
     QRadioButton,
     QButtonGroup,
+    QInputDialog,
 )
 from PyQt5.QtCore import Qt, QSize
+from PyQt5.QtGui import QFont
 # Matplotlib for plotting in dialogs
 import matplotlib
 matplotlib.use('Qt5Agg')
@@ -33,6 +35,39 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
 import re
 import math
+
+
+def _maybe_force_xcb_on_wayland():
+    """If running under Wayland, restart the process with QT_QPA_PLATFORM=xcb.
+
+    This avoids QWindow::requestActivate() limitations on some Wayland compositors.
+    """
+    try:
+        if 'WAYLAND_DISPLAY' in os.environ and not os.environ.get('QT_QPA_PLATFORM'):
+            os.environ['QT_QPA_PLATFORM'] = 'xcb'
+            python = sys.executable
+            args = [python] + sys.argv
+            print("Detected Wayland session — restarting with QT_QPA_PLATFORM=xcb for compatibility...")
+            os.execv(python, args)
+    except Exception:
+        pass
+
+
+UI_SCALE = 1.25
+
+
+def _scale_px(value: int) -> int:
+    return int(round(value * UI_SCALE))
+
+
+def apply_ui_scale(app: QApplication, scale: float = UI_SCALE) -> None:
+    base = app.font()
+    scaled = QFont(base)
+    if base.pointSizeF() and base.pointSizeF() > 0:
+        scaled.setPointSizeF(base.pointSizeF() * scale)
+    elif base.pixelSize() and base.pixelSize() > 0:
+        scaled.setPixelSize(int(round(base.pixelSize() * scale)))
+    app.setFont(scaled)
 
 
 def read_criteria(path: Path):
@@ -126,8 +161,8 @@ class RankingWindow(QWidget):
         super().__init__()
         self.setWindowTitle('Ranking - drag to reorder; select multiple to tie')
         # sensible default size so contents are visible on open
-        self.resize(700, 480)
-        self.setMinimumSize(600, 360)
+        self.resize(_scale_px(700), _scale_px(480))
+        self.setMinimumSize(_scale_px(600), _scale_px(360))
         self.alt_names = alt_names
         self.start_points = start_points
         self.indicator_name = indicator_name
@@ -162,6 +197,19 @@ class RankingWindow(QWidget):
         buttons_h.addWidget(self.mode_btn)
         self.mode_btn.clicked.connect(self.toggle_mode)
         self.mode = mode
+
+        # country-dependent helpers: allow copying from another country entry
+        self.copy_from_btn = QPushButton('Copy from...')
+        self.copy_from_btn.clicked.connect(self.on_copy_from)
+        # only show for labels that look like "Base - CC"
+        try:
+            show_copy = bool(indicator_name and (' - ' in str(indicator_name)) and re.match(r'.+\s-\s[A-Za-z]{2,3}$', str(indicator_name).strip()))
+        except Exception:
+            show_copy = False
+        self.copy_from_btn.setVisible(show_copy)
+        self.copy_from_btn.setEnabled(show_copy)
+        buttons_h.addWidget(self.copy_from_btn)
+
         tie_btn = QPushButton('Tie Selected')
         untie_btn = QPushButton('Untie Selected')
         up_btn = QPushButton('Move Up')
@@ -214,6 +262,21 @@ class RankingWindow(QWidget):
         except Exception:
             # non-critical; continue without confidence selector
             self._conf_group = None
+
+    def on_copy_from(self):
+        try:
+            top = self.window()
+            if hasattr(top, 'copy_from_for_current_indicator'):
+                top.copy_from_for_current_indicator(kind='ranking')
+        except Exception:
+            pass
+
+    def apply_start_points(self, start_points):
+        try:
+            self.start_points = start_points
+            self.populate()
+        except Exception:
+            pass
 
     def populate(self):
         self.listw.clear()
@@ -642,6 +705,18 @@ class ValueFunctionWidget(QWidget):
         self.shape_index = 0
         self.shape_btn = QPushButton(self.shape_states[self.shape_index])
         btns.addWidget(self.shape_btn)
+
+        # country-dependent helpers: allow copying from another country entry
+        self.copy_from_btn = QPushButton('Copy from...')
+        self.copy_from_btn.clicked.connect(self.on_copy_from)
+        try:
+            nm = str(self.criterion.get('name', '')).strip()
+            show_copy = bool(nm and (' - ' in nm) and re.match(r'.+\s-\s[A-Za-z]{2,3}$', nm))
+        except Exception:
+            show_copy = False
+        self.copy_from_btn.setVisible(show_copy)
+        self.copy_from_btn.setEnabled(show_copy)
+        btns.addWidget(self.copy_from_btn)
         # Save
         save_btn = QPushButton('Save')
         btns.addWidget(save_btn)
@@ -652,6 +727,80 @@ class ValueFunctionWidget(QWidget):
 
         # do not add bottom_panel to the main layout here; MainApp will place it in its bottom bar
         self.setLayout(layout)
+
+    def on_copy_from(self):
+        try:
+            top = self.window()
+            if hasattr(top, 'copy_from_for_current_indicator'):
+                top.copy_from_for_current_indicator(kind='value_function')
+        except Exception:
+            pass
+
+    def apply_points(self, points, confidence=None):
+        """Apply a set of (x,y) points into the sliders, and optionally set VF confidence."""
+        if not points:
+            return
+        try:
+            ys = []
+            # points may be [(x,y),...] or just [y,...]
+            if all(isinstance(p, (list, tuple)) and len(p) == 2 for p in points):
+                ys = [float(p[1]) for p in points]
+            else:
+                ys = [float(p) for p in points]
+        except Exception:
+            return
+
+        # adapt length if needed
+        try:
+            if len(ys) == self.points_count:
+                ys_use = ys
+            elif self.has_endpoints and len(ys) == self.points_count - 2:
+                ys_use = [0.0] + ys + [1.0]
+            else:
+                # fallback: trim/pad
+                ys_use = list(ys[: self.points_count])
+                if len(ys_use) < self.points_count:
+                    last = ys_use[-1] if ys_use else 1.0
+                    ys_use += [last] * (self.points_count - len(ys_use))
+        except Exception:
+            ys_use = ys
+
+        # set endpoints toggles first (so hidden endpoint sliders are consistent)
+        try:
+            if self.has_endpoints:
+                try:
+                    self.left_toggle.setChecked(bool(round(float(ys_use[0])) == 1))
+                except Exception:
+                    pass
+                try:
+                    self.right_toggle.setChecked(bool(round(float(ys_use[-1])) == 1))
+                except Exception:
+                    pass
+        except Exception:
+            pass
+
+        # set sliders
+        try:
+            for i in range(min(len(self.sliders), len(ys_use))):
+                v = max(0.0, min(1.0, float(ys_use[i])))
+                try:
+                    self.sliders[i].blockSignals(True)
+                    self.sliders[i].setValue(int(round(v * 100)))
+                finally:
+                    self.sliders[i].blockSignals(False)
+            self.update_plot()
+        except Exception:
+            pass
+
+        # set confidence if provided
+        try:
+            if confidence is not None and hasattr(self, '_vf_conf_group') and self._vf_conf_group is not None:
+                cid = int(confidence)
+                btn = self._vf_conf_group.button(cid)
+                if btn is not None:
+                    btn.setChecked(True)
+        except Exception:
+            pass
 
     def on_slider_changed(self, idx):
         val = self.sliders[idx].value() / 100.0
@@ -863,8 +1012,8 @@ class MainApp(QWidget):
         self.setWindowTitle('Ranking + Value Function Elicitation (small)')
         layout = QVBoxLayout()
         # default main window size
-        self.resize(900, 600)
-        self.setMinimumSize(720, 480)
+        self.resize(_scale_px(900), _scale_px(600))
+        self.setMinimumSize(_scale_px(720), _scale_px(480))
 
         # top area: show current criterion name (large) only
         top = QVBoxLayout()
@@ -889,12 +1038,12 @@ class MainApp(QWidget):
         self.container.setLayout(self.container_layout)
         # make container expand to take most of the window
         self.container.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.container_layout.setContentsMargins(20, 12, 20, 12)
+        self.container_layout.setContentsMargins(_scale_px(20), _scale_px(12), _scale_px(20), _scale_px(12))
         layout.addWidget(self.container, 1)
         # bottom bar where per-view controls (confidence, action buttons) are shown
         self.bottom_bar = QWidget()
         self.bottom_bar_layout = QHBoxLayout()
-        self.bottom_bar_layout.setContentsMargins(10, 6, 10, 6)
+        self.bottom_bar_layout.setContentsMargins(_scale_px(10), _scale_px(6), _scale_px(10), _scale_px(6))
         self.bottom_bar.setLayout(self.bottom_bar_layout)
         layout.addWidget(self.bottom_bar)
 
@@ -1262,6 +1411,225 @@ class MainApp(QWidget):
         # disable the chooser so folder cannot be changed during the run
         self.load_btn.setEnabled(False)
         self.load_btn.setVisible(False)
+
+    def _split_base_suffix(self, label: str):
+        try:
+            s = str(label).strip()
+            if ' - ' not in s:
+                return None, None
+            base, suf = [p.strip() for p in s.rsplit(' - ', 1)]
+            if not base or not suf or not re.match(r'^[A-Za-z]{2,3}$', suf):
+                return None, None
+            return base, suf.upper()
+        except Exception:
+            return None, None
+
+    def _get_copy_candidates(self, current_label: str, kind: str):
+        """Return a list of other labels with same base that have data to copy."""
+        base, _ = self._split_base_suffix(current_label)
+        if not base:
+            return []
+
+        # build candidate universe from known entries
+        universe = []
+        try:
+            if self._qual_entries is not None:
+                universe = [str(e.get('indicator', '')).strip() for e in self._qual_entries if e.get('indicator')]
+        except Exception:
+            universe = []
+
+        # also allow copying from the base name itself (if present in saved files)
+        universe.append(base)
+
+        # de-duplicate while keeping order
+        seen = set()
+        uniq = []
+        for u in universe:
+            if not u or u == current_label:
+                continue
+            if u in seen:
+                continue
+            # must share same base when it is country-suffixed
+            ub, _us = self._split_base_suffix(u)
+            if ub is not None and ub.lower() != base.lower():
+                continue
+            # base name passes
+            seen.add(u)
+            uniq.append(u)
+
+        # filter by availability of data
+        out = []
+        vf_paths = []
+        try:
+            # prefer the current session file (value_functions_*.csv) if set
+            session_path = getattr(self, '_vf_session_outpath', None)
+            if session_path:
+                vf_paths.append(Path(session_path))
+        except Exception:
+            pass
+        vf_paths.append(Path(self.criteria_path).parent / 'value_functions.csv')
+        for u in uniq:
+            try:
+                if kind == 'ranking':
+                    sp = None
+                    try:
+                        sp = self.get_start_points_for_label(self.alts_path, u, self.alt_names)
+                    except Exception:
+                        sp = None
+                    # fallback to in-memory start_points if present
+                    if sp is None and self._qual_entries is not None:
+                        try:
+                            ent = next((e for e in self._qual_entries if str(e.get('indicator')) == u), None)
+                            if ent is not None and ent.get('start_points') is not None:
+                                sp = ent.get('start_points')
+                        except Exception:
+                            sp = None
+                    if sp is not None:
+                        out.append(u)
+                elif kind == 'value_function':
+                    pts = None
+                    try:
+                        if self._qual_entries is not None:
+                            ent = next((e for e in self._qual_entries if str(e.get('indicator')) == u), None)
+                            if ent is not None and ent.get('vf_points'):
+                                pts = ent.get('vf_points')
+                    except Exception:
+                        pts = None
+                    if pts is None:
+                        for pth in vf_paths:
+                            try:
+                                if pth and pth.exists():
+                                    pts = self.get_value_function_points_for_label(pth, u)
+                                    if pts is not None:
+                                        break
+                            except Exception:
+                                pts = None
+                    if pts is not None:
+                        out.append(u)
+            except Exception:
+                continue
+        return out
+
+    def copy_from_for_current_indicator(self, kind: str = 'ranking'):
+        """Invoked by embedded views. kind is 'ranking' or 'value_function'."""
+        try:
+            # determine current label from the visible view
+            current_label = None
+            if self.current_view is None:
+                return
+            if kind == 'ranking' and hasattr(self.current_view, 'indicator_name'):
+                current_label = str(getattr(self.current_view, 'indicator_name') or '').strip()
+            elif kind == 'value_function' and hasattr(self.current_view, 'criterion'):
+                try:
+                    current_label = str(self.current_view.criterion.get('name', '')).strip()
+                except Exception:
+                    current_label = None
+
+            if not current_label:
+                return
+
+            base, _ = self._split_base_suffix(current_label)
+            if not base:
+                self.set_status('Copy from is available only for country-suffixed indicators ("Base - CC").')
+                return
+
+            candidates = self._get_copy_candidates(current_label, kind)
+            if not candidates:
+                self.set_status('No eligible source found to copy from (save another country first).')
+                return
+
+            src, ok = QInputDialog.getItem(self, 'Copy from', 'Select source indicator:', candidates, 0, False)
+            if not ok or not src:
+                return
+            src = str(src).strip()
+
+            if kind == 'ranking':
+                sp = self.get_start_points_for_label(self.alts_path, src, self.alt_names)
+                if sp is None:
+                    # fallback to in-memory
+                    if self._qual_entries is not None:
+                        ent = next((e for e in self._qual_entries if str(e.get('indicator')) == src), None)
+                        sp = ent.get('start_points') if ent is not None else None
+                if sp is None:
+                    self.set_status(f'No ranking/scoring found for {src}.')
+                    return
+                try:
+                    if hasattr(self.current_view, 'apply_start_points'):
+                        self.current_view.apply_start_points(sp)
+                except Exception:
+                    pass
+                # keep in-memory entry aligned
+                try:
+                    if self._qual_entries is not None:
+                        ent_cur = next((e for e in self._qual_entries if str(e.get('indicator')) == current_label), None)
+                        if ent_cur is not None:
+                            ent_cur['start_points'] = sp
+                except Exception:
+                    pass
+                self.set_status(f'Copied ranking from {src} → {current_label}.')
+                return
+
+            if kind == 'value_function':
+                # prefer the current session output file, then the canonical value_functions.csv
+                vf_paths = []
+                try:
+                    session_path = getattr(self, '_vf_session_outpath', None)
+                    if session_path:
+                        vf_paths.append(Path(session_path))
+                except Exception:
+                    pass
+                vf_paths.append(Path(self.criteria_path).parent / 'value_functions.csv')
+                pts = None
+                conf = None
+                try:
+                    if self._qual_entries is not None:
+                        ent = next((e for e in self._qual_entries if str(e.get('indicator')) == src), None)
+                        if ent is not None and ent.get('vf_points'):
+                            pts = ent.get('vf_points')
+                        if ent is not None and ent.get('vf_confidence') is not None:
+                            conf = ent.get('vf_confidence')
+                except Exception:
+                    pts = None
+                if pts is None:
+                    for pth in vf_paths:
+                        try:
+                            if pth and pth.exists():
+                                pts = self.get_value_function_points_for_label(pth, src)
+                                if pts is not None:
+                                    break
+                        except Exception:
+                            pts = None
+                if conf is None:
+                    for pth in vf_paths:
+                        try:
+                            if pth and pth.exists():
+                                conf = self.get_value_function_confidence_for_label(pth, src)
+                                if conf is not None:
+                                    break
+                        except Exception:
+                            conf = None
+                if pts is None:
+                    self.set_status(f'No value function found for {src}.')
+                    return
+                try:
+                    if hasattr(self.current_view, 'apply_points'):
+                        self.current_view.apply_points(pts, confidence=conf)
+                except Exception:
+                    pass
+                # keep in-memory entry aligned
+                try:
+                    if self._qual_entries is not None:
+                        ent_cur = next((e for e in self._qual_entries if str(e.get('indicator')) == current_label), None)
+                        if ent_cur is not None:
+                            ent_cur['vf_points'] = pts
+                            if conf is not None:
+                                ent_cur['vf_confidence'] = conf
+                except Exception:
+                    pass
+                self.set_status(f'Copied value function from {src} → {current_label}.')
+                return
+        except Exception:
+            pass
 
     def load_files(self):
         self.criteria = read_criteria(self.criteria_path)
@@ -1845,7 +2213,9 @@ def write_value_functions(path: Path, vf_rows):
 
 
 def main():
+    _maybe_force_xcb_on_wayland()
     app = QApplication(sys.argv)
+    apply_ui_scale(app)
     w = MainApp()
     w.show()
     sys.exit(app.exec_())
