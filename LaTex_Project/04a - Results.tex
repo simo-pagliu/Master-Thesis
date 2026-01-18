@@ -1,2 +1,113 @@
 \section{Results of the analysis}
 \label{sec:results}
+
+\subsection{Full Elicitation Sessions}
+For this analysis, a total of four experts were consulted to perform the "full elicitation" process. The task included all the steps described in the previous section, here reported in short: (i) value functions of quantitative indicators, (ii) qualitative indicator values and their value functions, and (iii) weights by means of \gls{pilebwt}. The experts, who will remain anonymous, are presented in Table~\ref{tab:experts} along with their area of expertise.
+
+\begin{table}[htbp]
+	\centering
+	\begin{tabular}{|c|c|}
+		\hline
+		\textbf{Expert} & \textbf{Area of Expertise} \\
+		\hline
+		E1 & Risk Assessment \\
+		E2 & Nuclear Safety \\
+		E3 & Nuclear Safety Design \\
+		E4 & Nuclear Economics \\
+		\hline
+	\end{tabular}
+	\caption{Experts involved in the elicitation process.}
+	\label{tab:experts}
+\end{table}
+
+The first expert (E1) was involved in the first elicitation session that defined the starting point of value functions for the following experts (steps i and ii). On the other hand, expert E1 was also the least consistent in their \gls{pilebwt} (step iii), as discussed in Section~\ref{sec:discussion}, results will be therefore presented with and without their input.
+
+The results of the weight elicitation sessions of the most and least consistent experts are presented in Figure~\ref{fig:weights_results}, as well as some notable examples of differently elicited value functions in Figure~\ref{fig:vf_examples}. The plots of the weight results represent the feasible weight space, obtained by exploration of the constraint space by means of a differential evolution algorithm (scipy library \cite{PLACEHOLDER}), as well as a comparison between the declared ratios from the pairwise comparisons and the obtained weights ratio from the optimization model. This plot was presented by \cite{PLACEHOLDER} to analyze the consistency of the results. Here, it is also presented with error bars to account for the weight space obtained: weights are sampled from the feasible weight space, the average is represented by the bars, and the standard deviation by the error bars.
+
+\begin{figure}[htbp]
+	\centering
+	\subfloat[Placeholder (a)]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}\hfill
+	\subfloat[Placeholder (b)]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}\\[0.5em]
+	\subfloat[Placeholder (c)]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}\hfill
+	\subfloat[Placeholder (d)]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}
+	\caption{Example of a $2\times2$ grid of images (placeholder).}
+	\label{fig:weights_results}
+\end{figure}
+
+\begin{figure}[htbp]
+	\centering
+	\subfloat[Placeholder left]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}\hfill
+	\subfloat[Placeholder right]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}
+	\caption{Two subimages side by side (placeholder).}
+	\label{fig:vf_examples}
+\end{figure}
+
+\subsection{Quick Elicitation Results}
+\label{sec:quick_elicitation_results}
+To characterize as best as possible the \glspl{qi}, additional experts to the previous four were involved in a "quick elicitation" process, which only consisted in step (ii). In addition to the four experts, four more were involved, as presented in Table~\ref{tab:quick_experts}.
+
+\begin{table}[htbp]
+	\centering
+	\begin{tabular}{|c|c|}
+		\hline
+		\textbf{Expert} & \textbf{Area of Expertise} \\
+		\hline
+		QE1 & Nuclear Plants \\
+		QE2 & PLACEHOLDER \\
+		QE3 & PLACEHOLDER \\
+		QE4 & PLACEHOLDER \\
+		\hline
+	\end{tabular}
+	\caption{Experts involved in the quick elicitation process.}
+	\label{tab:quick_experts}
+\end{table}
+
+In Figure~\ref{fig:quick_examples}, two notable examples of \glspl{qi} are reported, where values were greatly different between experts.
+
+\begin{figure}[htbp]
+	\centering
+	\subfloat[Placeholder left]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}\hfill
+	\subfloat[Placeholder right]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}
+	\caption{Example of two QIs that are very different between experts.}
+	\label{fig:quick_examples}
+\end{figure}
+
+\subsection{UP-MAVT}
+The difference between the \gls{smc} and \gls{nsmc} was explained in Section~\ref{sec:up_mavt}. The results from the \gls{smc} are used to evaluate the overall uncertainty before aggregation and to judge the consensus among experts, while the \gls{nsmc} is used to obtain a final ranking. From the strict run, it is observed that there is significant consensus on the alternative values even if the weights might be different. Output for both methods for one of the countries is presented in Figure~\ref{fig:upmavt_results}.
+
+\begin{figure}[htbp]
+	\centering
+	\subfloat[Placeholder left]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}\hfill
+	\subfloat[Placeholder right]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}
+	\caption{Example of the SMC and NSMC results for Italy.}
+	\label{fig:upmavt_results}
+\end{figure}
+
+A comparison of the \gls{nsmc} results, including and excluding expert E1, is presented in Figure~\ref{fig:nsmc_comparison}.
+
+\begin{figure}[htbp]
+	\centering
+	\subfloat[Placeholder left]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}\hfill
+	\subfloat[Placeholder right]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}
+	\caption{Comparison of the results including E1 and excluding E1.}
+	\label{fig:nsmc_comparison}
+\end{figure}
+
+\subsection{Best Alternatives}
+Therefore, in conclusion of this analysis, the top 3 alternatives for each country are presented in Table~\ref{tab:best_alternatives}, along with their probability of being ranked at that first place.
+
+\begin{table}[htbp]
+	\centering
+	\begin{tabular}{|c|c|c|c|}
+		\hline
+		\textbf{Country} & \textbf{1st Alternative} & \textbf{2nd Alternative} & \textbf{3rd Alternative} \\
+		\hline
+		Italy & PLACEHOLDER & PLACEHOLDER & PLACEHOLDER \\
+		France & PLACEHOLDER & PLACEHOLDER & PLACEHOLDER \\
+		Switzerland & PLACEHOLDER & PLACEHOLDER & PLACEHOLDER \\
+		Poland & PLACEHOLDER & PLACEHOLDER & PLACEHOLDER \\
+		\hline
+	\end{tabular}
+	\caption{Top 3 alternatives for each country with their probabilities.}
+	\label{tab:best_alternatives}
+\end{table}

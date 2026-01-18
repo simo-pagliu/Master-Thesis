@@ -2,6 +2,7 @@
 \label{sec:suggestions}
 Here we suggest possible improvements and extensions to this thesis:
 
+\subsection{Improvements on the Case Study}
 For some indicators we decided to "play it safe" by using today's data. For a more indicative analysis it coluld be interesting to implement forecasts for emissions, costs and electricicty prices and demands.
 Improvement of the risk of delay indicator by providing a risk assesment analysis. Same thing goes for the feasibility indicators that would require more in depth analysis.
 
@@ -19,5 +20,14 @@ If a siting approach is used then a group for enviromental concerns but that sho
 - accompanying infrastructures needed (means further land use that can be considered without a deep enviromental analysis but from a more qualitative point of view to simplify the analysis)
 Impact on local biodiversity is not a good indicator since we assume that the siting process would start from a set of reasonable sites, excluding protected areas and areas of high biodiversity value.
 
-
 For a national level analysis could be interesting to consider an objective such as reducing imports so that the analysis is focused on deployment solutions, for instance 1 EPR vs 5 SMRs to conver the same energy demand.
+
+\subsection{Improvements on the Elicitaiton process}
+The greatest improvement that can be suggested to improve the elicitation process is to implement an interactive software that allows for remote elicitations session, that do not require the attendance of the analysis and that would allow the expert to perform the elicitation at their own pace. This would reduce the burden on both the experts and the analysts, allowing for more experts to be involved in the process and therefore improving the quality of the results.
+
+Regarding the methodology used, as expected the "first elicitation" followed by "corrections" was of great help in speeding up the process. For value functions it was found very limiting to force experts to use the indifference points that were defined from the mid-splitting technique in the first elicitation, it is therefore suggested to allow experts to more free adjustment of the points in the following elicitations. In the \gls{qi} elicitation the use of a "standard" reference alternative was found to be very useful, and it is suggested to keep using it in future elicitations, the use of a "spectrum" instead of ranking in the starting point of for "construction complexity" (See section \ref{sec:economic_indicators}) was found to be very confusing for the experts and therefore it is suggested to avoid this approach in future elicitations. Regarding the \glspl{qi} eliciations the author suggest to explore the possibility to involve multiple experts at once in a group elicitation so that they can discuss and share their perspectives, in multiple instance it was found that experts might miss details that were obvious to others, for this reason group elicitations might be of great help in improving the quality of the results.
+
+Finally on regard of the \gls{pilebwt} elicitaiton method, the use of a UI to help experts was of great help, guidance thoughout this process is still very likely to be necessary to force experts into proper use of the method, otherwise a very extensive and comprehnsive tool would be needed to properly guide them. The method was deemed difficult form the experts not beacuse difficult to understand but because of the intrinsic difficulties in quantivy a pairwise comparison, for this reason it is suggested to keep in mind the high cognitive burden of this task when planning the elicitaiton sessions. Moreover it was very easy for experts to "cheat" the method by providing values based on "how much more important is A then B" instead of aswsering the proper methodlogically accurate question: "How much do I have to increase A form its minimum to compensate for the decrease of B from its minimum to its maximum", for this reason it is suggested to stress the difference between the two approaches when explaining the method to experts.
+
+\subsection{Improvements on the \gls{upmavt} method}
+First and foremost, the author suggests to further investigate the use use of Uncertanty Progpagation in MCDA methods, extending the UP- approach to other MCDA methods. A feature that was not implemented, mostly to limit the burden of this thesis work, was a system of uncertanty tracking, which could be accomplished by carefully recoding each step of the \gls{upmavt} process to keep track of the uncertanty sources thoughout their propagation. This could be useful to identify which steps, indicators or experts contribute the most to the overall uncertanty, and therefore help in focusing future efforts to reduce it.
