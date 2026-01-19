@@ -5,7 +5,8 @@ The economic consequences are always part of \gls{mcda} studies, common metrics 
 For solar and wind technologies, commissioning time estimates were sourced from Gumber et al. (2024) \cite{GUMBER2024122563}, which notes that reported average values significantly exceed median values. This analysis utilizes average figures, as they more accurately represent the time requirements for large-scale installations.
 
 \paragraph{Capital Costs}
-Capital costs represent the initial investment required for nuclear power plant construction. As Rothwell (2022) demonstrates \cite{ROTHWELL2022112905}, recent European and U.S. nuclear installations have consistently exceeded initial cost projections. Given the broad range of possible costs and the intrinsic uncertainty of cost estimates, this analysis employs a trapezoidal distribution to model all the possible costs outcomes. The chosen distribution is shaped as a trapezoid, therefore needing four points: minimum, low most likely, high most likely and maximum. The \gls{pdf} is set to 0 at the extremes, and is constant between the two "most likely" points, the value of the plateau is determined by the normalization condition. Unfortunately data in this regard is scarce, but by collecting the available information, most importantly that from \gls{ap} and \gls{epr}, it is possible to determine ratios between points in the curve (See figure \ref{fig:capex-distribution}). The ratios between the low most likely and minimum and that between the high most likely and maximum are both close to 22\%, the low most likely point is also 22\% of the value of the high most likely point. Based on this information, it is possible to reconstruct the curve for any other reactor even when only one estimate point is available. (All data is reported in 2024 EUR/kWe). The costs from previous \gls{ap} builds in the US (Vogtle 3 and 4) was used to determine the low most likely point, the estimates for Poland new \gls{ap} reactors was used for the high most likely point. Finally, the minimum was placed according to the estimates from a technical report about the estimate costs for the next \gls{ap} deployment in the US \cite{Shirvan2024} which was deemed, realistic yet still optimistic by domain experts. On the other hand, the points for the \gls{epr} where determined based on the current costs of the ongoing projects in the UK: Sizewell C at an estimate cost at completion of 14154 EUR2024/kWe is used as the high most likely point, while the costs for Hinkley point are considered so to be representative of a really unfortunate case and therefore used for the maximum point at 17300 EUR2024/kWe.
+Capital costs represent the initial investment required for nuclear power plant construction. As Rothwell (2022) demonstrates \cite{ROTHWELL2022112905}, recent European and U.S. nuclear installations have consistently exceeded initial cost projections. Given the broad range of possible costs and the intrinsic uncertainty of cost estimates, this analysis employs a trapezoidal distribution to model all the possible costs outcomes. The chosen distribution is shaped as a trapezoid, therefore needing four points: minimum, low most likely, high most likely and maximum. The \gls{pdf} is set to 0 at the extremes, and is constant between the two "most likely" points, the value of the plateau is determined by the normalization condition. Unfortunately data in this regard is scarce, but by collecting the available information, most importantly that from \gls{ap} and \gls{epr}, it is possible to determine ratios between points in the curve (See figure \ref{fig:capex-distribution}). The ratios between the low most likely and minimum and that between the high most likely and maximum are both close to 22\%, the low most likely point is also 22\% of the value of the high most likely point. Based on this information, it is possible to reconstruct the curve for any other reactor even when only one estimate point is available. (All data is reported in 2024 EUR/kWe). The \gls{ap} cost distribution incorporates U.S. construction experience (Vogtle units 3 and 4) for the "high most likely" point, Polish deployment estimates for the "low most likely", and recent U.S. projections \cite{Shirvan2024}, judged as "the best out there, yet still a bit optimistic" by domain experts, for the minimum point. For the \gls{epr}, ongoing UK projects provide the two reference points: estimated completion cost for Sizewell unit C (14,154 EUR2024/kWe) establishes the "high most likely" value, while Hinkley Point C represents an unfavorable outlier (17,300 EUR2024/kWe) defining the maximum bound. The \gls{apr} minimum reflects current estimates for Czech deployment \cite{YNA_Czech_Nuclear_2025}.
+
 
 \begin{figure}[!ht]
     \centering
@@ -16,7 +17,7 @@ Capital costs represent the initial investment required for nuclear power plant 
 
 Consultations with nuclear economics experts provided critical perspective on cost assumptions. Manufacturer estimates were regarded as overly optimistic. The discussion also challenged learning curve assumptions, noting the absence of recent cost reduction evidence in nuclear construction. Conservative deployment cost estimates converged near 9000 USD2022/kWe, significantly exceeding all vendor claims. The U.S. Energy Information Administration's 2024 report \cite{EIA_Capital_Costs_AEO2024} offers relevant benchmarks, documenting \gls{smr} costs at 8936 USD2023/kWe and large reactor costs at 7861 USD2023/kWe.
 
-The capital cost distributions (Table \ref{tab:capex-distributions}) were constructed using the previously established cost ratios and expert-sourced reference points (shown in bold). While these specialist inputs remain unpublished for the time being, their preliminary nature aligns with the study's focus on uncertainty quantification, providing an opportunity to incorporate a highly uncertain indicator into the analysis framework.
+The capital cost distributions (Table \ref{tab:capex-distributions}) were constructed using the previously established cost ratios and expert-sourced reference points (shown in bold). While some of these specialist inputs remain unpublished or unverified for the time being, their preliminary nature aligns with the study's focus on uncertainty quantification, providing an opportunity to incorporate a highly uncertain indicator into the analysis framework.
 
 \begin{table}[!hb]
     \centering
@@ -28,7 +29,7 @@ The capital cost distributions (Table \ref{tab:capex-distributions}) were constr
         EPR-1750        & 9000 & 11600 & \textbf{14200} & \textbf{17300} \\
         APR-1400         & \textbf{8600} & 11000 & 13600 & 16300 \\
         BWRX-300        &  8600 & \textbf{11100} & 13600 & 16300 \\
-        Rolls Royce SMR & \textbf{8000} & 10300 & 12600 & 15100 \\
+        Rolls-Royce SMR & \textbf{8000} & 10300 & 12600 & 15100 \\
         NuScale         & \textbf{4100} & 5300 & 16500 & \textbf{19800} \\
         \bottomrule
     \end{tabularx}
@@ -44,7 +45,7 @@ The capital cost distributions (Table \ref{tab:capex-distributions}) were constr
     \centering
     \begin{tabularx}{0.9\textwidth}{XccccX}
         \toprule
-        \textbf{On-site} & \gls{ap}, \gls{epr}, \gls{apr} & Rolls Royce & BWRX-300 & NuScale & \textbf{Off-site} \\
+        \textbf{On-site} & \gls{ap}, \gls{epr}, \gls{apr} & Rolls-Royce & BWRX-300 & NuScale & \textbf{Off-site} \\
         \bottomrule
     \end{tabularx}
     \caption{Construction complexity spectrum: reactor models from on-site to off-site manufacturing approaches.}
@@ -71,7 +72,7 @@ The analysis from \cite{STEIGERWALD2023128204} incorporates fuel cost estimates 
         EPR-1750        & $20.49 \pm 1.37$ \\
         AP-1000          & $24.92 \pm 1.67$ \\
         BWRX-300        & $25.49 \pm 1.71$ \\
-        Rolls Royce SMR & $25.00 \pm 5.00$ \\
+        Rolls-Royce SMR & $25.00 \pm 5.00$ \\
         NuScale         & $29.91 \pm 2.00$ \\
         \textbf{Other Power Plants} & \\
         Onshore Wind   & 28.08 \\
