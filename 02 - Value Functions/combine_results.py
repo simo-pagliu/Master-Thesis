@@ -14,10 +14,80 @@ import json
 import pandas as pd
 from collections import defaultdict
 
+
+def _parse_country_specific_ranges_from_guideline(guideline_path: str) -> dict:
+    """Parse `quantitative/guideline.txt` into per-criterion country ranges.
+
+    Returns a dict: {criterion_name: {COUNTRY_CODE: (min, max)}}.
+
+    Supported formats (inside brackets):
+    - [30.8-36.17]
+    - [IT:0.53-2.9, PO:1.67-9.07]
+    - [IT:PO:FR:CH:0-4.25]
+    """
+    if not os.path.exists(guideline_path):
+        return {}
+
+    overrides: dict[str, dict[str, tuple[float, float]]] = {}
+    range_re = re.compile(r"^\s*([-+]?\d*\.?\d+)\s*-\s*([-+]?\d*\.?\d+)\s*$")
+
+    with open(guideline_path, 'r', encoding='utf-8') as f:
+        for raw_line in f:
+            line = raw_line.strip()
+            if not line or line.startswith('#'):
+                continue
+            if ':' not in line or '[' not in line or ']' not in line:
+                continue
+
+            crit_name = line.split(':', 1)[0].strip()
+            if not crit_name:
+                continue
+
+            bracket = line[line.find('[') + 1: line.rfind(']')].strip()
+            if not bracket:
+                continue
+
+            # Split segments on commas first.
+            segments = [s.strip() for s in bracket.split(',') if s.strip()]
+            if not segments:
+                continue
+
+            for seg in segments:
+                # Either global `a-b` or country-specific with one or more ':' tokens.
+                if ':' not in seg:
+                    m = range_re.match(seg)
+                    if not m:
+                        continue
+                    mn, mx = float(m.group(1)), float(m.group(2))
+                    # Global range doesn't override per-country; ignore here.
+                    continue
+
+                parts = [p.strip() for p in seg.split(':') if p.strip()]
+                if len(parts) < 2:
+                    continue
+                range_part = parts[-1]
+                countries = parts[:-1]
+                m = range_re.match(range_part)
+                if not m:
+                    continue
+                mn, mx = float(m.group(1)), float(m.group(2))
+                for c in countries:
+                    cc = c.upper()
+                    if not re.match(r"^[A-Z]{2,3}$", cc):
+                        continue
+                    overrides.setdefault(crit_name, {})[cc] = (mn, mx)
+
+    return overrides
+
 # Directory of this script; aggregated outputs will live under
 # <script_dir>/aggregatedresults
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 AGG_DIR = os.path.join(SCRIPT_DIR, 'aggregatedresults')
+
+# Load country-specific min/max overrides (if present)
+GUIDELINE_OVERRIDES = _parse_country_specific_ranges_from_guideline(
+    os.path.join(SCRIPT_DIR, 'quantitative', 'guideline.txt')
+)
 
 # Each folder contains a criteria.csv and (now) only an unnumbered value_functions.csv
 # Load and concat all common folders once (assume at least one common folder exists)
@@ -394,12 +464,16 @@ else:
         else:
             country_criteria_df = country_criteria_df.drop_duplicates(keep='first', ignore_index=True)
 
-        # Defer writing the per-country `criteria.csv` until after we've assembled
-        # the final alternatives frame so we can compute indicator min/max from
-        # actual alternative values (this ensures cases where all alternatives
-        # have the same value — e.g. always 0 — are captured).
-        # The `country_criteria_df` DataFrame is available here and will be
-        # updated later once `final_df` is built.
+        # Apply guideline-based country-specific ranges (authoritative for certain criteria).
+        if GUIDELINE_OVERRIDES and 'name' in country_criteria_df.columns:
+            for crit_name, per_country in GUIDELINE_OVERRIDES.items():
+                if country_code.upper() not in per_country:
+                    continue
+                mn, mx = per_country[country_code.upper()]
+                mask = country_criteria_df['name'].astype(str).str.strip() == str(crit_name).strip()
+                if mask.any():
+                    country_criteria_df.loc[mask, 'min'] = mn
+                    country_criteria_df.loc[mask, 'max'] = mx
         
         # ---------- Combine alternatives for this country into final normalized shape ----------
         # Desired final shape: header with 'name' followed by one column per indicator (rows = alternatives)
@@ -675,73 +749,6 @@ else:
             final_df = pd.DataFrame(synth, columns=['name'] + merged_inds)
             # Write synthesized alternatives.csv immediately after creation
             final_df.to_csv(alt_out_path, index=False)
-            # Before writing alternatives, update per-country criteria min/max using
-            # actual assembled alternative values so case-specific ranges (including
-            # constant-zero cases) are preserved.
-            # ensure country_criteria_df exists
-            country_criteria_df
-            # helper to extract numeric values from a cell
-            import math
-            import re as _re
-            def extract_numbers_from_cell(cell):
-                nums = []
-                if pd.isna(cell):
-                    return nums
-                s = str(cell).strip()
-                if not s:
-                    return nums
-                if (s.startswith('{') or s.startswith('[')):
-                    obj = json.loads(s)
-                    if isinstance(obj, dict) and 'Discrete' in obj:
-                        di = obj.get('Discrete')
-                        if isinstance(di, list) and di:
-                            first = di[0]
-                            for v in first:
-                                nums.append(float(v))
-                    else:
-                        text = json.dumps(obj)
-                        for m in _re.finditer(r"[-+]?[0-9]*\.?[0-9]+", text):
-                            nums.append(float(m.group(0)))
-                    return nums
-                try:
-                    nums.append(float(s))
-                    return nums
-                except Exception:
-                    pass
-                for m in _re.finditer(r"[-+]?[0-9]*\.?[0-9]+", s):
-                    nums.append(float(m.group(0)))
-                return nums
-
-            # iterate indicators and compute min/max from final_df
-            for ind in merged_inds:
-                if ind not in final_df.columns:
-                    continue
-                col = final_df[ind].astype(object).tolist()
-                vals = []
-                for cell in col:
-                    nums = extract_numbers_from_cell(cell)
-                    if nums:
-                        vals.extend(nums)
-                if vals:
-                    mn = min(vals)
-                    mx = max(vals)
-                    if 'name' in country_criteria_df.columns:
-                        mask = country_criteria_df['name'].astype(str).str.strip() == str(ind).strip()
-                        if mask.any():
-                            country_criteria_df.loc[mask, 'min'] = mn
-                            country_criteria_df.loc[mask, 'max'] = mx
-                        else:
-                            newr = {'name': ind, 'group': '', 'min': mn, 'max': mx}
-                            country_criteria_df = pd.concat([country_criteria_df, pd.DataFrame([newr])], ignore_index=True)
-                    else:
-                        newr = {'name': ind, 'group': '', 'min': mn, 'max': mx}
-                        country_criteria_df = pd.concat([country_criteria_df, pd.DataFrame([newr])], ignore_index=True)
-
-            # normalize and write per-country criteria now
-            if 'name' in country_criteria_df.columns:
-                country_criteria_df['name'] = country_criteria_df['name'].astype(str).str.strip()
-                country_criteria_df = country_criteria_df.drop_duplicates(subset=['name'], keep='first', ignore_index=True)
-            country_criteria_df.to_csv(os.path.join(out_dir, 'criteria.csv'), index=False)
 
         # Ensure alternatives.csv is always written
         if not final_df.empty:
@@ -759,6 +766,12 @@ else:
         else:
             # Synthesized dataframe already saved above
             pass
+
+        # Always write per-country criteria.csv (global aggregated criteria.csv remains unchanged).
+        if 'name' in country_criteria_df.columns:
+            country_criteria_df['name'] = country_criteria_df['name'].astype(str).str.strip()
+            country_criteria_df = country_criteria_df.drop_duplicates(subset=['name'], keep='first', ignore_index=True)
+        country_criteria_df.to_csv(os.path.join(out_dir, 'criteria.csv'), index=False)
 
         # Write unnumbered value_functions if they exist for this country
         unnumbered_rows = country_value_functions_unumbered.get(country_code, [])

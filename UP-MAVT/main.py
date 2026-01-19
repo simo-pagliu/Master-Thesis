@@ -29,7 +29,8 @@ from auxiliary import (
     combine_alternatives_by_country,
     load_criteria_file,
     verify_criteria_consistency,
-    convert_qualitative_indicators_in_folders
+    convert_qualitative_indicators_in_folders,
+    remap_bwt_results_for_country
 )
 #################################################################################
 
@@ -53,13 +54,18 @@ required_weight_solutions = 1  # Target number of unique weight combinations
 
 # Montecarlo Parameters
 n_runs = 1000  # Number of Montecarlo simulation runs
-PLOTS = True  # Toggle plots
+PLOTS = False  # Toggle plots
 plot_bins = 50  # Number of bins for histograms
 STRICT = True  # Toggle strict mode
 UPDATE_EVERY = 100  # Update plots every N runs
 opinion_weights = np.ones(len(elicitation_numbers))/len(elicitation_numbers)  # Equal weights for each elicitation
 #################################################################################
 
+# Convert qualitative indicators (and update criteria.csv accordingly) before loading criteria files
+folders_to_convert = sorted(set(elicitation_numbers + (QI_elicitation_numbers or [])))
+if folders_to_convert:
+    print(f"Converting QIs to 0-1 scale in: {folders_to_convert}")
+    convert_qualitative_indicators_in_folders(folders_to_convert)
 
 #################################################################################
 # Load and verify criteria from elicitation results
@@ -75,8 +81,9 @@ for elicit_num in elicitation_numbers:
     crit_path = os.path.join(elicit_dir, "criteria.csv")
     elicitation_criteria_paths.append(crit_path)
     
-    # Weight elicitation file (BWT results) - in weight_spaces folder
-    weight_file = os.path.join(SCRIPT_DIR, "weight_spaces", f"BWT_results_{elicit_num}.csv")
+    # Weight elicitation file (BWT results): use country-adjusted comparisons when possible
+    # This remaps declared comparison values into the country's value-function domain.
+    weight_file = remap_bwt_results_for_country(elicit_num, selected_country, script_dir=SCRIPT_DIR)
     weight_elicitations.append(weight_file)
     
     # Value functions file for selected country
@@ -96,16 +103,10 @@ print(f"✓ All criteria files are consistent. Using common criteria with {len(c
 file_path_criteria = os.path.join(SCRIPT_DIR, "criteria.csv")
 criteria_verified.to_csv(file_path_criteria, index=False)
 
-# Combine alternatives from multiple elicitations for the selected country
 print(f"Combining alternatives for {selected_country} from {len(elicitation_numbers)} elicitation(s)...")
 elicitation_dirs = [os.path.join(SCRIPT_DIR, "elicitation_results", str(num)) for num in elicitation_numbers]
 qi_elicitation_dirs = [os.path.join(SCRIPT_DIR, "elicitation_results", str(num)) for num in QI_elicitation_numbers] if QI_elicitation_numbers else None
 combine_alternatives_by_country(elicitation_dirs, selected_country, SCRIPT_DIR, qi_elicitation_dirs=qi_elicitation_dirs)
-
-# Convert qualitative indicators in QI elicitation folders to 0-1 scale with linear value functions
-if QI_elicitation_numbers:
-    print("Converting qualitative indicators to 0-1 scale with linear value functions...")
-    convert_qualitative_indicators_in_folders(QI_elicitation_numbers)
 
 # Use country-specific combined alternatives file
 file_path_alternatives = os.path.join(SCRIPT_DIR, f"alternatives_{selected_country}.csv")
@@ -118,6 +119,23 @@ print(f"Loaded {len(dict_data_list)} elicitation(s) with {n_alternatives} altern
 # Extract alternative names from the combined alternatives file
 alternative_names = pd.read_csv(file_path_alternatives)['name'].tolist()
 #################################################################################
+
+
+def _make_unique_column_names(names):
+    """Make a list of CSV column names unique while preserving order."""
+    seen = {}
+    unique = []
+    for idx, raw in enumerate(names):
+        name = str(raw).strip()
+        if name == "":
+            name = f"Alternative_{idx+1}"
+        if name in seen:
+            seen[name] += 1
+            name = f"{name}_{seen[name]}"
+        else:
+            seen[name] = 1
+        unique.append(name)
+    return unique
 
 #################################################################################
 # PILE-BWT Method + Weight Space Definition
@@ -140,7 +158,8 @@ list_of_weight_space_points = define_weight_spaces(
     dict_data_list, 
     elicitation_numbers, 
     SCRIPT_DIR, 
-    required_solutions=required_weight_solutions
+    required_solutions=required_weight_solutions,
+    country=selected_country
 )
 
 print(f"Imported weight spaces for {len(list_of_weight_space_points)} elicitations.")
@@ -281,9 +300,17 @@ if os.path.exists(output_file):
         candidate = f"{base}_{idx}{ext}"
     output_file = candidate
 if STRICT:
-    header = ["Run", "Elicitation"] + [f"Alternative_{i+1}" for i in range(n_alternatives)]
+    if len(alternative_names) != n_alternatives:
+        raise ValueError(
+            f"Mismatch between loaded alternatives ({n_alternatives}) and names in CSV ({len(alternative_names)})."
+        )
+    header = ["Run", "Elicitation"] + _make_unique_column_names(alternative_names)
 else:
-    header = ["Run"] + [f"Alternative_{i+1}" for i in range(n_alternatives)]
+    if len(alternative_names) != n_alternatives:
+        raise ValueError(
+            f"Mismatch between loaded alternatives ({n_alternatives}) and names in CSV ({len(alternative_names)})."
+        )
+    header = ["Run"] + _make_unique_column_names(alternative_names)
 with open(output_file, mode='w', newline='') as csvfile:
     writer = csv.writer(csvfile)
     writer.writerow(header)
@@ -347,7 +374,10 @@ for i, r in enumerate(mc_code):
         update_plots(rank_probs, distributions, i, n_runs, n_alternatives, strict=STRICT, n_elicitations=n_elicitations, lists_of_full_sets=lists_of_full_sets, rank_counts_per_el=rank_counts_per_el)
 
     # Print progress to console
-    print(f"[RUNNING] {i+1}/{n_runs}", end='\r', flush=True)
+    if STRICT:
+        print(f"[RUNNING] {i+1}/{n_runs*n_elicitations}", end='\r', flush=True)
+    else:
+        print(f"[RUNNING] {i+1}/{n_runs}", end='\r', flush=True)
 
 if PLOTS:
     # Final layout adjustments to ensure nothing is clipped, applied for both modes

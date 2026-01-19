@@ -8,6 +8,328 @@ import math
 import json
 import os
 import pandas as pd
+import numpy as np
+
+
+def _linear_utility_from_range(x, lo, hi, crit_type):
+    """Map a raw value x into a [0,1] utility using a linear normalization over [lo,hi]."""
+    try:
+        xv = float(x)
+        lo = float(lo)
+        hi = float(hi)
+    except Exception:
+        return 0.001
+
+    if hi == lo:
+        return 1.0
+
+    t = (xv - lo) / (hi - lo)
+    if (crit_type or '').strip().lower() == 'negative':
+        t = 1.0 - t
+
+    # keep consistent with value functions used elsewhere
+    if t < 0.001:
+        return 0.001
+    if t > 1.0:
+        return 1.0
+    return float(t)
+
+
+def _invert_piecewise(points, u):
+    """Invert a monotone piecewise-linear function defined by (x,y) points.
+
+    Returns x such that y(x) == u (clamped to the y-range).
+    """
+    if not points:
+        raise ValueError('Cannot invert empty value function points')
+
+    pts = [(float(p[0]), float(p[1])) for p in points]
+    pts = sorted(pts, key=lambda p: p[0])
+
+    # clamp u to [min_y, max_y]
+    ys = [p[1] for p in pts]
+    min_y = min(ys)
+    max_y = max(ys)
+    try:
+        uu = float(u)
+    except Exception:
+        uu = min_y
+    if uu < min_y:
+        uu = min_y
+    if uu > max_y:
+        uu = max_y
+
+    # Find a segment where uu lies between y0 and y1
+    for (x0, y0), (x1, y1) in zip(pts[:-1], pts[1:]):
+        if y0 == y1:
+            # plateau: if uu equals this plateau, return left x
+            if uu == y0:
+                return x0
+            continue
+        lo_y = min(y0, y1)
+        hi_y = max(y0, y1)
+        if lo_y <= uu <= hi_y:
+            t = (uu - y0) / (y1 - y0)
+            return x0 + t * (x1 - x0)
+
+    # If not found (numerical corner), snap to closest endpoint
+    # Prefer the x associated with uu at extremes.
+    if abs(uu - pts[0][1]) <= abs(uu - pts[-1][1]):
+        return pts[0][0]
+    return pts[-1][0]
+
+
+def _eval_piecewise(points, x):
+    """Evaluate a piecewise-linear function defined by (x,y) points.
+
+    - Clamps x to the x-range of the points.
+    - Assumes points are monotone in x (not necessarily in y).
+    - Returns a float y.
+    """
+    if not points:
+        raise ValueError('Cannot evaluate empty value function points')
+
+    pts = [(float(p[0]), float(p[1])) for p in points]
+    pts = sorted(pts, key=lambda p: p[0])
+
+    try:
+        xv = float(x)
+    except Exception:
+        xv = pts[0][0]
+
+    # clamp x to domain
+    if xv <= pts[0][0]:
+        return float(pts[0][1])
+    if xv >= pts[-1][0]:
+        return float(pts[-1][1])
+
+    for (x0, y0), (x1, y1) in zip(pts[:-1], pts[1:]):
+        if x0 <= xv <= x1:
+            if x1 == x0:
+                return float(y0)
+            t = (xv - x0) / (x1 - x0)
+            return float(y0 + t * (y1 - y0))
+
+    # Fallback (numerical corner): return closest endpoint
+    if abs(xv - pts[0][0]) <= abs(xv - pts[-1][0]):
+        return float(pts[0][1])
+    return float(pts[-1][1])
+
+
+def _load_criteria_ranges(criteria_csv_path):
+    """Return mapping: criterion -> (min,max,type)."""
+    ranges = {}
+    with open(criteria_csv_path, 'r', newline='') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            name = (row.get('name') or '').strip()
+            if not name:
+                continue
+            try:
+                lo = float(row.get('min'))
+            except Exception:
+                lo = None
+            try:
+                hi = float(row.get('max'))
+            except Exception:
+                hi = None
+            crit_type = (row.get('type') or '').strip().lower() or None
+            ranges[name] = (lo, hi, crit_type)
+    return ranges
+
+
+def _load_vf_points(value_functions_csv_path):
+    """Return mapping: criterion -> list of [x,y] points."""
+    vf_points = {}
+    with open(value_functions_csv_path, 'r', newline='') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            name = (row.get('name') or '').strip()
+            pts_raw = row.get('elicited_points')
+            if not name or not pts_raw:
+                continue
+            try:
+                pts = json.loads(pts_raw)
+            except Exception:
+                pts = ast.literal_eval(pts_raw)
+            vf_points[name] = pts
+    return vf_points
+
+
+def remap_bwt_results_for_country(
+    elicit_num,
+    country,
+    script_dir=None,
+    output_dir=None,
+):
+    """Create a country-adjusted BWT results CSV.
+
+    The BWT CSV stores a single `Value` for each comparison. In this codebase, that `Value`
+    is interpreted as:
+      - if Type == 'best'  -> value is on the Reference criterion scale
+      - if Type == 'worst' -> value is on the Other criterion scale
+
+    Requested policy:
+    - Compare the general (folder-level) `criteria.csv` with the country-specific
+      `<country>/criteria.csv` for the same elicitation.
+    - When the range differs, linearly rescale `Value` from the global domain into
+      the country domain.
+
+    Compatibility note:
+    - Qualitative criteria may be stored in a raw 1–6 scale in BWT elicitation, while the
+      country value functions may have been converted to a 0–1 domain. For these, we still
+      remap from [1,6] into the country value-function x-range.
+
+    After any remap, we recompute `a` as: a = 1 / vf_country(Value_new).
+    """
+
+    if script_dir is None:
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+    if output_dir is None:
+        output_dir = os.path.join(script_dir, 'weight_spaces')
+
+    elicit_num = int(elicit_num)
+    country = str(country).strip().upper()
+
+    bwt_in = os.path.join(script_dir, 'weight_spaces', f'BWT_results_{elicit_num}.csv')
+    bwt_out = os.path.join(output_dir, f'BWT_results_{elicit_num}_{country}.csv')
+
+    criteria_csv = os.path.join(script_dir, 'elicitation_results', str(elicit_num), 'criteria.csv')
+    country_criteria_csv = os.path.join(script_dir, 'elicitation_results', str(elicit_num), country, 'criteria.csv')
+    vf_csv = os.path.join(script_dir, 'elicitation_results', str(elicit_num), country, 'value_functions.csv')
+
+    ranges_global = _load_criteria_ranges(criteria_csv)
+    ranges_country = _load_criteria_ranges(country_criteria_csv) if os.path.exists(country_criteria_csv) else {}
+    vf_points = _load_vf_points(vf_csv)
+
+    qualitative_indicators = {
+        'Design Maturity': 'positive',
+        'Licensing Status': 'positive',
+        'Supplier Availbility': 'positive',
+        'Design Complexity': 'negative',
+        'Construction Complexity': 'positive',
+    }
+
+    with open(bwt_in, 'r', newline='') as f:
+        reader = csv.DictReader(f)
+        fieldnames = reader.fieldnames
+        rows = list(reader)
+
+    if not fieldnames or 'Value' not in fieldnames:
+        raise ValueError(f"Unexpected BWT file schema in {bwt_in}")
+
+    for row in rows:
+        typ = (row.get('Type') or '').strip().lower()
+        ref = (row.get('Reference') or '').strip()
+        other = (row.get('Other') or '').strip()
+
+        crit_for_value = ref if typ == 'best' else other
+        if not crit_for_value:
+            continue
+        if crit_for_value not in vf_points:
+            continue
+
+        try:
+            x_old = float(row.get('Value'))
+        except Exception:
+            continue
+
+        pts = vf_points[crit_for_value]
+        xs = [float(p[0]) for p in pts]
+        vf_lo = min(xs)
+        vf_hi = max(xs)
+
+        # Source range: what `Value` is expressed in.
+        if crit_for_value in qualitative_indicators:
+            src_lo, src_hi = 1.0, 6.0
+        else:
+            src_lo, src_hi, _crit_type = ranges_global.get(crit_for_value, (None, None, None))
+            if src_lo is None or src_hi is None:
+                continue
+
+        # Target range:
+        # - qualitative: always remap into the country VF x-domain (typically [0,1])
+        # - quantitative: ONLY remap when country criteria ranges differ from global criteria ranges
+        do_remap = False
+        if crit_for_value in qualitative_indicators:
+            tgt_lo, tgt_hi = vf_lo, vf_hi
+            do_remap = True
+        else:
+            c_lo, c_hi, _c_type = ranges_country.get(crit_for_value, (None, None, None))
+            if c_lo is not None and c_hi is not None:
+                if not (np.isclose(float(src_lo), float(c_lo), atol=1e-9) and np.isclose(float(src_hi), float(c_hi), atol=1e-9)):
+                    tgt_lo, tgt_hi = float(c_lo), float(c_hi)
+                    do_remap = True
+
+        if not do_remap:
+            continue
+
+        src_span = float(src_hi) - float(src_lo)
+        tgt_span = float(tgt_hi) - float(tgt_lo)
+        if abs(src_span) <= 1e-12 or abs(tgt_span) <= 1e-12:
+            continue
+
+        t = (x_old - float(src_lo)) / src_span
+        if t < 0.0:
+            t = 0.0
+        if t > 1.0:
+            t = 1.0
+
+        x_new = float(tgt_lo + t * tgt_span)
+        row['Value'] = str(float(x_new))
+
+        try:
+            vf_val = float(_eval_piecewise(pts, x_new))
+        except Exception:
+            vf_val = None
+        if vf_val is not None:
+            if vf_val <= 0.0:
+                vf_val = 0.001
+            row['a'] = str(float(1.0 / vf_val))
+
+    with open(bwt_out, 'w', newline='') as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
+
+    return bwt_out
+
+
+def compute_bwt_weights_for_country_file(
+    *,
+    criteria_csv,
+    bwt_results_csv,
+    value_functions_csv,
+    output_csv,
+):
+    """Solve BWT once and write a single-weight-per-criterion CSV (same row format as existing *_weights.csv files)."""
+    from pile_bwt import bwt
+
+    # Build dict_data (criteria + comparisons)
+    dict_data = load_criteria(criteria_csv, bwt_results_csv)
+
+    # Attach country-specific value functions
+    vf_map, _conf_map = load_value_functions_with_confidence(value_functions_csv)
+    for gdata in dict_data.values():
+        for crit_name, crit in gdata['criteria'].items():
+            crit['value_function'] = vf_map[crit_name]
+
+    result = bwt(dict_data)
+    weights_dict = result['criteria_weights']
+
+    # Flatten in the canonical dict_data order
+    crit_names = [crit_name for group_data in dict_data.values() for crit_name in group_data['criteria'].keys()]
+    weights_flat = []
+    for gname, gdata in dict_data.items():
+        for crit_name in gdata['criteria'].keys():
+            weights_flat.append(weights_dict[gname][crit_name])
+
+    with open(output_csv, 'w', newline='') as f:
+        writer = csv.writer(f)
+        for crit_name, w in zip(crit_names, weights_flat):
+            writer.writerow([crit_name, float(w)])
+
+    return output_csv
 
 def load_alternatives(file_path):
     """Load alternatives from a CSV file and parse distributions as dictionaries."""
@@ -900,5 +1222,27 @@ def convert_qualitative_indicators_in_folders(folder_numbers):
                 writer = csv.DictWriter(f, fieldnames=vf_fieldnames)
                 writer.writeheader()
                 writer.writerows(vf_rows)
+
+        # Update folder-level criteria.csv to reflect value-space conversion.
+        # After conversion, these qualitative indicators are values in [0, 1]
+        # and higher is always better.
+        criteria_file = base_dir / 'criteria.csv'
+        if criteria_file.exists():
+            with open(criteria_file, 'r', newline='') as f:
+                reader = csv.DictReader(f)
+                criteria_fieldnames = reader.fieldnames
+                criteria_rows = list(reader)
+
+            if criteria_fieldnames is not None:
+                for crit_row in criteria_rows:
+                    if crit_row.get('name') in qualitative_indicators:
+                        crit_row['min'] = '0'
+                        crit_row['max'] = '1'
+                        crit_row['type'] = 'positive'
+
+                with open(criteria_file, 'w', newline='') as f:
+                    writer = csv.DictWriter(f, fieldnames=criteria_fieldnames)
+                    writer.writeheader()
+                    writer.writerows(criteria_rows)
 
 #################################################################################
