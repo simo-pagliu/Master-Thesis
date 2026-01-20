@@ -1,6 +1,6 @@
-\section{Suggestions for further improvements and extensions}
+\section{Suggestions for future works}
 \label{sec:suggestions}
-In this section, suggestions for future improvements and extensions to the work of this thesis are provided. These suggestions are divided into three categories: improvements on the case study, improvements on the elicitation process, and improvements on the \gls{upmavt} method.
+In this section, suggestions for future improvements and extensions to the work of this thesis are provided. These suggestions are divided into three categories: improvements on the case study, improvements on the elicitation process, and improvements on the \gls{upmavt} method. Further suggestions that emerged during the development of this thesis but were considered out ot scope are collected in Appendix~\ref{sec:appendix_suggestions}.
 
 \subsection{Improvements for future case studies}
 This analysis adopted a conservative approach by relying on current data for key indicators. Future work could enhance predictive value by incorporating forecasted trajectories for emissions, costs, electricity prices, and demand, as well as quantitative risk assessments, and market projections. Such improvements would better capture the dynamic nature of broad energy systems.
@@ -23,25 +23,33 @@ Biodiversity impacts are intentionally excluded, assuming preliminary site scree
 
 At the national level, incorporating an import reduction objective could provide valuable strategic insights. This would enable direct comparison of deployment configurations, such as evaluating a single large reactor against several \glspl{smr} delivering equivalent capacity, while maintaining focus on energy security outcomes.
 
-\subsection{Improvements on the Elicitaiton process}
+\subsection{Improvements on the Elicitation process}
 The most significant potential improvement to the elicitation process would be developing interactive software to enable remote, self-paced expert participation, reduced analyst supervision requirements and expanded expert panel capacity
 
 Such a system would simultaneously decrease participant burden and enhance result robustness through broader specialist engagement.
 
-\subsubsection{Value function elicitation}
-The sequential elicitation approach, beginning with a comprehensive "first elicitation" followed by targeted corrections by other experts, proved highly effective in accelerating the process, as anticipated.
+\paragraph{Effectivness of correction approach to value function elicitation}
+The initial "first elicitation" required 3.5 hours, while subsequent sessions averaged under 2.5 hours, validating the efficiency gains predicted in Sections~\ref{sec:value_functions} and~\ref{sec:qualitative_indicators_uncertainty} when using a baseline elicitation as reference.
 
-During value function elicitation, the rigid adherence to pre-defined indifference points from initial mid-splitting created unnecessary constraints. Future implementations should permit greater expert flexibility in adjusting these reference points during subsequent sessions.
+\paragraph{Criticalities among QIs}
+Expert feedback highlighted two \glspl{qi} requiring particular attention. The "design complexity" metric faced criticism for its qualitative nature, with specialists suggesting it could be quantified through objective parameters like safety system counts, modularity degrees, and redundancy levels.
 
-\subsubsection{\gls{qi} approaches}
-Regarding \glspl{qi} the use of a standardized reference alternative significantly improved consistency and is recommended for future studies. On the other hand, the "spectrum" approach for the "construction complexity" indicator (Section~\ref{sec:economic_indicators}) caused substantial expert confusion and should be replaced with conventional ranking methods.
+The "construction complexity" indicator, initially presented as country-dependent, was judged by most to be design-driven rather than location-specific. Experts concurred with the study's neutral baseline position on construction approaches, noting that while modularity offers theoretical advantages, first-of-a-kind projects will likely encounter unanticipated challenges that may offset potential benefits. This consensus reflects skepticism about modular construction in real-world deployment.
 
-Building on the expert interaction patterns observed in Section~\ref{sec:expert_observations}, future studies should consider implementing knowledge-sharing sessions prior to individual elicitations. Such pre-elicitation exchanges would allow experts to present case-specific insights, potentially reducing deviations that stem from information asymmetries rather than genuine differences in professional judgment. This approach maintains individual assessment integrity while ensuring all experts operate from a common factual baseline.
 
-\subsubsection{\gls{pilebwt} method observations}
+\paragraph{Observations on the PILE-BWT}
 The digital interface significantly facilitated the elicitation process, though expert guidance by the analyist remained essential for proper method application. The primary challenge was the inherent difficulty of quantifying pairwise comparisons, a task demanding substantial cognitive effort that should be accounted for in session planning.
 
-A critical observation concerned methodological adherence: experts frequently defaulted to intuitive importance comparisons ("How much more important is A than B?") rather than the required compensatory trade-off formulation ("How much must A improve from its minimum to offset B's decline from minimum to maximum?"). Future applications must emphasize this distinction during expert briefings to maintain methodological rigor.
+A methodological compromise was necessary for the \gls{pilebwt} process. Ideally, comparisons should have been country-specific to account for varying indicator ranges (country-dependent indicators). To balance rigor with practical constraints, all comparisons used unified ranges spanning minimum-maximum values across all countries. Post-elicitation, country-specific values were derived through linear mapping to preserve relative relationships. This approach maintains value function validity within each national context, unlike range clipping that could distort relationships. While no significant bias is expected from this simplification, dedicated validation studies would be valuable to confirm this assumption.
+
+\paragraph{Inconsistency Management in the PILE-BWT results}
+Weight elicitation revealed substantial variability in expert consistency. E3 demonstrated exceptional judgment coherence, likely reflecting their experience with \gls{mcda} methods. Other experts showed moderate inconsistency, with E1 exhibiting the most pronounced deviations. As anticipated in Section~\ref{sec:results}, while E1's inclusion noticeably increased result uncertainty, it produced no fundamental shifts in the final rankings. While this could suggest robustness in the \gls{upmavt} method against inconsistent inputs, it is more likely that the set of alternatives present a clear hierarchy that disregards weight fluctuations.
+
+The optimization-based \gls{pilebwt} method proved sensitive to even minor judgment inconsistencies. This analysis enforced cardinal consistency, requiring consistent indicator ordering between best and worst comparisons. For experts E2 and E4, marginal inconsistencies (e.g., declared 0.42 when $\geq$ 0.45 was required) were resolved through minimal judgment adjustments (to 0.45 in this case). Expert E1 presented more substantial inconsistencies that resisted simple correction, resulting in expanded, and clearly unreasonable, weight spaces.
+
+As anticipated in \ref{sec:results}, to assess robustness, results are presented both with and without E1's contributions, explicitly demonstrating how such inconsistencies affect final rankings while maintaining methodological transparency.
+
+It is important to note that the present \gls{nsmc} results assign equal influence to all experts. However, consistency metrics suggest more reliable judgments (e.g., E3's contributions) might warrant greater weight.
 
 \subsection{Methodological Enhancements for UP-MAVT}
 The most valuable enanchement to \gls{upmavt} would be the implementation of uncertainty tracking. This would enable targeted uncertainty mitigation and more transparent results. The tracking framework should aim to document uncertainty origins, trace its propagation pathways and quantify contribution magnitudes.

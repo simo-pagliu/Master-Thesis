@@ -8,14 +8,14 @@ The elicitation process involved four experts who performed all analytical steps
 
 \begin{table}[htbp]
 	\centering
-	\begin{tabular}{|c|c|}
+	\begin{tabular}{|c|c|c|}
 		\hline
-		\textbf{Expert} & \textbf{Area of Expertise} \\
+		\textbf{Expert} & \textbf{Area of Expertise} & \textbf{Experience}\\
 		\hline
-		E1 & Risk Assessment (Academia)\\
-		E2 & Nuclear Safety (Academia) \\
-		E4 & Nuclear Safety (Industry) \\
-		E8 & Nuclear Economics (Academia)\\
+		E1 & Risk Assessment (Academia) & Senior Scientist\\
+		E2 & Nuclear Safety (Academia) & Senior Scientist\\
+		E4 & Nuclear Safety (Industry) & Junior Engineer\\
+		E8 & Nuclear Economics (Academia) & PhD Student\\
 		\hline
 	\end{tabular}
 	\caption{Experts involved in the elicitation process.}
@@ -24,26 +24,20 @@ The elicitation process involved four experts who performed all analytical steps
 
 Expert E1 participated in the "first elicitation" that established baseline value functions for subsequent evaluations (steps 1 and 2). However, as detailed in Section~\ref{sec:discussion}, this expert demonstrated the lowest consistency in weight elicitation (step 3). The analysis therefore presents results both including and excluding E1's contributions to assess the ranking sensitivity to this outlier perspective.
 
-Figure~\ref{fig:weights_results} compares weight elicitation outcomes from the most and least consistent experts, while Figure~\ref{fig:vf_examples} highlights variations between experts in value function definitions. The feasible weight space was explored via differential evolution (SciPy implementation \cite{PLACEHOLDER})
-
-The consistency plots compare the Declared pairwise comparison ratios with the ratios between the optimized weights. Each second bar represents the mean weight sampled from the feasible solution space, with error bars indicating $\pm \sigma$ to quantify solution variability. This adapted presentation, building on \cite{PLACEHOLDER}'s consistency analysis, explicitly incorporates uncertainty bounds from the weight space exploration.
-
-
-\begin{figure}[htbp]
-	\centering
-	\subfloat[Placeholder (a)]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}\hfill
-	\subfloat[Placeholder (b)]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}\\[0.5em]
-	\subfloat[Placeholder (c)]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}\hfill
-	\subfloat[Placeholder (d)]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}
-	\caption{Example of a $2\times2$ grid of images (placeholder).}
-	\label{fig:weights_results}
-\end{figure}
+Figure~\ref{fig:weights_results} shows weight elicitation outcomes presenting the feasible weight space, explored via differential evolution (SciPy implementation \cite{PLACEHOLDER}), as well as the consistency plots, which compare the Declared pairwise comparison ratios with the ratios between the optimized weights. Each second bar represents the mean weight sampled from the feasible solution space, with error bars indicating $\pm \sigma$ to quantify solution variability. This adapted presentation, building on \cite{PLACEHOLDER}'s consistency analysis, explicitly incorporates uncertainty bounds from the weight space exploration. Figure~\ref{fig:vf_examples} presents the value functions elicited from the four experts for the same indicator, showing the divergencies between expert opinions. 
 
 \begin{figure}[htbp]
 	\centering
 	\subfloat[Placeholder left]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}\hfill
 	\subfloat[Placeholder right]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}
-	\caption{Two subimages side by side (placeholder).}
+	\caption{Placeholder.}
+	\label{fig:weights_results}
+\end{figure}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.75\linewidth]{imgs/placeholder.png}
+	\caption{Placeholder.}
 	\label{fig:vf_examples}
 \end{figure}
 
@@ -53,22 +47,22 @@ To enhance \gls{qi} characterization, five additional experts participated in an
 
 \begin{table}[htbp]
 	\centering
-	\begin{tabular}{|c|c|}
+	\begin{tabular}{|c|c|c|}
 		\hline
-		\textbf{Expert} & \textbf{Area of Expertise} \\
+		\textbf{Expert} & \textbf{Area of Expertise} & \textbf{Experience}\\
 		\hline
-		E3 & Nuclear Plants (Academia) \\
-		E5 & Project Controlling for Nuclear (Industry) \\
-		E6 & Nuclear new Construction (Industry) \\
-		E7 & Nuclear Plant Managment (Industry) \\
-		E9 & PLACEHOLDER \\
+		E3 & Nuclear Plants (Academia) & Academic Professor \\
+		E5 & Project Controlling for Nuclear (Industry) & 20 years in Project Managment positions \\
+		E6 & Nuclear new Construction (Industry) & 17 years in Nuclear Construction\\
+		E7 & Nuclear Plant Managment (Industry) & 17 years in Nuclear Operations\\
+		E9 & PLACEHOLDER & +10 years\\
 		\hline
 	\end{tabular}
 	\caption{Experts involved in the quick elicitation process.}
 	\label{tab:quick_experts}
 \end{table}
 
-Figure~\ref{fig:quick_examples} illustrates two \glspl{qi} demonstrating substantial inter-expert variability, highlighting cases where elicited values showed particularly wide divergence among specialists.
+Figure~\ref{fig:quick_examples} illustrates the results for one of the \gls{qi} which highlights cases where elicited values showed particularly wide divergence among specialists.
 
 \begin{figure}[htbp]
 	\centering
