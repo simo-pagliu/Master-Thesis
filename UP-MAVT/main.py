@@ -53,13 +53,17 @@ QI_elicitation_numbers = [3, 5, 6, 7]
 required_weight_solutions = 1  # Target number of unique weight combinations
 
 # Montecarlo Parameters
-n_runs = 1000  # Number of Montecarlo simulation runs
-PLOTS = False  # Toggle plots
+n_runs = 10000  # Number of Montecarlo simulation runs
+PLOTS = True  # Toggle plots
 plot_bins = 50  # Number of bins for histograms
 STRICT = True  # Toggle strict mode
+RANDOM_WEIGHT_ANALYSIS = True
 UPDATE_EVERY = 100  # Update plots every N runs
 opinion_weights = np.ones(len(elicitation_numbers))/len(elicitation_numbers)  # Equal weights for each elicitation
 #################################################################################
+
+if RANDOM_WEIGHT_ANALYSIS:
+    STRICT = False  # Disable strict mode when running random weight analysis
 
 # Convert qualitative indicators (and update criteria.csv accordingly) before loading criteria files
 folders_to_convert = sorted(set(elicitation_numbers + (QI_elicitation_numbers or [])))
@@ -235,7 +239,7 @@ def update_plots(rank_probs, distributions, i, n_runs, n_alternatives, strict=Fa
 # Preparation for the Montecarlo Simulation
 print("Starting Monte Carlo simulation...")
 # Call the generator (yields results one by one)
-mc_code = mc_simulation(alternatives, opinion_weights, vf_list, conf_list, list_of_weight_space_points, dict_data_list, weighted_sum, sim_runs=n_runs, strict=STRICT, crit_index=crit_index)
+mc_code = mc_simulation(alternatives, opinion_weights, vf_list, conf_list, list_of_weight_space_points, dict_data_list, weighted_sum, sim_runs=n_runs, strict=STRICT, crit_index=crit_index, random_weight_analysis=RANDOM_WEIGHT_ANALYSIS)
 # Number of elicitation files
 n_elicitations = len(dict_data_list)
 # Setup plots if enabled

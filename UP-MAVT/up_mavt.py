@@ -105,16 +105,19 @@ def sample_to_values(data, value_function):
 #################################################################################
 
 #################################################################################
-def evaluation_func(elicitation_idx, alternatives, opinion_weights, vf_list, conf_list, list_of_weight_space_points, dict_data_list, aggregation_method, strict, crit_index):
+def evaluation_func(elicitation_idx, alternatives, opinion_weights, vf_list, conf_list, list_of_weight_space_points, dict_data_list, aggregation_method, strict, crit_index, random_weight_analysis):
     run_results = []
-    # Select the weight space for this elicitation
-    weight_space_points = list_of_weight_space_points[elicitation_idx]
-    # Load the dict_data for this elicitation
-    dict_data = dict_data_list[elicitation_idx]
-    # For each expert we choose a random set of weights
-    sampled_weights = weight_sampler(dict_data, weight_space_points)
-    # Normalization to ensure weights sum to 1 (should be already the case)
-    sampled_weights = sampled_weights / np.sum(sampled_weights)
+    if random_weight_analysis:
+        sampled_weights = np.random.dirichlet(np.ones(len(crit_index)))
+    else:
+        # Select the weight space for this elicitation
+        weight_space_points = list_of_weight_space_points[elicitation_idx]
+        # Load the dict_data for this elicitation
+        dict_data = dict_data_list[elicitation_idx]
+        # For each expert we choose a random set of weights
+        sampled_weights = weight_sampler(dict_data, weight_space_points)
+        # Normalization to ensure weights sum to 1 (should be already the case)
+        sampled_weights = sampled_weights / np.sum(sampled_weights)
     # For each alternative we compute its value
     for a, alt in enumerate(alternatives):
         intermediate_results = []
@@ -150,17 +153,17 @@ def evaluation_func(elicitation_idx, alternatives, opinion_weights, vf_list, con
     # Return the list of alternative values for this evaluation
     return run_results
 # Montecarlo generator function
-def mc_simulation(alternatives, opinion_weights, vf_list, conf_list, list_of_weight_space_points, dict_data_list, aggregation_method, sim_runs, strict, crit_index):
+def mc_simulation(alternatives, opinion_weights, vf_list, conf_list, list_of_weight_space_points, dict_data_list, aggregation_method, sim_runs, strict, crit_index, random_weight_analysis):
     # weight_list = np.array(weight_list)
     possible_idxs = [i for i in range(len(list_of_weight_space_points))]
     for mc_run in range(sim_runs):
         # For each montecarlo run we iterate over all experts
         if strict:
             for elicitation_idx in range(len(list_of_weight_space_points)):
-                run_results = evaluation_func(elicitation_idx, alternatives, None, vf_list, conf_list, list_of_weight_space_points, dict_data_list, aggregation_method, strict, crit_index)
+                run_results = evaluation_func(elicitation_idx, alternatives, None, vf_list, conf_list, list_of_weight_space_points, dict_data_list, aggregation_method, strict, crit_index, random_weight_analysis)
                 yield elicitation_idx, run_results
         else:
             elicitation_idx = np.random.choice(possible_idxs, p=opinion_weights)
-            run_results = evaluation_func(elicitation_idx, alternatives, opinion_weights, vf_list, conf_list, list_of_weight_space_points, dict_data_list, aggregation_method, strict, crit_index)
+            run_results = evaluation_func(elicitation_idx, alternatives, opinion_weights, vf_list, conf_list, list_of_weight_space_points, dict_data_list, aggregation_method, strict, crit_index, random_weight_analysis)
             yield run_results
     return
