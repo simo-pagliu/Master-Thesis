@@ -1,8 +1,10 @@
 \section{Results of the analysis}
 \label{sec:results}
+Results from full elicitation sessions and abbreviated quick elicitation protocol are presented along with the experts that took part in the analysis. Finally, the output of the \gls{upmavt} framework is presented and the optimal technology alternatives for each national context are identified.
 
 \subsection{Full Elicitation Sessions}
-For this analysis, a total of four experts were consulted to perform the "full elicitation" process. The task included all the steps described in the previous section, here reported in short: (i) value functions of quantitative indicators, (ii) qualitative indicator values and their value functions, and (iii) weights by means of \gls{pilebwt}. The experts, who will remain anonymous, are presented in Table~\ref{tab:experts} along with their area of expertise.
+The elicitation process involved four experts who performed all analytical steps: (1) quantitative indicator value function development, (2) qualitative indicator assessment and value function construction, and (3) weight determination using the \gls{pilebwt} methodology. Expert backgrounds are summarized in Table~\ref{tab:experts}, identities are maintained confidential.
+
 
 \begin{table}[htbp]
 	\centering
@@ -20,9 +22,12 @@ For this analysis, a total of four experts were consulted to perform the "full e
 	\label{tab:experts}
 \end{table}
 
-The first expert (E1) was involved in the first elicitation session that defined the starting point of value functions for the following experts (steps i and ii). On the other hand, expert E1 was also the least consistent in their \gls{pilebwt} (step iii), as discussed in Section~\ref{sec:discussion}, results will be therefore presented with and without their input.
+Expert E1 participated in the "first elicitation" that established baseline value functions for subsequent evaluations (steps 1 and 2). However, as detailed in Section~\ref{sec:discussion}, this expert demonstrated the lowest consistency in weight elicitation (step 3). The analysis therefore presents results both including and excluding E1's contributions to assess the ranking sensitivity to this outlier perspective.
 
-The results of the weight elicitation sessions of the most and least consistent experts are presented in Figure~\ref{fig:weights_results}, as well as some notable examples of differently elicited value functions in Figure~\ref{fig:vf_examples}. The plots of the weight results represent the feasible weight space, obtained by exploration of the constraint space by means of a differential evolution algorithm (scipy library \cite{PLACEHOLDER}), as well as a comparison between the declared ratios from the pairwise comparisons and the obtained weights ratio from the optimization model. This plot was presented by \cite{PLACEHOLDER} to analyze the consistency of the results. Here, it is also presented with error bars to account for the weight space obtained: weights are sampled from the feasible weight space, the average is represented by the bars, and the standard deviation by the error bars.
+Figure~\ref{fig:weights_results} compares weight elicitation outcomes from the most and least consistent experts, while Figure~\ref{fig:vf_examples} highlights variations between experts in value function definitions. The feasible weight space was explored via differential evolution (SciPy implementation \cite{PLACEHOLDER})
+
+The consistency plots compare the Declared pairwise comparison ratios with the ratios between the optimized weights. Each second bar represents the mean weight sampled from the feasible solution space, with error bars indicating $\pm \sigma$ to quantify solution variability. This adapted presentation, building on \cite{PLACEHOLDER}'s consistency analysis, explicitly incorporates uncertainty bounds from the weight space exploration.
+
 
 \begin{figure}[htbp]
 	\centering
@@ -44,7 +49,7 @@ The results of the weight elicitation sessions of the most and least consistent 
 
 \subsection{Quick Elicitation Results}
 \label{sec:quick_elicitation_results}
-To characterize as best as possible the \glspl{qi}, additional experts to the previous four were involved in a "quick elicitation" process, which only consisted in step (ii). In addition to the four experts, four more were involved, as presented in Table~\ref{tab:quick_experts}.
+To enhance \gls{qi} characterization, five additional experts participated in an abbreviated "quick elicitation" process focused exclusively on \glspl{qi} assessment (step 2). This expert panel is presented in Table~\ref{tab:quick_experts}.
 
 \begin{table}[htbp]
 	\centering
@@ -63,28 +68,29 @@ To characterize as best as possible the \glspl{qi}, additional experts to the pr
 	\label{tab:quick_experts}
 \end{table}
 
-In Figure~\ref{fig:quick_examples}, two notable examples of \glspl{qi} are reported, where values were greatly different between experts.
+Figure~\ref{fig:quick_examples} illustrates two \glspl{qi} demonstrating substantial inter-expert variability, highlighting cases where elicited values showed particularly wide divergence among specialists.
 
 \begin{figure}[htbp]
 	\centering
 	\subfloat[Placeholder left]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}\hfill
 	\subfloat[Placeholder right]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}
-	\caption{Example of two QIs that are very different between experts.}
+	\caption{Example of two \glspl{qi} that are very different between experts.}
 	\label{fig:quick_examples}
 \end{figure}
 
 \subsection{UP-MAVT}
-The difference between the \gls{smc} and \gls{nsmc} was explained in Section~\ref{sec:up_mavt}. The results from the \gls{smc} are used to evaluate the overall uncertainty before aggregation and to judge the consensus among experts, while the \gls{nsmc} is used to obtain a final ranking. From the strict run, it is observed that there is significant consensus on the alternative values even if the weights might be different. Output for both methods for one of the countries is presented in Figure~\ref{fig:upmavt_results}.
+As established in Section~\ref{sec:up_mavt}, the \gls{smc} and \gls{nsmc} approaches serve complementary purposes. \gls{smc} results evaluate pre-aggregation uncertainty and expert consensus levels, while \gls{nsmc} generates final rankings. The analysis reveals notable consensus on alternative values despite weight variations. Representative outputs for one of the countries are presented in Figure~\ref{fig:upmavt_results}, comparing both methodological approaches.
 
 \begin{figure}[htbp]
 	\centering
 	\subfloat[Placeholder left]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}\hfill
 	\subfloat[Placeholder right]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}
-	\caption{Example of the SMC and NSMC results for Italy.}
+	\caption{Example of the \gls{smc} and \gls{nsmc} results for Italy.}
 	\label{fig:upmavt_results}
 \end{figure}
 
-A comparison of the \gls{nsmc} results, including and excluding expert E1, is presented in Figure~\ref{fig:nsmc_comparison}.
+The sensitivity analysis in Figure~\ref{fig:nsmc_comparison} demonstrates that while E1's inclusion increases result uncertainty, the core ranking remains stable across both expert configurations.
+
 
 \begin{figure}[htbp]
 	\centering
@@ -95,7 +101,7 @@ A comparison of the \gls{nsmc} results, including and excluding expert E1, is pr
 \end{figure}
 
 \subsection{Best Alternatives}
-Therefore, in conclusion of this analysis, the top 3 alternatives for each country are presented in Table~\ref{tab:best_alternatives}, along with their probability of being ranked at that first place.
+The final analysis synthesizes country-specific recommendations in Table~\ref{tab:best_alternatives}, presenting the top three alternatives for each national context with their corresponding probabilities.
 
 \begin{table}[htbp]
 	\centering

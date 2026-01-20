@@ -1,33 +1,51 @@
 \section{Suggestions for further improvements and extensions}
 \label{sec:suggestions}
-Here we suggest possible improvements and extensions to this thesis:
+In this section, suggestions for future improvements and extensions to the work of this thesis are provided. These suggestions are divided into three categories: improvements on the case study, improvements on the elicitation process, and improvements on the \gls{upmavt} method.
 
-\subsection{Improvements on the Case Study}
-For some indicators we decided to "play it safe" by using today's data. For a more indicative analysis it coluld be interesting to implement forecasts for emissions, costs and electricicty prices and demands.
-Improvement of the risk of delay indicator by providing a risk assesment analysis. Same thing goes for the feasibility indicators that would require more in depth analysis.
+\subsection{Improvements for future case studies}
+This analysis adopted a conservative approach by relying on current data for key indicators. Future work could enhance predictive value by incorporating forecasted trajectories for emissions, costs, electricity prices, and demand, as well as quantitative risk assessments, and market projections. Such improvements would better capture the dynamic nature of broad energy systems.
 
-If a siting approach was to be implemented as well, we suggest the following indicators
-- Impact on landscape (social)
-- Impact on the grid (technical)
-- Proximity to energy demand (technical/economic)
-- Local Job creation potential (social)
-- Economic development potential from a national point of view (economic)
-- Proximity to useful industry (for the commissioning itself)
+For potential siting integration, the following indicators are recommended:
 
-If a siting approach is used then a group for enviromental concerns but that should be ocnsidered as the point of view of the agencies in charge of enveriomental assesment NOT FROM THE POV OF THE PUBLIC:
-- water usage and impact on local water systems
-- land use (considerig what the land was used for before the plant construction)
-- accompanying infrastructures needed (means further land use that can be considered without a deep enviromental analysis but from a more qualitative point of view to simplify the analysis)
-Impact on local biodiversity is not a good indicator since we assume that the siting process would start from a set of reasonable sites, excluding protected areas and areas of high biodiversity value.
+\begin{itemize}
+    \item Landscape impact (social perspective)
+    \item Grid integration requirements (technical)
+    \item Demand proximity (technical/economic)
+    \item Local employment potential (social)
+    \item National economic development impact (economic)
+    \item Industrial proximity for construction logistics
+    \item Water system impacts (agency assessment perspective)
+    \item Land use changes (pre-construction baseline)
+    \item Ancillary infrastructure requirements (qualitative assessment)
+\end{itemize}
 
-For a national level analysis could be interesting to consider an objective such as reducing imports so that the analysis is focused on deployment solutions, for instance 1 EPR vs 5 SMRs to conver the same energy demand.
+Biodiversity impacts are intentionally excluded, assuming preliminary site screening would eliminate protected areas and high-value ecosystems from consideration. All environmental indicators should reflect regulatory agency perspectives rather than public perception metrics.
+
+At the national level, incorporating an import reduction objective could provide valuable strategic insights. This would enable direct comparison of deployment configurations, such as evaluating a single large reactor against several \glspl{smr} delivering equivalent capacity, while maintaining focus on energy security outcomes.
 
 \subsection{Improvements on the Elicitaiton process}
-The greatest improvement that can be suggested to improve the elicitation process is to implement an interactive software that allows for remote elicitations session, that do not require the attendance of the analysis and that would allow the expert to perform the elicitation at their own pace. This would reduce the burden on both the experts and the analysts, allowing for more experts to be involved in the process and therefore improving the quality of the results.
+The most significant potential improvement to the elicitation process would be developing interactive software to enable remote, self-paced expert participation, reduced analyst supervision requirements and expanded expert panel capacity
 
-Regarding the methodology used, as expected the "first elicitation" followed by "corrections" was of great help in speeding up the process. For value functions it was found very limiting to force experts to use the indifference points that were defined from the mid-splitting technique in the first elicitation, it is therefore suggested to allow experts to more free adjustment of the points in the following elicitations. In the \gls{qi} elicitation the use of a "standard" reference alternative was found to be very useful, and it is suggested to keep using it in future elicitations, the use of a "spectrum" instead of ranking in the starting point of for "construction complexity" (See section \ref{sec:economic_indicators}) was found to be very confusing for the experts and therefore it is suggested to avoid this approach in future elicitations. Regarding the \glspl{qi} eliciations the author suggest to explore the possibility to involve multiple experts at once in a group elicitation so that they can discuss and share their perspectives, in multiple instance it was found that experts might miss details that were obvious to others, for this reason group elicitations might be of great help in improving the quality of the results.
+Such a system would simultaneously decrease participant burden and enhance result robustness through broader specialist engagement.
 
-Finally on regard of the \gls{pilebwt} elicitaiton method, the use of a UI to help experts was of great help, guidance thoughout this process is still very likely to be necessary to force experts into proper use of the method, otherwise a very extensive and comprehnsive tool would be needed to properly guide them. The method was deemed difficult form the experts not beacuse difficult to understand but because of the intrinsic difficulties in quantivy a pairwise comparison, for this reason it is suggested to keep in mind the high cognitive burden of this task when planning the elicitaiton sessions. Moreover it was very easy for experts to "cheat" the method by providing values based on "how much more important is A then B" instead of aswsering the proper methodlogically accurate question: "How much do I have to increase A form its minimum to compensate for the decrease of B from its minimum to its maximum", for this reason it is suggested to stress the difference between the two approaches when explaining the method to experts.
+\subsubsection{Value function elicitation}
+The sequential elicitation approach, beginning with a comprehensive "first elicitation" followed by targeted corrections by other experts, proved highly effective in accelerating the process, as anticipated.
 
-\subsection{Improvements on the \gls{upmavt} method}
-First and foremost, the author suggests to further investigate the use use of Uncertanty Progpagation in MCDA methods, extending the UP- approach to other MCDA methods. A feature that was not implemented, mostly to limit the burden of this thesis work, was a system of uncertanty tracking, which could be accomplished by carefully recoding each step of the \gls{upmavt} process to keep track of the uncertanty sources thoughout their propagation. This could be useful to identify which steps, indicators or experts contribute the most to the overall uncertanty, and therefore help in focusing future efforts to reduce it.
+During value function elicitation, the rigid adherence to pre-defined indifference points from initial mid-splitting created unnecessary constraints. Future implementations should permit greater expert flexibility in adjusting these reference points during subsequent sessions.
+
+\subsubsection{\gls{qi} approaches}
+Regarding \glspl{qi} the use of a standardized reference alternative significantly improved consistency and is recommended for future studies. On the other hand, the "spectrum" approach for the "construction complexity" indicator (Section~\ref{sec:economic_indicators}) caused substantial expert confusion and should be replaced with conventional ranking methods.
+
+Building on the expert interaction patterns observed in Section~\ref{sec:expert_observations}, future studies should consider implementing knowledge-sharing sessions prior to individual elicitations. Such pre-elicitation exchanges would allow experts to present case-specific insights, potentially reducing deviations that stem from information asymmetries rather than genuine differences in professional judgment. This approach maintains individual assessment integrity while ensuring all experts operate from a common factual baseline.
+
+\subsubsection{\gls{pilebwt} method observations}
+The digital interface significantly facilitated the elicitation process, though expert guidance by the analyist remained essential for proper method application. The primary challenge was the inherent difficulty of quantifying pairwise comparisons, a task demanding substantial cognitive effort that should be accounted for in session planning.
+
+A critical observation concerned methodological adherence: experts frequently defaulted to intuitive importance comparisons ("How much more important is A than B?") rather than the required compensatory trade-off formulation ("How much must A improve from its minimum to offset B's decline from minimum to maximum?"). Future applications must emphasize this distinction during expert briefings to maintain methodological rigor.
+
+\subsection{Methodological Enhancements for UP-MAVT}
+The most valuable enanchement to \gls{upmavt} would be the implementation of uncertainty tracking. This would enable targeted uncertainty mitigation and more transparent results. The tracking framework should aim to document uncertainty origins, trace its propagation pathways and quantify contribution magnitudes.
+
+Development of formal consistency-based weighting mechanisms for expert inputs could substantially improve result reliability, particularly in multi-stakeholder contexts where specialist perspectives vary in coherence.
+
+Finally, the author suggests exploring the extension of uncertainty propagation techniques to other \gls{mcda} frameworks
