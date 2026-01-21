@@ -8,7 +8,7 @@ The elicitation process involved four experts who performed all analytical steps
 
 \begin{table}[htbp]
 	\centering
-	\begin{tabular}{|c|c|c|}
+	\begin{tabularx}{\textwidth}{|c|X|X|}
 		\hline
 		\textbf{Expert} & \textbf{Area of Expertise} & \textbf{Experience}\\
 		\hline
@@ -17,26 +17,32 @@ The elicitation process involved four experts who performed all analytical steps
 		E4 & Nuclear Safety (Industry) & Junior Engineer\\
 		E8 & Nuclear Economics (Academia) & PhD Student\\
 		\hline
-	\end{tabular}
+	\end{tabularx}
 	\caption{Experts involved in the elicitation process.}
 	\label{tab:experts}
 \end{table}
 
 Expert E1 participated in the "first elicitation" that established baseline value functions for subsequent evaluations (steps 1 and 2). However, as detailed in Section~\ref{sec:discussion}, this expert demonstrated the lowest consistency in weight elicitation (step 3). The analysis therefore presents results both including and excluding E1's contributions to assess the ranking sensitivity to this outlier perspective.
 
-Figure~\ref{fig:weights_results} shows weight elicitation outcomes presenting the feasible weight space, explored via differential evolution (SciPy implementation \cite{PLACEHOLDER}), as well as the consistency plots, which compare the Declared pairwise comparison ratios with the ratios between the optimized weights. Each second bar represents the mean weight sampled from the feasible solution space, with error bars indicating $\pm \sigma$ to quantify solution variability. This adapted presentation, building on \cite{PLACEHOLDER}'s consistency analysis, explicitly incorporates uncertainty bounds from the weight space exploration. Figure~\ref{fig:vf_examples} presents the value functions elicited from the four experts for the same indicator, showing the divergencies between expert opinions. 
+Figure~\ref{fig:weight_space_results} shows weight elicitation outcomes presenting the feasible weight space, explored via differential evolution (SciPy implementation \cite{PLACEHOLDER}), Figure~\ref{fig:consistency_results} presents the consistency plots, which compare the Declared pairwise comparison ratios with the ratios between the optimized weights. Each second bar represents the mean weight sampled from the feasible solution space, with error bars indicating $\pm \sigma$ to quantify solution variability. This adapted presentation, building on \cite{PLACEHOLDER}'s consistency analysis, explicitly incorporates uncertainty bounds from the weight space exploration. Figure~\ref{fig:vf_examples} presents the value functions elicited from the four experts for the same indicator, showing the divergencies between expert opinions. 
 
 \begin{figure}[htbp]
 	\centering
-	\subfloat[Weight plot space]{\includegraphics[width=0.75\linewidth]{imgs/weight_space_example.png}}\\[0.5em]
-	\subfloat[Consistency plot]{\includegraphics[width=0.75\linewidth]{imgs/consistency_plot_example.png}}
-	\caption{Weight plot space (top) and consistency plot (bottom) for expert E4.}
-	\label{fig:weights_results}
+	\includegraphics[width=0.95\linewidth]{imgs/weight_space_example.png}
+	\caption{Weight plot space for expert E4.}
+	\label{fig:weight_space_results}
+\end{figure}
+
+\begin{figure}[p]
+	\centering
+	\includegraphics[angle=90,height=\textheight,keepaspectratio]{imgs/consistency_plot_example.png}
+	\caption{Consistency plot for expert E4.}
+	\label{fig:consistency_results}
 \end{figure}
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[width=0.75\linewidth]{imgs/vf_result_example.png}
+	\includegraphics[width=0.5\linewidth]{imgs/vf_result_example.png}
 	\caption{Value function elicited by experts for "Net Power Output - IT".}
 	\label{fig:vf_examples}
 \end{figure}
@@ -67,18 +73,18 @@ Figure~\ref{fig:quick_examples} illustrates the results for "Design Complexity",
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.75\linewidth]{imgs/QI_result_example.png}
-	\caption{Results of "Design Complexity".}
+	\caption{Values for the \gls{qi} "Design Complexity".}
 	\label{fig:quick_examples}
 \end{figure}
 
 \subsection{UP-MAVT}
-As established in Section~\ref{sec:up_mavt}, the \gls{smc} and \gls{nsmc} approaches serve complementary purposes. \gls{smc} results evaluate pre-aggregation uncertainty and expert consensus levels, while \gls{nsmc} generates final rankings. The analysis reveals notable consensus on alternative values despite weight variations. Representative outputs for one of the countries are presented in Figure~\ref{fig:upmavt_results}, comparing both methodological approaches.
+As established in Section~\ref{sec:uncertanty_propagation_mcda}, the \gls{smc} and \gls{nsmc} approaches serve complementary purposes. \gls{smc} results evaluate pre-aggregation uncertainty and expert consensus levels, while \gls{nsmc} generates final rankings. The analysis reveals notable consensus on alternative values despite weight variations. Representative outputs for one of the countries are presented in Figure~\ref{fig:upmavt_results}, comparing both methodological approaches.
 
 \begin{figure}[htbp]
 	\centering
-	\subfloat[Placeholder left]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}\hfill
-	\subfloat[Placeholder right]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}
-	\caption{Example of the \gls{smc} and \gls{nsmc} results for Italy.}
+	\subfloat[\gls{smc} Output]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}\hfill
+	\subfloat[\gls{nsmc} Output]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}
+	\caption{Example of the \gls{smc} and \gls{nsmc} results for Switzerland.}
 	\label{fig:upmavt_results}
 \end{figure}
 
@@ -87,9 +93,9 @@ The sensitivity analysis in Figure~\ref{fig:nsmc_comparison} demonstrates that w
 
 \begin{figure}[htbp]
 	\centering
-	\subfloat[Placeholder left]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}\hfill
-	\subfloat[Placeholder right]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}
-	\caption{Comparison of the results including E1 and excluding E1.}
+	\subfloat[\gls{nsmc} Output including E1]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}\hfill
+	\subfloat[\gls{nsmc} Output excluding E1]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}
+	\caption{Comparison of the \gls{nsmc}results including E1 and excluding E1.}
 	\label{fig:nsmc_comparison}
 \end{figure}
 

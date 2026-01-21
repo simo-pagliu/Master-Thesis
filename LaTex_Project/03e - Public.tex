@@ -85,13 +85,15 @@ If we state that the amount of people that think that nuclear reactors are safe 
 \centering
 \caption{Summary of Public Perception of Reactor Safety}
 \label{tab:safety_distribution}
-\begin{tabularx}{\textwidth}{rcccc}
+\begin{tabularx}{\textwidth}{rXXXX}
 \toprule
       & Traditional & NuScale & \gls{bwrx} & Rolls-Royce \\
 \midrule
-Unsafe (0) & $1 - x$   & $0.38 \cdot (1 - x)$ & $0.38 \cdot (1 - x)$ & $0.30 \cdot (1 - x)$ \\
-Safe (1) & $x$ & $0.38 \cdot x$ + $0.62 \cdot (1 - x)$ & $0.38 \cdot x$ + $0.62 \cdot (1 - x)$ & $0.30 \cdot (1-x)$ + $0.70 \cdot x$ \\
-Safer (2) & 0 & $0.62 \cdot x$ & $0.62 \cdot x$ & $0.30 \cdot x$ \\
+Unsafe & $1 - x$   & $0.38 \cdot (1 - x)$ & $0.38 \cdot (1 - x)$ & $0.70 \cdot (1 - x)$ \\
+\midrule
+Safe & $x$ & $0.62 \cdot (1 - x)$  + $0.38 \cdot x$ & $0.62 \cdot (1 - x)$ + $0.38 \cdot x$ & $0.30 \cdot (1-x)$ + $0.70 \cdot x$ \\
+\midrule
+Safer & 0 & $0.62 \cdot x$ & $0.62 \cdot x$ & $0.30 \cdot x$ \\
 \bottomrule
 \end{tabularx}
 \end{table}
