@@ -12,5 +12,5 @@ Net Power Output,Technical,300.0,1630.0,MW_e,positive
 Design Maturity,Feasibility,0.0,1.0,Score,positive
 Licensing Status,Feasibility,0.0,1.0,Score,positive
 Supplier Availbility,Feasibility,0.0,1.0,Score,positive
-Design Complexity,Economic,0.0,1.0,Score,positive
-Construction Complexity,Economic,0.0,1.0,Score,positive
+Design Complexity,Economic,0.0,1.0,Score,negative
+Construction Complexity,Economic,0.0,1.0,Score,negative
