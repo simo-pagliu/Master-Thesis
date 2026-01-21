@@ -1234,11 +1234,11 @@ def convert_qualitative_indicators_in_folders(folder_numbers):
                 criteria_rows = list(reader)
 
             if criteria_fieldnames is not None:
-                for crit_row in criteria_rows:
-                    if crit_row.get('name') in qualitative_indicators:
-                        crit_row['min'] = '0'
-                        crit_row['max'] = '1'
-                        crit_row['type'] = 'positive'
+                # for crit_row in criteria_rows:
+                #     if crit_row.get('name') in qualitative_indicators:
+                #         crit_row['min'] = '0'
+                #         crit_row['max'] = '1'
+                #         crit_row['type'] = 'positive'
 
                 with open(criteria_file, 'w', newline='') as f:
                     writer = csv.DictWriter(f, fieldnames=criteria_fieldnames)
