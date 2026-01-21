@@ -756,9 +756,9 @@ def plot_qualitative_rankings(country: str) -> str:
 		ax.set_yticks(list(range(len(alt_names))))
 		ax.set_yticklabels(alt_names)
 
-		ax.set_title(f"Qualitative ranking — {crit_name} — {country}")
-		ax.set_xlabel("Expert")
-		ax.set_ylabel("Alternative")
+		ax.set_title(f"{crit_name} — {country}")
+		# ax.set_xlabel("Expert")
+		# ax.set_ylabel("Alternative")
 
 		cbar = fig.colorbar(im, ax=ax, shrink=0.85, pad=0.02)
 		cbar.set_label("Rank (1=best)")
