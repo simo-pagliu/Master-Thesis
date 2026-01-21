@@ -1,17 +1,15 @@
 \section{Discussion}
 \label{sec:discussion}
+As anticipated in Section \ref{sec:mavt_presentation}, the current implementation of \gls{upmavt} allows to explore different aggregation methods, the most relevant are the fully compensaory \gls{sum} and the partially compensatory \gls{geo} and \gls{har}. The rankings clearly differ between aggregation methods, as presented in the previous section for France in figure \ref{fig:aggregation_methods_comparison_france}. The most notable differences lie in the ranking of the top alternatives, namely the \gls{epr} design. This was expected since this design has many high performance criteria in its favour (highest efficiency, highest discharge burnup, etc) but, as every expert noted, this engineering feat comes at a great cost in terms of complexity that greatly hits cost, construction time and overall feasibility. The \gls{sum} method tends to favour this design, as the high scores in the positive criteria are able to fully compensate the low scores in the negative criteria. On the other hand, both \gls{geo} and \gls{har} penalize more heavily low scores, which is why the \gls{epr} design ranks lower in these methods. The author confidently asserts that partially compensatory methods are more suited for this type of analysis, as they better reflect the experts' opinions and the real-world trade-offs involved in nuclear reactor selection. There is however no clear preference between \gls{geo} and \gls{har}, they both produce the same top 3 rank but the \gls{geo} is more pronunced in the preferences, with higher differences between alternatives. Since the objective of this thesis was to determine a ranking, both results are acceptable, but to add on it, it should be noted that this ranking is not the result of a clearcut preference but the differences beween alternatives are mostly very small. The only clear pattern is that \glspl{smr} design are ranked lower than large reactors, whitin the lower group the Rolls-Royce model seems to be prefered. In the higher group the battle is mostly between the \gls{epr} and the \gls{ap}, while the \gls{apr} follows closely. Here follows a per country discussion of the results.
 
-\subsection{Compensatory mechanics}
-As anticipated in Section \ref{sec:mavt_presentation}, the main results have been obtained using a fully compensatory aggregation method (\gls{sum}), in the current implementation of \gls{upmavt} is possible to change the aggregation method to explore non-compensatory approaches.
+\paragraph{France}
 
-\begin{figure}[htbp]
-    \centering
-    \subfloat[\gls{sum}]{\includegraphics[width=0.32\linewidth]{imgs/placeholder.png}}\hfill
-    \subfloat[\gls{geo}]{\includegraphics[width=0.32\linewidth]{imgs/placeholder.png}}\hfill
-    \subfloat[\gls{har}]{\includegraphics[width=0.32\linewidth]{imgs/placeholder.png}}
-    \caption{Poland results obtained with different aggregation methods.}
-    \label{fig:aggregation_methods_comparison}
-\end{figure}
+\paragraph{Italy}
+
+\paragraph{Switzerland}
+
+\paragraph{Poland}
+
 
 \subsection{Dominant Alternatives}
 Due to the nature of the results of \gls{upmavt} analyses, and the fact that it employs a montecarlo code, it was determined unfeasible to run proper weight sensitivity analysis (the approach from \cite{} was tested but failed miserably as the computation time is just unreasonable). For this reason this work resort to a different approach: run the montecarlo code with random weights, sampled at each run from a dirichlet distribution. This approach should be able to identify domninat alternatives, or alternatives that are widely influenced by the weight choice. The results of the random weight \gls{nsmc} runs are presented in figure \ref{fig:random_weights_dominance}.

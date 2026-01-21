@@ -84,7 +84,7 @@ As established in Section~\ref{sec:uncertanty_propagation_mcda}, the \gls{smc} a
 	\centering
 	\subfloat[\gls{smc} Output]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}\hfill
 	\subfloat[\gls{nsmc} Output]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}
-	\caption{Example of the \gls{smc} and \gls{nsmc} results for Switzerland.}
+	\caption{Example of the \gls{smc} and \gls{nsmc} results for Switzerland (\gls{sum} aggregation).}
 	\label{fig:upmavt_results}
 \end{figure}
 
@@ -95,25 +95,18 @@ The sensitivity analysis in Figure~\ref{fig:nsmc_comparison} demonstrates that w
 	\centering
 	\subfloat[\gls{nsmc} Output including E1]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}\hfill
 	\subfloat[\gls{nsmc} Output excluding E1]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}
-	\caption{Comparison of the \gls{nsmc}results including E1 and excluding E1.}
+	\caption{Comparison of the \gls{nsmc} Italy's results including E1 and excluding E1 (\gls{sum} aggregation).}
 	\label{fig:nsmc_comparison}
 \end{figure}
 
-\subsection{Best Alternatives}
-The final analysis synthesizes country-specific recommendations in Table~\ref{tab:best_alternatives}, presenting the top three alternatives for each national context with their corresponding probabilities.
+\subsection{Rankings}
+As it is going to be discussed in the next section, the results are dependant on the aggregation method applyed. The ranking results are different between fullycompensatory and partial compensatory methods. Figure \ref{} present the ranking heatmaps produced for France using three different aggregation methods.
 
-\begin{table}[htbp]
+\being{figure}[htbp]
 	\centering
-	\begin{tabular}{|c|c|c|c|}
-		\hline
-		\textbf{Country} & \textbf{1st Alternative} & \textbf{2nd Alternative} & \textbf{3rd Alternative} \\
-		\hline
-		Italy & PLACEHOLDER & PLACEHOLDER & PLACEHOLDER \\
-		France & PLACEHOLDER & PLACEHOLDER & PLACEHOLDER \\
-		Switzerland & PLACEHOLDER & PLACEHOLDER & PLACEHOLDER \\
-		Poland & PLACEHOLDER & PLACEHOLDER & PLACEHOLDER \\
-		\hline
-	\end{tabular}
-	\caption{Top 3 alternatives for each country with their probabilities.}
-	\label{tab:best_alternatives}
-\end{table}
+	\subfloat[\gls{sum}]{\includegraphics[width=0.32\linewidth]{imgs/placeholder.png}}\hfill
+	\subfloat[\gls{geo}]{\includegraphics[width=0.32\linewidth]{imgs/placeholder.png}}\hfill
+	\subfloat[\gls{har}]{\includegraphics[width=0.32\linewidth]{imgs/placeholder.png}}
+	\caption{France results obtained with different aggregation methods.}
+	\label{fig:aggregation_methods_comparison_france}
+\end{figure}
