@@ -1,6 +1,23 @@
 \section{Discussion}
 \label{sec:discussion}
 
+\subsection{Compensatory mechanics}
+As anticipated in Section \ref{sec:mavt_presentation}, the main results have been obtained using a fully compensatory aggregation method (\gls{sum}), in the current implementation of \gls{upmavt} is possible to change the aggregation method to explore non-compensatory approaches.
+
+
+\subsection{Dominant Alternatives}
+Due to the nature of the results of \gls{upmavt} analyses, and the fact that it employs a montecarlo code, it was determined unfeasible to run proper weight sensitivity analysis (the approach from \cite{} was tested but failed miserably as the computation time is just unreasonable). For this reason this work resort to a different approach: run the montecarlo code with random weights, sampled at each run from a dirichlet distribution. This approach should be able to identify domninat alternatives, or alternatives that are widely influenced by the weight choice. The results of the random weight \gls{nsmc} runs are presented in figure \ref{fig:random_weights_dominance}.
+
+\begin{figure}[htbp]
+    \centering
+    \subfloat[Italy]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}\hfill
+    \subfloat[France]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}\\
+    \subfloat[Switzerland]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}\hfill
+    \subfloat[Poland]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}
+    \caption{Results of the \gls{nsmc} runs with random weights for each country.}
+    \label{fig:random_weights_dominance}
+\end{figure}
+
 \subsection{Critical Observations from Industry Experts}
 While beyond the scope of \gls{mcda} frameworks, experts uniformly noted that technical evaluations may be shadowed by political imperatives: vendor selection frequently prioritizes geopolitical alliances and diplomatic relationships over technical or economic merits. This reality underscores the need to position such analyses as complementary decision support tools rather than definitive selection mechanisms.
 
