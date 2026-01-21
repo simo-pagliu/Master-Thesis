@@ -23,7 +23,7 @@ import csv
 # Import internal modules
 from pile_bwt import bwt, constraints_func, define_weight_spaces
 from up_mavt import mc_simulation
-from aggregation_methods import weighted_sum
+from aggregation_methods import weighted_sum, harmonic_mean, geometric_mean
 from auxiliary import (
     startup,
     combine_alternatives_by_country,
@@ -239,7 +239,7 @@ def update_plots(rank_probs, distributions, i, n_runs, n_alternatives, strict=Fa
 # Preparation for the Montecarlo Simulation
 print("Starting Monte Carlo simulation...")
 # Call the generator (yields results one by one)
-mc_code = mc_simulation(alternatives, opinion_weights, vf_list, conf_list, list_of_weight_space_points, dict_data_list, weighted_sum, sim_runs=n_runs, strict=STRICT, crit_index=crit_index, random_weight_analysis=RANDOM_WEIGHT_ANALYSIS)
+mc_code = mc_simulation(alternatives, opinion_weights, vf_list, conf_list, list_of_weight_space_points, dict_data_list, geometric_mean, sim_runs=n_runs, strict=STRICT, crit_index=crit_index, random_weight_analysis=RANDOM_WEIGHT_ANALYSIS)
 # Number of elicitation files
 n_elicitations = len(dict_data_list)
 # Setup plots if enabled

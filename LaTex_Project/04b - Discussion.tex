@@ -4,6 +4,14 @@
 \subsection{Compensatory mechanics}
 As anticipated in Section \ref{sec:mavt_presentation}, the main results have been obtained using a fully compensatory aggregation method (\gls{sum}), in the current implementation of \gls{upmavt} is possible to change the aggregation method to explore non-compensatory approaches.
 
+\begin{figure}[htbp]
+    \centering
+    \subfloat[\gls{sum}]{\includegraphics[width=0.32\linewidth]{imgs/placeholder.png}}\hfill
+    \subfloat[\gls{geo}]{\includegraphics[width=0.32\linewidth]{imgs/placeholder.png}}\hfill
+    \subfloat[\gls{har}]{\includegraphics[width=0.32\linewidth]{imgs/placeholder.png}}
+    \caption{Poland results obtained with different aggregation methods.}
+    \label{fig:aggregation_methods_comparison}
+\end{figure}
 
 \subsection{Dominant Alternatives}
 Due to the nature of the results of \gls{upmavt} analyses, and the fact that it employs a montecarlo code, it was determined unfeasible to run proper weight sensitivity analysis (the approach from \cite{} was tested but failed miserably as the computation time is just unreasonable). For this reason this work resort to a different approach: run the montecarlo code with random weights, sampled at each run from a dirichlet distribution. This approach should be able to identify domninat alternatives, or alternatives that are widely influenced by the weight choice. The results of the random weight \gls{nsmc} runs are presented in figure \ref{fig:random_weights_dominance}.
