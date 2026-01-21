@@ -13,7 +13,6 @@ import numpy as np
 import matplotlib
 matplotlib.use('TkAgg')  # Set backend before importing pyplot
 import matplotlib.pyplot as plt
-import seaborn as sns
 import os
 import pandas as pd
 import csv
@@ -32,6 +31,7 @@ from auxiliary import (
     convert_qualitative_indicators_in_folders,
     remap_bwt_results_for_country
 )
+from plotting import create_heatmap, create_histograms, update_plots, finalize_layout
 #################################################################################
 
 # Ensure all relative file accesses resolve relative to this script location
@@ -57,7 +57,7 @@ n_runs = 10000  # Number of Montecarlo simulation runs
 PLOTS = True  # Toggle plots
 plot_bins = 50  # Number of bins for histograms
 STRICT = True  # Toggle strict mode
-RANDOM_WEIGHT_ANALYSIS = True
+RANDOM_WEIGHT_ANALYSIS = False
 UPDATE_EVERY = 100  # Update plots every N runs
 opinion_weights = np.ones(len(elicitation_numbers))/len(elicitation_numbers)  # Equal weights for each elicitation
 #################################################################################
@@ -170,72 +170,6 @@ print(f"Imported weight spaces for {len(list_of_weight_space_points)} elicitatio
 #################################################################################
 
 #################################################################################
-# Auxiliary functions for plotting live results
-# This is used to monitor the progress of the MC simulation 
-# So we can stop the simulation when we see results converging 
-# rather than relying on a fixed number of runs
-def update_plots(rank_probs, distributions, i, n_runs, n_alternatives, strict=False, n_elicitations=1, lists_of_full_sets=None, rank_counts_per_el=None):
-    # General Heatmap is shows the aggregated ranking probabilities
-    # Only shown when not in strict mode
-    if not strict and ax is not None:
-        ax.clear()
-        sns.heatmap(
-            rank_probs.T,
-            annot=True,
-            fmt=".2f",
-            xticklabels=alternative_names,
-            yticklabels=[f"{j+1}th" for j in range(n_alternatives)],
-            cmap="YlGnBu",
-            ax=ax,
-            vmin=0,
-            vmax=1,
-            cbar=False,
-        )
-        ax.set_title(f"Ranking Probabilities (Run {i+1}/{n_runs})")
-        ax.set_xlabel("Alternative")
-        ax.set_ylabel("Rank")
-
-    # Histograms of alternative values
-    # Only show in strict mode
-    # Used to judge the consensus
-    if strict and axes is not None:
-        for alt_idx in range(n_alternatives):
-            axes[alt_idx].clear()
-            if lists_of_full_sets is not None:
-                cmap = plt.get_cmap('tab10')
-                color_list = list(cmap(np.linspace(0, 1, max(1, n_elicitations))))
-                any_data = False
-                for e in range(n_elicitations):
-                    runs_e = len(lists_of_full_sets[e])
-                    if runs_e == 0:
-                        continue
-                    data_e = np.array(lists_of_full_sets[e]).T[alt_idx]
-                    if data_e.size > 0:
-                        any_data = True
-                        weights = np.ones_like(data_e) / data_e.size
-                        axes[alt_idx].hist(data_e, bins=plot_bins, weights=weights, alpha=0.5, color=color_list[e], label=f"E{e+1}")
-                if not any_data:
-                    axes[alt_idx].hist([], bins=plot_bins, alpha=0.7)
-                else:
-                    axes[alt_idx].legend(title='Elicitation')
-                axes[alt_idx].set_xlim(0, 1)
-            axes[alt_idx].set_title(f"Distribution of Values for {alternative_names[alt_idx]}")
-            axes[alt_idx].set_xlabel("Value")
-            axes[alt_idx].set_ylabel("Probability")
-            # Format y-axis as percentage
-            axes[alt_idx].yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(xmax=1.0))
-            axes[alt_idx].set_ylim(0, max(axes[alt_idx].get_ylim()[1], 0.1))  # Ensure some space for visibility
-
-    # Draw figures
-    if 'fig' in globals() and fig is not None:
-        fig.canvas.draw()
-        fig.canvas.flush_events()
-    if 'fig_hist' in globals() and fig_hist is not None:
-        fig_hist.canvas.draw()
-        fig_hist.canvas.flush_events()
-#################################################################################
-
-#################################################################################
 # Preparation for the Montecarlo Simulation
 print("Starting Monte Carlo simulation...")
 # Call the generator (yields results one by one)
@@ -243,53 +177,14 @@ mc_code = mc_simulation(alternatives, opinion_weights, vf_list, conf_list, list_
 # Number of elicitation files
 n_elicitations = len(dict_data_list)
 # Setup plots if enabled
+fig = None
+ax = None
+fig_hist = None
+axes = None
 if PLOTS:
-    
-    # Heatmap setup (general)
     plt.ion()
-    # Create aggregated heatmap only when not running in strict mode
-    if not STRICT:
-        fig, ax = plt.subplots(figsize=(8, 6))
-        initial_data = np.zeros((n_alternatives, n_alternatives))
-        sns.heatmap(
-            initial_data.T,
-            cmap="YlGnBu",
-            ax=ax,
-            xticklabels=alternative_names,
-            yticklabels=[f"{j+1}th" for j in range(n_alternatives)],
-            vmin=0,
-            vmax=1,
-        )
-        try:
-            cbar = ax.collections[0].colorbar
-        except Exception:
-            cbar = None
-        # Ensure top and bottom margins aren't cut off by the window manager
-        try:
-            fig.tight_layout()
-            fig.subplots_adjust(top=0.95, bottom=0.08)
-        except Exception:
-            pass
-    else:
-        # aggregated heatmap disabled in strict mode
-        fig = None
-        ax = None
-
-    # Histogram setup: only create histogram figures when running in strict mode
-    if STRICT:
-        # Use 3 rows x 2 columns layout for better A4 paper compatibility
-        fig_hist, axes = plt.subplots(3, 2, figsize=(12, 10))
-        axes = axes.reshape(-1)  # Ensure axes is iterable
-        # Prevent overlapping text between stacked histograms and ensure margins
-        try:
-            fig_hist.tight_layout()
-            # Increase vertical and horizontal spacing to prevent text overlap
-            fig_hist.subplots_adjust(hspace=0.40, wspace=0.30, top=0.95, bottom=0.05, left=0.08, right=0.95)
-        except Exception:
-            pass
-    else:
-        fig_hist = None
-        axes = None
+    fig, ax = create_heatmap(alternative_names, n_alternatives, STRICT)
+    fig_hist, axes = create_histograms(n_alternatives, n_elicitations, STRICT, plot_bins)
     
 # Create csv to save results LIVE (avoids excessive memory usage)
 output_file = "./results/results.csv"
@@ -375,7 +270,23 @@ for i, r in enumerate(mc_code):
 
     # Update plots if enabled
     if PLOTS and (i % UPDATE_EVERY == 0 or i == n_runs - 1):
-        update_plots(rank_probs, distributions, i, n_runs, n_alternatives, strict=STRICT, n_elicitations=n_elicitations, lists_of_full_sets=lists_of_full_sets, rank_counts_per_el=rank_counts_per_el)
+        update_plots(
+            rank_probs,
+            distributions,
+            i,
+            n_runs,
+            n_alternatives,
+            alternative_names,
+            strict=STRICT,
+            n_elicitations=n_elicitations,
+            lists_of_full_sets=lists_of_full_sets,
+            rank_counts_per_el=rank_counts_per_el,
+            fig=fig,
+            ax=ax,
+            fig_hist=fig_hist,
+            axes=axes,
+            plot_bins=plot_bins,
+        )
 
     # Print progress to console
     if STRICT:
@@ -384,16 +295,7 @@ for i, r in enumerate(mc_code):
         print(f"[RUNNING] {i+1}/{n_runs}", end='\r', flush=True)
 
 if PLOTS:
-    # Final layout adjustments to ensure nothing is clipped, applied for both modes
-    try:
-        if 'fig' in globals() and fig is not None:
-            fig.tight_layout()
-            fig.subplots_adjust(top=0.95, bottom=0.08)
-        if 'fig_hist' in globals() and fig_hist is not None:
-            fig_hist.tight_layout()
-            fig_hist.subplots_adjust(hspace=0.40, wspace=0.30, top=0.95, bottom=0.05, left=0.08, right=0.95)
-    except Exception:
-        pass
+    finalize_layout(fig, fig_hist)
     plt.ioff()
     plt.show()
 
