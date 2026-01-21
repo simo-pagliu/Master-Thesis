@@ -25,7 +25,7 @@ import matplotlib
 # ---------------------------------------------------------------------------
 
 # Select the country to evaluate.
-COUNTRY = "IT"  # e.g. "IT", "CH", "FR", "PO"
+COUNTRY = "PO"  # e.g. "IT", "CH", "FR", "PO"
 
 # Save figures (recommended). If SHOW_PLOTS is False, we force a non-GUI backend.
 SHOW_PLOTS = False
@@ -444,6 +444,23 @@ def _is_score_like_domain(points: list[tuple[float, float]]) -> bool:
 	return (min_x >= 0.9) and (max_x <= 6.1)
 
 
+def _is_qualitative_score(meta: CriteriaMeta | None, gmeta: GlobalCriteriaMeta | None) -> bool:
+	name = None
+	if meta and meta.name:
+		name = meta.name
+	elif gmeta and gmeta.name:
+		name = gmeta.name
+	if name and name.strip().lower() == "percived safety":
+		return False
+
+	unit = None
+	if meta and meta.unit:
+		unit = meta.unit
+	elif gmeta and gmeta.unit:
+		unit = gmeta.unit
+	return unit is not None and unit.strip().lower() == "score"
+
+
 def _rescale_score_domain_to_unit_interval(points: list[tuple[float, float]]) -> list[tuple[float, float]]:
 	# Map [1, 6] -> [0, 1] via (x-1)/5.
 	scaled: list[tuple[float, float]] = []
@@ -451,6 +468,31 @@ def _rescale_score_domain_to_unit_interval(points: list[tuple[float, float]]) ->
 		scaled.append(((float(x) - 1.0) / 5.0, float(y)))
 	scaled.sort(key=lambda t: t[0])
 	return scaled
+
+
+def _extend_points_for_plateaus(points: list[tuple[float, float]], x_min: float, x_max: float) -> list[tuple[float, float]]:
+	"""Extend points with horizontal segments at 0 or 1 beyond the elicited range.
+	
+	If a value function reaches 0 or 1 before x_min or after x_max, extend it
+	horizontally to the domain boundary.
+	"""
+	if not points:
+		return points
+	
+	extended = list(points)
+	xs = [p[0] for p in points]
+	ys = [p[1] for p in points]
+	min_x, max_x = xs[0], xs[-1]
+	
+	# Check for plateau at the left boundary
+	if min_x > x_min and (ys[0] == 0.0 or ys[0] == 1.0):
+		extended.insert(0, (x_min, ys[0]))
+	
+	# Check for plateau at the right boundary
+	if max_x < x_max and (ys[-1] == 0.0 or ys[-1] == 1.0):
+		extended.append((x_max, ys[-1]))
+	
+	return sorted(extended, key=lambda t: t[0])
 
 
 def plot_value_functions(country: str) -> str:
@@ -536,6 +578,12 @@ def plot_value_functions(country: str) -> str:
 	colors = {eid: BLUE_PALETTE[i % len(BLUE_PALETTE)] for i, eid in enumerate(expert_ids_sorted)}
 
 	for crit_name in all_criteria:
+		gmeta = global_criteria.get(crit_name)
+		meta = criteria_meta.get(crit_name)
+		if _is_qualitative_score(meta, gmeta):
+			# Skip qualitative indicators from VF overlay plots.
+			continue
+
 		fig, ax = plt.subplots(figsize=FIGSIZE)
 		if hasattr(ax, "set_box_aspect"):
 			ax.set_box_aspect(1)
@@ -557,14 +605,29 @@ def plot_value_functions(country: str) -> str:
 			if crit.get("x_domain_normalized"):
 				any_score_domain_normalized = True
 
-			xs = [p[0] for p in pts]
-			ys = [p[1] for p in pts]
+		if not points_for_xlim:
+			plt.close(fig)
+			continue
+
+		meta = criteria_meta.get(crit_name)
+		x_min, x_max = _choose_xlim(meta, points_for_xlim)
+
+		# Now plot with extended points for plateaus
+		for eid in expert_ids_sorted:
+			crit = by_expert[eid].get(crit_name)
+			if not crit:
+				continue
+
+			pts = crit["points"]
+			pts_extended = _extend_points_for_plateaus(pts, x_min, x_max)
+
+			xs = [p[0] for p in pts_extended]
+			ys = [p[1] for p in pts_extended]
 
 			conf = crit.get("confidence")
 			alpha = 0.85
 			label = f"E{eid}"
 			if conf is not None:
-				# Confidence is usually 1..3
 				alpha = min(0.95, max(0.35, 0.25 + 0.2 * float(conf)))
 				if INCLUDE_CONFIDENCE_IN_LABEL:
 					label = f"E{eid}" if float(conf).is_integer() else f"E{eid}"
@@ -580,12 +643,6 @@ def plot_value_functions(country: str) -> str:
 				label=label,
 			)
 
-		if not points_for_xlim:
-			plt.close(fig)
-			continue
-
-		meta = criteria_meta.get(crit_name)
-		x_min, x_max = _choose_xlim(meta, points_for_xlim)
 		ax.set_xlim(x_min, x_max)
 		ax.set_ylim(-0.02, 1.02)
 		ax.grid(True, alpha=0.25)
@@ -622,7 +679,7 @@ def plot_value_functions(country: str) -> str:
 
 
 def plot_qualitative_rankings(country: str) -> str:
-	"""Create one ranking heatmap per qualitative indicator (Score-unit)."""
+	"""Create one value heatmap per qualitative indicator (Score-unit)."""
 
 	script_dir = os.path.dirname(os.path.abspath(__file__))
 	base_dir = script_dir
@@ -646,6 +703,8 @@ def plot_qualitative_rankings(country: str) -> str:
 
 	by_expert_vf: dict[str, dict[str, dict]] = {}
 	for expert_id, vf_path in expert_vf_paths:
+		# For rankings keep the originally elicited VFs; using alt-derived surrogates
+		# would distort rank heatmaps.
 		vf_map_raw = _load_value_functions(vf_path)
 		vf_map: dict[str, dict] = {}
 		for crit_name, payload in vf_map_raw.items():
@@ -707,48 +766,38 @@ def plot_qualitative_rankings(country: str) -> str:
 		if not alt_names:
 			continue
 
-		# Compute rank matrix: rows=alternatives, cols=experts
-		rank_matrix: list[list[float]] = []
+		# Compute value matrix: rows=alternatives, cols=experts
+		value_matrix: list[list[float]] = []
 		for alt in alt_names:
-			rank_matrix.append([float("nan")] * len(available_experts))
+			value_matrix.append([float("nan")] * len(available_experts))
 
 		for col_idx, eid in enumerate(available_experts):
 			vf = by_expert_vf[eid][crit_name]
 			points = vf["points"]
 			x_norm = bool(vf.get("x_domain_normalized"))
 
-			# Evaluate value for each alternative
-			values: list[tuple[str, float]] = []
-			for alt in alt_names:
+			for row_idx, alt in enumerate(alt_names):
 				if alt not in alt_scores_by_expert[eid][crit_name]:
 					continue
 				x = float(alt_scores_by_expert[eid][crit_name][alt])
 				if x_norm:
 					x = (x - 1.0) / 5.0
 				v = _interp_piecewise_linear(points, x)
-				values.append((alt, float(v)))
+				value_matrix[row_idx][col_idx] = float(v)
 
-			# Rank: higher value is better, and we label rank 1 as BEST.
-			# So we sort descending in value (best first).
-			values_sorted = sorted(values, key=lambda t: t[1], reverse=True)
-			ranks = {alt: (i + 1) for i, (alt, _v) in enumerate(values_sorted)}
-			for row_idx, alt in enumerate(alt_names):
-				if alt in ranks:
-					rank_matrix[row_idx][col_idx] = float(ranks[alt])
-
-		# Plot heatmap (standard layout)
+		# Plot heatmap of values (0..1)
 		fig_w = max(RANK_FIG_MIN_W, RANK_FIG_W_PER_EXPERT * len(available_experts))
 		fig_h = max(RANK_FIG_MIN_H, RANK_FIG_H_PER_ALT * len(alt_names))
 		fig, ax = plt.subplots(figsize=(fig_w, fig_h))
 
-		data = rank_matrix
+		data = value_matrix
 		im = ax.imshow(
 			data,
 			aspect="auto",
 			interpolation="nearest",
 			cmap=cmap,
-			vmin=1,
-			vmax=max(1, len(alt_names)),
+			vmin=0,
+			vmax=1,
 		)
 
 		ax.set_xticks(list(range(len(available_experts))))
@@ -757,17 +806,15 @@ def plot_qualitative_rankings(country: str) -> str:
 		ax.set_yticklabels(alt_names)
 
 		ax.set_title(f"{crit_name} — {country}")
-		# ax.set_xlabel("Expert")
-		# ax.set_ylabel("Alternative")
 
 		cbar = fig.colorbar(im, ax=ax, shrink=0.85, pad=0.02)
-		cbar.set_label("Rank (1=best)")
+		cbar.set_label("Value (0–1)")
 		cbar.ax.tick_params(labelsize=8)
 
 		fig.tight_layout()
 		base_name = _safe_filename(crit_name)
 		for fmt in SAVE_FORMATS:
-			fig.savefig(os.path.join(out_dir, f"{base_name}_ranking.{fmt}"), dpi=DPI)
+			fig.savefig(os.path.join(out_dir, f"{base_name}_values.{fmt}"), dpi=DPI)
 		if SHOW_PLOTS:
 			plt.show()
 		else:
