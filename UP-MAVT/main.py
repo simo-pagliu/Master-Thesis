@@ -47,7 +47,7 @@ selected_country = "IT"
 elicitation_numbers = [1, 2, 4]
 
 # Folders Containing quick elicitation results (only QIs)
-QI_elicitation_numbers = [3, 5, 6, 7]
+QI_elicitation_numbers = [3, 5, 6, 7, 8]
 
 # Weight space generation parameters
 required_weight_solutions = 1  # Target number of unique weight combinations
