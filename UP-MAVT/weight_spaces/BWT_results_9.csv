@@ -7,23 +7,23 @@ worst,Load following Capabilities,Net Power Output,393.0,Technical,3,14.11335250
 best,Capital Investment Budgeted,Operative + Fuel Costs,19000,Economic,3,15.763546798029575
 best,Capital Investment Budgeted,Design Complexity,14000,Economic,3,2.662229617304493
 best,Capital Investment Budgeted,Construction Complexity,14000.0,Economic,3,2.662229617304493
-worst,Operative + Fuel Costs,Design Complexity,5.456522,Economic,3,1.1218143472829636
-worst,Operative + Fuel Costs,Construction Complexity,5.15,Economic,3,1.2045725574279966
-best,Electricity Market Benefit,GHGe Benefit,24.3,Social,3,76.99414844471802
-best,Electricity Market Benefit,Percived Safety,29.6,Social,3,4.448873545218349
-best,Electricity Market Benefit,Nuclear Waste,28.4,Social,3,5.655340903949692
+worst,Operative + Fuel Costs,Design Complexity,0.8913043999999999,Economic,3,1.1219511538370057
+worst,Operative + Fuel Costs,Construction Complexity,0.8300000000000001,Economic,3,1.2048192771084336
+best,Electricity Market Benefit,GHGe Benefit,36.39795918367347,Social,3,2.016460905349794
+best,Electricity Market Benefit,Percived Safety,39.10204081632653,Social,3,1.6554054054054057
+best,Electricity Market Benefit,Nuclear Waste,38.48979591836735,Social,3,1.725352112676056
 worst,GHGe Benefit,Percived Safety,1.1,Social,3,1.0
 worst,GHGe Benefit,Nuclear Waste,26.167663,Social,3,13.970085406235503
-best,Licensing Status,Design Maturity,3.6,Feasibility,2,1.6655562958027983
-best,Licensing Status,Supplier Availbility,5.88,Feasibility,2,1.0203873390338973
-worst,Design Maturity,Supplier Availbility,5.052,Feasibility,2,1.1874256374694536
+best,Licensing Status,Design Maturity,0.52,Feasibility,2,1.923076923076923
+best,Licensing Status,Supplier Availbility,0.976,Feasibility,2,1.0245901639344261
+worst,Design Maturity,Supplier Availbility,0.8103999999999999,Feasibility,2,1.23395853899309
 best,Capital Investment Budgeted,Thermal Efficiency,19500.0,Between-groups-B,2,31.037827352085497
 best,Capital Investment Budgeted,Electricity Market Benefit,6500,Between-groups-B,2,1.1849657470838735
 best,Capital Investment Budgeted,Licensing Status,14500,Between-groups-B,2,2.903547772434444
-worst,Thermal Efficiency,Electricity Market Benefit,35.3,Between-groups-B,2,2.2097103511671694
-worst,Thermal Efficiency,Licensing Status,3.198,Between-groups-B,2,1.87453019586966
-best,Design Maturity,GHGe Benefit,1.2,Between-groups-W,2,4.9800796812749
-best,Design Maturity,Load following Capabilities,3,Between-groups-W,2,1.9980019980019983
-best,Design Maturity,Operative + Fuel Costs,4.5,Between-groups-W,2,1.332889036987671
-worst,GHGe Benefit,Load following Capabilities,0.3,Between-groups-W,2,13.982562921533146
+worst,Thermal Efficiency,Electricity Market Benefit,42.01020408163265,Between-groups-B,2,1.3881019830028332
+worst,Thermal Efficiency,Licensing Status,0.4396,Between-groups-B,2,2.2747952684258417
+best,Design Maturity,GHGe Benefit,0.039999999999999994,Between-groups-W,2,25.000000000000004
+best,Design Maturity,Load following Capabilities,0.4,Between-groups-W,2,2.5
+best,Design Maturity,Operative + Fuel Costs,0.7,Between-groups-W,2,1.4285714285714286
+worst,GHGe Benefit,Load following Capabilities,0.09467821782178218,Between-groups-W,2,44.88888888888889
 worst,GHGe Benefit,Operative + Fuel Costs,28,Between-groups-W,2,5.970149253731344
