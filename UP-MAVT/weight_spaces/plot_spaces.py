@@ -17,7 +17,7 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 UP_MAVT_DIR = os.path.dirname(SCRIPT_DIR)
 
 # Find all weight CSV files
-weight_file = glob.glob(os.path.join(SCRIPT_DIR, "BWT_results_4_weights_IT.csv"))[0]
+weight_file = glob.glob(os.path.join(SCRIPT_DIR, "BWT_results_9_weights_IT.csv"))[0]
 
 
 # Extract the elicitation number from filename
@@ -34,6 +34,7 @@ dict_data = load_criteria(criteria_file, bwt_results_file)
 # Load value functions and attach them to dict_data
 elicit_dir = os.path.join(UP_MAVT_DIR, "elicitation_results", elicit_num)
 vf_file = os.path.join(elicit_dir, "IT", "value_functions.csv")
+vf_map = {}
 
 try:
     vf_map, conf_map = load_value_functions_with_confidence(vf_file)
@@ -47,6 +48,14 @@ try:
     print(f"  Loaded value functions from {vf_file}")
 except Exception as e:
     print(f"  Warning: Could not load value functions: {e}")
+
+# Map criterion -> value function for quick lookup
+criterion_vf_map = {
+    crit_name: crit.get('value_function')
+    for group_data in dict_data.values()
+    for crit_name, crit in group_data['criteria'].items()
+    if crit.get('value_function') is not None
+}
 
 # Read all weights from the file
 # Format: each row is [criterion_name, value1, value2, value3, ...]
@@ -138,12 +147,25 @@ try:
             ref = row.get('Reference', '')
             other = row.get('Other', '')
             group = row.get('Group', '')
+            crit_for_value = ref if comp_type == 'best' else other
 
-            # Get declared ratio (a value)
-            try:
-                a_val = float(row.get('a', 0))
-            except Exception:
-                continue
+            # Recompute declared ratio using the elicited datapoint and its value function
+            a_val = None
+            vf = criterion_vf_map.get(crit_for_value)
+            value_raw = row.get('Value')
+            if vf is not None and value_raw is not None:
+                try:
+                    vf_val = float(vf(float(value_raw)))
+                    if vf_val <= 0.0:
+                        vf_val = 0.001
+                    a_val = 1.0 / vf_val
+                except Exception:
+                    a_val = None
+            if a_val is None:
+                try:
+                    a_val = float(row.get('a', 0))
+                except Exception:
+                    continue
 
             if ref not in crit_index_map or other not in crit_index_map:
                 continue
