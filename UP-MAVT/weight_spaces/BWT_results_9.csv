@@ -1,0 +1,29 @@
+Type,Reference,Other,Value,Group,Confidence,a
+best,Thermal Efficiency,Load following Capabilities,30.8,Technical,3,1000.0
+best,Thermal Efficiency,Discharge Burnup,31.58,Technical,3,1000.0
+best,Thermal Efficiency,Net Power Output,32.46,Technical,3,1000.0
+worst,Load following Capabilities,Discharge Burnup,46.5,Technical,3,1000.0
+worst,Load following Capabilities,Net Power Output,300.0,Technical,3,1000.0
+best,Capital Investment Budgeted,Operative + Fuel Costs,18521.73913,Economic,3,10.71823847768759
+best,Capital Investment Budgeted,Design Complexity,13826.086957,Economic,3,2.5874312715567713
+best,Capital Investment Budgeted,Construction Complexity,14000.0,Economic,3,2.662229617304493
+worst,Operative + Fuel Costs,Design Complexity,5.470109,Economic,3,9.886366205695396
+worst,Operative + Fuel Costs,Construction Complexity,5.157609,Economic,3,4.986450318549405
+best,Electricity Market Benefit,GHGe Benefit,0.0,Social,3,1000.0
+best,Electricity Market Benefit,Percived Safety,29.6,Social,3,4.448873545218349
+best,Electricity Market Benefit,Nuclear Waste,28.4,Social,3,5.655340903949692
+worst,GHGe Benefit,Percived Safety,0.0,Social,3,1000.0
+worst,GHGe Benefit,Nuclear Waste,5.9,Social,3,522.1238938053041
+best,Licensing Status,Design Maturity,3.6,Feasibility,2,8.064516129032258
+best,Licensing Status,Supplier Availbility,5.88,Feasibility,2,1.1067823623162742
+worst,Design Maturity,Supplier Availbility,5.05,Feasibility,2,1.2484394506866419
+best,Capital Investment Budgeted,Thermal Efficiency,15043.478261,Between-groups-B,2,3.220893798113441
+best,Capital Investment Budgeted,Electricity Market Benefit,6434.782609,Between-groups-B,2,1.1792755146776435
+best,Capital Investment Budgeted,Licensing Status,14782.608696,Between-groups-B,2,3.060341960152837
+worst,Thermal Efficiency,Electricity Market Benefit,31.8,Between-groups-B,2,3.1980760374558663
+worst,Thermal Efficiency,Licensing Status,4.7,Between-groups-B,2,3.1928480204342273
+best,Design Maturity,GHGe Benefit,1.0,Between-groups-W,2,1000.0
+best,Design Maturity,Load following Capabilities,3.0,Between-groups-W,2,10.0
+best,Design Maturity,Operative + Fuel Costs,4.5,Between-groups-W,2,1.6
+worst,GHGe Benefit,Load following Capabilities,0.21,Between-groups-W,2,19.856101663240516
+worst,GHGe Benefit,Operative + Fuel Costs,29.25,Between-groups-W,2,15.763546798029575
