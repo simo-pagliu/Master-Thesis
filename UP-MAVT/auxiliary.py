@@ -1234,11 +1234,21 @@ def convert_qualitative_indicators_in_folders(folder_numbers):
                 criteria_rows = list(reader)
 
             if criteria_fieldnames is not None:
-                # for crit_row in criteria_rows:
-                #     if crit_row.get('name') in qualitative_indicators:
-                #         crit_row['min'] = '0'
-                #         crit_row['max'] = '1'
-                #         crit_row['type'] = 'positive'
+                # Normalize qualitative indicators to 0-1 domain and set type polarity
+                for crit_row in criteria_rows:
+                    name = (crit_row.get('name') or '').strip()
+                    if name in qualitative_indicators:
+                        # All qualitative indicators are converted to 0..1 scale
+                        crit_row['min'] = '0'
+                        crit_row['max'] = '1'
+                        # Polarity: keep negative for complexity, positive otherwise
+                        if name in ('Design Complexity', 'Construction Complexity'):
+                            crit_row['type'] = 'negative'
+                        else:
+                            crit_row['type'] = 'positive'
+                    # Fix known polarity for non-qualitative criteria
+                    if name == 'Nuclear Waste':
+                        crit_row['type'] = 'negative'
 
                 with open(criteria_file, 'w', newline='') as f:
                     writer = csv.DictWriter(f, fieldnames=criteria_fieldnames)
