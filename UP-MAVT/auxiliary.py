@@ -1246,9 +1246,6 @@ def convert_qualitative_indicators_in_folders(folder_numbers):
                             crit_row['type'] = 'negative'
                         else:
                             crit_row['type'] = 'positive'
-                    # Fix known polarity for non-qualitative criteria
-                    if name == 'Nuclear Waste':
-                        crit_row['type'] = 'negative'
 
                 with open(criteria_file, 'w', newline='') as f:
                     writer = csv.DictWriter(f, fieldnames=criteria_fieldnames)
