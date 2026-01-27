@@ -22,8 +22,8 @@ best,Capital Investment Budgeted,Electricity Market Benefit,6500,Between-groups-
 best,Capital Investment Budgeted,Licensing Status,14500,Between-groups-B,2,2.903547772434444
 worst,Thermal Efficiency,Electricity Market Benefit,42.01020408163265,Between-groups-B,2,1.3881019830028332
 worst,Thermal Efficiency,Licensing Status,2.6376,Between-groups-B,2,2.2747952684258417
-best,Design Maturity,GHGe Benefit,1.44,Between-groups-W,2,25.000000000000004
+best,Design Maturity,GHGe Benefit,1.8,Between-groups-W,2,25.000000000000004
 best,Design Maturity,Load following Capabilities,2.4,Between-groups-W,2,2.5
 best,Design Maturity,Operative + Fuel Costs,4.2,Between-groups-W,2,1.4285714285714286
-worst,GHGe Benefit,Load following Capabilities,0.3,Between-groups-W,2,44.88888888888889
+worst,GHGe Benefit,Load following Capabilities,1.2,Between-groups-W,2,44.88888888888889
 worst,GHGe Benefit,Operative + Fuel Costs,28,Between-groups-W,2,5.970149253731344

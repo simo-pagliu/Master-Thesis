@@ -19,6 +19,8 @@ UP_MAVT_DIR = os.path.dirname(SCRIPT_DIR)
 # Configuration
 ELICITATIONS = [1, 2, 4, 9]
 COUNTRIES = ["IT", "FR", "CH", "PO"]
+ELICITATIONS = [9]  # TESTING ONLY
+COUNTRIES = ["CH"]
 
 # Main loop over all countries and elicitations
 for elicit_num in ELICITATIONS:
