@@ -270,10 +270,10 @@ def remap_bwt_results_for_country(
             continue
 
         t = (x_old - float(src_lo)) / src_span
-        if t < 0.0:
-            t = 0.0
-        if t > 1.0:
-            t = 1.0
+        
+        # Warn if value is outside the source range (but allow extrapolation)
+        if t < 0.0 or t > 1.0:
+            print(f"  ⚠ Warning: Value {x_old} for '{crit_for_value}' is outside source range [{src_lo}, {src_hi}] (extrapolating)")
 
         x_new = float(tgt_lo + t * tgt_span)
         row['Value'] = str(float(x_new))

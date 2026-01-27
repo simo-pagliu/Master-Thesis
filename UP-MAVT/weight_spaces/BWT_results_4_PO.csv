@@ -1,0 +1,29 @@
+Type,Reference,Other,Value,Group,Confidence,a
+best,Thermal Efficiency,Load following Capabilities,32.95,Technical,2,2.4939393094992597
+best,Thermal Efficiency,Discharge Burnup,34.56,Technical,2,1.4275802116646856
+best,Thermal Efficiency,Net Power Output,35.63,Technical,1,1.111676955371449
+worst,Load following Capabilities,Discharge Burnup,50.28,Technical,2,2.24587287831068
+worst,Load following Capabilities,Net Power Output,659.0,Technical,2,1.9480103856782278
+best,Capital Investment Budgeted,Operative + Fuel Costs,11000.0,Economic,2,5.326231691078562
+best,Capital Investment Budgeted,Design Complexity,10000.0,Economic,2,4.0
+best,Capital Investment Budgeted,Construction Complexity,7000.0,Economic,2,1.6
+worst,Operative + Fuel Costs,Design Complexity,0.7554348,Economic,3,1.3237409767196322
+worst,Operative + Fuel Costs,Construction Complexity,0.48,Economic,3,2.0833333333333335
+best,Electricity Market Benefit,Nuclear Waste,14.275510204081632,Social,3,19.60000000000001
+best,Electricity Market Benefit,Percived Safety,15.142857142857142,Social,3,11.66666666666667
+best,Electricity Market Benefit,GHGe Benefit,18.10204081632653,Social,3,4.900000000000002
+worst,Nuclear Waste,Percived Safety,0.4,Social,3,3.3266799733865597
+worst,Nuclear Waste,GHGe Benefit,2.7077500276273625,Social,2,7.130811662726553
+best,Design Maturity,Supplier Availbility,0.5559999999999999,Feasibility,2,1.7985611510791368
+best,Design Maturity,Licensing Status,0.756,Feasibility,3,1.3227513227513228
+worst,Supplier Availbility,Licensing Status,0.8560000000000001,Feasibility,2,1.1682242990654204
+best,Capital Investment Budgeted,Thermal Efficiency,13000.0,Between-groups-B,3,15.810276679841897
+best,Capital Investment Budgeted,Electricity Market Benefit,5600.0,Between-groups-B,3,1.25
+best,Capital Investment Budgeted,Design Maturity,8000.0,Between-groups-B,3,2.0
+worst,Thermal Efficiency,Electricity Market Benefit,14.73469387755102,Between-groups-B,2,14.411764705882353
+worst,Thermal Efficiency,Design Maturity,0.15,Between-groups-B,3,6.666666666666667
+best,Supplier Availbility,Load following Capabilities,0.16,Between-groups-W,2,6.25
+best,Supplier Availbility,Operative + Fuel Costs,0.776,Between-groups-W,2,1.2886597938144329
+best,Supplier Availbility,Nuclear Waste,0.346,Between-groups-W,2,2.8901734104046244
+worst,Load following Capabilities,Operative + Fuel Costs,23.61,Between-groups-W,2,3.347280334728033
+worst,Load following Capabilities,Nuclear Waste,18.57462,Between-groups-W,2,3.869968515937786

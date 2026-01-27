@@ -9,9 +9,9 @@ best,Capital Investment Budgeted,Design Complexity,14000,Economic,3,2.6622296173
 best,Capital Investment Budgeted,Construction Complexity,14000.0,Economic,3,2.662229617304493
 worst,Operative + Fuel Costs,Design Complexity,0.8694000000000001,Economic,3,1.1502185415228892
 worst,Operative + Fuel Costs,Construction Complexity,0.796,Economic,3,1.2562814070351758
-best,Electricity Market Benefit,GHGe Benefit,42.57038733860891,Social,3,1.3462293243622094
-best,Electricity Market Benefit,Percived Safety,43.95002082465639,Social,3,1.2531315240083507
-best,Electricity Market Benefit,Nuclear Waste,43.637650978758856,Social,3,1.2730646871686104
+best,Electricity Market Benefit,GHGe Benefit,15.428154935443565,Social,3,1.3462293243622092
+best,Electricity Market Benefit,Percived Safety,15.980008329862557,Social,3,1.2531315240083507
+best,Electricity Market Benefit,Nuclear Waste,15.85506039150354,Social,3,1.2730646871686107
 worst,GHGe Benefit,Percived Safety,1.1,Social,3,1.0
 worst,GHGe Benefit,Nuclear Waste,26.167663,Social,3,13.970085406235503
 best,Licensing Status,Design Maturity,0.42000000000000004,Feasibility,2,2.380952380952381
@@ -20,7 +20,7 @@ worst,Design Maturity,Supplier Availbility,0.7724,Feasibility,2,1.29466597617814
 best,Capital Investment Budgeted,Thermal Efficiency,19500.0,Between-groups-B,2,31.037827352085497
 best,Capital Investment Budgeted,Electricity Market Benefit,6500,Between-groups-B,2,1.1849657470838735
 best,Capital Investment Budgeted,Licensing Status,14500,Between-groups-B,2,2.903547772434444
-worst,Thermal Efficiency,Electricity Market Benefit,45.43377759266972,Between-groups-B,2,1.166383288802526
+worst,Thermal Efficiency,Electricity Market Benefit,16.573511037067888,Between-groups-B,2,1.166383288802526
 worst,Thermal Efficiency,Licensing Status,0.32752,Between-groups-B,2,3.053248656570591
 best,Design Maturity,GHGe Benefit,0.088,Between-groups-W,2,11.363636363636365
 best,Design Maturity,Load following Capabilities,0.27999999999999997,Between-groups-W,2,3.5714285714285716

@@ -65,11 +65,12 @@ opinion_weights = np.ones(len(elicitation_numbers))/len(elicitation_numbers)  # 
 if RANDOM_WEIGHT_ANALYSIS:
     STRICT = False  # Disable strict mode when running random weight analysis
 
-# Convert qualitative indicators (and update criteria.csv accordingly) before loading criteria files
+# NOTE: Automatic conversion disabled - criteria.csv must be manually prepared
 folders_to_convert = sorted(set(elicitation_numbers + (QI_elicitation_numbers or [])))
 if folders_to_convert:
-    print(f"Converting QIs to 0-1 scale in: {folders_to_convert}")
-    convert_qualitative_indicators_in_folders(folders_to_convert)
+    print(f"⚠ Warning: Ensure qualitative indicators are properly converted in: {folders_to_convert}")
+    print(f"⚠ Warning: criteria.csv files should be manually prepared if needed")
+    # convert_qualitative_indicators_in_folders(folders_to_convert)  # Disabled
 
 #################################################################################
 # Load and verify criteria from elicitation results
@@ -103,9 +104,13 @@ criteria_dfs = [load_criteria_file(path) for path in elicitation_criteria_paths]
 criteria_verified = verify_criteria_consistency(criteria_dfs)
 print(f"✓ All criteria files are consistent. Using common criteria with {len(criteria_verified)} criteria.")
 
-# Create a temporary criteria.csv file in SCRIPT_DIR for the startup function
+# Use or create criteria.csv in SCRIPT_DIR
 file_path_criteria = os.path.join(SCRIPT_DIR, "criteria.csv")
-criteria_verified.to_csv(file_path_criteria, index=False)
+if os.path.exists(file_path_criteria):
+    print(f"⚠ Using existing criteria.csv (not overwriting manual changes)")
+else:
+    print(f"Creating new criteria.csv from elicitation data")
+    criteria_verified.to_csv(file_path_criteria, index=False)
 
 print(f"Combining alternatives for {selected_country} from {len(elicitation_numbers)} elicitation(s)...")
 elicitation_dirs = [os.path.join(SCRIPT_DIR, "elicitation_results", str(num)) for num in elicitation_numbers]
