@@ -32,12 +32,10 @@ from pile_bwt import bwt, constraints_func, define_weight_spaces
 # USER INPUTS
 # Countries to process
 COUNTRIES = ["IT", "FR", "CH", "PO"]
-COUNTRIES = ["CH"]  # TESTING ONLY
 
 
 # Elicitation run numbers (folders containing results)
 elicitation_numbers = [1, 2, 4, 9]
-elicitation_numbers = [9]  # TESTING ONLY
 
 # Folders Containing quick elicitation results (only QIs)
 QI_elicitation_numbers = [3, 5, 6, 7, 8]

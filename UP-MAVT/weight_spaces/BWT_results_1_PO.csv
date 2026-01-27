@@ -10,20 +10,20 @@ worst,Licensing Status,Supplier Availbility,0.976,Feasibility,2,1.02459016393442
 best,Load following Capabilities,Discharge Burnup,0.3997524752475248,Technical,2,10.631578947368421
 best,Load following Capabilities,Net Power Output,3.3137376237623766,Technical,2,1.2825396825396824
 best,Load following Capabilities,Thermal Efficiency,0.4418316831683169,Technical,2,9.619047619047619
-worst,Discharge Burnup,Net Power Output,892.0,Technical,2,1.5761931782359246
-worst,Discharge Burnup,Thermal Efficiency,32.52,Technical,2,3.115481681315808
+worst,Discharge Burnup,Net Power Output,892.0,Technical,2,2.2466216216216215
+worst,Discharge Burnup,Thermal Efficiency,32.52,Technical,2,3.12209302325581
 best,Percived Safety,Electricity Market Benefit,1.59,Social,2,1.1142061281337048
 best,Percived Safety,GHGe Benefit,1.56,Social,2,1.1235955056179776
-best,Percived Safety,Nuclear Waste,0.76,Social,2,1.7536475869809205
+best,Percived Safety,Nuclear Waste,0.76,Social,2,1.7543859649122806
 worst,Nuclear Waste,Electricity Market Benefit,38.0,Social,2,1.0
 worst,Nuclear Waste,GHGe Benefit,3.779028621947177,Social,2,3.508724311748739
 best,Percived Safety,Capital Investment Budgeted,1.61,Between-groups-B,2,1.1080332409972298
 best,Percived Safety,Design Maturity,1.56,Between-groups-B,2,1.1235955056179776
-best,Percived Safety,Load following Capabilities,0.78,Between-groups-B,2,1.7087590991422028
+best,Percived Safety,Load following Capabilities,0.78,Between-groups-B,2,1.7094017094017095
 worst,Load following Capabilities,Capital Investment Budgeted,6217.391304,Between-groups-B,2,1.3834586465333256
 worst,Load following Capabilities,Design Maturity,0.6859999999999999,Between-groups-B,2,1.457725947521866
 best,Licensing Status,Operative + Fuel Costs,0.166,Between-groups-W,2,6.024096385542168
 best,Licensing Status,Discharge Burnup,0.10400000000000001,Between-groups-W,2,9.615384615384615
 best,Licensing Status,Nuclear Waste,0.11600000000000002,Between-groups-W,2,8.620689655172413
-worst,Discharge Burnup,Operative + Fuel Costs,26.380435,Between-groups-W,2,6.174497473086904
-worst,Discharge Burnup,Nuclear Waste,24.684647,Between-groups-W,2,7.171113500482904
+worst,Discharge Burnup,Operative + Fuel Costs,26.380435,Between-groups-W,2,6.630631028866726
+worst,Discharge Burnup,Nuclear Waste,24.684647,Between-groups-W,2,7.215686896702629

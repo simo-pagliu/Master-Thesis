@@ -260,24 +260,28 @@ def remap_bwt_results_for_country(
                 if not (np.isclose(float(src_lo), float(c_lo), atol=1e-9) and np.isclose(float(src_hi), float(c_hi), atol=1e-9)):
                     tgt_lo, tgt_hi = float(c_lo), float(c_hi)
                     do_remap = True
+            else:
+                # Country range doesn't exist, use source range
+                tgt_lo, tgt_hi = float(src_lo), float(src_hi)
 
-        if not do_remap:
-            continue
+        # Even if ranges are the same, always recalculate 'a' using the country's value function
+        x_new = x_old
+        if do_remap:
+            src_span = float(src_hi) - float(src_lo)
+            tgt_span = float(tgt_hi) - float(tgt_lo)
+            if abs(src_span) <= 1e-12 or abs(tgt_span) <= 1e-12:
+                continue
 
-        src_span = float(src_hi) - float(src_lo)
-        tgt_span = float(tgt_hi) - float(tgt_lo)
-        if abs(src_span) <= 1e-12 or abs(tgt_span) <= 1e-12:
-            continue
+            t = (x_old - float(src_lo)) / src_span
+            
+            # Warn if value is outside the source range (but allow extrapolation)
+            if t < 0.0 or t > 1.0:
+                print(f"  ⚠ Warning: Value {x_old} for '{crit_for_value}' is outside source range [{src_lo}, {src_hi}] (extrapolating)")
 
-        t = (x_old - float(src_lo)) / src_span
-        
-        # Warn if value is outside the source range (but allow extrapolation)
-        if t < 0.0 or t > 1.0:
-            print(f"  ⚠ Warning: Value {x_old} for '{crit_for_value}' is outside source range [{src_lo}, {src_hi}] (extrapolating)")
+            x_new = float(tgt_lo + t * tgt_span)
+            row['Value'] = str(float(x_new))
 
-        x_new = float(tgt_lo + t * tgt_span)
-        row['Value'] = str(float(x_new))
-
+        # Always recalculate 'a' using the country's value function
         try:
             vf_val = float(_eval_piecewise(pts, x_new))
         except Exception:

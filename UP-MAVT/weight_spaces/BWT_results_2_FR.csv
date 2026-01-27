@@ -1,9 +1,9 @@
 Type,Reference,Other,Value,Group,Confidence,a
-best,Thermal Efficiency,Discharge Burnup,33.48,Technical,2,2.0017221520190587
-best,Thermal Efficiency,Load following Capabilities,32.50,Technical,2,3.149666172106817
+best,Thermal Efficiency,Discharge Burnup,33.48,Technical,2,2.0037313432835853
+best,Thermal Efficiency,Load following Capabilities,32.50,Technical,2,3.1588235294117664
 best,Thermal Efficiency,Net Power Output,36.17,Technical,2,1.0
-worst,Load following Capabilities,Discharge Burnup,49.35,Technical,2,2.9765552501181856
-worst,Load following Capabilities,Net Power Output,805.0,Technical,2,1.8472337674332686
+worst,Load following Capabilities,Discharge Burnup,49.35,Technical,2,2.982456140350876
+worst,Load following Capabilities,Net Power Output,805.0,Technical,2,2.633663366336634
 best,Capital Investment Budgeted,Operative + Fuel Costs,7200.0,Economic,2,1.6666666666666667
 best,Capital Investment Budgeted,Design Complexity,5600.0,Economic,2,1.25
 best,Capital Investment Budgeted,Construction Complexity,7200.0,Economic,2,1.6666666666666667
@@ -22,8 +22,8 @@ best,Design Maturity,Capital Investment Budgeted,1.0,Between-groups-B,2,1.0
 best,Design Maturity,Electricity Market Benefit,0.5,Between-groups-B,2,2.0
 worst,Thermal Efficiency,Capital Investment Budgeted,5000.0,Between-groups-B,2,1.1428571428571428
 worst,Thermal Efficiency,Electricity Market Benefit,36.0,Between-groups-B,2,2.081078831266128
-best,Nuclear Waste,Load following Capabilities,14.612,Between-groups-W,2,1.665556295802798
-best,Nuclear Waste,Operative + Fuel Costs,18.978,Between-groups-W,2,2.4962556165751377
-best,Nuclear Waste,Supplier Availbility,22.133859,Between-groups-W,2,3.903515497456043
+best,Nuclear Waste,Load following Capabilities,14.612,Between-groups-W,2,1.6666666666666665
+best,Nuclear Waste,Operative + Fuel Costs,18.978,Between-groups-W,2,2.5000000000000004
+best,Nuclear Waste,Supplier Availbility,22.133859,Between-groups-W,2,3.9148938306976104
 worst,Supplier Availbility,Load following Capabilities,2.01980198019802,Between-groups-W,2,2.104166666666667
-worst,Supplier Availbility,Operative + Fuel Costs,26.19,Between-groups-W,2,3.3264033264033275
+worst,Supplier Availbility,Operative + Fuel Costs,26.19,Between-groups-W,2,6.299212598425199
