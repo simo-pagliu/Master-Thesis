@@ -16,6 +16,28 @@ This is partially a consequence of the criterion “Net Power Output” which wa
 \subsubsection{Aggregation Methodos}
 Figure~\ref{fig:random_weights_italy} presents ranking heatmaps for Italy across three aggregation approaches (weighted sum, geometric mean, and harmonic mean in panels a, b, and c respectively). The results reveal persistent dominance of large reactor alternatives (particularly \gls{epr} and \gls{ap}) across all aggregation methods. A clear difference between fully compensatory (weighted sum) and partially compensatory (geometric and harmonic mean) approaches is also evident. The \gls{epr} design ranks at a solid first-place under full compensation but drops to second position with partial compensation methods. 
 
+Table~\ref{tab:aggregation_comparison} presents the modal rankings for each reactor alternative across the three aggregation approaches in the case of Italy. The \gls{epr} and \gls{ap} exhibit sensitive ranking to the aggregation method: the \gls{epr} secures first position under fully compensatory \gls{sum} aggregation but drops to second under both partially compensatory methods, in favour of the \gls{ap}. The \gls{apr} maintains remarkable stability at third position regardless of aggregation method, while the Rolls-Royce \gls{smr} fluctuates between third and fourth places. Both smaller \glspl{smr} (\gls{bwr} and NuScale) consistently occupy the lowest ranks (5th--6th), with minor positional exchange between methods.
+
+
+
+\begin{table}[htbp]
+\centering
+\caption{Modal rankings for reactor alternatives under different aggregation methods (Italy, random weight sampling, 2000 iterations).}
+\label{tab:aggregation_comparison}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Alternative} & \textbf{Weighted Sum} & \textbf{Geometric Mean} & \textbf{Harmonic Mean} \\
+\midrule
+\gls{epr}       & 1 & 2 & 2 \\
+\gls{ap}        & 2 & 1 & 1 \\
+\gls{apr}       & 3 & 3 & 3 \\
+Rolls-Royce SMR & 4 & 3 & 4 \\
+\gls{bwrx}      & 6 & 5 & 6 \\
+NuScale         & 5 & 6 & 5 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 This behaviour is a logical consequence of its excellent technical performance (such as efficiency or discharge burnup) being offset by poor scores in criteria that receive high weights (capital cost, construction complexity). The author believes that in this case, fully compensatory methods overstate the \gls{epr} advantages and that partially compensatory methods better represent the opinions that were expressed during the expert interviews. For this reason, the final discussion will take into account partially compensatory results, in particular the \gls{geo} method which presents less dominance in the heatmaps.
 
 \subsection{Weight Elicitation and Consistency Analysis}
@@ -61,6 +83,8 @@ Among large reactor options, the \gls{apr} design received the least favour due 
 \end{itemize}
 
 This pattern underscores how real-world feasibility considerations fundamentally shape technical preferences in expert judgments.
+
+Subtle national variations emerge in the lower rankings: Italy and Poland both favor the Rolls-Royce \gls{smr}, while France and Switzerland demonstrate preference for the \gls{bwrx} design. Particularly notable is the case of Switzerland where the \gls{bwrx} shares third position with the \gls{apr} design. These country-specific differences remain confined to secondary alternatives and exhibit limited magnitude, suggesting consistent preferences across Western European contexts.
 
 \subsubsection{System-Level Considerations and Strategic Recommendations}
 
