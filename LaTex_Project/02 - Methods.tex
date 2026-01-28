@@ -1,5 +1,5 @@
 \label{sec:methodology}
-As presented in the literature review (Section \ref{sec:decision_support}), several \gls{mcda} methodologies exist, requiring, firstly, a choice between outranking and value-based approaches. Outranking methods were discarded for this analysis on the basis that no clear non-compensatory dynamics were evident in the decision context.
+As presented in the Section \ref{sec:decision_support}, several \gls{mcda} methodologies exist, requiring, firstly, a choice between outranking and value-based approaches. Outranking methods were discarded for this analysis on the basis that no clear non-compensatory dynamics were evident in the decision context.
 
 Among American school methods, \gls{mavt} emerged as particularly suitable thanks to its value functions which offer significant advantages for capturing potential non-linearity in indicator values across their data ranges, a characteristic expected for economic and social criteria. While this method was previously introduced in Section \ref{sec:decision_support}, the following paragraphs provide a detailed explanation.
 
@@ -32,7 +32,7 @@ Among American school methods, \gls{mavt} emerged as particularly suitable thank
 
 \section{Applying MAVT to choose a Reactor}
 \label{sec:mavt_presentation}
-\acrlong{mavt}, first presented by Keeney in 1996, is a value-focused approach to decision-making that centres its analytical process on the core values and objectives of the \gls{dm}  rather than on the available alternatives $A_i$. This allows \glspl{dm} to explicitly define their \textit{fundamental objectives} (what they seek to achieve) rather than \textit{means objectives} (how those objectives will be achieved) \cite{KEENEY1996537}. Preferences are modelled across performance ranges by means of value functions, $v_j(x)$ which are able to capture both linear and non-linear importance relationships between criterion values. Once the values of each criterion $C_j$ is established, criteria are aggregated based on weights $w_j$ that convey the relative importance among them. The explicit nature of both value functions and weights make \gls{mavt} a particularly transparent decision analysis method, which is especially valuable for research applications.
+\acrlong{mavt}, first presented by Keeney in 1996, is a value-focused approach to decision-making that centres its analytical process on the core values and objectives of the \gls{dm}  rather than on the available alternatives $A_i$. This allows \glspl{dm} to explicitly define their \textit{fundamental objectives} (what they seek to achieve) rather than \textit{means objectives} (how those objectives will be achieved) \cite{KEENEY1996537}. Preferences are modelled across performance ranges by means of value functions, $v_j(x)$ which are able to capture both linear and non-linear importance relationships between criterion values. Once the values of each criterion $C_j$ are established, the criteria are aggregated based on weights $w_j$ that convey the relative importance among them. The explicit nature of both value functions and weights make \gls{mavt} a particularly transparent decision analysis method, which is especially valuable for research applications.
 
 The first methodological step requires \textbf{establishing indicators and their hierarchical structure}. Morton and Fasolo (2009) identify two traditional approaches: top-down and bottom-up \cite{Morton01022009}. The top-down approach begins with macro-level objectives that are subsequently decomposed into lower-level objectives through the guiding question "How can we achieve this?". On the other hand, the bottom-up approach, which is employed in the present study, starts with low-level objectives derived by comparing alternatives $A_i$, asking: "What differentiates these alternatives?". Higher-level objectives are then constructed by aggregating similar indicators.
 
@@ -48,10 +48,14 @@ Morton and Fasolo also note that top-down structuring tends to produce general v
 \end{figure}
 
 
-This study employs the mid-value splitting technique for value function elicitation, originally developed by Keeney and Raiffa (1975) \cite{Keeney_Raiffa_1975}. While the original study provides the fundamentals of the method, it offers limited guidance on elicitation of value function shapes. The technique is focused on identifying \textbf{indifference points} which, in general terms, are a point $P$ in the data range of the criterion $C$ such that the improvement from a lower bound $A$ to point $P$ is indifferent to the improvement from $P$ to an upper bound $B$.
+This study employs the mid-value splitting technique for value function elicitation, originally developed by Keeney and Raiffa \cite{Keeney_Raiffa_1975}.
+While the original study provides the fundamentals of the method, it offers limited guidance on elicitation of value function shapes. The technique is focused on identifying \textbf{indifference points} which, in general terms, are a point $P$ in the data range of the criterion $C$ such that the improvement from a lower bound $A$ to point $P$ is indifferent to the improvement from $P$ to an upper bound $B$.
 
 The elicitation process begins by determining the 0.5 indifference point between the criterion's minimum and maximum values, effectively dividing the range into two segments of equivalent perceived value. This procedure is then applied to each resulting segment to establish the 0.25 and 0.75 indifference points. To ensure systematic application, a flowchart was developed to guide the elicitation process (Figure \ref{fig:value_function_flowchart}). In principle, the methodology could allow experienced \glspl{dm} familiar with value function concepts to bypass indifference point elicitation when linearity can be confidently established. Moreover, to ease the work of \glspl{dm}, it is recommended to begin with a straightforward example criterion to familiarize participants with the both the method and any aid that might be employed in the elicitation process.
 
+The primary limitation of mid-value splitting lies in its time-intensive nature. To mitigate this, the current study implemented a staged approach: the initial expert (whose results will be referred to as "first elicitation") performed complete value function elicitation, while subsequent specialists reviewed and modified this baseline. This methodology rests on the reasonable assumption that the fundamental shape of a value function remains stable across experts, necessitating only minor adjustments to the established curve.
+
+\River{You should mention here this is a revised mid-value splitting that we developed in this study.}
 
 \begin{figure}[p]
 \centering
@@ -59,8 +63,8 @@ The elicitation process begins by determining the 0.5 indifference point between
 \caption{Value Function Elicitation Flowchart}
 \label{fig:value_function_flowchart}
 \end{figure}
-
-\textbf{Aggregation} within a fully compensatory framework, is typically performed using weighted summation (Equation \ref{eq:linear_aggregation}). The need to explore non-fully compensatory scenarios led to the development of alternative approaches employing non-linear aggregation techniques (for a comprehensive description of aggregation methods, see \cite{beliakov2007aggregation}). For the \gls{mcda} application of the present study the work by Langhans et al. (2014) \cite{LANGHANS2014494} and its implementation in the \gls{mcda} calculator tool \cite{PLACEHOLDER} will be used as a reference, which includes the following aggregation methods:
+\River{Unfortunately the text in the figure is still too small. Try to improve it.}
+\textbf{Aggregation} within a fully compensatory framework, is typically performed using weighted summation (Equation \ref{eq:linear_aggregation}). The need to explore non-fully compensatory scenarios led to the development of alternative approaches employing non-linear aggregation techniques (for a comprehensive description of aggregation methods, see \cite{beliakov2007aggregation}). For the \gls{mcda} application of the present study, the work by Langhans et al. (2014) \cite{LANGHANS2014494} and its implementation in the \gls{mcda} calculator tool \cite{PLACEHOLDER} will be used as a reference, which includes the following aggregation methods:
 \begin{itemize}
     \item Fully compensatory: \gls{sum} (equation \ref{eq:linear_aggregation})
     \item Partially compensatory: \gls{geo} (equation \ref{eq:geo_aggregation}) and \gls{har} (equation \ref{eq:har_aggregation})
@@ -103,15 +107,17 @@ Equations \ref{eq:linear_aggregation}, \ref{eq:geo_aggregation} and \ref{eq:har_
 
 \textbf{Elicitation of weights} in \gls{mcda} varies according to methodological choices. While survey-based approaches using direct elicitation methods (e.g., ranking criteria or expressing judgments) offer simplicity and intuitiveness for public participation, they face significant criticism from experts. Morton and Fasolo (2009) \cite{Morton01022009} highlight fundamental concerns: \textit{"People's ability to understand and respond to direct importance questions baffles us. Both of us regard such questions as meaningless and refuse to answer them. It could be that our intuitions have been destroyed by our atypically extensive exposure to DA"}. Reichert et al. (2015) \cite{REICHERT2015316} recommend a differentiated approach: technical criteria should be weighted through expert elicitation, while higher-level objectives reflecting major societal trade-offs may incorporate population or stakeholder opinions.
 
-Sophisticated methods like swing elicitation \cite{Goodwin_Wright_2004}, present challenges for public comprehension. Aubert et al. (2020) \cite{AUBERT2020100156} demonstrated this limitation when approximately 73\% of general public respondents failed to correctly understand the swing elicitation method in their study (later utilized by Haag et al., 2022 \cite{HAAG2022105361}) \footnote{Swing elicitation is an indirect weighting method that evaluates the relative importance of improvements between worst and best-case scenarios for different criteria. For example: \textit{"On a scale from 1 to 10, how much more important is increasing your salary from €1,200 (minimum wage) to €1,800 (market maximum) compared to increasing annual paid leave from 4 weeks (legal minimum) to 12 weeks (market maximum)?"}}.
+Sophisticated methods like swing elicitation \cite{Goodwin_Wright_2004}, present challenges for public comprehension. Aubert et al. (2020) \cite{AUBERT2020100156} demonstrated this limitation when approximately 73\% of general public respondents failed to correctly understand the swing elicitation method in their study (later utilized by Haag et al., 2022 \cite{HAAG2022105361}). This indirect weighting technique evaluates the relative importance of improvements between worst and best-case scenarios for different criteria. For example: \textit{"On a scale from 1 to 10, how much more important is increasing your salary from €1,200 (minimum wage) to €1,800 (market maximum) compared to increasing annual paid leave from 4 weeks (legal minimum) to 12 weeks (market maximum)?"}.
 
-Rezaei (2015) proposed the \gls{bwm} which first identifies the most and the least important criteria to then perform pairwise comparisons between these two reference criteria against all others \cite{REZAEI201549}. This method reduces the number of evaluation required: given $n$ criteria to evaluate, only $2n-3$ pairwise comparisons are needed, against the $\frac{n(n-1)}{2}$ available unique pairs. Another significant advantage is that by employing two reference criteria rather than one, the method mitigates anchoring bias, which is the tendency for importance judgments to be influenced by the chosen reference point. Moreover, \gls{bwm} allows for consistency checks to verify the results of the elicitation process.
+Rezaei (2015) proposed the \gls{bwm} which first identifies the most and the least important criteria to then perform pairwise comparisons between these two reference criteria against all others \cite{REZAEI201549}. This method reduces the number of evaluations required: given $n$ criteria to evaluate, only $2n-3$ pairwise comparisons are needed, against the $\frac{n(n-1)}{2}$ available unique pairs. Another significant advantage is that by employing two reference criteria rather than one, the method mitigates anchoring bias, which is the tendency for importance judgments to be influenced by the chosen reference point. Moreover, \gls{bwm} allows for consistency checks to verify the results of the elicitation process. However, unlike swing elicitation, \gls{bwm} does not provide trade-off elicitation between criteria, focusing instead on relative importance assessment which lacks explicit compensatory comparisons.
+
+\River{It should be stated here that BWM does not provide trade-off elicitation among criteria}
 
 \section{Best Worst Tradeoff Method}
 \label{sec:bwt}
-Liang et al. (2022) proposed the \gls{bwt} which combines the range sensitivity of swing elicitation with the consistency verification offered by the \gls{bwm} \cite{LIANG2022957}. \textcolor{red}{River's study ref} 2025 extended this methodology to hierarchical structures. It is important to note that to implement this methodology, the knowledge of value functions for each criterion is required beforehand.
+Liang et al. (2022) proposed the \gls{bwt} which combines the range sensitivity of swing elicitation with the consistency verification offered by the \gls{bwm} \cite{LIANG2022957}.  Huang et al. (2026) extended this methodology to hierarchical structures. It is important to note that to implement this methodology, the knowledge of value functions for each criterion is required beforehand \cite{Huang2026}.
 
-The weighting process begins by identifying the most and least important criteria through comparative evaluation of hypothetical consequence vectors $\vec{h}$. Each vector component represents a criterion's value in a hypothetical scenario. For an illustrative case with four criteria ($C_1$, $C_2$, $C_3$, and $C_4$), the vector $(1,0,0,0)$ indicates that $C_1$ achieves its maximum value while all other criteria remain at their minimum. Decision-makers are asked to rank four $\vec{h}$ vectors: $(1,0,0,0)$, $(0,1,0,0)$, $(0,0,1,0)$, and $(0,0,0,1)$. This ranking identifies the best ($C_b$) and worst ($C_w$) performing criteria, which then serve as dual reference points throughout the weighting process. 
+The weighting process begins by identifying the most and least important criteria through comparative evaluation of hypothetical consequence vectors $\vec{h}$. Each vector component represents a criterion's value in a hypothetical scenario. For an illustrative case with four criteria ($C_1$, $C_2$, $C_3$, and $C_4$), the vector $(1,0,0,0)$ indicates that $C_1$ achieves its maximum value while all other criteria remain at their minimum. \glspl{dm} are asked to rank four $\vec{h}$ vectors: $(1,0,0,0)$, $(0,1,0,0)$, $(0,0,1,0)$, and $(0,0,0,1)$. This ranking identifies the best ($C_b$) and worst ($C_w$) performing criteria, which then serve as dual reference points throughout the weighting process. 
 
 The best criteria comparison employs the best criterion $C_b$ as the reference standard. For the four-criterion example, let's assume $C_1$ represents $C_b$. Experts are requested to determine the value $x$ that makes each pair of $\vec{h}$ indifferent:
 
@@ -131,7 +137,6 @@ w_1 = \frac{w_2}{v_b(x_{(b,2)})} = \frac{w_3}{v_b(x_{(b,3)})} = \frac{w_4}{v_b(x
 For comparisons against the worst-performing criterion $C_w$ (assumed to be $C_4$ in this example), experts determine what value $x$ of each remaining criterion would be equivalent to $(0,0,0,1)$. Unlike the previous comparisons, this process yields values for the non-worst criteria rather than the worst criterion itself, this distinction is reflected in the notation as $x_{(j,w)}$ rather than $x_{(w,j)}$.
 
 \begin{itemize}
-\item $(0,0,0,1)$ vs $(x,0,0,0)$ will determine $x_{(1,w)}$
 \item $(0,0,0,1)$ vs $(0,x,0,0)$ will determine $x_{(2,w)}$
 \item $(0,0,0,1)$ vs $(0,0,x,0)$ will determine $x_{(3,w)}$
 \end{itemize}
@@ -146,8 +151,8 @@ Similarly to the best comparison, it is possible to establish the following rela
 Combining the relationships from equations \ref{eq:worst_comparison} and \ref{eq:best_comparison} with the normalization condition $\sum_{i=1}^{n} w_i = 1$ produces a linear system of equations:
 \begin{equation}
    \begin{cases}
-      w_j \cdot v_j(x_{(j,w)}) = w_w \forall j \in \{1,2,3\} \\
-      w_b = \frac{w_j}{v_b(x_{(b,j)})} \forall j \in \{2,3,4\} \\
+      w_j \cdot v_j(x_{(j,w)}) = w_w\quad \forall j \in \{1,2,3\} \\
+      w_b = \frac{w_j}{v_b(x_{(b,j)})}\quad \forall j \in \{2,3,4\} \\
       \sum_{j=1}^{4} w_j = 1
    \end{cases}
 \end{equation}
@@ -178,18 +183,20 @@ For computational implementation, a single objective variable is preferred, ther
  z \geq \left|w_b - \frac{w_j}{v_b(x_{(b,j)})}\right| \quad \forall j \in \{2,3,4\}, \\
  \sum_{j=1}^{4} w_j = 1 \quad \forall j, \\
  w_j \geq 0 \quad \forall j.
+ \label{eq:linear_bwm}
 \end{cases}
 \end{aligned}
 \end{equation}
 
-Liang et al. (2022) \cite{LIANG2022957} also propose a nonlinear alternative formulation, presented in equation \ref{eq:bwt_nonlinear}.
+\textcolor{red}{Following Modified:}
+The linear formulation \ref{eq:linear_bwm} was developed to guarantee unique solutions while preserving \gls{bwm}'s core principles \cite{REZAEI2016126}. In contrast, the original nonlinear version (Equation~\ref{eq:bwt_nonlinear}) \cite{REZAEI201549} may yield multiple optimal solutions when expert comparisons are inconsistent. Far from being problematic, solution multiplicity proves valuable in group decision contexts where different viewpoints require explicit representation. This characteristic aligns particularly well with the focus of the current study on uncertainty, as multiple valid solutions directly reflect the natural variability in expert judgments.
 
 \begin{equation}
 \begin{aligned}
 &\text{minimize: } \quad \textbf{MAX} (z) \\
 &\text{subject to:}  
  \begin{cases}
- z \geq | \cdot v_j(x_{(w,j)}) - \frac{w_j}{w_w}| \quad \forall j \in \{1,2,3\}, \\
+ z \geq | v_j(x_{(w,j)}) - \frac{w_j}{w_w}| \quad \forall j \in \{1,2,3\}, \\
  z \geq \left|\frac{1}{v_b(x_{(b,j)})} - \frac{w_b}{w_j} \right| \quad \forall j \in \{2,3,4\}, \\
  \sum_{j=1}^{4} w_j = 1 \quad \forall j, \\
  w_j \geq 0 \quad \forall j.
@@ -198,17 +205,40 @@ Liang et al. (2022) \cite{LIANG2022957} also propose a nonlinear alternative for
 \label{eq:bwt_nonlinear}
 \end{equation}
 
-The nonlinear approach is particularly relevant to adapt the method to hierarchical structures where criteria are organized into groups $G_j$. On this regard, \textcolor{red}{RIVERs PAPER} developed the \acrshort{pilebwt}, which starts by applying the \gls{bwt} pairwise comparison elicitation to each group to obtain \textbf{intergroup} results. Then it identifies the highest-ranked criterion among all groups and applies the same elicitation logic to this "best-of-all" subset, named \textbf{intra-group-B}. The same process can also be applied to the "worst-of-all" set (\textbf{intra-group-W}) to improve robustness. All of this information is then used in a nonlinear optimization problem, based on that of the "traditional" \gls{bwt} (Equation \ref{eq:bwt_nonlinear}). 
+On this regard, \cite{Huang2026}  developed the \acrshort{pilebwt}, which starts by applying the \gls{bwt} pairwise comparison elicitation to each group to obtain \textbf{intergroup} results. Then it identifies the highest-ranked criterion among all groups and applies the same elicitation logic to this "best-of-all" subset, named \textbf{intra-group-B}. The same process can also be applied to the "worst-of-all" set (\textbf{intra-group-W}) to improve robustness. All of this information is then used in a nonlinear optimization problem, based on that of the "traditional" \gls{bwt} (Equation \ref{eq:bwt_nonlinear}). 
 
-Since the problem is non-linear, the solution will be a set of viable weights rather than a single weight vector. The optimization problem will only find one from an $n_{criteria}$-dimensional space of valid weights, and its error (maximum absolute violation of the constraints, here $z$). Once this information is obtained, it is possible to further explore the solution space to obtain more valid weight sets. River et al. (20??) \textcolor{red}{RIVERs PAPER} note that any weight inside the set is equally valid, which is an important property to consider when exploring the weight space. The complete elicitation workflow is detailed in the flowchart presented in Figure \ref{fig:BWT_flowchart}.
+Since the problem is non-linear, the solution will be a set of viable weights rather than a single weight vector. The optimization problem will only find one from an $n_{criteria}$-dimensional space of valid weights, and its error (maximum absolute violation of the constraints, here $z$). Once this information is obtained, it is possible to further explore the solution space to obtain more valid weight sets. River et al. (2026) note that any weight inside the set is equally valid, which is an important property to consider when exploring the weight space \cite{Huang2026}. The hierarchical \gls{bwt} elicitation procedure follows this structured sequence:
+\begin{enumerate}
+    \item \textbf{Intra-Group Elicitation}
+    \begin{itemize}
+        \item For each criterion group $G_j$:
+        \begin{enumerate}
+            \item Identify best ($B_j$) and worst ($W_j$) criteria:
+            \begin{quote}
+               \textit{"If all criteria were at their minimum value, which one would you increase to its maximum first ($B_j$) / last ($W_j$) ?"}
+            \end{quote}
+            \item Compare each remaining criterion $C_{\text{other}}$ against $B_j$:
+            \begin{quote}
+                \textit{``How much must $B_j$ increase to compensate for reducing $C_{\text{other}}$ from maximum to minimum?''}
+            \end{quote}
+            \item Compare each remaining criterion $C_{\text{other}}$ against $W_j$:
+            \begin{quote}
+                \textit{``How much must $C_{\text{other}}$ increase to compensate for reducing $W_j$ from maximum to minimum?''}
+            \end{quote}
+        \end{enumerate}
+    \end{itemize}
 
-
-\begin{figure}[p]
-\centering
-\includegraphics[height=\textheight]{imgs/PILE-BWT-chart.png}
-\caption{Procedure used during elicitation of weights through the \gls{pilebwt} method}
-\label{fig:BWT_flowchart}
-\end{figure}
+    \item \textbf{Inter-Group Elicitation}
+    \begin{itemize}
+        \item Among all group-best criteria ($B_1, B_2, \dots$):
+        \begin{enumerate}
+            \item Select overall best criterion ($BB$).
+            \item Select overall worst criterion ($WB$).
+        \end{enumerate}
+        \item Compare each non-best group criterion against $BB$ and $WB$ using equivalent compensatory questions.
+        \item Repeat for all group-worst criteria ($W_1, W_2, \dots$)
+    \end{itemize}
+\end{enumerate}
 
 
 \section{Uncertainty Characterization}
@@ -219,7 +249,7 @@ Some uncertainties originate from the \textbf{input data} itself due to measurem
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.8\textwidth]{imgs/capacity_factors_reactors_europe.png}
+\includegraphics[width=0.65\textwidth]{imgs/capacity_factors_reactors_europe.png}
 \caption{Distribution of the \gls{cf} for European Operational Reactors, possible Gaussian fit and 68\% confidence interval}
 \label{fig:cf_european_example}
 \end{figure}
@@ -279,18 +309,19 @@ Expert 5                & 3             \\
 \end{minipage}
 \end{table}
 
-The characterization of \glspl{qi} is defined as a two-step process. First the ranking of all alternatives is defined, then the value function shape is elicited to convey the relative differences between alternatives. To speed up the process and to align, as much as possible, all experts on the same interpretation, the author created a \textbf{starting point} for the evaluation: based on available information the analyst creates a ranking of the alternatives and assumes a linear value function. The reasoning behind the starting point is then presented to each expert, whom are then asked to adjust the ranking if they disagree. 
-The value functions make use of \textit{hypothetical best} and \textit{hypothetical worst} values to anchor the function to its extremes, this is particularly useful whenever the experts deem that none of the available alternatives is worth of the maximum or minimum value of the criterion.
+The characterization of qualitative indicators is defined as a two-step process. First, the ranking of all alternatives is defined, then the value function shape is elicited to convey the relative differences between alternatives. To speed up the process and to align, as much as possible, all experts on the same interpretation, the author created a \textbf{starting point} for the evaluation: based on available information the analyst creates a ranking of the alternatives and assumes a linear value function. The reasoning behind the starting point is then presented to each expert, whom are then asked to adjust the ranking if they disagree. 
+The value functions make use of \textit{hypothetical best} and \textit{hypothetical worst} values to anchor the function to its extremes, which is particularly useful whenever the experts deem that none of the available alternatives is worth the maximum or minimum value of the criterion.
 
 As an additional tool to evaluate uncertainty in qualitative information, for every elicited information the expert can adjust its own \textbf{confidence level}, defined on a point scale from 0 (not confident at all, pure guess) to 5 (completely confident, no doubt). For value functions this can be used to add a deviation from the elicited points, while for qualitative indicator it is used to assign sampling probability to each judgment.
 
+\River{Somewhere you should introduce the ``Group Decision-Making“ concept}
 \section{Uncertainty Propagated MCDA}
 \label{sec:uncertanty_propagation_mcda}
 
 This study introduces \gls{upmcda}. The core concept underlying this approach is to discard single-point estimates altogether and instead to provide \glspl{dm} with a complete overview of all the possible solutions to the decision problem, in other words, it provides a distribution of potential values that each alternative might assume. This distribution-based perspective enables quantitative assessment of differences between options that may fall within uncertainty bounds, and enhances the transparency of the \gls{mcda} process by explicitly representing uncertainty.
 
-Here it is first presented \gls{upmavt} maintaining the standard weighted sum aggregation structure shown in equation \ref{eq:mavt_standard}. Within the uncertainty propagation framework, each component (weights, value functions, and input data) is represented by probability distributions rather than deterministic values. As is practice in \gls{smaa} \cite{LAHDELMA1998137}, the \gls{upmavt} general formulation account for probability distributions of the inputs rather than precise values. Thus, transforming equation \ref{eq:mavt_standard} into equation \ref{eq:mavt_up}, where $\text{PDF}_\Theta(\theta)$ denotes the probability density function of random variable $\Theta$:
-
+\textcolor{red}{Modified: I had to rephrase and explain better what PDF is}
+The proposed \gls{upmavt} methodology operates on probabilistic representations of all components. Building upon the stochastic approach pioneered in \gls{smaa} \cite{LAHDELMA1998137}, \gls{upmavt} considers each input (criterion weights, value functions, or data) as a \gls{pdf} that describes the complete distribution of possible values rather than a single point estimate. This transformation yields the generalized formulation shown in Equation~\ref{eq:mavt_up}, where the notation $\text{PDF}_\Theta(\theta)$ is used to represents the continuous probability distribution of a random variable $\Theta$, capturing the full spectrum of potential values and their associated likelihoods.
 \begin{equation}
 A_i = \sum_{j=1}^N w_j \cdot v_j(x_{ij})
 \label{eq:mavt_standard}
@@ -301,20 +332,23 @@ A_i = \sum_{j=1}^N w_j \cdot v_j(x_{ij})
 \label{eq:mavt_up}
 \end{equation}
 
-In practice, the most convenient way to properly propagate diverse distributions in \gls{upmavt} is by means of Montecarlo simulations, therefore sampling from the real distributions of weights, value functions and input data. To this end, two approaches have been identified:
+In practice, the most convenient way to properly propagate diverse distributions in \gls{upmavt} is by means of \gls{mc} simulations, therefore sampling from the real distributions of weights, value functions and input data. To this end, two approaches have been identified:
 \begin{itemize}
-      \item Strict MC: Each "opinion" from the elicitation process is preserved as independent. Results are presented per expert or, more generally, per stakeholder.
-      \item Non-strict MC: Introduces variability by sampling uncertain information from any possible opinion, therefore presenting a single value distribution per each alternative that aggregates all points of view.
+      \item \gls{smc}: Each "opinion" from the elicitation process is preserved as independent. Results are presented per expert or, more generally, per stakeholder.
+      \River{Here MC should be explained.}
+      \item \gls{nsmc}: Introduces variability by sampling uncertain information from any possible opinion, therefore presenting a single value distribution per each alternative that aggregates all points of view.
 \end{itemize}
 
-Related approaches exist in the literature, each with distinct focuses and limitations. Goers and Horton's (2023) CMAA \cite{GOERS2023243} preserves individual judgments in the first part of the analysis to then aggregate results through combinatorial aggregation. Lahdelma and Salminen's (1998) SMAA \cite{LAHDELMA1998137} employs stochastic methods primarily for decision-making under uncertain preferences, particularly addressing unknown or partially known weights. Baudry et al.'s (2017) work \cite{BAUDRY2018257} similarly adopts stochastic techniques but targets group decision support contexts.
+Related approaches exist in the literature, each with distinct focuses and limitations. Lahdelma and Salminen's (1998) \gls{smaa} \cite{LAHDELMA1998137} employs stochastic methods primarily for decision-making under uncertain preferences, particularly addressing unknown or partially known weights. Baudry et al.'s (2017) work \cite{BAUDRY2018257} similarly adopts stochastic techniques but targets group decision support contexts. Goers and Horton's (2023) \gls{cmaa} \cite{GOERS2023243} preserves individual judgments in the first part of the analysis to then aggregate results through combinatorial aggregation. 
 
-These methods present several constraints for the current application. SMAA fundamentally addresses an inverse problem centred on weight uncertainty, representing solutions to different core questions. CMAA systematically explores all possible expert opinion combinations and, like SMAA, presents the results by means of  acceptability indices but doesn't provide any tool to evaluate their consensus. The Range-based Multi-Actor Multi-Criteria Analysis approach \cite{BAUDRY2018257} produces outputs incompatible with weight space representations, as comparing alternative value distributions creates potential misinterpretation, as overlapping distributions may result from calculations using entirely different weight sets rather than representing comparable evaluations. Most notably, all of these methods consider uncertainty only in a subset of the decision components, typically either weights or input data.
+These methods present several constraints for the current application. \gls{smaa} fundamentally addresses an inverse problem centred on weight uncertainty, representing solutions to different core questions. \gls{cmaa} systematically explores all possible expert opinion combinations and, like \gls{smaa}, presents the results by means of acceptability indices but doesn't provide any tool to evaluate their consensus. The Range-based Multi-Actor Multi-Criteria Analysis approach \cite{BAUDRY2018257} produces outputs incompatible with weight space representations, as comparing alternative value distributions creates potential misinterpretation, as overlapping distributions may result from calculations using entirely different weight sets rather than representing comparable evaluations. Most notably, all of these methods consider uncertainty only in a subset of the decision components, typically either weights or input data.
 
-The \gls{upmavt} methodology addresses these limitations by (i) systematically handling uncertainties across all decision components, (ii) providing decision-makers with complete control over uncertainty characterization and (iii) delivering transparent results that fully preserve propagated uncertainties
+The \gls{upmavt} methodology addresses these limitations by (i) systematically handling uncertainties across all decision components, (ii) providing \glspl{dm} with complete control over uncertainty characterization and (iii) delivering transparent results that fully preserve propagated uncertainties.
 
-Within this framework, the \gls{smc} approach serves as a consensus diagnostic tool, visually presenting expert or stakeholder agreement. This enables decision-makers to identify the need for additional research, elicitation or discussion. When consensus proves satisfactory, the \gls{nsmc} method generates conservative aggregate results, providing final evaluations while maintaining uncertainty bounds. The results of the \gls{nsmc} are presented as a heatmap showing the probability of each alternative to have a certain position in the ranking, a similar approach could be used for other decision problems. The \gls{upmavt} framework is presented in Figure \ref{fig:uncertainty_propagation_workflow}, while the more general procedure, that will be applied in the case study presented in the next chapter, is summarized in Figure \ref{fig:case_study_workflow}. The developed code will be made available as open-source is the near future.
+Within this framework, the \gls{smc} approach serves as a consensus diagnostic tool, visually presenting expert or stakeholder agreement. This enables \glspl{dm} to identify the need for additional research, elicitation or discussion. When consensus proves satisfactory, the \gls{nsmc} method generates conservative aggregate results, providing final evaluations while maintaining uncertainty bounds. The results of the \gls{nsmc} are presented as a heatmap showing the probability of each alternative to have a certain position in the ranking, a similar approach could be used for other decision problems. The \gls{upmavt} framework is presented in Figure \ref{fig:uncertainty_propagation_workflow}, while the more general procedure, that will be applied in the case study presented in the next chapter, is summarized in Figure \ref{fig:case_study_workflow}. The developed code will be made available as open-source is the near future.
 
+\River{All these work flow figures' resolution can be higher}
+\River{These two figures need to be further introduced in the text.}
 \begin{figure}[p]
 \centering
 \vspace*{\fill}

@@ -89,6 +89,8 @@
 \usepackage{makecell} % For multi-line cells in tables
 \usepackage{fancyhdr} % For the headers
 \fancyhf{}
+\usepackage{todonotes}
+\newcommand{\River}[1]{{\todo[inline,color=orange!70]{River: #1}}}
 
 % Input of configuration file. Do not change config.tex file unless you really know what you are doing. 
 \input{polimi_template_classic/config}
@@ -109,6 +111,8 @@
 \usepackage{letltxmacro} % To redefine section command with optional arguments
 \usepackage[acronym]{glossaries}
 \usepackage{url}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
 %----------------------------------------------------------------------------
 %	ACRONYMS
 %----------------------------------------------------------------------------
