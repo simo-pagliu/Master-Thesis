@@ -1,16 +1,17 @@
 \section{Results of the analysis}
 \label{sec:results}
-Results from full elicitation sessions and abbreviated quick elicitation protocol are presented along with the experts that took part in the analysis. Finally, the output of the \gls{upmavt} framework is presented and the optimal technology alternatives for each national context are identified.
+This chapter reports results in three steps: elicitation inputs and outputs, uncertainty propagation through \gls{upmavt}, and final rankings. Only results are reported here; interpretation and methodological implications are discussed in Section~\ref{sec:discussion}.
 
-\subsection{Full Elicitation Sessions}
+\subsection{Elicitation inputs and outputs}
+
+\subsubsection{Full elicitation sessions}
 The elicitation process involved four experts who performed all analytical steps: (1) quantitative indicator value function development, (2) qualitative indicator assessment and value function construction, and (3) weight determination using the \gls{pilebwt} methodology. Expert backgrounds are summarized in Table~\ref{tab:experts}, identities are maintained confidential.
-
 
 \begin{table}[htbp]
 	\centering
 	\begin{tabularx}{\textwidth}{|c|X|X|}
 		\hline
-		\textbf{Expert} & \textbf{Area of Expertise} & \textbf{Experience}\\
+			extbf{Expert} & \textbf{Area of Expertise} & \textbf{Experience}\\
 		\hline
 		E1 & Risk Assessment (Academia) & Senior Scientist\\
 		E2 & Nuclear Safety (Academia) & Senior Scientist\\
@@ -22,32 +23,7 @@ The elicitation process involved four experts who performed all analytical steps
 	\label{tab:experts}
 \end{table}
 
-Expert E1 participated in the "first elicitation" that established baseline value functions for subsequent evaluations (steps 1 and 2). However, as detailed in Section~\ref{sec:discussion}, this expert demonstrated the lowest consistency in weight elicitation (step 3). The analysis therefore presents results both including and excluding E1's contributions to assess the ranking sensitivity to this outlier perspective.
-
-Figure~\ref{fig:weight_space_results} shows weight elicitation outcomes presenting the feasible weight space, explored via differential evolution (SciPy implementation \cite{PLACEHOLDER}), Figure~\ref{fig:consistency_results} presents the consistency plots, which compare the Declared pairwise comparison ratios with the ratios between the optimized weights. Each second bar represents the mean weight sampled from the feasible solution space, with error bars indicating $\pm \sigma$ to quantify solution variability. This adapted presentation, building on \cite{PLACEHOLDER}'s consistency analysis, explicitly incorporates uncertainty bounds from the weight space exploration. Figure~\ref{fig:vf_examples} presents the value functions elicited from the four experts for the same indicator, showing the divergencies between expert opinions. 
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[width=0.95\linewidth]{weight_space_example.pdf}
-	\caption{Weight plot space for expert E4.}
-	\label{fig:weight_space_results}
-\end{figure}
-
-\begin{figure}[p]
-	\centering
-	\includegraphics[angle=90,height=\textheight,keepaspectratio]{imgs/consistency_plot_example.png}
-	\caption{Consistency plot for expert E4.}
-	\label{fig:consistency_results}
-\end{figure}
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[width=0.5\linewidth]{imgs/vf_result_example.png}
-	\caption{Value function elicited by experts for "Net Power Output - IT".}
-	\label{fig:vf_examples}
-\end{figure}
-
-\subsection{Quick Elicitation Results}
+\subsubsection{Quick elicitation results}
 \label{sec:quick_elicitation_results}
 To enhance qualitative indicator characterization, five additional experts participated in an abbreviated "quick elicitation" process focused exclusively on qualitative indicators assessment (step 2). This expert panel is presented in Table~\ref{tab:quick_experts}.
 
@@ -55,7 +31,7 @@ To enhance qualitative indicator characterization, five additional experts parti
 	\centering
 	\begin{tabular}{|c|c|c|}
 		\hline
-		\textbf{Expert} & \textbf{Area of Expertise} & \textbf{Experience}\\
+			extbf{Expert} & \textbf{Area of Expertise} & \textbf{Experience}\\
 		\hline
 		E3 & Nuclear Plants (Academia) & Academic Professor \\
 		E5 & Project Controlling for Nuclear (Industry) & 20 years in Project Managment positions \\
@@ -77,8 +53,32 @@ Figure~\ref{fig:quick_examples} illustrates the results for "Design Complexity",
 	\label{fig:quick_examples}
 \end{figure}
 
+\subsubsection{Representative elicitation outputs}
+Figure~\ref{fig:vf_examples} presents the value functions elicited from the four experts for the same indicator, showing the divergencies between expert opinions. Figure~\ref{fig:weight_space_results} shows weight elicitation outcomes presenting the feasible weight space, explored via differential evolution (SciPy implementation \cite{PLACEHOLDER}). Figure~\ref{fig:consistency_results} presents the consistency plots, which compare the declared pairwise comparison ratios with the ratios between the optimized weights. Each second bar represents the mean weight sampled from the feasible solution space, with error bars indicating $\pm \sigma$ to quantify solution variability. This adapted presentation, building on \cite{PLACEHOLDER}'s consistency analysis, explicitly incorporates uncertainty bounds from the weight space exploration.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.5\linewidth]{imgs/vf_result_example.png}
+	\caption{Value function elicited by experts for "Net Power Output - IT".}
+	\label{fig:vf_examples}
+\end{figure}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.95\linewidth]{weight_space_example.pdf}
+	\caption{Weight plot space for expert E4.}
+	\label{fig:weight_space_results}
+\end{figure}
+
+\begin{figure}[p]
+	\centering
+	\includegraphics[angle=90,height=\textheight,keepaspectratio]{imgs/consistency_plot_example.png}
+	\caption{Consistency plot for expert E4.}
+	\label{fig:consistency_results}
+\end{figure}
+
 \subsection{UP-MAVT}
-As established in Section~\ref{sec:uncertanty_propagation_mcda}, the \gls{smc} and \gls{nsmc} approaches serve complementary purposes. \gls{smc} results evaluate pre-aggregation uncertainty and expert consensus levels, while \gls{nsmc} generates final rankings. The analysis reveals notable consensus on alternative values despite weight variations. Representative outputs for one of the countries are presented in Figure~\ref{fig:smc_france_sum}, comparing weighted sum aggregation methodology.
+As established in Section~\ref{sec:uncertanty_propagation_mcda}, the \gls{smc} and \gls{nsmc} approaches serve complementary purposes. \gls{smc} results evaluate pre-aggregation uncertainty and expert consensus levels, while \gls{nsmc} generates final rankings. Representative outputs for one of the countries are presented in Figure~\ref{fig:smc_france_sum}, comparing weighted sum aggregation methodology.
 
 \begin{figure}[htbp]
 	\centering
@@ -94,10 +94,8 @@ As established in Section~\ref{sec:uncertanty_propagation_mcda}, the \gls{smc} a
 	\label{fig:smc_france_geo}
 \end{figure}
 
-The sensitivity analysis demonstrates robust ranking patterns across expert configurations. E1's inclusion increases result uncertainty but does not substantially alter core rankings.
-
 \subsection{Rankings}
-As discussed in the following section, results depend on the aggregation method applied. The ranking results differ significantly between fully compensatory and partially compensatory methods. Figures~\ref{fig:aggregation_methods_comparison_france}--\ref{fig:nsmc_rankings_po} present the ranking heatmaps produced for each country across the three aggregation methods using \gls{nsmc} with geometric mean aggregation, which the analysis identifies as the more appropriate methodology.
+Ranking heatmaps are reported for each country across the three aggregation methods. Figures~\ref{fig:aggregation_methods_comparison_france}--\ref{fig:nsmc_rankings_po} present the \gls{nsmc} results using geometric mean aggregation for the country-specific summaries, alongside a cross-method comparison for France.
 
 \begin{figure}[htbp]
     \centering
