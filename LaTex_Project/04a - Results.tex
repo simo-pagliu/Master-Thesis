@@ -1,17 +1,18 @@
+This chapter reports the results of this thesis analysis, the first section presents the results. Interpretation and methodological implications are discussed in Section~\ref{sec:discussion}. And finally suggestions for future work are provided in Section~\ref{sec:suggestions}.
+
 \section{Results of the analysis}
 \label{sec:results}
-This chapter reports results in three steps: elicitation inputs and outputs, uncertainty propagation through \gls{upmavt}, and final rankings. Only results are reported here; interpretation and methodological implications are discussed in Section~\ref{sec:discussion}.
+Results are presented starting from the data obtained from teh elictitation process, followed by the \gls{upmavt} outcomes.
 
-\subsection{Elicitation inputs and outputs}
-
-\subsubsection{Full elicitation sessions}
-The elicitation process involved four experts who performed all analytical steps: (1) quantitative indicator value function development, (2) qualitative indicator assessment and value function construction, and (3) weight determination using the \gls{pilebwt} methodology. Expert backgrounds are summarized in Table~\ref{tab:experts}, identities are maintained confidential.
+\subsection{Elicitation outputs}
+\label{sec:elicitation_outputs}
+The "full elicitation" process involved four experts who performed all analytical steps: (1) quantitative indicator value function development, (2) qualitative indicator assessment and value function construction, and (3) weight determination using the \gls{pilebwt} methodology. Table~\ref{tab:experts} summarizes the expert panel composition, listing each expert's area of expertise and experience level; identities are maintained confidential. The first of these sessions "first elicitation" took 3.5 hours, while all the subsequent sessions lasted less and less, with the last one taking just over one hour.
 
 \begin{table}[htbp]
 	\centering
 	\begin{tabularx}{\textwidth}{|c|X|X|}
 		\hline
-			extbf{Expert} & \textbf{Area of Expertise} & \textbf{Experience}\\
+			\textbf{Expert} & \textbf{Area of Expertise} & \textbf{Experience}\\
 		\hline
 		E1 & Risk Assessment (Academia) & Senior Scientist\\
 		E2 & Nuclear Safety (Academia) & Senior Scientist\\
@@ -23,9 +24,8 @@ The elicitation process involved four experts who performed all analytical steps
 	\label{tab:experts}
 \end{table}
 
-\subsubsection{Quick elicitation results}
-\label{sec:quick_elicitation_results}
-To enhance qualitative indicator characterization, five additional experts participated in an abbreviated "quick elicitation" process focused exclusively on qualitative indicators assessment (step 2). This expert panel is presented in Table~\ref{tab:quick_experts}.
+
+To enhance the characterization of qualitative indicators, five additional experts participated in an abbreviated "quick elicitation" process focused exclusively on qualitative indicators assessment (step 2). Table~\ref{tab:quick_experts} presents this expanded expert panel, detailing the area of expertise (spanning nuclear plant operations, construction, safety assessment, and project management) and years of experience for each participant. These sessions were significantly shorter, lasting no more 30 minutes each.
 
 \begin{table}[htbp]
 	\centering
@@ -44,7 +44,7 @@ To enhance qualitative indicator characterization, five additional experts parti
 	\label{tab:quick_experts}
 \end{table}
 
-Figure~\ref{fig:quick_examples} illustrates the results for "Design Complexity", presented as a value heatmap to visualize the elcited values to each alternative across all experts.
+Figure~\ref{fig:quick_examples} illustrates the qualitative assessment results for "Design Complexity" indicator across all nine experts. The heatmap displays alternatives on the horizontal axis and experts on the vertical axis, with cell colors representing the elicited value (color scale from low to high values). This visualization reveals the degree of consensus or divergence among experts for this particular qualitative indicator, for instance it in this case the \gls{epr} is consistently rated as having the highest design complexity.
 
 \begin{figure}[htbp]
 	\centering
@@ -54,76 +54,64 @@ Figure~\ref{fig:quick_examples} illustrates the results for "Design Complexity",
 \end{figure}
 
 \subsubsection{Representative elicitation outputs}
-Figure~\ref{fig:vf_examples} presents the value functions elicited from the four experts for the same indicator, showing the divergencies between expert opinions. Figure~\ref{fig:weight_space_results} shows weight elicitation outcomes presenting the feasible weight space, explored via differential evolution (SciPy implementation \cite{PLACEHOLDER}). Figure~\ref{fig:consistency_results} presents the consistency plots, which compare the declared pairwise comparison ratios with the ratios between the optimized weights. Each second bar represents the mean weight sampled from the feasible solution space, with error bars indicating $\pm \sigma$ to quantify solution variability. This adapted presentation, building on \cite{PLACEHOLDER}'s consistency analysis, explicitly incorporates uncertainty bounds from the weight space exploration.
+Figure~\ref{fig:vf_examples} presents the value functions elicited from the four experts for the "Net Power Output" indicator. The horizontal axis shows the indicator's raw values (net power output in MWe), while the vertical axis displays the normalized value function output (0 to 1 scale). Each colored curve represents one expert's preference structure, revealing divergence in how experts value different power output levels. Figure~\ref{fig:weight_space_results} shows weight elicitation outcomes presenting the feasible weight space, explored via differential evolution (SciPy implementation \cite{PLACEHOLDER}). The horizontal axis represents the allowable weight range (0 to 1), and the vertical axis lists all criteria; each horizontal bar shows the feasible weight interval for that criterion. Figure~\ref{fig:consistency_results} presents the consistency plots, which compare the declared pairwise comparison ratios (obtained from elcitied data) with the ratios between the optimized weights (results of the optimization model). For each pairwise comparison, the plot shows two bars: the first (green) represents the declared ratio from the expert, while the second (orange) shows the computed ratio from optimized weights with error bars indicating $\pm \sigma$ to quantify solution variability. Good consistency is demonstrated when the declared value falls within the error bars of the computed ratio. This rapresentation allows for visual assessment of consistency while also taking into account the inherent uncertanty of the PILE-BWT results.
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[width=0.5\linewidth]{imgs/vf_result_example.png}
+	\includegraphics[width=0.5\linewidth]{PO/Net_Power_Output.pdf}
 	\caption{Value function elicited by experts for "Net Power Output - IT".}
 	\label{fig:vf_examples}
 \end{figure}
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[width=0.95\linewidth]{weight_space_example.pdf}
-	\caption{Weight plot space for expert E4.}
+	\includegraphics[width=0.95\linewidth]{4/weight_space_ranges_CH.pdf}
+	\caption{Weight space ranges for CH, from expert E4.}
 	\label{fig:weight_space_results}
 \end{figure}
 
 \begin{figure}[p]
 	\centering
-	\includegraphics[angle=90,height=\textheight,keepaspectratio]{imgs/consistency_plot_example.png}
-	\caption{Consistency plot for expert E4.}
+	\includegraphics[angle=90,height=\textheight,keepaspectratio]{4/ratio_comparison_CH.pdf}
+	\caption{Consistency plot for CH, from expert E4.}
 	\label{fig:consistency_results}
 \end{figure}
 
-\subsection{UP-MAVT}
-As established in Section~\ref{sec:uncertanty_propagation_mcda}, the \gls{smc} and \gls{nsmc} approaches serve complementary purposes. \gls{smc} results evaluate pre-aggregation uncertainty and expert consensus levels, while \gls{nsmc} generates final rankings. Representative outputs for one of the countries are presented in Figure~\ref{fig:smc_france_sum}, comparing weighted sum aggregation methodology.
+\subsection{UP-MAVT Results}
+As established in Section~\ref{sec:uncertanty_propagation_mcda}, the \gls{smc} and \gls{nsmc} approaches serve complementary purposes. \gls{smc} results evaluate pre-aggregation uncertainty and expert consensus levels, while \gls{nsmc} generates final rankings. Representative outputs for France are presented in Figures~\ref{fig:smc_france_sum} and~\ref{fig:smc_france_geo}. These probability histograms display the aggregated value (horizontal axis, ranging 0-1) against probability density (vertical axis) for each reactor alternative (shown as separate subplots). Each colored distribution represents one expert's assessment distribution, with overlapping curves indicating consensus and separated peaks revealing divergent expert opinions.
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.95\linewidth]{Phase2_WeightedSum_Strict_FR_20260127_170138_histograms.pdf}
-	\caption{\gls{smc} results for France using weighted sum aggregation (2000 iterations per expert).}
+	\caption{\gls{smc} results for France using weighted sum aggregation.}
 	\label{fig:smc_france_sum}
 \end{figure}
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.95\linewidth]{Phase2_Geometric_Strict_FR_20260128_092214_histograms.pdf}
-	\caption{\gls{smc} results for France using geometric mean aggregation, showing broader distributions and reduced dominance patterns.}
+	\caption{\gls{smc} results for France using geometric mean aggregation, showing broader distributions.}
 	\label{fig:smc_france_geo}
 \end{figure}
 
-\subsection{Rankings}
-Ranking heatmaps are reported for each country across the three aggregation methods. Figures~\ref{fig:aggregation_methods_comparison_france}--\ref{fig:nsmc_rankings_po} present the \gls{nsmc} results using geometric mean aggregation for the country-specific summaries, alongside a cross-method comparison for France.
+Ranking heatmaps are reported for each country across the three aggregation methods. These heatmaps display ranking position on the horizontal axis and reactor alternatives on the vertical axis, with cell colors representing the probability of achieving that rank (darker colors indicate higher probability). Figures~\ref{fig:random_weights_italy} present the results for Italy applying the three aggregation methods (weighted sum, geometric mean, and harmonic mean shown in panels a, b, and c respectively) to random weight simulations, which highlights the differences arising from aggregation methods. Figures~\ref{fig:nsmc_rankings_geo_all} present the \gls{nsmc} results using geometric mean aggregation for Italy, Switzerland, Poland, and France.
 
 \begin{figure}[htbp]
     \centering
-    \subfloat[\gls{sum}]{\includegraphics[width=0.32\linewidth]{Phase3_AllMethods_FR_weighted_sum_20260127_171441_heatmap.pdf}}\hfill
-    \subfloat[\gls{geo}]{\includegraphics[width=0.32\linewidth]{Phase3_AllMethods_FR_geometric_mean_20260127_171648_heatmap.pdf}}\hfill
-    \subfloat[\gls{har}]{\includegraphics[width=0.32\linewidth]{Phase3_AllMethods_FR_harmonic_mean_20260127_171543_heatmap.pdf}}
-    \caption{France: \gls{nsmc} ranking heatmaps obtained with different aggregation methods. Results show dominance of large reactor designs and ranking sensitivity to compensation method.}
-    \label{fig:aggregation_methods_comparison_france}
+    \subfloat[\gls{sum}]{\includegraphics[width=0.32\linewidth]{Phase1_RandomWeights_IT_weighted_sum_20260127_162235_heatmap.pdf}}\hfill
+    \subfloat[\gls{geo}]{\includegraphics[width=0.32\linewidth]{Phase1_RandomWeights_IT_geometric_mean_20260127_162533_heatmap.pdf}}\hfill
+    \subfloat[\gls{har}]{\includegraphics[width=0.32\linewidth]{Phase1_RandomWeights_IT_harmonic_mean_20260127_162403_heatmap.pdf}}
+    \caption{NSMC ranking heatmaps for Italy under random weight sampling across aggregation methods, demonstrating persistent large reactor dominance.}
+    \label{fig:random_weights_italy}
 \end{figure}
 
 \begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.95\linewidth]{Phase3_AllMethods_IT_geometric_mean_20260127_171336_heatmap.pdf}
-    \caption{Italy: \gls{nsmc} ranking heatmap with geometric mean aggregation.}
-    \label{fig:nsmc_rankings_it}
-\end{figure}
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.95\linewidth]{Phase3_AllMethods_CH_geometric_mean_20260127_172000_heatmap.pdf}
-    \caption{Switzerland: \gls{nsmc} ranking heatmap with geometric mean aggregation.}
-    \label{fig:nsmc_rankings_ch}
-\end{figure}
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.95\linewidth]{Phase3_AllMethods_PO_geometric_mean_20260127_172306_heatmap.pdf}
-    \caption{Poland: \gls{nsmc} ranking heatmap with geometric mean aggregation.}
-    \label{fig:nsmc_rankings_po}
+	\centering
+	\subfloat[Italy]{\includegraphics[width=0.45\linewidth]{Phase3_AllMethods_IT_geometric_mean_20260127_171336_heatmap.pdf}}\hfill
+	\subfloat[Switzerland]{\includegraphics[width=0.45\linewidth]{Phase3_AllMethods_CH_geometric_mean_20260127_172000_heatmap.pdf}}\\[0.5em]
+	\subfloat[Poland]{\includegraphics[width=0.45\linewidth]{Phase3_AllMethods_PO_geometric_mean_20260127_172306_heatmap.pdf}}\hfill
+	\subfloat[France]{\includegraphics[width=0.45\linewidth]{Phase3_AllMethods_FR_geometric_mean_20260127_171648_heatmap.pdf}}
+	\caption{\gls{nsmc} ranking heatmaps with geometric mean aggregation for Italy, Switzerland, Poland, and France.}
+	\label{fig:nsmc_rankings_geo_all}
 \end{figure}
 

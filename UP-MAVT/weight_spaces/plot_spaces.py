@@ -234,27 +234,14 @@ for elicit_num in ELICITATIONS:
             if comparisons:
                 # Create grouped bar chart
                 n_comparisons = len(comparisons)
-            if comparisons:
-                # Create grouped bar chart
-                n_comparisons = len(comparisons)
                 fig2, ax2 = plt.subplots(figsize=(max(12, n_comparisons * 0.6), 8))
 
                 x_pos = np.arange(n_comparisons)
                 width = 0.25
 
-                # Plot declared ratios, country ratios, and computed ratios side by side
+                # Plot country ratios and computed ratios side by side
                 ax2.bar(
-                    x_pos - width,
-                    declared_ratios,
-                    width,
-                    label='Declared Ratio (a)',
-                    color='#2b78c8',
-                    alpha=0.7,
-                    edgecolor='black',
-                )
-
-                ax2.bar(
-                    x_pos,
+                    x_pos - width / 2,
                     declared_ratios_country,
                     width,
                     label=f'Country Ratio (a_{country})',
@@ -264,7 +251,7 @@ for elicit_num in ELICITATIONS:
                 )
 
                 ax2.bar(
-                    x_pos + width,
+                    x_pos + width / 2,
                     ratio_means,
                     width,
                     label='Sampled Weight Ratio (mean)',
@@ -281,7 +268,7 @@ for elicit_num in ELICITATIONS:
                 ax2.set_xlabel('Comparisons', fontsize=11, fontweight='bold')
                 ax2.set_ylabel('Ratio Value', fontsize=11, fontweight='bold')
                 ax2.set_title(
-                    f'Declared vs Country vs Sampled Weight Ratios (mean ± σ) - Elicitation {elicit_num} ({country})',
+                    f'Country vs Sampled Weight Ratios (mean ± σ) - Elicitation {elicit_num} ({country})',
                     fontsize=13,
                     fontweight='bold',
                 )

@@ -1,60 +1,76 @@
 \section{Discussion}
 \label{sec:discussion}
+In this section the results presented in Section~\ref{sec:results} are discussed and interpreted. Methodological implications are also examined, highlighting strengths and limitations of the applied \gls{upmavt} framework in this context.
+
+\subsection{Dominance Patterns and Compensatory Analysis}
+\label{sec:weight_analysis}
+
+This analysis employs \gls{nsmc} with random weight sampled from a Dirichlet distribution to achieve two complementary objectives: identifying persistent dominance patterns across weight spaces and evaluating how different aggregation methodologies affect ranking outcomes.
+
+\subsubsection{Dominance Patterns}
+A dominance pattern is observed when alternatives maintain consistent rankings across varying weight assignments. Such behaviour requires careful analytical scrutiny by the analyst. While such patterns may genuinely reflect superior performance of some alternatives over the others, they can also reveal latent indicator biases. For example, in this study, there is a clear preference towards large reactors as seen from Figures \ref{fig:random_weights_italy}--\ref{fig:nsmc_rankings_geo_all}.
+
+This is partially consequence of the criterion "Net Power Output" which was expected to favor \glspl{smr} in contexts like Switzerland, but instead, it systematically advantaged large reactors. Contrary to initial expectations, all specialists uniformly preferred large-scale solutions, arguing that nuclear power better serves national energy strategies as a large scale utility power source. Multiple experts suggested that \glspl{smr} will be successful in future applications within the private sector (industrial process heat or remote energy systems) rather than central grid integration, highlighting a fundamental mismatch between indicator design intentions and expert opinions on nuclear deployment.
+
+
+\subsubsection{Aggregation Methodos}
+Figure~\ref{fig:random_weights_italy} presents ranking heatmaps for Italy across three aggregation approaches (weighted sum, geometric mean, and harmonic mean in panels a, b, and c respectively). The results reveal persistent dominance of large reactor alternatives (particularly \gls{epr} and \gls{ap}) across all aggregation methods. A clear difference between fully compensatory (weighted sum) and partially compensatory (geometric and harmonic mean) approaches is also evident. The \gls{epr} design ranks at a solid first-place under full compensation but drops to second position with partial compensation methods. 
+
+This behaviour is a logical consequence of its excellent technical performance (such as efficiency or discharge burnup) being offset by poor scores in criteria that recive high weights (capital cost, construction complexity). The author belives that in this case fully compensatory methods overstate the \gls{epr} advantages and that parially compensatory methods better represent the opinions that were expressed during the expert interviews. For this reason the final discussion will take into account partialy compensatory results, in particular the \gls{geo} method which presents less dominance in the heatmaps.
 
 \subsection{Weight Elicitation and Consistency Analysis}
 \label{subsec:weight_consistency}
 
-The elicitation process revealed significant variability in the quality of expert weight assessments. While ordinal consistency was ensured within each pairwise comparison group, the overall results exhibited intra-group inconsistencies that led to unsatisfactory weight spaces for some experts. Of the four experts who performed the complete elicitation, only one (E4, already familiar with MCDA) produced satisfactory and internally consistent weight spaces. The author acknowledges that these results are worth preserving, and notes that potential weaknesses in the mathematical formulation of the problem may have contributed to these issues. These concerns will be addressed in future publications. For the scope of this thesis, to demonstrate the full \gls{upmavt} methodology, the weight elicitation results are used as provided.
+The elicitation process revealed significant variability in the quality of expert weight assessments. While ordinal consistency was ensured within each comparison group, the overall results exhibited intra-group inconsistencies that led to unsatisfactory weight spaces for some experts. Of the four experts who performed the complete elicitation, only one (E4, already familiar with \gls{mcda}) produced satisfactory and internally consistent weight spaces. Regardless, the author acknowledges that all results are worth preserving, and notes that potential weaknesses in the mathematical formulation of the problem may have contributed to these issues. For the scope of this thesis, to demonstrate the full \gls{upmavt} methodology, all weight elicitation results are used anyway.
 
-Expert E1 participated in the "first elicitation" that established baseline value functions for subsequent evaluations (steps 1 and 2), but demonstrated the lowest consistency in weight elicitation (step 3). The analysis therefore presents results both including and excluding E1's contributions to assess the ranking sensitivity to this outlier perspective. The sensitivity analysis demonstrates robust ranking patterns across expert configurations. E1's inclusion increases result uncertainty but does not substantially alter core rankings.
+Expert E1 participated in the "first elicitation" that established baseline value functions for subsequent evaluations (steps 1 and 2), but demonstrated the lowest consistency in weight elicitation (step 3). 
 
 Weight space representations use horizontal bar plots, displaying allowable weight values on the x-axis and criteria on the y-axis. Expert E4's results (Figure~\ref{fig:weight_space_results}) exemplify acceptable consistency: clear weight ranges with evident criteria importance ordering and limited span. In contrast, other experts produced substantially wider ranges, with highly uncertain criterion ordering that does not reflect expected human preference patterns.
 
-Consistency plots (Figure~\ref{fig:consistency_results}) compare declared pairwise comparison ratios (the $a$ value, computed as $1-vf(x)$) with ratios derived from optimized weights. The optimized weight ratios are presented as mean values sampled from the feasible solution space, with error bars ($\pm \sigma$) quantifying solution variability. Consistency is demonstrated when the declared value falls within the computed weight ratio range. Expert E4 shows generally good consistency across criteria. Other experts exhibit larger discrepancies, with wider error bars reflecting large weight solution spaces and poor alignment between declared preferences and computed optimal weights.
+Consistency plots (Figure~\ref{fig:consistency_results}) compare declared pairwise comparison ratios (the $a$ value, computed as $1-vf(x)$) with ratios derived from optimized weights. The optimized weight ratios are presented as mean values sampled from the feasible solution space, with error bars ($\pm \sigma$) quantifying solution variability. Consistency is demonstrated when the declared value falls within the computed weight ratio range. Expert E4 shows generally good consistency across criteria. Other experts exhibit larger discrepancies, with wider error bars reflecting large weight solution spaces and poor alignment between preferences declared during elicitation and computed optimal weights.
 
-\subsection{Consensus and Uncertainty Analysis via \gls{smc}}
+\subsection{Consensus and Uncertainty Analysis via SMC}
 \label{subsec:consensus_analysis}
 
-The \gls{smc} procedure examines expert consensus on alternative values before aggregation, revealing both consensus levels and individual expert variations. Figure~\ref{fig:smc_france_sum} presents probability histograms for each alternative under weighted sum aggregation for France (based on 2000 iterations per expert). 
+The \gls{smc} procedure examines expert consensus on alternative values before aggregation, revealing both consensus levels and individual expert variations. Figure~\ref{fig:smc_france_sum} presents probability histograms for each alternative under weighted sum aggregation for France (based on 2000 iterations per expert).
 
-Clear expert agreement is evident: all distributions occupy similar value ranges with comparable shapes. Notable individual variations exist as expected: Expert E4 values the Rolls-Royce design higher than other experts; Experts E4 and E3 assign higher values to the BWRX300. Expert E1 slightly favors the AP1000 while undervaluing the APR1400 relative to other experts. Overall consensus on alternative values remains very high, with maximum diversity appearing for the BWRX design (exhibiting two distinct probability peaks) and the Rolls-Royce design (where one expert clearly favors it above consensus).
+Clear expert agreement is evident: all distributions occupy similar value ranges with comparable shapes. Notable individual variations exist as expected: Expert E4 values the Rolls-Royce design higher than other experts; Experts E4 and E3 assign higher values to the \gls{bwrx}. Expert E1 slightly favors the \gls{ap} while undervaluing the \gls{apr} relative to other experts. Overall consensus on alternative values remains very high, with maximum diversity appearing for the BWRX design (exhibiting two distinct probability peaks) and the Rolls-Royce design (where one expert clearly favors it).
 
-Under geometric mean aggregation (Figure~\ref{fig:smc_france_geo}), distributions appear substantially more spread, explaining reduced dominance patterns in this method. The NuScale design exhibits a well-defined low-value peak with a long tail toward higher values; similar (though less pronounced) distributions appear for Rolls-Royce, BWRX, and APR alternatives. Conversely, AP1000 and \gls{epr} designs show wider, flatter distributions. This pattern suggests a practical interpretation: non-top alternatives exhibit well-defined (unfavorable) values readily discarded from consideration, while top alternatives present riskier profiles where the decision-maker must accept greater uncertainty. The AP1000 emerges as the lowest-risk choice, being the only top alternative without increased probability toward lower values, though its potential best-case value remains below the \gls{epr}'s possibilities.
+Under geometric mean aggregation (Figure~\ref{fig:smc_france_geo}), distributions appear substantially more spread, explaining reduced dominance patterns in this method. The NuScale design exhibits a well-defined low-value peak with a long tail toward higher values; similar (though less pronounced) distributions appear for Rolls-Royce, \gls{bwrx}, and \gls{apr} alternatives. Conversely, \gls{ap} and \gls{epr} designs show wider, flatter distributions. 
 
-\subsection{Compensatory Dynamics and Dominant Alternatives}
-\label{subsec:compensatory_dynamics}
+This pattern suggests a practical interpretation: non-top alternatives exhibit well-defined (unfavorable) values readily discarded from consideration, while top alternatives present riskier profiles where the decision-maker must accept greater uncertainty. The \gls{ap} emerges as the lowest-risk choice, being the only top alternative without increasing probability toward lower values, though its potential best-case value ($\sim 0.6$) remains below the \gls{epr}'s possibilities ($\sim 0.8$).
 
-To examine compensatory dynamics in the decision problem and validate the selection of aggregation methodology, this study compares fully compensatory (\gls{sum}) against partially compensatory methods (\gls{geo} and \gls{har}). Given the computational infeasibility of traditional weight sensitivity analysis (prior approaches yielded unreasonable computation times), the analysis employs \gls{nsmc} with randomly sampled weights drawn from a Dirichlet distribution. This approach identifies dominant alternatives---those maintaining advantageous rankings across varying weight assignments---and evaluates whether the fully compensatory approach adequately reflects decision dynamics.
+\subsection{Policy Implications}
+\label{sec:policy_brief}
+In the following paragraphs we present broader considerations derived from the analysis of the \gls{nsmc} results using geometric mean aggregation (Figures~\ref{fig:nsmc_rankings_geo_all}), which are considered most representative of expert judgments. These insights aim to inform policymakers on strategic directions for nuclear energy deployment in Western Europe.
 
-Figure~\ref{fig:aggregation_methods_comparison_france} presents ranking heatmaps for France across the three aggregation methods. Two key observations emerge: (1) dominant alternatives clearly exist, with large reactors (particularly \gls{epr} and \gls{ap}) dominating the heatmaps across all methods, and (2) significant differences arise between fully and partially compensatory approaches, especially affecting top-ranked alternatives.
+\subsubsection{Most Important Criteria}
+"Capital investment costs" and "supplier availability" emerged as universally critical criteria among all but one expert, while "load-following capabilities" were uniformly dismissed as irrelevant for nuclear applications. Social acceptance factors revealed significant polarization: some experts considered \gls{ghg} reduction and nuclear waste produced insufficient to sway public opinion, while others viewed these as fundamental to gaining societal approval. Economic benefits to electricity markets represented the sole universally acknowledged public concern.
 
-The \gls{epr} design ranks first under fully compensatory aggregation but drops to second with partial compensation methods. This behavior is logical: the \gls{epr} design excels in several technical criteria (efficiency, discharge burnup) but performs poorly in others frequently weighted heavily by experts (capital cost, construction complexity). The fully compensatory \gls{sum} method allows high positive scores to fully offset low negative scores; \gls{geo} and \gls{har} penalize low scores more severely. Consequently, the author identifies partially compensatory approaches as more sound for this analysis, as they better reflect actual expert preferences and real-world trade-off constraints in nuclear reactor selection.
+Technical parameters, particularly thermal efficiency and discharge burnup, were consistently deemed irrelevant from a policy perspective. Conversely, construction complexity and design complexity (serving as proxies for potential construction delays and manufacturing challenges respectively) received high importance ratings, suggesting these qualitative indicators warrant more rigorous quantification in future assessments.
 
-No clear preference distinguishes \gls{geo} from \gls{har}; both produce identical top-3 rankings, though \gls{geo} exhibits more pronounced preference differentiation with larger gaps between alternatives. Both approaches are acceptable for determining the final ranking, though importantly, this ranking reflects subtle differences: alternatives are quite close in overall value rather than clearly separated.
+\subsubsection{Technology Preferences and Regional Patterns}
 
-The general pattern consistently shows \glspl{smr} ranked below large reactors. Within the \glspl{smr} category, the Rolls-Royce design ranks highest. Among large reactors, the \gls{epr} and \gls{ap} compete for top position, with the \gls{apr} following closely.
+Contrary to initial hypotheses, experts across all countries demonstrated strong, uniform preference for established large reactor designs, reflecting their proven operational track records. This consensus extends even to Switzerland, where smaller designs were expected to gain traction. Small modular reactors consistently ranked lowest, with experts citing lack of demonstration as the primary limitation for current deployment considerations.
 
-Dominant alternative patterns may indicate bias in indicator definition, though the alternative explanation---that some designs genuinely outperform others---cannot be dismissed. Regardless, such patterns warrant consideration as potential warning signs. The author notes that several indicators inherently favor large reactors (e.g., power output), a deliberate design choice intended to provide experts freedom in preference. Contrary to initial expectations, all experts across all countries preferred large reactors to \glspl{smr}. The author anticipated that countries like Switzerland might prefer \glspl{smr}, but experts argued against this, reasoning that nuclear power is inherently a large-scale utility technology. Several experts noted that \gls{smr} technology lacks compelling arguments from a national utility perspective and may prove more attractive to private sector applications in the future.
+Among large reactor options, the \gls{apr} design received the least favor due to perceived deployment challenges in European contexts. Expert interviews revealed multifaceted concerns including:
+\begin{itemize}
+    \item Political barriers to Korean-designed reactors
+    \item Licensing difficulties arising from divergent safety standards
+    \item Supply chain integration challenges
+\end{itemize}
 
-\subsection{Overall Rankings via \gls{nsmc}}
-\label{subsec:nsmc_rankings}
+This pattern underscores how real-world feasibility considerations fundamentally shape technical preferences in expert judgments.
 
-Figures~\ref{fig:nsmc_rankings_ch}--\ref{fig:nsmc_rankings_po} present \gls{nsmc} ranking heatmaps with geometric mean aggregation for each country under study.
+\subsubsection{System-Level Considerations and Strategic Recommendations}
 
-A consistent pattern emerges across all countries: strong overall preference for traditional large reactor designs. This preference reflects the simple fact that these are proven technologies with extensive operational experience. The skepticism surrounding unproven \gls{smr} technology has rendered such designs the least-preferred solutions among experts.
+While it is clear that reactors dominate national energy strategies across Western Europe, this convergence presents long-term grid stability challenges. The 2025 Spanish blackout exemplifies risks associated with inflexible baseload capacity in systems with growing renewable penetration. As nuclear plants face increasing pressure to reduce capacity factors, both economic viability and operational lifetimes may be compromised.
 
-Among large reactors, the \gls{apr} design garners the least appeal. Expert interviews clarify this finding: experts expressed substantial doubt regarding deployment viability of a Korean design in European contexts, significantly impacting licensing and supply chain indicator assessments. This illustrative demonstrates how expert judgment shaped by real-world feasibility considerations translates into technical preference structures.
+Policymakers should adopt a pan-European perspective when planning nuclear capacity expansions, prioritizing:
+\begin{itemize}
+    \item Grid flexibility and resilience metrics that take into account cross-border interdependencies
+    \item Balanced deployment strategies that account for interconnection capabilities
+    \item Stability assessments that transcend national boundaries
+\end{itemize}
 
-\subsection{Random Weight Sensitivity Analysis}
-\label{subsec:random_weights}
-
-To further investigate alternative dominance and weight sensitivity, random weight \gls{nsmc} analysis was conducted with weights sampled from a Dirichlet distribution. This analysis directly examines how ranking stability varies across the weight space. Figure~\ref{fig:random_weights_italy} presents results for Italy across all three aggregation methods, demonstrating that large reactor alternatives maintain strong dominance even under random weight variations, confirming that these designs represent genuinely preferred solutions rather than artifacts of specific weight choices.
-
-\begin{figure}[htbp]
-    \centering
-    \subfloat[\gls{sum}]{\includegraphics[width=0.32\linewidth]{Phase1_RandomWeights_IT_weighted_sum_20260127_162235_heatmap.pdf}}\hfill
-    \subfloat[\gls{geo}]{\includegraphics[width=0.32\linewidth]{Phase1_RandomWeights_IT_geometric_mean_20260127_162533_heatmap.pdf}}\hfill
-    \subfloat[\gls{har}]{\includegraphics[width=0.32\linewidth]{Phase1_RandomWeights_IT_harmonic_mean_20260127_162403_heatmap.pdf}}
-    \caption{\gls{nsmc} results with random weight sampling for Italy across aggregation methods.}
-    \label{fig:random_weights_italy}
-\end{figure}
+The current trajectory toward large-reactor fleets may undermine continental energy security if flexibility requirements are overlooked in the transition to high-renewable systems.
