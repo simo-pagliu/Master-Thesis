@@ -33,26 +33,43 @@ The capital cost distributions (Table \ref{tab:capex-distributions}) were constr
         NuScale         & \textbf{4100} & 5300 & 16500 & \textbf{19800} \\
         \bottomrule
     \end{tabularx}
-    \caption{Trapezoidal capital cost distributions [\$/kWe] for each reactor model, rounded up to the nearest hundred. Known points in bold.}
+    \caption{Trapezoidal capital cost distributions [2024EUR/kWe] for each reactor model, rounded up to the nearest hundred. Known points in bold.}
     \label{tab:capex-distributions}
 \end{table}
 
-\paragraph{Design complexity} serves as a proxy for manufacturing and procurement risks, where greater component counts increase management burden and error potential. Cooling loop quantity was considered a simple and practical complexity metric, with the \gls{epr} (4 loops) representing the most complex design, followed by \gls{apr}, \gls{ap} and Rolls-Royce SMR (3 loops each). The integrated designs of NuScale and \gls{bwrx} demonstrate the simplest configurations. Being a \gls{qi}, this starting point evaluation will be refined through expert judgment.
+\paragraph{Design complexity} serves as a proxy for manufacturing and procurement risks, where greater component counts increase management burden and error potential. Cooling loop quantity was considered a simple and practical complexity metric, with the \gls{epr} (4 loops) representing the most complex design, followed by \gls{apr}, \gls{ap} and Rolls-Royce SMR (3 loops each). The integrated designs of NuScale and \gls{bwrx} demonstrate the simplest configurations. Being a qualitative indicator, this starting point evaluation will be refined through expert judgment.
 
-\paragraph{Construction complexity} evaluates the preferred strategy for the construction process. Traditional reactors rely primarily on on-site construction, Rolls-Royce employs extensive off-site fabrication but still maintains significant on-site assembly requirements due to the large capacity and the multi-loop configuration. The \gls{bwrx} reduces on-site work through its integrated design, and NuScale represents the most modular approach with sequential deployment of, smaller, fully manufactured units. The author recognized that neither construction paradigm demonstrates clear superiority: even if on-site methods face well-documented challenges \cite{nea2020unlocking}, modular approaches introduce supply chain coordination complexities. The evaluation of this \gls{qi} presents construction approaches as a spectrum (Table \ref{tab:construction-spectrum}) rather than imposing an initial ranking to avoid implying that one approach is better than the other. After the expert judged the spectrum, they are asked to determine the value function for this criterion, starting from a neutral linear baseline. In this second step, they will be able to express and quantify the preference towards one of the two approaches.
+\paragraph{Construction complexity} evaluates the preferred strategy for the construction process. Traditional reactors rely primarily on on-site construction, Rolls-Royce employs extensive off-site fabrication but still maintains significant on-site assembly requirements due to the large capacity and the multi-loop configuration. The \gls{bwrx} reduces on-site work through its integrated design, and NuScale represents the most modular approach with sequential deployment of, smaller, fully manufactured units. The author recognized that neither construction paradigm demonstrates clear superiority: even if on-site methods face well-documented challenges \cite{nea2020unlocking}, modular approaches introduce supply chain coordination complexities. The evaluation of this qualitative indicator presents construction approaches as a spectrum (Figure \ref{fig:construction-spectrum}) rather than imposing an initial ranking to avoid implying that one approach is better than the other. 
 
-\begin{table}[!hb]
+After the expert judged the spectrum, they are asked to determine the value function for this criterion, starting from a neutral linear baseline. In this second step, they will be able to express and quantify the preference towards one of the two approaches.
+\begin{figure}[h]
     \centering
-    \begin{tabularx}{0.9\textwidth}{XccccX}
-        \toprule
-        \textbf{On-site} & \gls{ap}, \gls{epr}, \gls{apr} & Rolls-Royce & BWRX-300 & NuScale & \textbf{Off-site} \\
-        \bottomrule
-    \end{tabularx}
-    \caption{Construction complexity spectrum: reactor models from on-site to off-site manufacturing approaches.}
-    \label{tab:construction-spectrum}
-\end{table}
+    \begin{tikzpicture}[thick]
+        % Draw the line
+        \draw[line width=2pt] (0,0) -- (12,0);
 
-\paragraph{Operational Costs} represent the recurring expenditures associated with nuclear power plant operation and maintenance, including fuel expenses and routine maintenance activities. Steigerwald et al. (2023) \cite{STEIGERWALD2023128204} provides detailed cost projections for future nuclear installations, reporting both capital and operational expenditures for \glspl{smr} and large reactors. The study presents operational costs for \gls{epr} and \gls{apr} designs, while the "Long-Term US" category was utilized as a proxy for \gls{ap} operational costs.
+        % Add labels
+        \node at (0,-0.5) {\textbf{On-site}};
+        \node at (12,-0.5) {\textbf{Off-site}};
+
+        % Add reactor models (above the line)
+        \node[above, align=center] at (1.5,0.2) {AP, EPR, APR};
+        \node[above, align=center] at (5,0.2) {Rolls-Royce};
+        \node[above, align=center] at (8.5,0.2) {BWRX-300};
+        \node[above, align=center] at (11,0.2) {NuScale};
+
+        % Add markers (aligned with labels)
+        \foreach \x in {0, 1.5,5,8.5,11, 12} {
+            \draw[thick] (\x,0.2) -- (\x,-0.2);
+        }
+    \end{tikzpicture}
+    \caption{Construction complexity spectrum: reactor models from on-site to off-site manufacturing approaches.}
+    \label{fig:construction-spectrum}
+\end{figure}
+
+\River{This table is not clear. Maybe you can draw a Tikz figure.}
+
+\paragraph{Operational Costs} represent the recurring expenditures associated with nuclear power plant operation and maintenance, including fuel expenses and routine maintenance activities. Steigerwald et al. (2023) \cite{STEIGERWALD2023128204} provides detailed cost projections for future nuclear installations, reporting both capital and operational expenditures for \glspl{smr} and large reactors. The study presents operational costs for \gls{epr} and \gls{apr} designs, while the "Long-Term US" category was utilized as a proxy for \gls{ap} operational costs. All opex data has been standardized to 2020 USD to ensure consistency with the primary reference source \cite{STEIGERWALD2023128204}.
 
 For \gls{smr} designs where operational costs were originally reported in power-based units ($USD_{2020}/MW_e$), conversion to energy-based measurements ($USD_{2020}/MWh_e$) was performed, applying the \gls{cf} distribution presented in Section \ref{sec:uncertainty_analysis} to the following relationship:
 
@@ -60,8 +77,7 @@ $$
 \frac{USD_{2020}}{MWh_e} = \frac{USD_{2020}}{MW_e} \cdot \frac{1}{CF \cdot 8760 \frac{h}{year}}
 $$
 
-The analysis from \cite{STEIGERWALD2023128204} incorporates fuel cost estimates of $6.23 USD_{2020}/MWh_e$ for \gls{pwr}-based technologies, with two exceptions: NuScale at $7.15 USD_{2020}/MWh_e$ and the \gls{bwrx} at $29.55 USD_{2020}/MWh_e$. The latter appeared inconsistent given the order of magnitude difference from other \gls{lwr} designs, a discrepancy also noted by Hjelmeland (2024) \cite{HJELMELAND2024133827}. Consequently, an alternative estimate of $7.19 USD_{2020}/MWh_e$ was selected, aligning more closely with both Hjelmeland's critique and Zubair et al. (2026) \cite{ZUBAIR2026111989}. The estimates for Rolls-Royce was originally sourced from \cite{PowerTechnology2022}, but the figure of $68$ $USD_{2022}/MWh_e$ was deemed unrealistic and undocumented by domain experts. For this reason a conservative $25 \pm 5$ $USD_{2020}/MWh_e$ was adopted in this study. Moreover, operational cost data for utility-scale onshore wind, hydroelectric, and solar \gls{pv} (with single-axis tracking and DC battery storage) were sourced from the US Energy Information Administration \cite{EIA_Capital_Costs_AEO2024} to provide a comparison benchmark to the reader. All financial data has been standardized to 2020 USD to ensure consistency with the primary reference sources \cite{STEIGERWALD2023128204,NEA2020}.
-
+The analysis from \cite{STEIGERWALD2023128204} incorporates fuel cost estimates of $6.23 USD_{2020}/MWh_e$ for \gls{pwr}-based technologies, with two exceptions: NuScale at $7.15 USD_{2020}/MWh_e$ and the \gls{bwrx} at $29.55 USD_{2020}/MWh_e$. The latter appeared inconsistent given the order of magnitude difference from other \gls{lwr} designs, a discrepancy also noted by Hjelmeland (2024) \cite{HJELMELAND2024133827}. Consequently, an alternative estimate of $7.19 USD_{2020}/MWh_e$ was selected, aligning more closely with both Hjelmeland's critique and Zubair et al. (2026) \cite{ZUBAIR2026111989}. The estimates for Rolls-Royce was originally sourced from \cite{PowerTechnology2022}, but the figure of $68$ $USD_{2022}/MWh_e$ was deemed unrealistic and undocumented by domain experts. For this reason a conservative $25 \pm 5$ $USD_{2020}/MWh_e$ was adopted in this study. Moreover, operational cost data for utility-scale onshore wind, hydroelectric, and solar \gls{pv} (with single-axis tracking and DC battery storage) were sourced from the US Energy Information Administration \cite{EIA_Capital_Costs_AEO2024} to provide a comparison benchmark to the reader. 
 \begin{table}[!hb]
     \centering
     \begin{tabularx}{\textwidth}{X c}
