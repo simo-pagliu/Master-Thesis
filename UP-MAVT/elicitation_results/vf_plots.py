@@ -31,7 +31,7 @@ COUNTRY = "PO"  # e.g. "IT", "CH", "FR", "PO"
 SHOW_PLOTS = False
 
 # Output settings
-SAVE_FORMATS = ("png",)
+SAVE_FORMATS = ("pdf",)
 DPI = 200
 FIGSIZE = (6.5, 6.5)
 

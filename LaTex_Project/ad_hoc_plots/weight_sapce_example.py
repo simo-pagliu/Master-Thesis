@@ -61,5 +61,5 @@ ax.set_zticks(ticks)
 ax.view_init(elev=25, azim=120)
 
 plt.tight_layout()
-plt.savefig('./LaTex_Project/ad_hoc_plots/weight_space_example.png', dpi=300, bbox_inches='tight')
+plt.savefig('weight_space_example.pdf', dpi=300, bbox_inches='tight')
 plt.show()

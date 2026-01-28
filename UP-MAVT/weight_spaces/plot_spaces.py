@@ -122,7 +122,7 @@ for elicit_num in ELICITATIONS:
             # Save the plot
             results_dir = os.path.join(SCRIPT_DIR, 'results', str(elicit_num))
             os.makedirs(results_dir, exist_ok=True)
-            plt.savefig(os.path.join(results_dir, f'weight_space_ranges_{country}.png'), dpi=300, bbox_inches='tight')
+            plt.savefig(os.path.join(results_dir, f'weight_space_ranges_{country}.pdf'), dpi=300, bbox_inches='tight')
             # plt.show()  # Display before closing
             plt.close()
 
@@ -295,7 +295,7 @@ for elicit_num in ELICITATIONS:
                 # Save the plot
                 results_dir = os.path.join(SCRIPT_DIR, 'results', str(elicit_num))
                 os.makedirs(results_dir, exist_ok=True)
-                plt.savefig(os.path.join(results_dir, f'ratio_comparison_{country}.png'), dpi=300, bbox_inches='tight')
+                plt.savefig(os.path.join(results_dir, f'ratio_comparison_{country}.pdf'), dpi=300, bbox_inches='tight')
                 # plt.show()  # Display before closing
                 plt.close()
             

@@ -28,7 +28,7 @@ Figure~\ref{fig:weight_space_results} shows weight elicitation outcomes presenti
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[width=0.95\linewidth]{imgs/weight_space_example.png}
+	\includegraphics[width=0.95\linewidth]{weight_space_example.pdf}
 	\caption{Weight plot space for expert E4.}
 	\label{fig:weight_space_results}
 \end{figure}
@@ -78,36 +78,54 @@ Figure~\ref{fig:quick_examples} illustrates the results for "Design Complexity",
 \end{figure}
 
 \subsection{UP-MAVT}
-As established in Section~\ref{sec:uncertanty_propagation_mcda}, the \gls{smc} and \gls{nsmc} approaches serve complementary purposes. \gls{smc} results evaluate pre-aggregation uncertainty and expert consensus levels, while \gls{nsmc} generates final rankings. The analysis reveals notable consensus on alternative values despite weight variations. Representative outputs for one of the countries are presented in Figure~\ref{fig:upmavt_results}, comparing both methodological approaches.
+As established in Section~\ref{sec:uncertanty_propagation_mcda}, the \gls{smc} and \gls{nsmc} approaches serve complementary purposes. \gls{smc} results evaluate pre-aggregation uncertainty and expert consensus levels, while \gls{nsmc} generates final rankings. The analysis reveals notable consensus on alternative values despite weight variations. Representative outputs for one of the countries are presented in Figure~\ref{fig:smc_france_sum}, comparing weighted sum aggregation methodology.
 
 \begin{figure}[htbp]
 	\centering
-	\subfloat[\gls{smc} Output]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}\hfill
-	\subfloat[\gls{nsmc} Output]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}
-	\caption{Example of the \gls{smc} and \gls{nsmc} results for Switzerland (\gls{sum} aggregation).}
-	\label{fig:upmavt_results}
+	\includegraphics[width=0.95\linewidth]{Phase2_WeightedSum_Strict_FR_20260127_170138_histograms.pdf}
+	\caption{\gls{smc} results for France using weighted sum aggregation (2000 iterations per expert).}
+	\label{fig:smc_france_sum}
 \end{figure}
-
-The sensitivity analysis in Figure~\ref{fig:nsmc_comparison} demonstrates that while E1's inclusion increases result uncertainty, the core ranking remains stable across both expert configurations.
-
 
 \begin{figure}[htbp]
 	\centering
-	\subfloat[\gls{nsmc} Output including E1]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}\hfill
-	\subfloat[\gls{nsmc} Output excluding E1]{\includegraphics[width=0.48\linewidth]{imgs/placeholder.png}}
-	\caption{Comparison of the \gls{nsmc} Italy's results including E1 and excluding E1 (\gls{sum} aggregation).}
-	\label{fig:nsmc_comparison}
+	\includegraphics[width=0.95\linewidth]{Phase2_Geometric_Strict_FR_20260128_092214_histograms.pdf}
+	\caption{\gls{smc} results for France using geometric mean aggregation, showing broader distributions and reduced dominance patterns.}
+	\label{fig:smc_france_geo}
 \end{figure}
+
+The sensitivity analysis demonstrates robust ranking patterns across expert configurations. E1's inclusion increases result uncertainty but does not substantially alter core rankings.
 
 \subsection{Rankings}
-As it is going to be discussed in the next section, the results are dependant on the aggregation method applyed. The ranking results are different between fullycompensatory and partial compensatory methods. Figure \ref{} present the ranking heatmaps produced for France using three different aggregation methods.
+As discussed in the following section, results depend on the aggregation method applied. The ranking results differ significantly between fully compensatory and partially compensatory methods. Figures~\ref{fig:aggregation_methods_comparison_france}--\ref{fig:nsmc_rankings_po} present the ranking heatmaps produced for each country across the three aggregation methods using \gls{nsmc} with geometric mean aggregation, which the analysis identifies as the more appropriate methodology.
 
 \begin{figure}[htbp]
     \centering
-    \subfloat[\gls{sum}]{\includegraphics[width=0.32\linewidth]{imgs/placeholder.png}}\hfill
-    \subfloat[\gls{geo}]{\includegraphics[width=0.32\linewidth]{imgs/placeholder.png}}\hfill
-    \subfloat[\gls{har}]{\includegraphics[width=0.32\linewidth]{imgs/placeholder.png}}
-    \caption{France results obtained with different aggregation methods.}
+    \subfloat[\gls{sum}]{\includegraphics[width=0.32\linewidth]{Phase3_AllMethods_FR_weighted_sum_20260127_171441_heatmap.pdf}}\hfill
+    \subfloat[\gls{geo}]{\includegraphics[width=0.32\linewidth]{Phase3_AllMethods_FR_geometric_mean_20260127_171648_heatmap.pdf}}\hfill
+    \subfloat[\gls{har}]{\includegraphics[width=0.32\linewidth]{Phase3_AllMethods_FR_harmonic_mean_20260127_171543_heatmap.pdf}}
+    \caption{France: \gls{nsmc} ranking heatmaps obtained with different aggregation methods. Results show dominance of large reactor designs and ranking sensitivity to compensation method.}
     \label{fig:aggregation_methods_comparison_france}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\linewidth]{Phase3_AllMethods_IT_geometric_mean_20260127_171336_heatmap.pdf}
+    \caption{Italy: \gls{nsmc} ranking heatmap with geometric mean aggregation.}
+    \label{fig:nsmc_rankings_it}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\linewidth]{Phase3_AllMethods_CH_geometric_mean_20260127_172000_heatmap.pdf}
+    \caption{Switzerland: \gls{nsmc} ranking heatmap with geometric mean aggregation.}
+    \label{fig:nsmc_rankings_ch}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\linewidth]{Phase3_AllMethods_PO_geometric_mean_20260127_172306_heatmap.pdf}
+    \caption{Poland: \gls{nsmc} ranking heatmap with geometric mean aggregation.}
+    \label{fig:nsmc_rankings_po}
 \end{figure}
 
