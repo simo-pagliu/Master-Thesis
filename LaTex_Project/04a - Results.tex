@@ -2,11 +2,11 @@ This chapter reports the results of this thesis analysis, the first section pres
 
 \section{Results of the analysis}
 \label{sec:results}
-Results are presented starting from the data obtained from teh elictitation process, followed by the \gls{upmavt} outcomes.
+Results are presented starting from the data obtained from the elicitation process, followed by the \gls{upmavt} outcomes.
 
 \subsection{Elicitation outputs}
 \label{sec:elicitation_outputs}
-The "full elicitation" process involved four experts who performed all analytical steps: (1) quantitative indicator value function development, (2) qualitative indicator assessment and value function construction, and (3) weight determination using the \gls{pilebwt} methodology. Table~\ref{tab:experts} summarizes the expert panel composition, listing each expert's area of expertise and experience level; identities are maintained confidential. The first of these sessions "first elicitation" took 3.5 hours, while all the subsequent sessions lasted less and less, with the last one taking just over one hour.
+The “full elicitation” process involved four experts who performed all analytical steps: (1) quantitative indicator value function development, (2) qualitative indicator assessment and value function construction, and (3) weight determination using the \gls{pilebwt} methodology. Table~\ref{tab:experts} summarizes the expert panel composition, listing each expert's area of expertise and experience level; identities are maintained confidential. The first of these sessions “first elicitation” took 3.5 hours, while all the subsequent sessions lasted less and less, with the last one taking just over one hour.
 
 \begin{table}[htbp]
 	\centering
@@ -25,7 +25,7 @@ The "full elicitation" process involved four experts who performed all analytica
 \end{table}
 
 
-To enhance the characterization of qualitative indicators, five additional experts participated in an abbreviated "quick elicitation" process focused exclusively on qualitative indicators assessment (step 2). Table~\ref{tab:quick_experts} presents this expanded expert panel, detailing the area of expertise (spanning nuclear plant operations, construction, safety assessment, and project management) and years of experience for each participant. These sessions were significantly shorter, lasting no more 30 minutes each.
+To enhance the characterization of qualitative indicators, five additional experts participated in an abbreviated “quick elicitation” process focused exclusively on the assessment of qualitative indicators (step 2). Table~\ref{tab:quick_experts} presents this expanded expert panel, detailing the area of expertise (spanning nuclear plant operations, construction, safety assessment, and project management) and years of experience for each participant. These sessions were significantly shorter, lasting no more than 30 minutes each.
 
 \begin{table}[htbp]
 	\centering
@@ -44,7 +44,7 @@ To enhance the characterization of qualitative indicators, five additional exper
 	\label{tab:quick_experts}
 \end{table}
 
-Figure~\ref{fig:quick_examples} illustrates the qualitative assessment results for "Design Complexity" indicator across all nine experts. The heatmap displays alternatives on the horizontal axis and experts on the vertical axis, with cell colors representing the elicited value (color scale from low to high values). This visualization reveals the degree of consensus or divergence among experts for this particular qualitative indicator, for instance it in this case the \gls{epr} is consistently rated as having the highest design complexity.
+Figure~\ref{fig:quick_examples} illustrates the qualitative assessment results for "Design Complexity" indicator across all nine experts. The heatmap displays alternatives on the horizontal axis and experts on the vertical axis, with cell colours representing the elicited value (colour scale from low to high values). This visualization reveals the degree of consensus or divergence among experts for this particular qualitative indicator, for instance it in this case the \gls{epr} is consistently rated as having the highest design complexity.
 
 \begin{figure}[htbp]
 	\centering
@@ -54,7 +54,7 @@ Figure~\ref{fig:quick_examples} illustrates the qualitative assessment results f
 \end{figure}
 
 \subsubsection{Representative elicitation outputs}
-Figure~\ref{fig:vf_examples} presents the value functions elicited from the four experts for the "Net Power Output" indicator. The horizontal axis shows the indicator's raw values (net power output in MWe), while the vertical axis displays the normalized value function output (0 to 1 scale). Each colored curve represents one expert's preference structure, revealing divergence in how experts value different power output levels. Figure~\ref{fig:weight_space_results} shows weight elicitation outcomes presenting the feasible weight space, explored via differential evolution (SciPy implementation \cite{PLACEHOLDER}). The horizontal axis represents the allowable weight range (0 to 1), and the vertical axis lists all criteria; each horizontal bar shows the feasible weight interval for that criterion. Figure~\ref{fig:consistency_results} presents the consistency plots, which compare the declared pairwise comparison ratios (obtained from elcitied data) with the ratios between the optimized weights (results of the optimization model). For each pairwise comparison, the plot shows two bars: the first (green) represents the declared ratio from the expert, while the second (orange) shows the computed ratio from optimized weights with error bars indicating $\pm \sigma$ to quantify solution variability. Good consistency is demonstrated when the declared value falls within the error bars of the computed ratio. This rapresentation allows for visual assessment of consistency while also taking into account the inherent uncertanty of the PILE-BWT results.
+Figure~\ref{fig:vf_examples} presents the value functions elicited from the four experts for the "Net Power Output" indicator. The horizontal axis shows the indicator's raw values (net power output in MWe), while the vertical axis displays the normalized value function output (0 to 1 scale). Each coloured curve represents one expert's preference structure, revealing divergence in how experts value different power output levels. Figure~\ref{fig:weight_space_results} shows weight elicitation outcomes presenting the feasible weight space, explored via differential evolution (SciPy implementation \cite{PLACEHOLDER}). The horizontal axis represents the allowable weight range (0 to 1), and the vertical axis lists all criteria; each horizontal bar shows the feasible weight interval for that criterion. Figure~\ref{fig:consistency_results} presents the consistency plots, which compare the declared pairwise comparison ratios (obtained from elicited data) with the ratios between the optimized weights (results of the optimization model). For each pairwise comparison, the plot shows two bars: the first (green) represents the declared ratio from the expert, while the second (orange) shows the computed ratio from optimized weights with error bars indicating $\pm \sigma$ to quantify solution variability. Good consistency is demonstrated when the declared value falls within the error bars of the computed ratio. This representation allows for visual assessment of consistency while also taking into account the inherent uncertainty of the PILE-BWT results.
 
 \begin{figure}[htbp]
 	\centering
@@ -78,7 +78,7 @@ Figure~\ref{fig:vf_examples} presents the value functions elicited from the four
 \end{figure}
 
 \subsection{UP-MAVT Results}
-As established in Section~\ref{sec:uncertanty_propagation_mcda}, the \gls{smc} and \gls{nsmc} approaches serve complementary purposes. \gls{smc} results evaluate pre-aggregation uncertainty and expert consensus levels, while \gls{nsmc} generates final rankings. Representative outputs for France are presented in Figures~\ref{fig:smc_france_sum} and~\ref{fig:smc_france_geo}. These probability histograms display the aggregated value (horizontal axis, ranging 0-1) against probability density (vertical axis) for each reactor alternative (shown as separate subplots). Each colored distribution represents one expert's assessment distribution, with overlapping curves indicating consensus and separated peaks revealing divergent expert opinions.
+As established in Section~\ref{sec:uncertanty_propagation_mcda}, the \gls{smc} and \gls{nsmc} approaches serve complementary purposes. \gls{smc} results evaluate pre-aggregation uncertainty and expert consensus levels, while \gls{nsmc} generates final rankings. Representative outputs for France are presented in Figures~\ref{fig:smc_france_sum} and~\ref{fig:smc_france_geo}. These probability histograms display the aggregated value (horizontal axis, ranging 0-1) against probability density (vertical axis) for each reactor alternative (shown as separate subplots). Each coloured distribution represents one expert's assessment distribution, with overlapping curves indicating consensus and separated peaks revealing divergent expert opinions.
 
 \begin{figure}[htbp]
 	\centering
@@ -94,7 +94,7 @@ As established in Section~\ref{sec:uncertanty_propagation_mcda}, the \gls{smc} a
 	\label{fig:smc_france_geo}
 \end{figure}
 
-Ranking heatmaps are reported for each country across the three aggregation methods. These heatmaps display ranking position on the horizontal axis and reactor alternatives on the vertical axis, with cell colors representing the probability of achieving that rank (darker colors indicate higher probability). Figures~\ref{fig:random_weights_italy} present the results for Italy applying the three aggregation methods (weighted sum, geometric mean, and harmonic mean shown in panels a, b, and c respectively) to random weight simulations, which highlights the differences arising from aggregation methods. Figures~\ref{fig:nsmc_rankings_geo_all} present the \gls{nsmc} results using geometric mean aggregation for Italy, Switzerland, Poland, and France.
+Ranking heatmaps are reported for each country across the three aggregation methods. These heatmaps display ranking position on the horizontal axis and reactor alternatives on the vertical axis, with cell colours representing the probability of achieving that rank (darker colours indicate higher probability). Figures~\ref{fig:random_weights_italy} present the results for Italy applying the three aggregation methods (weighted sum, geometric mean, and harmonic mean shown in panels a, b, and c respectively) to random weight simulations, which highlights the differences arising from aggregation methods. Figures~\ref{fig:nsmc_rankings_geo_all} present the \gls{nsmc} results using geometric mean aggregation for Italy, Switzerland, Poland, and France.
 
 \begin{figure}[htbp]
     \centering
