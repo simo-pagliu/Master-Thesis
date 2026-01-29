@@ -87,7 +87,9 @@
 
 % Define keys for title pages
 \newif\if@cosupervisorexist\@cosupervisorexistfalse
+\newif\if@subtitleexist\@subtitleexistfalse
 \define@key[OIST]{title}{title}{\def\thesistitle{#1}}
+\define@key[OIST]{title}{subtitle}{\def\thesissubtitle{#1}\@subtitleexisttrue}
 \define@key[OIST]{title}{course}{\def\course{#1}}
 \define@key[OIST]{title}{name}{\def\name{#1}}
 \define@key[OIST]{title}{ID}{\def\ID{#1}}
@@ -107,16 +109,21 @@
 
 	\begin{titlepage}
 		\AddToShipoutPicture*{\BackgroundPicTR}
-			\vfill
+			\vspace{1cm}
 			%\begin{minipage}{0.95\textwidth}
 			\begin{minipage}{0.95\textwidth}
-            \includegraphics[trim={1.2cm 0 0 0},clip, width=0.7\textwidth]{./02_ING_IND_INFORMAZIONE_COL_POSITIVO.eps}
+			\includegraphics[trim={1.2cm 0 1cm 1cm},clip, width=0.7\textwidth]{./02_ING_IND_INFORMAZIONE_COL_POSITIVO.eps} \\
+			\vspace{1cm}
 			\includegraphics[trim={0 0 0 0},clip, width=0.35\textwidth]{./psi_01_sp.eps}
             \hfill
             \\
-			\vspace{2.5cm}
+			\vspace{1cm}
 			\\
-			{{\color{bluepoli} \singlespacing \huge \bfseries \thesistitle \par}}	
+			{{\color{bluepoli} \singlespacing \huge \bfseries \raggedright \hyphenpenalty=10000 \exhyphenpenalty=10000 \thesistitle \par}}
+			\if@subtitleexist
+			\vspace{0.2cm}
+			{{\color{bluepoli} \singlespacing \large \raggedright \thesissubtitle \par}}
+			\fi
 			\vspace{1.5cm}
 			{\color{bluepoli} \bfseries \large{\textsc{Tesi di Laurea Magistrale in\\ \course}}\par}
 			\vspace{1.5 cm}
