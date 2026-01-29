@@ -54,7 +54,7 @@ QI_elicitation_numbers = [3, 5, 6, 7, 8]
 required_weight_solutions = 1  # Target number of unique weight combinations
 
 # Montecarlo Parameters
-n_runs = 2000  # Number of Montecarlo simulation runs
+n_runs = 10000  # Number of Montecarlo simulation runs
 plot_bins = 100  # Number of bins for histograms
 opinion_weights = np.ones(len(elicitation_numbers))/len(elicitation_numbers)  # Equal weights for each elicitation
 
@@ -101,7 +101,7 @@ def run_monte_carlo_simulation(
     random_weight_analysis,
     phase_name="phase",
     method_name=None,
-    UPDATE_EVERY=1000,
+    UPDATE_EVERY=10000,
 ):
     """
     Run a complete Monte Carlo simulation with the specified configuration.
@@ -340,26 +340,26 @@ print("MULTI-PHASE MONTE CARLO ANALYSIS")
 print("="*80)
 
 # PHASE 1: IT with random_weight_analysis=TRUE, cycling through aggregation methods
-# print("\n[PHASE 1] Running IT with random weight analysis...")
-# for method_name, aggregation_func in aggregation_methods:
-#     run_monte_carlo_simulation(
-#         selected_country=base_country,
-#         aggregation_method=aggregation_func,
-#         strict_mode=False,
-#         random_weight_analysis=True,
-#         phase_name="Phase1_RandomWeights",
-#         method_name=method_name,
-#     )
+print("\n[PHASE 1] Running IT with random weight analysis...")
+for method_name, aggregation_func in aggregation_methods:
+    run_monte_carlo_simulation(
+        selected_country=base_country,
+        aggregation_method=aggregation_func,
+        strict_mode=False,
+        random_weight_analysis=True,
+        phase_name="Phase1_RandomWeights",
+        method_name=method_name,
+    )
 
-# PHASE 2: All countries with weighted_sum in STRICT mode
-print("\n[PHASE 2] Running all countries with weighted_sum in STRICT mode...")
+# PHASE 2: All countries with geometric_mean in STRICT mode
+print("\n[PHASE 2] Running all countries with geometric_mean in STRICT mode...")
 for country in countries_to_analyze:
     run_monte_carlo_simulation(
         selected_country=country,
         aggregation_method=geometric_mean,
         strict_mode=True,
         random_weight_analysis=False,
-        phase_name="Phase2_WeightedSum_Strict",
+        phase_name="Phase2_GeometricMean_Strict",
     )
 
 # # PHASE 3: All countries with all methods in non-strict mode
