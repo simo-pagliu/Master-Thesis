@@ -187,7 +187,6 @@ For computational implementation, a single objective variable is preferred, ther
 \end{aligned}
 \end{equation}
 
-\textcolor{red}{Following Modified:}
 The linear formulation \ref{eq:linear_bwm} was developed to guarantee unique solutions while preserving \gls{bwm}'s core principles \cite{REZAEI2016126}. In contrast, the original nonlinear version (Equation~\ref{eq:bwt_nonlinear}) \cite{REZAEI201549} may yield multiple optimal solutions when expert comparisons are inconsistent. Far from being problematic, solution multiplicity proves valuable in group decision contexts where different viewpoints require explicit representation. This characteristic aligns particularly well with the focus of the current study on uncertainty, as multiple valid solutions directly reflect the natural variability in expert judgments.
 
 \begin{equation}
@@ -319,7 +318,6 @@ As an additional tool to evaluate uncertainty in qualitative information, for ev
 
 This study introduces \gls{upmcda}. The core concept underlying this approach is to discard single-point estimates altogether and instead to provide \glspl{dm} with a complete overview of all the possible solutions to the decision problem, in other words, it provides a distribution of potential values that each alternative might assume. This distribution-based perspective enables quantitative assessment of differences between options that may fall within uncertainty bounds, and enhances the transparency of the \gls{mcda} process by explicitly representing uncertainty.
 
-\textcolor{red}{Modified: I had to rephrase and explain better what PDF is}
 The proposed \gls{upmavt} methodology operates on probabilistic representations of all components. Building upon the stochastic approach pioneered in \gls{smaa} \cite{LAHDELMA1998137}, \gls{upmavt} considers each input (criterion weights, value functions, or data) as a \gls{pdf} that describes the complete distribution of possible values rather than a single point estimate. This transformation yields the generalized formulation shown in Equation~\ref{eq:mavt_up}, where the notation $\text{PDF}_\Theta(\theta)$ is used to represents the continuous probability distribution of a random variable $\Theta$, capturing the full spectrum of potential values and their associated likelihoods.
 \begin{equation}
 A_i = \sum_{j=1}^N w_j \cdot v_j(x_{ij})
