@@ -55,8 +55,6 @@ The elicitation process begins by determining the 0.5 indifference point between
 
 The primary limitation of mid-value splitting lies in its time-intensive nature. To mitigate this, the current study implemented a staged approach: the initial expert (whose results will be referred to as "first elicitation") performed complete value function elicitation, while subsequent specialists reviewed and modified this baseline. This methodology rests on the reasonable assumption that the fundamental shape of a value function remains stable across experts, necessitating only minor adjustments to the established curve.
 
-\River{You should mention here this is a revised mid-value splitting that we developed in this study.}
-
 \begin{figure}[p]
 \centering
 \includegraphics[width=\textwidth]{imgs/vf_flowchart.pdf}
@@ -110,7 +108,10 @@ Sophisticated methods like swing elicitation \cite{Goodwin_Wright_2004}, present
 
 Rezaei (2015) proposed the \gls{bwm} which first identifies the most and the least important criteria to then perform pairwise comparisons between these two reference criteria against all others \cite{REZAEI201549}. This method reduces the number of evaluations required: given $n$ criteria to evaluate, only $2n-3$ pairwise comparisons are needed, against the $\frac{n(n-1)}{2}$ available unique pairs. Another significant advantage is that by employing two reference criteria rather than one, the method mitigates anchoring bias, which is the tendency for importance judgments to be influenced by the chosen reference point. Moreover, \gls{bwm} allows for consistency checks to verify the results of the elicitation process. However, unlike swing elicitation, \gls{bwm} does not provide trade-off elicitation between criteria, focusing instead on relative importance assessment which lacks explicit compensatory comparisons.
 
-\River{It should be stated here that BWM does not provide trade-off elicitation among criteria}
+\subsection{Multi Group Decision-Making}
+Real-world applications of \gls{mcda} typically involve decision-making processes among multiple stakeholders which could include individuals, organisations, or unrapresented groups of people. In these participatory contexts, the goal often centres on achieving consensus through iterative discussions and revisions of elicited preferences. Such approach is particularly relevant to public participation, where transparency and collective agreement are essential. However, when the objective is less participatory, structured methods such as \gls{cmaa} or \gls{smaa} (discussed later in Section \ref{sec:uncertanty_propagation_mcda}) are used to aggregate and analyse opinions systematically.
+
+This study aligns with the latter approach, focusing on expert consensus to determine the optimal reactor model for deployment. The broader policy question of whether to deploy a reactor is assumed to have been resolved beforehand. While unanimity among experts strengthens the validity of the results, stakeholder negotiation is not required for the scope of this analysis.
 
 \section{Best Worst Tradeoff Method}
 \label{sec:bwt}
@@ -144,7 +145,7 @@ Similarly to the best comparison, it is possible to establish the following rela
 \begin{equation}
    \label{eq:worst_comparison}
    w_1 \cdot v_1(x_{(w,1)}) = w_2 \cdot v_2(x_{(w,2)}) = w_3 \cdot v_3(x_{(w,3)}) = w_4 \cdot 1 = w_w
-\end{equation}
+\end{equation}Abstract
 
 
 Combining the relationships from equations \ref{eq:worst_comparison} and \ref{eq:best_comparison} with the normalization condition $\sum_{i=1}^{n} w_i = 1$ produces a linear system of equations:
@@ -312,7 +313,6 @@ The value functions make use of \textit{hypothetical best} and \textit{hypotheti
 
 As an additional tool to evaluate uncertainty in qualitative information, for every elicited information the expert can adjust its own \textbf{confidence level}, defined on a point scale from 0 (not confident at all, pure guess) to 5 (completely confident, no doubt). For value functions this can be used to add a deviation from the elicited points, while for qualitative indicator it is used to assign sampling probability to each judgment.
 
-\River{Somewhere you should introduce the ``Group Decision-Making“ concept}
 \section{Uncertainty Propagated MCDA}
 \label{sec:uncertanty_propagation_mcda}
 
@@ -329,10 +329,9 @@ A_i = \sum_{j=1}^N w_j \cdot v_j(x_{ij})
 \label{eq:mavt_up}
 \end{equation}
 
-In practice, the most convenient way to properly propagate diverse distributions in \gls{upmavt} is by means of \gls{mc} simulations, therefore sampling from the real distributions of weights, value functions and input data. To this end, two approaches have been identified:
+In practice, the most convenient way to properly propagate diverse distributions in \gls{upmavt} is by means of \gls{mc} simulations. \gls{mc} codes rely on repeated random sampling, making them particularly valuable for complex systems where capturing the full range of possible outcomes is essential. In this context, rather than relying on fixed or deterministic values, a \gls{mc} code enables sampling from the actual distributions of weights, value functions, and input data, ensuring a robust representation of their variability. To this end, two approaches have been identified:
 \begin{itemize}
       \item \gls{smc}: Each "opinion" from the elicitation process is preserved as independent. Results are presented per expert or, more generally, per stakeholder.
-      \River{Here MC should be explained.}
       \item \gls{nsmc}: Introduces variability by sampling uncertain information from any possible opinion, therefore presenting a single value distribution per each alternative that aggregates all points of view.
 \end{itemize}
 
@@ -342,14 +341,16 @@ These methods present several constraints for the current application. \gls{smaa
 
 The \gls{upmavt} methodology addresses these limitations by (i) systematically handling uncertainties across all decision components, (ii) providing \glspl{dm} with complete control over uncertainty characterization and (iii) delivering transparent results that fully preserve propagated uncertainties.
 
-Within this framework, the \gls{smc} approach serves as a consensus diagnostic tool, visually presenting expert or stakeholder agreement. This enables \glspl{dm} to identify the need for additional research, elicitation or discussion. When consensus proves satisfactory, the \gls{nsmc} method generates conservative aggregate results, providing final evaluations while maintaining uncertainty bounds. The results of the \gls{nsmc} are presented as a heatmap showing the probability of each alternative to have a certain position in the ranking, a similar approach could be used for other decision problems. The \gls{upmavt} framework is presented in Figure \ref{fig:uncertainty_propagation_workflow}, while the more general procedure, that will be applied in the case study presented in the next chapter, is summarized in Figure \ref{fig:case_study_workflow}. The developed code will be made available as open-source is the near future.
+Within this framework, the \gls{smc} approach serves as a consensus diagnostic tool, visually representing expert or stakeholder agreement. This allows \glspl{dm} to identify areas requiring further research, elicitation, or discussion. When consensus is satisfactory, the \gls{nsmc} method generates conservative aggregate results, delivering final evaluations while retaining uncertainty bounds. The \gls{nsmc} results are presented as a heatmap, showing the probability of each alternative achieving a specific rank.
 
-\River{All these work flow figures' resolution can be higher}
-\River{These two figures need to be further introduced in the text.}
+The \gls{upmavt} framework is illustrated in Figure \ref{fig:uncertainty_propagation_workflow}, which details the sources of uncertainty in both criterion data and elicitation results, as well as their propagation through the \gls{mc} code. Pseudocode for the two methods (\gls{smc} and \gls{nsmc}) is also included to illustrate how the uncertainties are propagated.
+
+The general procedure applied to the case study (Section \ref{sec:case_study}) is summarised in Figure \ref{fig:case_study_workflow}. This figure outlines the \gls{mcda} process, from alternative selection and criterion definition to data collection, uncertainty characterization, qualitative elicitation, and the final application of the \gls{upmavt} framework to obtain results.
+
 \begin{figure}[p]
 \centering
 \vspace*{\fill}
-\includegraphics[width=\textwidth,height=0.9\textheight,keepaspectratio]{./imgs/UP-MAVT_workflow.png}
+\includegraphics[width=\textwidth,height=0.9\textheight,keepaspectratio]{./imgs/UP-MAVT_workflow.pdf}
 \vspace*{\fill}
 \caption{Uncertainty Propagation Workflow in UP-MAVT}
 \label{fig:uncertainty_propagation_workflow}
@@ -359,7 +360,7 @@ Within this framework, the \gls{smc} approach serves as a consensus diagnostic t
 \begin{figure}[p]
 \centering
 \vspace*{\fill}
-\includegraphics[width=\textwidth,height=0.9\textheight,keepaspectratio]{./imgs/Case_study_WF.png}
+\includegraphics[width=\textwidth,height=0.9\textheight,keepaspectratio]{./imgs/Case_study_WF.pdf}
 \vspace*{\fill}
 \caption{Case Study Workflow}
 \label{fig:case_study_workflow}
