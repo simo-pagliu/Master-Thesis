@@ -259,7 +259,7 @@ On a different note, several challenges emerge as soon as qualitative elements c
 \subsection{Efficient Expert Elicitation for Qualitative Information}
 \label{sec:qi}
 
-For qualitative indicators and value functions, this study, instead of relaying on multiple opinions from the start, employs a single expert to carry the "first elicitation" of all qualitative information. Subsequent experts then review the results rather than replicate the complete elicitation process. These reviewers indicate their agreement or disagreement with the initial results and provide alternative perspectives when discrepancies exist. The resulting diversity of opinions forms the basis for quantifying uncertainty around the first elicitation.
+For qualitative indicators and value functions, this study, instead of relaying on multiple opinions from the start, employs a single expert to carry the “first elicitation” of all qualitative information. Subsequent experts then review the results rather than replicate the complete elicitation process. These reviewers indicate their agreement or disagreement with the initial results and provide alternative perspectives when discrepancies exist. The resulting diversity of opinions forms the basis for quantifying uncertainty around the first elicitation.
 
 Consider a simplified example where the main expert provides a qualitative judgment on a 1-to-5 scale, selecting a value of 4. Five additional experts then review this initial assessment, either confirming the original evaluation or proposing alternatives (Table \ref{tab:example_elicitiation_qualitative} provides an example). In this hypothetical scenario, two experts agree with the initial judgment while three suggest different values. From this information, it is possible to construct a distribution (Table \ref{tab:example_elicitiation_qualitative_proability}) that can be propagated through the rest of the analysis. 
 
@@ -326,7 +326,7 @@ A_i = \sum_{j=1}^N w_j \cdot v_j(x_{ij})
 
 In practice, the most convenient way to properly propagate diverse distributions in \gls{upmavt} is by means of \gls{mc} simulations. \gls{mc} codes rely on repeated random sampling, making them particularly valuable for complex systems where capturing the full range of possible outcomes is essential. In this context, rather than relying on fixed or deterministic values, a \gls{mc} code enables sampling from the actual distributions of weights, value functions, and input data, ensuring a robust representation of their variability. To this end, two approaches have been identified:
 \begin{itemize}
-      \item \gls{smc}: Each "opinion" from the elicitation process is preserved as independent. Results are presented per expert or, more generally, per stakeholder.
+      \item \gls{smc}: Each “opinion” from the elicitation process is preserved as independent. Results are presented per expert or, more generally, per stakeholder.
       \item \gls{nsmc}: Introduces variability by sampling uncertain information from any possible opinion, therefore presenting a single value distribution per each alternative that aggregates all points of view.
 \end{itemize}
 
@@ -340,7 +340,7 @@ Within this framework, the \gls{smc} approach serves as a consensus diagnostic t
 
 The \gls{upmavt} framework is illustrated in Figure \ref{fig:uncertainty_propagation_workflow}, which details the sources of uncertainty in both criterion data and elicitation results, as well as their propagation through the \gls{mc} code. Pseudocode for the two methods (\gls{smc} and \gls{nsmc}) is also included to illustrate how the uncertainties are propagated.
 
-The general procedure applied to the case study (Section \ref{sec:case_study}) is summarised in Figure \ref{fig:case_study_workflow}. This figure outlines the \gls{mcda} process, from alternative selection and criterion definition to data collection, uncertainty characterization, qualitative elicitation, and the final application of the \gls{upmavt} framework to obtain results.
+The general procedure applied to the case study (Section \ref{sec:case_study}) is summarized in Figure \ref{fig:case_study_workflow}. This figure outlines the \gls{mcda} process, from alternative selection and criterion definition to data collection, uncertainty characterization, qualitative elicitation, and the final application of the \gls{upmavt} framework to obtain results.
 
 \begin{figure}[p]
 \centering
@@ -362,8 +362,12 @@ The general procedure applied to the case study (Section \ref{sec:case_study}) i
 \end{figure}
 \clearpage
 
-\subsection{Consensus in Multi Group Decision-Making}
+\subsection{Consensus in Group Decision-Making}
 
-Real-world applications of \gls{mcda} typically involve decision-making processes among multiple stakeholders which could include individuals, organisations, or even more generalized groups of people (inhabitants of a neighbourhood, workers in a factory, etc.). In these participatory contexts, the goal often centres on achieving consensus through iterative discussions and revisions of elicited preferences. Such approach is particularly relevant to public participation, where transparency and collective agreement are essential. However, when the objective is less participatory, structured methods such as \gls{cmaa} or \gls{smaa} (discussed in Section \ref{sec:uncertanty_propagation_mcda}) are used to aggregate and analyse opinions systematically.  
+Real-world applications of \gls{mcda} often involve decision-making processes among diverse stakeholders, which could include individuals, organizations, or even more broader groups (e.g.,  local communities or industrial workers). In such participatory contexts, \gls{mamca} is frequently used  to account for  varying perspective from distinct actors \cite{Huang2024}.
+
+In participatory context, the goal often centres on achieving consensus through iterative discussions and revisions of elicited preferences. This approach, called consensus-reaching process, is particularly relevant to public participation, where transparency and collective agreement are essential.  Proposed methods for facilitating consensus vary: some focused on minimization of one of the components of the analysis \cite{4696004}, while others solve inverse optimization problems \cite{ROLAND20132764, Huang02012021}.
+
+However, when the decision problem is not participatory, structured methods such as \gls{cmaa} or \gls{smaa} (discussed in Section \ref{sec:uncertanty_propagation_mcda}) are used to aggregate and analyse opinions systematically.  
 
 This study aligns with the latter approach, focusing on expert opinions to determine the optimal reactor model for deployment. The broader policy question of whether to deploy a reactor in the first place is assumed to have been resolved beforehand. While unanimity among experts strengthens the validity of the results, stakeholder negotiation is not required for the scope of this analysis.
