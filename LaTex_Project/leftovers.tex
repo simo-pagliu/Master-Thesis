@@ -207,3 +207,56 @@ To establish an upper benchmark hydroelectric plants were included in the compar
 
 
 \paragraph{Commissioning Time} follows similar considerations to the previous paragraph, recent nuclear installations have suffered significant delays during construction. To esemplify this we will report both the planned commissioning time as well as the last unit commissioning time for each design. Information on three large reactors comes from \cite{nea2020unlocking} while estimates for the three \glspl{smr} come from manufacturer claims or related documents \cite{GEVernova_Nuclear_2025, RollsRoyce_SMR_Approach_2025, IEEFA_UAMPS_Talking_Points_2023}.
+
+
+\section{Suggestions for future works}
+\label{sec:suggestions}
+In this section, limitations of the present study and consequent suggestions for future improvements and extensions to this work are provided. These suggestions are divided into three categories: improvements to the case study, improvements to the elicitation process, and improvements to the \gls{upmavt} method. Further suggestions that emerged during the development of this thesis but were considered out of scope are collected in Appendix~\ref{sec:appendix_suggestions}.
+
+\subsection{Improvements for future case studies}
+This analysis adopted a conservative approach by relying on current data for key indicators. Future work could enhance predictive value by incorporating forecasted trajectories for emissions, costs, electricity prices, and demand, as well as quantitative risk assessments and market projections. Such improvements would better capture the dynamic nature of broad energy systems.
+
+For potential siting integration, the following indicators are recommended:
+
+\begin{itemize}
+    \item Landscape impact (social perspective)
+    \item Grid integration requirements (technical)
+    \item Demand proximity (technical/economic)
+    \item Local employment potential (social)
+    \item National economic development impact (economic)
+    \item Industrial proximity for construction logistics
+    \item Water system impacts (agency assessment perspective)
+    \item Land use changes (pre-construction baseline)
+    \item Ancillary infrastructure requirements (qualitative assessment)
+\end{itemize}
+
+Biodiversity impacts are intentionally excluded, on the assumption that preliminary site screening would eliminate protected areas and high-value ecosystems from consideration. All environmental indicators should reflect regulatory agency perspectives rather than public perception metrics.
+
+At the national level, incorporating an import-reduction objective could yield valuable strategic insights. This would enable direct comparison of deployment configurations, such as evaluating a single large reactor against several \glspl{smr} delivering equivalent capacity, while maintaining focus on energy security outcomes.
+
+\subsection{Improvements on the Elicitation process}
+The most significant potential improvement to the elicitation process would be developing interactive software to enable remote, self-paced expert participation, reduced analyst supervision requirements and expanded expert panel capacity
+
+Such a system would simultaneously reduce participant burden and enhance robustness of results through broader engagement of specialists.
+
+\paragraph{Effectiveness of correction approach to value function elicitation}
+The initial “first elicitation” required 3.5 hours, while subsequent sessions averaged under 2.5 hours, validating the efficiency gains predicted in Sections~\ref{sec:value_functions} and~\ref{sec:qualitative_indicators_uncertanty} when using a baseline elicitation as reference.
+
+\paragraph{Criticalities among qualitative indicators}
+Expert feedback highlighted two qualitative indicators requiring particular attention. The “design complexity” metric faced criticism for its qualitative nature, with specialists suggesting it could be quantified through objective parameters like safety system counts, modularity degrees, and redundancy levels. The “construction complexity” indicator, initially presented as country-dependent, was judged by most to be design-driven rather than location-specific. 
+
+\paragraph{Effectiveness of the PILE-BWT graphical support}
+The digital interface significantly facilitated the elicitation process, though expert guidance by the analyst remained essential for proper method application. The primary challenge was the inherent difficulty of quantifying pairwise comparisons, a task demanding substantial cognitive effort that should be accounted for in session planning.
+
+\paragraph{Time-saver range adjustment on PILE-BWT results requires further analysis for validation}
+A methodological compromise was necessary for the \gls{pilebwt} process. Ideally, comparisons should have been country-specific to account for varying indicator ranges (country-dependent indicators). To balance rigour with practical constraints, all comparisons used unified ranges spanning minimum-maximum values across all countries. Post-elicitation, country-specific values were derived through linear mapping to preserve relative relationships. This approach maintains value function validity within each national context, unlike range clipping that could distort relationships. While no significant bias is expected from this simplification, dedicated validation studies would be valuable to confirm this assumption.
+
+\paragraph{Inconsistency Management in the PILE-BWT results}
+The weight spaces produced by the \gls{pilebwt} method by means of optimization models, proved sensitive to even minor judgment inconsistencies. This analysis enforced cardinal consistency, requiring consistent indicator ordering between best and worst comparisons. For experts E2 and E4, marginal inconsistencies (e.g., declared 0.42 when $\geq$ 0.45 was required) were resolved through minimal judgment adjustments (to 0.45 in this case). Expert E1 presented more substantial inconsistencies that resisted simple correction, resulting in expanded, and clearly unreasonable, weight spaces. It is important to note that the present \gls{nsmc} results assign equal influence to all experts, the author suggests future studies to explore opinion weight adjustments based on consistency metrics.
+
+\subsection{Methodological Enhancements for UP-MAVT}
+The most valuable enhancement to \gls{upmavt} would be the implementation of uncertainty tracking. This would enable targeted uncertainty mitigation and more transparent results. The tracking framework should aim to document uncertainty origins, trace its propagation pathways and quantify contribution magnitudes.
+
+Development of formal consistency-based weighting mechanisms for expert inputs could substantially improve result reliability, particularly in multi-stakeholder contexts where specialist perspectives vary in coherence.
+
+Finally, the author suggests exploring the extension of uncertainty propagation techniques to other \gls{mcda} frameworks
