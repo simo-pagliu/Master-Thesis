@@ -1,28 +1,28 @@
-\section{Conclusions}
+\chapter{Conclusions}
 \label{sec:conclusions}
 This thesis developed and applied the \gls{upmavt} framework to evaluate nuclear reactor deployment strategies in France, Italy, Poland, and Switzerland. The work addresses the challenge of strategic energy decision-making under deep uncertainty by explicitly accounting for both preference subjectivity and data uncertainty.
 
-\subsection{Methodological Contribution}
+\section{Methodological Contribution}
 The primary contribution is the \gls{upmavt} framework, which systematically propagates uncertainty through the entire decision analysis pipeline. It combines uncertain input data, qualitative indicators derived from expert judgment, uncertain weights elicited via the \gls{pilebwt} method, and stochastic Monte Carlo procedures to generate probabilistic rankings. The thesis also introduces a robustness analysis procedure to examine the influence of aggregation methods, the presence of dominant alternatives, and the degree of consensus among experts.
 
-\subsection{Case Study Findings}
+\section{Case Study Findings}
 The analysis produced a robust and counterintuitive result: large reactor designs consistently outperformed \glspl{smr} across all four countries and expert assessments. This preference remained stable across varying weight assignments and aggregation methods, confirming it as a reflection of genuine expert consensus rather than an artefact of the methodology.
 
 The dominance of large reactors was driven by their advantages in licensing, supplier availability, and lower complexity, all of which favoured established designs over emerging alternatives. Expert interviews highlighted that \glspl{smr} face deployment barriers not due to technical limitations but because of their lack of operational demonstration. Experts suggested that \glspl{smr} may find more suitable applications in private-sector contexts, such as industrial process heat or remote energy systems, rather than central grid integration.
 
 Among large reactor options, Western designs like the \gls{epr} and \gls{ap} were consistently preferred, while the \gls{apr} encountered perceived deployment challenges in European markets despite its strong technical performance. The study also found that partially compensatory aggregation methods, such as the geometric and harmonic mean, aligned more closely with expert preferences than fully compensatory approaches like the weighted sum.
 
-\subsection{Software Tools}
+\section{Software Tools}
 A significant practical outcome of this thesis is the development of open-source tools to support the \gls{upmavt} framework. The elicitation interfaces for value functions, qualitative indicators and weights, provide intuitive graphical support that reduce elicitation time and improve data quality. These, alongside the complete \gls{upmavt} analysis codebase, are being prepared for public release to facilitate wider adoption of the uncertainty propagation method.
 
-\subsection{Limitations and Future Research}
+\section{Limitations and Future Research}
 \paragraph{Case Study Limitations}
 The analysis took a conservative approach by relying on current data for key indicators. Future work could enhance its scope by incorporating forecasted trajectories for emissions, costs, electricity prices, and demand, better capturing the dynamic nature of energy systems. Additionally, site-specific analyses would benefit from expanded indicators, including landscape impact, grid integration requirements, demand proximity, local employment potential, and water system impacts. At the national level, introducing import-reduction objectives would allow direct comparisons of deployment configurations, such as evaluating a single large reactor against multiple \glspl{smr} providing equivalent capacity.
 
 \paragraph{Elicitation Process Refinements}
 The most impactful improvement to the elicitation process would be the development of interactive software to enable remote, self-paced expert participation. This would reduce the need for analyst supervision while expanding the expert panel capacity, ultimately strengthening result robustness through broader specialist engagement.
 
-A key challenge observed was the sensitivity of the \gls{pilebwt} method to expert judgment inconsistencies. Despite efforts, even minor inconsistencies led to unreasonably wide weight spaces, requiring manual adjustments in some instances. Future work should prioritise formal consistency-based weighting mechanisms to weight expert inputs, and enhanced numerical stability in the problem formulation.
+A key challenge observed was the sensitivity of the \gls{pilebwt} method to expert judgment inconsistencies. Despite efforts, even minor inconsistencies led to unreasonably wide weight spaces, requiring manual adjustments in some instances. Future work should prioritize formal consistency-based weighting mechanisms to weight expert inputs, and enhanced numerical stability in the problem formulation.
 
 \paragraph{UP-MAVT Enhancements}
 The most valuable future enhancement would be the implementation of comprehensive uncertainty tracking, which would document the origins of uncertainty, trace its propagation pathways, and quantify its magnitude. This would enable targeted uncertainty mitigation and improve the transparency of the results.

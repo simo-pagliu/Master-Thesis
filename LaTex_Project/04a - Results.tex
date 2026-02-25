@@ -49,12 +49,12 @@ Figure~\ref{fig:quick_examples} illustrates the qualitative assessment results f
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.75\linewidth]{PO/rankings/Design_Complexity_values.pdf}
-	\caption{Values for the qualitative indicator "Design Complexity".}
+	\caption{Values for the qualitative indicator Design Complexity, which are \textbf{inversely scaled}: higher scores indicate lower complexity and thus more desirable alternatives.}
 	\label{fig:quick_examples}
 \end{figure}
 
 \subsubsection{Representative elicitation outputs}
-Figure~\ref{fig:vf_examples} presents the value functions elicited from the four experts for the "Net Power Output" indicator. The horizontal axis shows the indicator's raw values (net power output in MWe), while the vertical axis displays the normalized value function output (0 to 1 scale). Each coloured curve represents one expert's preference structure, revealing divergence in how experts value different power output levels. Figure~\ref{fig:weight_space_results} shows weight elicitation outcomes presenting the feasible weight space, explored via differential evolution (SciPy implementation \cite{Storn1997, scipyDE2026}). The horizontal axis represents the allowable weight range (0 to 1), and the vertical axis lists all criteria; each horizontal bar shows the feasible weight interval for that criterion. Figure~\ref{fig:consistency_results} presents the consistency plots, which compare the declared pairwise comparison ratios (obtained from elicited data) with the ratios between the optimized weights (results of the optimization model). For each pairwise comparison, the plot shows two bars: the first (green) represents the declared ratio from the expert, while the second (orange) shows the computed ratio from optimized weights with error bars indicating $\pm \sigma$ to quantify solution variability. Good consistency is demonstrated when the declared value falls within the error bars of the computed ratio. This representation allows for visual assessment of consistency while also taking into account the inherent uncertainty of the PILE-BWT results.
+Figure~\ref{fig:vf_examples} presents the value functions elicited from the four experts for the "Net Power Output" indicator. The horizontal axis shows the indicator's raw values (net power output in MWe), while the vertical axis displays the normalized value function output (0 to 1 scale). Each coloured curve represents an expert’s preference structure, illustrating divergent valuations of power output levels. While most experts favour higher nameplate capacities, Expert E9 assigns equal value to all capacities, indicating no preference. Among the remaining three experts, opinions split: two advocate a linear relationship (i.e., "the larger, the better"), whereas the last one (E4) consider capacities above 1000 MWe equally valuable. Figure~\ref{fig:weight_space_results} shows weight elicitation outcomes presenting the feasible weight space, explored via differential evolution (SciPy implementation \cite{Storn1997, scipyDE2026}). The horizontal axis represents the allowable weight range (0 to 1), and the vertical axis lists all criteria; each horizontal bar shows the feasible weight interval for that criterion. Figure~\ref{fig:consistency_results} presents the consistency plots, which compare the declared pairwise comparison ratios (obtained from elicited data) with the ratios between the optimized weights (results of the optimization model). For each pairwise comparison, the plot shows two bars: the first (green) represents the declared ratio from the expert, while the second (orange) shows the computed ratio from optimized weights with error bars indicating $\pm \sigma$ to quantify solution variability. Good consistency is demonstrated when the declared value falls within the error bars of the computed ratio. This representation allows for visual assessment of consistency while also taking into account the inherent uncertainty of the PILE-BWT results.
 
 \begin{figure}[htbp]
 	\centering
@@ -72,8 +72,10 @@ Figure~\ref{fig:vf_examples} presents the value functions elicited from the four
 
 \begin{figure}[p]
 	\centering
+	%\includegraphics[width=\textwidth,keepaspectratio]{4/ratio_comparison_CH.pdf}
 	\includegraphics[angle=90,height=\textheight,keepaspectratio]{4/ratio_comparison_CH.pdf}
-	\caption{Consistency plot for CH, from expert E4.}
+	
+    \caption{Consistency plot for CH, from expert E4.}
 	\label{fig:consistency_results}
 \end{figure}
 
@@ -101,7 +103,7 @@ Ranking heatmaps are reported for each country across the three aggregation meth
     \subfloat[\gls{sum}]{\includegraphics[width=0.32\linewidth]{Phase1_RandomWeights_IT_weighted_sum_20260128_170536_heatmap.pdf}}\hfill
     \subfloat[\gls{geo}]{\includegraphics[width=0.32\linewidth]{Phase1_RandomWeights_IT_geometric_mean_20260128_170804_heatmap.pdf}}\hfill
     \subfloat[\gls{har}]{\includegraphics[width=0.32\linewidth]{Phase1_RandomWeights_IT_harmonic_mean_20260128_170650_heatmap.pdf}}
-    \caption{NSMC ranking heatmaps for Italy under random weight sampling across aggregation methods, demonstrating persistent large reactor dominance.}
+    \caption{NSMC ranking heatmaps for Italy under random weight sampling across aggregation methods, demonstrating persistent large reactor dominance. Columns represent alternatives, rows denote ranking tiers, and cells coloured in darker shades indicate higher probabilities of an alternative achieving a given rank.}
     \label{fig:random_weights_italy}
 \end{figure}
 

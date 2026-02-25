@@ -1,3 +1,4 @@
+\label{sec:literature}
 In this chapter, a historical overview of nuclear power development is presented, followed by a review of decision-support methodologies relevant to nuclear energy deployment decisions. The literature review identifies gaps in existing research, establishing the foundation for the current study.
 
 \section{A brief History of Nuclear Power}
@@ -145,7 +146,7 @@ In contrast, European researchers developed non-compensatory methods based on th
 
 \subsection{Relevant Studies}
 \label{sec:relevant_studies}
-A literature review, targeted at studies applying \gls{mcda} to nuclear power decision-making, reveals several methodological approaches:
+A literature review, targeted at studies applying \gls{mcda} to nuclear power decision-making, reveals several methodological approaches.
 
 Site selection studies represent the most common application, typically employing \gls{gis}-based software, to evaluate potential locations for new nuclear installations within limited geographical regions. These analyses frequently incorporate quantitative non-technical factors such as population proximity \cite{DAMOOM2019110, BASEGMEZ2025105897}. Abdullah et al. (2025) extend this approach by including social dimensions such as public acceptance and tourism impacts, which pose challenges for quantification \cite{ABDULLAH2025105626}. Notably, Devanand et al. (2019) develop an algebraic optimization model to identify optimal \gls{smr} locations in Singapore, though like most site-focused studies, they favour a design without systematic comparison \cite{DEVANAND2019339}.
 
@@ -238,3 +239,18 @@ The literature review reveals four gaps in nuclear energy decision-making resear
     \item Studies that do consider specific decision-making context, examine various energy generation options as broad technology categories (e.g., nuclear, solar, wind) rather than conducting detailed analyses of specific power plant designs
     \item Social dimensions are frequently overlooked or applied only to site selection criteria
 \end{itemize}
+The case study in Chapter \ref{sec:case_study} addresses these gaps by analysing specific reactor designs within a clearly defined context, while integrating sociopolitical dimensions, without requiring site-selection constraints.
+
+
+\section{Uncertainties in MCDA}
+Decision-making processes inherently involve uncertainty, stemming from input data, multi-actor dynamics, and subjective elements. While the literature recognizes the need to address uncertainty, few studies do so comprehensively. Monte Carlo methods, as noted by Ezbakhe and Pérez-Foguet (2018), are particularly effective for propagating uncertainties in \gls{mcda}. They generate full probability distributions at the cost of a higher computational effort \cite{Ezbakhe2018}. While several studies take advantage of this technique, they all focus on aggregated metrics rather than distributional insights.
+
+Feizizadeh et al. (2015) apply Monte Carlo techniques to parameter and spatial uncertainty in \gls{gis}-\gls{mcda}, visualizing results through rank statistics and sensitivity maps. While effective for spatial variability, their method emphasizes rank-based summaries rather than full distributions \cite{feizizadeh2015sensitivity}. Zheng et al. (2016) integrate socio-economic, predictive, and preference uncertainties in wastewater planning, combining \gls{smaa} (Section \ref{sec:consensus_in_dm}) with Monte Carlo simulation. Their rank acceptability indices and holistic rankings provide robust scenario analysis, but still rely on summarized outputs \cite{zheng2016scenario}. Geldermann et al. (2006) use Monte Carlo simulation to address data and parameter uncertainties. Their stacked-bar charts for worst-case, best-case, and most probable scenarios illustrate practical applications but again simplify uncertainty into aggregated forms \cite{geldermann2006multi}.
+
+From this review, two key limitations arise from the present literature:
+\begin{itemize}
+    \item Distributional uncertainty remains underexplored: most studies reduce it to ranges or confidence intervals, neglecting the depth of full probability distributions.
+    \item Open-source tools are lacking: no publicly available frameworks exist, limiting reproducibility and innovation.
+\end{itemize}
+
+This gap highlights the need for a transparent, adaptable framework that propagates uncertainty in \gls{mcda} while ensuring accessibility across decision contexts.

@@ -10,13 +10,15 @@ This analysis employs \gls{nsmc} with random weight sampled from a Dirichlet dis
 \subsubsection{Dominance Patterns}
 A dominance pattern is observed when alternatives maintain consistent rankings across varying weight assignments. Such behaviour requires the analyst to conduct a careful analysis. While such patterns may genuinely reflect superior performance of some alternatives over the others, they can also reveal latent indicator biases. For example, in this study, there is a clear preference towards large reactors as seen from Figures \ref{fig:random_weights_italy}--\ref{fig:nsmc_rankings_geo_all}.
 
-This is partially a consequence of the criterion “Net Power Output” which was expected to favour \glspl{smr} in contexts like Switzerland, but instead, it systematically advantaged large reactors. Contrary to initial expectations, all experts preferred large-scale solutions, arguing that nuclear power better serves national energy strategies as a large-scale utility power source. Multiple experts suggested that \glspl{smr} will be successful in future applications within the private sector (industrial process heat or remote energy systems) rather than central grid integration. It is therefore safe to conclude that the observed dominance of large reactors is a genuine reflection of expert judgments and not an artefact of indicator bias.
+This is partially a consequence of the criterion “Net Power Output” criterion, which was expected to favour \glspl{smr} in context like Switzerland, but instead consistently advantaged large reactors. Contrary to initial assumptions, all experts preferred large-scale solutions, arguing that nuclear power’s primary value lies in its role as a stable, large-scale baseload source for national energy strategies, even at the expense of flexibility or grid adequacy.
+
+Critically, the value function elicitation for this indicator explicitly directed experts to evaluate performance in the context of the country’s 2024 grid adequacy and flexibility needs, rather than absolute terms. To ground their judgments in real-world constraints, they were provided with detailed data on national electricity demand (average, distribution, and variation) cross-border exchange dynamics, and share of renewable generation.
+
+Multiple experts suggested that \glspl{smr} will be successful in future applications within the private sector (industrial process heat or remote energy systems) rather than central grid integration. It is therefore safe to conclude that the observed dominance of large reactors is a genuine reflection of expert judgments and not an artefact of indicator bias.
 
 
 \subsubsection{Aggregation Methods}
 Table~\ref{tab:aggregation_comparison} presents the modal rankings for each reactor alternative across the three aggregation approaches in the case of Italy. The \gls{epr} and \gls{ap} exhibit sensitive ranking to the aggregation method: the \gls{epr} secures first position under fully compensatory \gls{sum} aggregation but drops to second under both partially compensatory methods, in favour of the \gls{ap}. The \gls{apr} maintains remarkable stability at third position regardless of aggregation method, while the Rolls-Royce \gls{smr} fluctuates between third and fourth places. Both smaller \glspl{smr} (\gls{bwr} and NuScale) consistently occupy the lowest ranks (5th--6th), with minor positional exchange between methods.
-
-
 
 \begin{table}[htbp]
 \centering
@@ -36,7 +38,7 @@ NuScale         & 5 & 6 & 5 \\
 \end{tabular}
 \end{table}
 
-Under fully compensatory aggregation, the strong technical performance of the \gls{epr} (e.g. efficiency, discharge burnup) is able to offset its poor scores in heavily weighted criteria like capital cost or construction complexity. However, this approach may overstate the \gls{epr}’s advantages in this analysis. Partially compensatory methods better align with expert opinions gathered during interviews. In particular, the \gls{geo} method reduces dominance effects in the heatmaps. For this reason, the final discussion will focus on the \gls{geo} results.
+Under fully compensatory aggregation, the \gls{epr}’s strong technical performance (e.g., efficiency, discharge burnup) offsets its poor scores in critical, heavily weighted criteria such as capital cost and construction complexity. However, this approach risks overestimating the \gls{epr}’s overall advantage by allowing multiple lower-priority attributes to compensate for failures in high-priority ones. Partially compensatory methods, namely \gls{geo} and \gls{har}, address this by prioritizing highly valued indicators, aligning more closely with expert opinions from interviews. Because \gls{geo} also minimizes dominance effects in the rankings, the final discussion centres on its results.
 
 \subsection{Weight Elicitation and Consistency Analysis}
 \label{subsec:weight_consistency}
