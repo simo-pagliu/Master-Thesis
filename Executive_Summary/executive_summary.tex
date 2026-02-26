@@ -109,7 +109,7 @@
 \newcommand{\thirdcoadvisor}{Dr. Huang He}
 \newcommand{\thirdcoadvisoraffil}{Paul Scherrer Institute (PSI)}
 % -> academic year
-\newcommand{\YEAR}{2024-2025}
+\newcommand{\YEAR}{2025-2026}
 
 %-------------------------------------------------------------------------
 %	BEGIN OF YOUR DOCUMENT
@@ -132,30 +132,33 @@
 %-----------------------------------------------------------------------------
 \section{Introduction}
 \label{sec:introduction}
-The European energy sector is at a crossroads, reshaped by the dual imperatives of decarbonization and energy security. Recent disruptions, including the COVID-19 pandemic, the Russian invasion of Ukraine, and accelerated climate targets, have forced policymakers to reconsider the role of nuclear power in meeting these challenges. The EU’s inclusion of nuclear energy in its taxonomy of sustainable economic activities underscores this shift \cite{EUTaxonomy}.
+The European energy sector is at a crossroads, reshaped by the imperatives of decarbonization and energy security. Recent disruptions, such as the COVID-19 pandemic, the Russian invasion of Ukraine, and accelerated climate targets, have forced policymakers to reconsider the role of nuclear power as a mean to overcome these challenges. Among all evidence of this shift, the most significant is the EU’s inclusion of nuclear power in its taxonomy of sustainable economic activities \cite{EUTaxonomy}.
 
-Selecting a reactor design for deployment requires balancing technical, economic, regulatory, and social trade-offs, with decisions that will have consequences for decades. Yet such analyses are inherently uncertain. Limited data, reliance on projections, and subjective preference weightings introduce ambiguity. Without systematic treatment, this uncertainty risks compromising the transparency and robustness of policy decisions.
+The commitment to reactor design for deployment requires balancing technical, economic, regulatory, and social trade-offs, knowing the decision taken today will have consequences for decades, policymakers are likely to seek help from decision support systems. Yet such analyses are inherently uncertain: limited data, reliance on projections, and subjective preference weightings introduce ambiguity. Without systematic treatment, this uncertainty risks compromising the transparency and robustness of policy support tools undermining its usefulness.
 
-This thesis presents UP-MAVT (Uncertainty Propagated Multi-Attribute Value Theory), a framework that propagates all uncertain variables through a Multi-Criteria Decision Analysis (MCDA). Applied to six reactor designs across four European countries (Italy, France, Poland, and Switzerland), the study adopts the perspective of governmental energy planners targeting deployments in the mid-2030s.
+Although the importance of addressing uncertainty is widely recognized in Multi-Criteria Decision Analysis (MCDA), few studies propagate it comprehensively. Most reduce it to static ranges or confidence intervals rather than leveraging full probability distributions. Moreover, no open-source frameworks currently exist for this purpose, limiting reproducibility and transparency. To address this research gap, this thesis presents UP-MAVT (Uncertainty Propagated Multi-Attribute Value Theory), a framework that propagates all uncertain variables in a MAVT framework. 
 
-The work addresses two gaps in the literature. First, while MCDA studies on nuclear power are common, they typically focus on site selection rather than comparing specific reactor models within a defined decision context. Those that do compare technologies either contrast broad categories, such as nuclear versus renewables, or compare different technologies e.g. PWR versus MSR. Second, although the importance of addressing uncertainty is widely recognized in MCDA, few studies propagate it comprehensively. Most reduce it to static ranges or confidence intervals rather than leveraging full probability distributions. Moreover, no open-source frameworks currently exist for this purpose, limiting reproducibility and transparency.
+The method is then applied to a case study designed to fill another literature gap: while MCDA studies on nuclear power are common, they typically focus either on site selection problems or technology assessment (e.g. Solar vs Nuclear or HTGR vs MSR). Therefore, there is no study that compares specific reactor models within a well-defined decision context. In this thesis we evaluate six reactor designs across four European countries (Italy, France, Poland, and Switzerland), adopting the perspective of governmental energy planners targeting deployments in the mid-2030s.
 
 
 
 %-----------------------------------------------------------------------------
 % METHODOLOGY
 %-----------------------------------------------------------------------------
-\newpage
 \section{Methodology}
 \label{sec:methodology}
 
 \subsection{Multi-Attribute Value Theory}
-The analysis builds on MAVT, a value-focused approach to decision-making introduced by Keeney~\cite{KEENEY1996537}. MAVT centres on modelling preferences through value functions $v_j(x)$, which are able to capture non-linear relationships between indicator values and their perceived worth, and {weights} $w_j$, which represent the relative importance among criteria. Its explicit structure and transparency~\cite{SCHUWIRTH2012472} make it well suited for the methodological extension proposed in this work.
+This analysis adopts Multi-Attribute Value Theory (MAVT), a preference-modelling framework introduced by Keeney~\cite{KEENEY1996537} that quantifies decision-makers’ values through functions $v_j(x)$, which are able to capture non-linear relationships between indicator values and their perceived worth. To address uncertainty in preference elicitation, experts self-assessed their confidence on a 0–4 scale, which was used to introduce controlled deviations around the elicited points. The simple mathematical structure and transparency~\cite{SCHUWIRTH2012472} of the MAVT framework was deemed well suited for the methodological extension proposed in this work.
 
-Indicators were structured using a bottom-up approach: starting from differentiating factors among the six reactor alternatives and aggregating them into four high-level groups: Technical, Feasibility, Economic, and Social, for a total of 15 indicators. Of these, 5 are qualitative and were evaluated through expert judgment. For the quantitative indicators, value functions were elicited using the mid-value splitting technique. Weights were determined using PILE-BWT (Pivot-Linked Elicitation for Hierarchical Best-Worst Tradeoff)~\cite{Huang2026}, a state-of-the-art method for eliciting weights in hierarchical decision contexts that also provides uncertainty ranges for the weights.
+\subsection{PILE-BWT Method for Weight Elicitation}
+Expert elicitation of the importance weights $w_j$, a state-of-the-art method called PILE-BWT (Pivot-Linked Elicitation for Hierarchical Best-Worst Tradeoff)~\cite{Huang2026} was employed. This approach provides uncertainty ranges for each criteria weight, making it particularly suitable for the UP-MAVT framework. 
+
+\subsection{Qualitative Indicators}
+Of the 15 indicators in the case study, five were qualitative and required expert assessment. A novel elicitation procedure was designed: experts first ranked the alternatives, then adjusted the value functions to reflect differences between tiers in the ranking. As with quantitative indicators, they self-assessed their confidence on a 0–4 scale, introducing controlled deviations to quantify uncertainty in these qualitative judgments. This approach was well received by experts, who appreciated the intuitiveness of the method and the ability to express uncertainty in their judgments.
 
 \subsection{Uncertainty Propagation Framework}
-UP-MAVT replaces deterministic inputs with probabilistic representations, treating criterion data, value functions, and weights as distributions and propagating them via Monte Carlo simulation. The novel approach is an advance over prior studies (e.g., \cite{Ezbakhe2018}) that relied on summary statistics rather than full distributions. The generalized formulation is given by:
+The novel UP-MAVT framework replaces deterministic inputs with probabilistic representations, treating criterion data, value functions, and weights as distributions and propagating them to output distributions. Unlike prior studies (e.g., \cite{Ezbakhe2018}) that relied on summary statistics, this method leverages the information of complete distributions. The generalized formulation is given by:
 
 \begin{multline}
 \text{PDF}_{A_i}(a) = \sum_{j=1}^N \iiint \delta\left(a - v_j(x_{ij})w_j\right) \\
@@ -163,20 +166,12 @@ UP-MAVT replaces deterministic inputs with probabilistic representations, treati
 \label{eq:mavt_up}
 \end{multline}
 
-Two complementary approaches are employed:
-\begin{itemize}
-    \item {Strict Monte Carlo (SMC)}: preserves each expert's opinion as independent, serving as a consensus diagnostic tool.
-    \item {Non-Strict Monte Carlo (NSMC)}: samples from all possible opinions, generating conservative aggregate probabilistic rankings.
-\end{itemize}
+In practice, the propagation is achieved by Monte Carlo simulation, to this goal two complementary approaches are employed: Strict Monte Carlo (SMC) which preserves each expert's opinion as independent, serving as a consensus diagnostic tool; and Non-Strict Monte Carlo (NSMC) which samples from all possible opinions, generating conservative aggregate probabilistic rankings. The framework supports both fully compensatory (weighted sum) and partially compensatory (geometric mean, harmonic mean) aggregation methods to accommodate different compensation philosophies.
 
-To accommodate different compensation philosophies, the framework supports fully compensatory (weighted sum) and partially compensatory (geometric mean, harmonic mean) aggregation methods.
+The UP-MAVT workflow (Figure~\ref{fig:workflow}) illustrates the sources of uncertainties from criterion data, value functions, and weights and how they are propagated through the Monte Carlo code though the two methods.
 
-The UP-MAVT workflow (Figure~\ref{fig:workflow}) illustrates how uncertainties from criterion data, value functions, and weights are propagated through the Monte Carlo code to yield probabilistic rankings.
-
-\subsection{Expert Elicitation and Uncertainty Characterization}
-For qualitative indicators and value functions, a time-efficient approach was developed: one expert performed a complete ``first elicitation,'' and subsequent experts reviewed and modified the baseline rather than replicating the full process. The diversity of opinions forms the basis for quantifying uncertainty. For each qualitative judgment, a discrete probability distribution is constructed from the pool of expert assessments. Additionally, experts can self-assess their {confidence level} on a 0--4 scale, which introduces controlled deviations from elicited points.
-
-A suite of graphical tools was developed to support all three elicitation stages: qualitative indicator ranking and value function adjustment, quantitative value function elicitation via mid-value splitting, and weight elicitation using the BWT method with real-time consistency checking.
+\subsection{Elicitation Support Tools}
+A suite of graphical tools was developed to assist experts across all elicitation stages: value functions, qualitative indicators, and weights. Designed to reduce practitioner burden, improve transparency, and enhance engagement, these tools also cut elicitation time while raising data quality. Experts praised their intuitiveness and effectiveness in capturing judgments. The tools will be released publicly alongside the UP-MAVT codebase to support broader adoption.
 
 %-----------------------------------------------------------------------------
 % CASE STUDY
@@ -184,16 +179,16 @@ A suite of graphical tools was developed to support all three elicitation stages
 \section{Case Study Design}
 \label{sec:case_study}
 
-The analysis compares six reactor designs, three Generation~III+ (EPR-1750, APR-1400, AP1000) and three SMRs (BWRX-300, Rolls-Royce SMR, NuScale VOYGR-6), across four European countries deliberately selected to capture a wide range of energy scenarios:
+The analysis compares six light-water reactor designs, three Generation~III+ and three SMRs, across four European countries deliberately selected to capture a wide range of energy scenarios:
 
 \begin{itemize}
-    \item {Italy}: no operational nuclear fleet, high import dependence ($\sim$30\% of demand), current government exploring reintroduction.
+    \item {Italy}: no operational nuclear fleet, high import dependence ($\sim$30\% of demand), currently exploring reintroduction.
     \item {Poland}: strong public support for nuclear, 55\% coal-based generation, highest GHG emission intensity in Europe.
     \item {Switzerland}: uncertain public support, low demand, generation dominated by renewables (65\%).
     \item {France}: 67\% nuclear share in generation, established industrial base.
 \end{itemize}
 
-Reactor selection followed systematic screening of the IAEA PRIS and ARIS databases, excluding designs from non-allied suppliers (Russia, China, India), non-commercial or regulatory-lagging designs, and prototypes. Table~\ref{tab:reactors} summarizes the final selection.
+The selection of reactor designs was determined from systematic screening of the IAEA PRIS and ARIS databases, excluding designs from non-allied suppliers (Russia, China, India), non-commercial or regulatory-lagging designs, and prototypes. Table~\ref{tab:reactors} summarizes the final selection.
 
 \begin{table}[H]
 \centering
@@ -214,24 +209,23 @@ NuScale & NuScale Power (USA) \B \\
 \end{tabular}
 \end{table}
 
-The 15~indicators span four groups: \textit{Technical} (thermal efficiency, discharge burnup, net power output, load following capabilities), \textit{Feasibility} (design maturity, licensing status, supplier availability), \textit{Economic} (capital investment, design/construction complexity, operative costs), and \textit{Social} (electricity market benefit, GHG reduction, perceived safety, nuclear waste). Five of these indicators are qualitative, requiring expert judgment for their assessment.
+The 15~indicators span four groups: \textit{Technical} (thermal efficiency, discharge burnup, net power output, load following capabilities), \textit{Feasibility} (design maturity, licensing status, supplier availability), \textit{Economic} (capital investment, design/construction complexity, operative costs), and \textit{Social} (electricity market benefit, GHG reduction, perceived safety, nuclear waste).
 
-Nine nuclear domain experts participated in the elicitation process. Four performed ``full elicitation'' (value functions, qualitative indicators, and weights); five additional experts participated in abbreviated sessions focused on qualitative indicator assessment only. The panel covered risk assessment, nuclear safety, energy system modelling, plant operations, construction, and project management, with experience ranging from PhD students to senior scientists and industry experts with over 20~years of experience. The first elicitation session lasted 3.5~hours, with subsequent sessions demonstrating progressive efficiency gains down to just over one hour.
-
+A total of nine experts in the nuclear domain participated in the elicitation process. Four performed ``full elicitation'' (value functions, qualitative indicators, and weights); while the remaining five experts participated in abbreviated sessions focused only on the assessment of  qualitative indicator. The panel covered risk assessment, nuclear safety, energy system modelling, plant operations, construction, and project management, with experience ranging from PhD students to senior scientists and industry veterans with over 20~years of experience.
 
 %-----------------------------------------------------------------------------
 % RESULTS
 %-----------------------------------------------------------------------------
-\section{Results}
+\section{Results and Discussion}
 \label{sec:results}
 
-Results were aggregated using three methods: weighted sum (fully compensatory), geometric mean, and harmonic mean (partially compensatory). The geometric mean was selected for final interpretation as it penalizes poor performance in heavily weighted criteria, aligning more closely with expert opinions expressed during interviews.
+Results were aggregated using three methods: weighted sum (fully compensatory), geometric mean, and harmonic mean (partially compensatory). The geometric mean was selected for final interpretation as it penalizes poor performance the in heavily weighted criteria the most among the three methods, aligning more closely with opinions expressed by experts during interviews.
 
 \subsection{Dominance of Large Reactors}
 
-A striking and robust result emerged: large reactor designs consistently outperformed SMRs across all four countries, all expert assessments, and all aggregation methods. Contrary to initial expectations, even in Switzerland, where smaller designs were hypothesized to better match the low grid demand, all experts preferred large-scale solutions. Multiple experts argued that nuclear power's primary value lies in its role as a stable, large-scale baseload source for national energy strategies, even at the expense of flexibility. Experts suggested that SMRs may find more suitable applications in private-sector contexts (industrial process heat, remote energy systems) rather than central grid integration. The observed dominance of large reactors was also driven by their advantages in licensing readiness, supplier availability, and proven ground, all of which favour established designs over technologies lacking operational demonstration.
+A striking and robust result emerged: large reactor designs consistently outperformed SMRs across all four countries, all expert assessments, and all aggregation methods. Contrary to initial expectations, even in Switzerland, where smaller designs were expected to better match the low grid demand, all experts preferred large-scale solutions. Multiple experts argued that nuclear power's primary value lies in its role as a stable, large-scale baseload source for national energy strategies, even at the expense of flexibility. Experts suggested that SMRs may find more suitable applications in private-sector contexts (industrial process heat, remote energy systems) rather than central grid integration. The observed dominance of large reactors was also driven by their advantages in licensing readiness, supplier availability, and proven ground, all of which favour established designs over SMRs technologies which lack substantial operational demonstration.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=0.95\linewidth]{Phase3_AllMethods_IT_geometric_mean_20260127_171336_heatmap.pdf}
     \caption{NSMC ranking heatmap for Italy (geometric mean). Each column represents an alternative and each row a tier in the ranking; darker cells indicate higher probability of an alternative achieving that rank. Large reactors dominate the top positions.}
@@ -241,9 +235,9 @@ A striking and robust result emerged: large reactor designs consistently outperf
 
 \subsection{Regional Patterns and Technology Rankings}
 
-Among large reactors, the EPR-1750 and AP1000 competed for first and second place, with rank order sensitive to the aggregation method. Table~\ref{tab:modal_rankings} summarizes the modal rankings for Italy under different aggregation approaches. Under fully compensatory aggregation, the EPR-1750 secured first position due to strong technical performance (e.g. efficiency and discharge burnup), but dropped to second under partially compensatory methods where the AP1000's more balanced profile prevailed. The APR-1400 consistently ranked third, primarily due to perceived deployment challenges in the European context, including political barriers, divergent safety standards, and supply chain integration difficulties.
+Among large reactors, the EPR and AP1000 competed for first and second place, with rank order sensitive to the aggregation method. Table~\ref{tab:modal_rankings} summarizes the modal rankings for Italy under different aggregation approaches. Under fully compensatory aggregation, the EPR secured first position due to strong technical performance (e.g. efficiency and discharge burnup), but dropped to second under partially compensatory methods where the AP1000's more balanced profile prevailed. The APR-1400 consistently ranked third, primarily due to perceived deployment challenges in the European context, including political barriers, divergent safety standards, and supply chain integration difficulties.
 
-\begin{table}[H]
+\begin{table}[htbp]
 \centering
 \caption{Modal rankings for Italy (NSMC 10,000 iterations).}
 \label{tab:modal_rankings}
@@ -274,27 +268,43 @@ Subtle national variations appeared in the lower rankings: Italy and Poland both
 
 \subsection{Consensus and Uncertainty Analysis}
 
-The Strict Monte Carlo (SMC) output shows high consensus on alternative values, though the BWRX-300 and Rolls-Royce SMR showed greater divergence, with the former exhibiting two distinct probability peaks. When applying geometric mean aggregation, lower-ranked alternatives displayed narrow, low-value distributions, enabling confident elimination. In contrast, top alternatives (EPR-1750, AP1000) produced broader, flatter distributions, indicating higher decision uncertainty. Among these, the AP1000 presented the lowest risk profile, as it was the only top contender without a rising probability toward lower performance values.
+The Strict Monte Carlo (SMC) output shows high consensus on alternative values, though the BWRX-300 and Rolls-Royce SMR showed greater divergence, with the former exhibiting two distinct probability peaks. When applying geometric mean aggregation, lower-ranked alternatives displayed narrow, low-value distributions, such as those in Figure~\ref{fig:nuscale_poland}, enabling confident elimination of these low performing alternatives. In contrast, top alternatives (EPR, AP1000) produced broader, flatter distributions, indicating higher decision uncertainty, see Figure~\ref{fig:ap1000_poland}. Among these, the AP1000 presented the lowest risk profile, as it was the only top contender without a rising probability toward lower performance values.
 
 Capital investment costs, supplier availability, and complexity indicators emerged as universally critical criteria, while load-following capabilities were largely dismissed. Technical parameters (thermal efficiency, discharge burnup) were consistently deemed irrelevant from a policy perspective.
 
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\linewidth]{bad_performing_example.png}
+    \caption{SMC output for Nuscale alternative in Poland (geometric mean).}
+    \label{fig:nuscale_poland}
+\end{figure}
+
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\linewidth]{good_performing_example.png}
+    \caption{SMC output for AP1000 alternative in Poland (geometric mean).}
+    \label{fig:ap1000_poland}
+\end{figure}
+
+
 \subsection{Policy Implications}
 
-The dominance of large reactors introduces long-term grid stability considerations. As European grids integrate increasing shares of variable renewable energy, the lack of nuclear load-following flexibility could become a vulnerability. Policymakers should adopt a pan-European perspective when planning nuclear capacity expansions, prioritizing grid flexibility metrics that account for cross-border interdependencies to develop balanced deployment strategies transcending national contexts.
+The observed preference for large reactors requires scrutiny in light of long-term grid stability. As European grids integrate higher shares of variable renewable energy, low-flexibility solutions risk becoming a liability. Policymakers should therefore adopt a pan-European perspective when planning nuclear expansions, prioritizing metrics that capture cross-border interdependencies and balanced deployment strategies, transcending national contexts for the sake of grid stability and resilience.
 
 %-----------------------------------------------------------------------------
 % CONCLUSIONS
 %-----------------------------------------------------------------------------
 \section{Conclusions}
 \label{sec:conclusions}
-This thesis developed and applied the UP-MAVT framework, demonstrating that systematic uncertainty propagation across all MCDA components yields more transparent and robust decision support. The main contributions of this work are:
+This thesis developed and applied the UP-MAVT framework to a case study comparing reactor designs across multiple European countries, producing and interpreting results under deep uncertainty. The key contributions of this study are:
 \begin{enumerate}
-    \item \textbf{The UP-MAVT framework} itself, which propagates uncertainties from data, value functions, and weights simultaneously using Monte Carlo method, providing full probability distributions rather than point estimates or ranges.
+    \item \textbf{The UP-MAVT framework} itself, which propagates uncertainties from quantitative and qualitative data, value functions, and weights simultaneously using Monte Carlo method, providing full probability distributions rather than point estimates or ranges.
     \item \textbf{Open-source digital tools} for interactive elicitation of value functions, qualitative indicators, and weights with real-time consistency checking.
-    \item \textbf{A novel case study} comparing reactor designs across multiple European countries, revealing a consistent expert preference for large reactors over SMRs in grid deployment, driven primarily by feasibility and economic factors rather than technical performance.
+    \item \textbf{A novel case study} comparing reactor designs across multiple European countries, revealing a consistent expert preference for large reactors over SMRs in grid deployment, driven primarily by feasibility and politcal factors rather than technical performance.
 \end{enumerate}
 
-Future work should refine the case study by selecting a specific deployment site, allowing for the integration of site-dependent social and environmental indicators. Enhancements to the framework should include detailed uncertainty tracking to map origins and propagation pathways, while methodological expansions could explore outranking MCDA approaches. Additionally, developing remote, self-paced elicitation tools would facilitate wider expert engagement.
+Future work should refine the case study by selecting a specific deployment site, enabling the integration of site-dependent social and environmental indicators. The framework could be strengthened through detailed uncertainty tracking to map origins and propagation pathways, while methodological expansions might explore outranking MCDA approaches. To broaden expert participation, remote, self-paced elicitation tools should also be developed.
 
 %-----------------------------------------------------------------------------
 % ACKNOWLEDGEMENTS

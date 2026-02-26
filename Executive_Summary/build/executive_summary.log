@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex 2025.11.14)  25 FEB 2026 16:48
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex 2025.11.14)  26 FEB 2026 11:18
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1067,7 +1067,7 @@ d-to.pdf>
 inf-eps-converted-to.pdf Images/logo_polimi_ing_indinf.eps>
 (epstopdf)             \includegraphics on input line 46.
 Package epstopdf Info: Output file is already uptodate.
-<Images/logo_polimi_ing_indinf-eps-converted-to.pdf, id=55, 493.845pt x 227.851
+<Images/logo_polimi_ing_indinf-eps-converted-to.pdf, id=63, 493.845pt x 227.851
 26pt>
 File: Images/logo_polimi_ing_indinf-eps-converted-to.pdf Graphic file (type pdf
 )
@@ -1184,14 +1184,14 @@ f>
 (epstopdf)                    size: 40409 bytes
 (epstopdf)             Command: <repstopdf --outfile=Images/raggiera_polimi-eps
 -converted-to.pdf Images/raggiera_polimi.eps>
-(epstopdf)             \includegraphics on input line 148.
+(epstopdf)             \includegraphics on input line 151.
 Package epstopdf Info: Output file is already uptodate.
-<Images/raggiera_polimi-eps-converted-to.pdf, id=57, 502.87875pt x 502.87875pt>
+<Images/raggiera_polimi-eps-converted-to.pdf, id=65, 502.87875pt x 502.87875pt>
 
 File: Images/raggiera_polimi-eps-converted-to.pdf Graphic file (type pdf)
 <use Images/raggiera_polimi-eps-converted-to.pdf>
 Package pdftex.def Info: Images/raggiera_polimi-eps-converted-to.pdf  used on i
-nput line 148.
+nput line 151.
 (pdftex.def)             Requested size: 298.75394pt x 298.75233pt.
 [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texmf/fonts/en
 c/dvips/cm-super/cm-super-t1.enc}
@@ -1199,41 +1199,11 @@ c/dvips/cm-super/cm-super-t1.enc}
 
  <./Images/raggiera_polimi-eps-converted-to.pdf> <./Images/logo_polimi_ing_indi
 nf-eps-converted-to.pdf>]
-Underfull \hbox (badness 2460) in paragraph at lines 153--154
-\T1/cmr/m/n/10.95 ap-proach to decision-making in-tro-duced by
+Underfull \hbox (badness 1648) in paragraph at lines 152--153
+\T1/cmr/m/n/10.95 ory (MAVT), a preference-modelling frame-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 172--173
-[]\T1/cmr/m/n/10.95 To ac-com-mo-date dif-fer-ent com-pen-sa-tion
- []
-
-
-Underfull \hbox (badness 3229) in paragraph at lines 172--173
-\T1/cmr/m/n/10.95 philoso-phies, the frame-work sup-ports fully
- []
-
-
-Underfull \hbox (badness 1776) in paragraph at lines 172--173
-\T1/cmr/m/n/10.95 com-pen-satory (weighted sum) and par-tially
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 172--173
-\T1/cmr/m/n/10.95 com-pen-satory (ge-o-met-ric mean, har-monic
- []
-
-
-
-
-Underfull \hbox (badness 1168) in paragraph at lines 176--176
-|[]\T1/cmr/bx/n/12 Expert Elic-i-ta-tion and Un-cer-
- []
-
-
-Underfull \hbox (badness 2103) in paragraph at lines 187--188
-\T1/cmr/m/n/10.95 The anal-y-sis com-pares six re-ac-tor de-signs,
- []
 
 
 
@@ -1247,19 +1217,14 @@ Package fancyhdr Warning: \headheight is too small (56.9055pt):
 [2]
 
 <../UP-MAVT/results/pdfs/Phase3_AllMethods_IT_geometric_mean_20260127_171336_he
-atmap.pdf, id=111, 617.38063pt x 549.36934pt>
+atmap.pdf, id=119, 617.38063pt x 549.36934pt>
 File: ../UP-MAVT/results/pdfs/Phase3_AllMethods_IT_geometric_mean_20260127_1713
 36_heatmap.pdf Graphic file (type pdf)
 <use ../UP-MAVT/results/pdfs/Phase3_AllMethods_IT_geometric_mean_20260127_17133
 6_heatmap.pdf>
 Package pdftex.def Info: ../UP-MAVT/results/pdfs/Phase3_AllMethods_IT_geometric
-_mean_20260127_171336_heatmap.pdf  used on input line 236.
+_mean_20260127_171336_heatmap.pdf  used on input line 230.
 (pdftex.def)             Requested size: 215.50531pt x 191.76242pt.
-
-Underfull \hbox (badness 3138) in paragraph at lines 244--245
-\T1/cmr/m/n/10.95 Among large re-ac-tors, the EPR-1750 and
- []
-
 
 
 
@@ -1272,35 +1237,42 @@ Package fancyhdr Warning: \headheight is too small (56.9055pt):
 [3 <../UP-MAVT/results/pdfs/Phase3_AllMethods_IT_geometric_mean_20260127_171336
 _heatmap.pdf>]
 <../UP-MAVT/results/pdfs/Phase3_AllMethods_CH_geometric_mean_20260127_172000_he
-atmap.pdf, id=172, 617.38063pt x 549.36934pt>
+atmap.pdf, id=180, 617.38063pt x 549.36934pt>
 File: ../UP-MAVT/results/pdfs/Phase3_AllMethods_CH_geometric_mean_20260127_1720
 00_heatmap.pdf Graphic file (type pdf)
 <use ../UP-MAVT/results/pdfs/Phase3_AllMethods_CH_geometric_mean_20260127_17200
 0_heatmap.pdf>
 Package pdftex.def Info: ../UP-MAVT/results/pdfs/Phase3_AllMethods_CH_geometric
-_mean_20260127_172000_heatmap.pdf  used on input line 267.
+_mean_20260127_172000_heatmap.pdf  used on input line 261.
 (pdftex.def)             Requested size: 102.0811pt x 90.83482pt.
 <../UP-MAVT/results/pdfs/Phase3_AllMethods_FR_geometric_mean_20260127_171648_he
-atmap.pdf, id=173, 617.38063pt x 549.36934pt>
+atmap.pdf, id=181, 617.38063pt x 549.36934pt>
 File: ../UP-MAVT/results/pdfs/Phase3_AllMethods_FR_geometric_mean_20260127_1716
 48_heatmap.pdf Graphic file (type pdf)
 <use ../UP-MAVT/results/pdfs/Phase3_AllMethods_FR_geometric_mean_20260127_17164
 8_heatmap.pdf>
 Package pdftex.def Info: ../UP-MAVT/results/pdfs/Phase3_AllMethods_FR_geometric
-_mean_20260127_171648_heatmap.pdf  used on input line 268.
+_mean_20260127_171648_heatmap.pdf  used on input line 262.
 (pdftex.def)             Requested size: 102.0811pt x 90.83482pt.
 
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 275--275
+Underfull \hbox (badness 10000) in paragraph at lines 269--269
 |[]\T1/cmr/bx/n/12 Consensus and Un-cer-tainty
  []
 
-
-Underfull \hbox (badness 1052) in paragraph at lines 290--292
-\T1/cmr/m/n/10.95 This the-sis de-vel-oped and ap-plied the UP-
- []
-
+<Images/bad_performing_example.png, id=184, 744.7825pt x 437.635pt>
+File: Images/bad_performing_example.png Graphic file (type png)
+<use Images/bad_performing_example.png>
+Package pdftex.def Info: Images/bad_performing_example.png  used on input line 
+277.
+(pdftex.def)             Requested size: 215.50531pt x 126.63043pt.
+<Images/good_performing_example.png, id=186, 744.7825pt x 437.635pt>
+File: Images/good_performing_example.png Graphic file (type png)
+<use Images/good_performing_example.png>
+Package pdftex.def Info: Images/good_performing_example.png  used on input line
+ 285.
+(pdftex.def)             Requested size: 215.50531pt x 126.63043pt.
 
 
 
@@ -1312,8 +1284,15 @@ Package fancyhdr Warning: \headheight is too small (56.9055pt):
 
 [4 <../UP-MAVT/results/pdfs/Phase3_AllMethods_CH_geometric_mean_20260127_172000
 _heatmap.pdf> <../UP-MAVT/results/pdfs/Phase3_AllMethods_FR_geometric_mean_2026
-0127_171648_heatmap.pdf>]
-Underfull \hbox (badness 1810) in paragraph at lines 303--304
+0127_171648_heatmap.pdf> <./Images/bad_performing_example.png>]
+Underfull \hbox (badness 1052) in paragraph at lines 300--302
+\T1/cmr/m/n/10.95 This the-sis de-vel-oped and ap-plied the UP-
+ []
+
+
+
+
+Underfull \hbox (badness 1810) in paragraph at lines 313--314
 \T1/cmr/m/n/10.95 ENEN2plus project (HORIZON-EURATOM-
  []
 
@@ -1327,14 +1306,12 @@ Underfull \hbox (badness 1389) in paragraph at lines 4--13
 \T1/cmr/m/n/10.95 june 2021 sup-ple-ment-ing reg-u-la-tion (eu)
  []
 
-
-
 )
-<../LaTex_Project/imgs/UP-MAVT_workflow.pdf, id=288, 2421.045pt x 3197.9475pt>
+<../LaTex_Project/imgs/UP-MAVT_workflow.pdf, id=304, 2421.045pt x 3197.9475pt>
 File: ../LaTex_Project/imgs/UP-MAVT_workflow.pdf Graphic file (type pdf)
 <use ../LaTex_Project/imgs/UP-MAVT_workflow.pdf>
 Package pdftex.def Info: ../LaTex_Project/imgs/UP-MAVT_workflow.pdf  used on in
-put line 312.
+put line 322.
 (pdftex.def)             Requested size: 459.51054pt x 606.9332pt.
 
 
@@ -1350,7 +1327,7 @@ Package fancyhdr Warning: \headheight is too small (56.9055pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-1.13144pt}.
 
-[5]
+[5 <./Images/good_performing_example.png>]
 
 Package fancyhdr Warning: \headheight is too small (56.9055pt): 
 (fancyhdr)                Make it at least 58.03694pt, for example:
@@ -1369,16 +1346,16 @@ LaTeX Font Warning: Size substitutions with differences
 (Font)              up to 0.73206pt have occurred.
 
 Package rerunfilecheck Info: File `executive_summary.out' has not changed.
-(rerunfilecheck)             Checksum: D6A81B9A922EFA38B91204BAA3FA7461;2135.
+(rerunfilecheck)             Checksum: 7D4B6C606DC98FC89A6DA0CFD38AB706;2511.
  ) 
 Here is how much of TeX's memory you used:
- 31175 strings out of 473197
- 602319 string characters out of 5718604
- 1096541 words of memory out of 5000000
- 53851 multiletter control sequences out of 15000+600000
+ 31203 strings out of 473197
+ 603194 string characters out of 5718604
+ 1095541 words of memory out of 5000000
+ 53875 multiletter control sequences out of 15000+600000
  583549 words of font info for 94 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 98i,18n,101p,989b,946s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 98i,18n,101p,1005b,922s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texli
@@ -1394,10 +1371,10 @@ hare/texmf/fonts/type1/public/cm-super/sfbx1440.pfb></usr/share/texmf/fonts/typ
 e1/public/cm-super/sfrm0900.pfb></usr/share/texmf/fonts/type1/public/cm-super/s
 frm1095.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfti1095.pfb></usr/sh
 are/texmf/fonts/type1/public/cm-super/sfxc0900.pfb>
-Output written on build/executive_summary.pdf (6 pages, 1507958 bytes).
+Output written on build/executive_summary.pdf (6 pages, 1570274 bytes).
 PDF statistics:
- 1026 PDF objects out of 1200 (max. 8388607)
- 650 compressed objects within 7 object streams
- 36 named destinations out of 1000 (max. 500000)
- 139 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1046 PDF objects out of 1200 (max. 8388607)
+ 666 compressed objects within 7 object streams
+ 40 named destinations out of 1000 (max. 500000)
+ 165 words of extra memory for PDF output out of 10000 (max. 10000000)
 
