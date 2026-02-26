@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex 2025.11.14)  26 FEB 2026 11:18
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex 2025.11.14)  26 FEB 2026 13:20
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1184,14 +1184,14 @@ f>
 (epstopdf)                    size: 40409 bytes
 (epstopdf)             Command: <repstopdf --outfile=Images/raggiera_polimi-eps
 -converted-to.pdf Images/raggiera_polimi.eps>
-(epstopdf)             \includegraphics on input line 151.
+(epstopdf)             \includegraphics on input line 148.
 Package epstopdf Info: Output file is already uptodate.
 <Images/raggiera_polimi-eps-converted-to.pdf, id=65, 502.87875pt x 502.87875pt>
 
 File: Images/raggiera_polimi-eps-converted-to.pdf Graphic file (type pdf)
 <use Images/raggiera_polimi-eps-converted-to.pdf>
 Package pdftex.def Info: Images/raggiera_polimi-eps-converted-to.pdf  used on i
-nput line 151.
+nput line 148.
 (pdftex.def)             Requested size: 298.75394pt x 298.75233pt.
 [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texmf/fonts/en
 c/dvips/cm-super/cm-super-t1.enc}
@@ -1315,11 +1315,6 @@ put line 322.
 (pdftex.def)             Requested size: 459.51054pt x 606.9332pt.
 
 
-Package caption Warning: Unused \captionsetup[algorithm] on input line 24.
-See the caption package documentation for explanation.
-
-
-
 
 Package fancyhdr Warning: \headheight is too small (56.9055pt): 
 (fancyhdr)                Make it at least 58.03694pt, for example:
@@ -1335,7 +1330,12 @@ Package fancyhdr Warning: \headheight is too small (56.9055pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-1.13144pt}.
 
-[6 <../LaTex_Project/imgs/UP-MAVT_workflow.pdf>] (build/executive_summary.aux)
+[6 <../LaTex_Project/imgs/UP-MAVT_workflow.pdf>]
+
+Package caption Warning: Unused \captionsetup[algorithm] on input line 24.
+See the caption package documentation for explanation.
+
+(build/executive_summary.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
@@ -1351,7 +1351,7 @@ Package rerunfilecheck Info: File `executive_summary.out' has not changed.
 Here is how much of TeX's memory you used:
  31203 strings out of 473197
  603194 string characters out of 5718604
- 1095541 words of memory out of 5000000
+ 1096541 words of memory out of 5000000
  53875 multiletter control sequences out of 15000+600000
  583549 words of font info for 94 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -1371,7 +1371,7 @@ hare/texmf/fonts/type1/public/cm-super/sfbx1440.pfb></usr/share/texmf/fonts/typ
 e1/public/cm-super/sfrm0900.pfb></usr/share/texmf/fonts/type1/public/cm-super/s
 frm1095.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfti1095.pfb></usr/sh
 are/texmf/fonts/type1/public/cm-super/sfxc0900.pfb>
-Output written on build/executive_summary.pdf (6 pages, 1570274 bytes).
+Output written on build/executive_summary.pdf (6 pages, 1570446 bytes).
 PDF statistics:
  1046 PDF objects out of 1200 (max. 8388607)
  666 compressed objects within 7 object streams

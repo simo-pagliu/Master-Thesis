@@ -106,7 +106,7 @@
 \newcommand{\firstcoadvisoraffil}{ETH-Zurich}
 \newcommand{\secondcoadvisor}{Dr. Peter Burgherr}
 \newcommand{\secondcoadvisoraffil}{Paul Scherrer Institute (PSI)}
-\newcommand{\thirdcoadvisor}{Dr. Huang He}
+\newcommand{\thirdcoadvisor}{Dr. River Huang}
 \newcommand{\thirdcoadvisoraffil}{Paul Scherrer Institute (PSI)}
 % -> academic year
 \newcommand{\YEAR}{2025-2026}
@@ -134,9 +134,9 @@
 \label{sec:introduction}
 The European energy sector is at a crossroads, reshaped by the imperatives of decarbonization and energy security. Recent disruptions, such as the COVID-19 pandemic, the Russian invasion of Ukraine, and accelerated climate targets, have forced policymakers to reconsider the role of nuclear power as a mean to overcome these challenges. Among all evidence of this shift, the most significant is the EU’s inclusion of nuclear power in its taxonomy of sustainable economic activities \cite{EUTaxonomy}.
 
-The commitment to reactor design for deployment requires balancing technical, economic, regulatory, and social trade-offs, knowing the decision taken today will have consequences for decades, policymakers are likely to seek help from decision support systems. Yet such analyses are inherently uncertain: limited data, reliance on projections, and subjective preference weightings introduce ambiguity. Without systematic treatment, this uncertainty risks compromising the transparency and robustness of policy support tools undermining its usefulness.
+The commitment to reactor design for deployment requires balancing technical, economic, regulatory, and social trade-offs, knowing the decision taken today will have consequences for decades, policymakers are likely to seek help from multi criteria decision analysis (MCDA). Yet such analyses are inherently uncertain: limited data, reliance on projections, and subjective preference weightings introduce ambiguity. Without systematic treatment, this uncertainty risks compromising the transparency and robustness of policy support tools undermining its usefulness.
 
-Although the importance of addressing uncertainty is widely recognized in Multi-Criteria Decision Analysis (MCDA), few studies propagate it comprehensively. Most reduce it to static ranges or confidence intervals rather than leveraging full probability distributions. Moreover, no open-source frameworks currently exist for this purpose, limiting reproducibility and transparency. To address this research gap, this thesis presents UP-MAVT (Uncertainty Propagated Multi-Attribute Value Theory), a framework that propagates all uncertain variables in a MAVT framework. 
+Although the importance of addressing uncertainty is widely recognized in Multi-Criteria Decision Analysis (MCDA), few studies propagate it comprehensively. Most reduce it to static ranges or confidence intervals rather than leveraging full probability distributions. Moreover, no open-source decision support system currently exist for this purpose, limiting reproducibility and transparency. To address this research gap, this thesis presents UP-MAVT (Uncertainty Propagated Multi-Attribute Value Theory), a framework that propagates all uncertain variables in a MAVT framework. 
 
 The method is then applied to a case study designed to fill another literature gap: while MCDA studies on nuclear power are common, they typically focus either on site selection problems or technology assessment (e.g. Solar vs Nuclear or HTGR vs MSR). Therefore, there is no study that compares specific reactor models within a well-defined decision context. In this thesis we evaluate six reactor designs across four European countries (Italy, France, Poland, and Switzerland), adopting the perspective of governmental energy planners targeting deployments in the mid-2030s.
 
@@ -268,14 +268,14 @@ Subtle national variations appeared in the lower rankings: Italy and Poland both
 
 \subsection{Consensus and Uncertainty Analysis}
 
-The Strict Monte Carlo (SMC) output shows high consensus on alternative values, though the BWRX-300 and Rolls-Royce SMR showed greater divergence, with the former exhibiting two distinct probability peaks. When applying geometric mean aggregation, lower-ranked alternatives displayed narrow, low-value distributions, such as those in Figure~\ref{fig:nuscale_poland}, enabling confident elimination of these low performing alternatives. In contrast, top alternatives (EPR, AP1000) produced broader, flatter distributions, indicating higher decision uncertainty, see Figure~\ref{fig:ap1000_poland}. Among these, the AP1000 presented the lowest risk profile, as it was the only top contender without a rising probability toward lower performance values.
+The Strict Monte Carlo (SMC) output (plots of value distribution) shows high consensus on alternative values, though the BWRX-300 and Rolls-Royce SMR showed greater divergence, with the former exhibiting two distinct probability peaks. When applying geometric mean aggregation, lower-ranked alternatives displayed narrow, low-value distributions, such as those in Figure~\ref{fig:nuscale_poland}, enabling confident elimination of these low performing alternatives. In contrast, top alternatives (EPR, AP1000) produced broader, flatter distributions, indicating higher decision uncertainty, see Figure~\ref{fig:ap1000_poland}. Among these, the AP1000 presented the lowest risk profile, as it was the only top contender without a rising probability toward lower performance values.
 
 Capital investment costs, supplier availability, and complexity indicators emerged as universally critical criteria, while load-following capabilities were largely dismissed. Technical parameters (thermal efficiency, discharge burnup) were consistently deemed irrelevant from a policy perspective.
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.95\linewidth]{bad_performing_example.png}
-    \caption{SMC output for Nuscale alternative in Poland (geometric mean).}
+    \caption{SMC output for Nuscale alternative in Poland (geometric mean). Values between 0 and 0.4, peaking lower than 0.1}
     \label{fig:nuscale_poland}
 \end{figure}
 
@@ -283,7 +283,7 @@ Capital investment costs, supplier availability, and complexity indicators emerg
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.95\linewidth]{good_performing_example.png}
-    \caption{SMC output for AP1000 alternative in Poland (geometric mean).}
+    \caption{SMC output for AP1000 alternative in Poland (geometric mean). Values distributed between 0.1 and 0.6, with no clear peak and tails down to 0.0 and up to 0.8.}
     \label{fig:ap1000_poland}
 \end{figure}
 
@@ -310,7 +310,7 @@ Future work should refine the case study by selecting a specific deployment site
 % ACKNOWLEDGEMENTS
 %-----------------------------------------------------------------------------
 \section*{Acknowledgements}
-This work has been partially supported by the ENEN2plus project (HORIZON-EURATOM-2021-NRT-01-13 101061677) funded by the European Union.
+This work has been partially supported by the ENEN2plus project (HORIZON-EURATOM-2021-NRT-01-13 101061677) funded by the EU
 
 %---------------------------------------------------------------------------
 %  BIBLIOGRAPHY
